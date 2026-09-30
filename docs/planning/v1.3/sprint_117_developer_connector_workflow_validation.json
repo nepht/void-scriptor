@@ -1,0 +1,60 @@
+{
+  "schema_version": "1.0.0",
+  "project": "VOID SCRIPTOR",
+  "document_role": "SPRINT_117_STEP_MANIFEST",
+  "canonical_step": "117.17",
+  "title": "Developer Connector Workflow Validation",
+  "objective": "Menguji certified developer connectors sesuai scopes, organizations/workspaces, rate limits, revoke, and audit.",
+  "required_evidence": [
+    "scopes",
+    "resource_access",
+    "rate_limits",
+    "reauth",
+    "revoke",
+    "audit"
+  ],
+  "implementation": "lib/features/world_logic/domain/sprint_117_developer_connector_workflow_validation.dart",
+  "tests": "test/release/sprint_117_developer_connector_workflow_validation_test.dart",
+  "drill": "lib/features/world_logic/domain/sprint_117_developer_connector_workflow_drill.dart",
+  "shipped_sources": [
+    "lib/features/account/domain/account_center_developer_tools_connections.dart",
+    "lib/features/account/domain/account_center_connected_accounts_management.dart",
+    "lib/features/account/domain/account_center_connection_health_state_machine.dart"
+  ],
+  "anchor_sources": [
+    {
+      "path": "docs/planning/v1.2/sprint_115_developer_tools_connections.json",
+      "canonical_step": "115.28",
+      "supplies": ["scopes", "resource_access", "audit"]
+    },
+    {
+      "path": "docs/planning/v1.2/sprint_115_connected_accounts_management.json",
+      "canonical_step": "115.14",
+      "supplies": ["reauth"]
+    },
+    {
+      "path": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "canonical_step": "115.10",
+      "supplies": ["rate_limits", "revoke"]
+    }
+  ],
+  "acceptance_aliases": {
+    "resource_access": {
+      "declared_as": "repository_access",
+      "reason": "115.28 names the same guarantee with a different word. The alias is recorded here rather than applied silently, so a reader can see that the canonical 117.17 wording is not a word-for-word match to any anchor."
+    }
+  },
+  "unmapped_acceptance": {
+    "rate_limits": "No anchor source declares a rate-limit acceptance item. The RATE_LIMITED health state is declared in 115.10's health_states vocabulary and is exercised here, but no canonical source promises rate-limit behaviour for developer connectors, so this check is drilled and reported rather than counted as a satisfied acceptance."
+  },
+  "product_spec": {
+    "path": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+    "sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+    "token_subtrees": ["security_contract.secrets", "security_contract.sensitive_actions"]
+  },
+  "boundary": "Local, manifest-driven developer connector metadata, connection health, and audit only. Live OAuth, repository access, organization policy, rate-limit windows, credentials, certified provider availability, hosted CI, signing, telemetry, hardware, adoption, and publication remain DEFERRED-EXTERNAL.",
+  "limitations": [
+    "This manifest validates local contracts and shipped domain behaviour. It does not execute a live provider request.",
+    "No developer connector is CERTIFIED in the provider registry; the drills use locally constructed manifests, never the production availability claim."
+  ]
+}

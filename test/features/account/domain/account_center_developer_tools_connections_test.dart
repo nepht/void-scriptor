@@ -118,35 +118,98 @@ void main() {
       },
     );
 
-    test('disconnect is explicit and audit metadata contains no scopes', () {
-      final connections = AccountCenterDeveloperToolsConnections(
-        manifest: _manifest(),
-        now: () => DateTime.utc(2026, 9, 26, 3),
-      );
-      connections.connect(
-        providerId: 'github',
-        connectionId: 'github/main',
-        scopes: const {'repo:read'},
-        repositoryAccess: DeveloperRepositoryAccess.readOnly,
-      );
+    test(
+      'disconnecting a provider is a sensitive action and is gated',
+      () async {
+        // The product spec lists `disconnect_provider` among the sensitive
+        // actions and `reauth_before_sensitive_action` among the secret
+        // guarantees, so ending an authorized developer connection must not
+        // rest on a caller's boolean alone. The sibling credential manager
+        // (115.27) already gates every sensitive action and audits the
+        // refusal; 115.28 did neither.
+        var reauthenticated = false;
+        final connections = AccountCenterDeveloperToolsConnections(
+          manifest: _manifest(),
+          now: () => DateTime.utc(2026, 9, 26, 3),
+          reauthenticate: () async => reauthenticated,
+        );
+        connections.connect(
+          providerId: 'github',
+          connectionId: 'github/main',
+          scopes: const {'repo:read'},
+          repositoryAccess: DeveloperRepositoryAccess.readOnly,
+        );
 
-      expect(connections.disconnect('github/main', confirmed: false), isFalse);
-      expect(connections.activeConnections, hasLength(1));
-      expect(connections.disconnect('github/main', confirmed: true), isTrue);
-      expect(connections.activeConnections, isEmpty);
-      expect(connections.audit.map((event) => event.action), [
-        'connect',
-        'disconnect',
-      ]);
-      expect(
-        connections.audit.map((event) => event.timestamp),
-        everyElement(DateTime.utc(2026, 9, 26, 3)),
-      );
-      expect(
-        connections.audit.expand((event) => event.toJson().keys),
-        isNot(contains('scopes')),
-      );
-    });
+        final refused = await connections.disconnect(
+          'github/main',
+          confirmed: true,
+        );
+
+        expect(refused, isFalse);
+        // A refused sensitive action changes nothing and says so in the trail.
+        expect(connections.activeConnections, hasLength(1));
+        expect(
+          connections.audit.map((event) => event.action),
+          contains('denied_disconnect'),
+        );
+        expect(
+          connections.audit.map((event) => event.action),
+          isNot(contains('disconnect')),
+        );
+
+        reauthenticated = true;
+        expect(
+          await connections.disconnect('github/main', confirmed: true),
+          isTrue,
+        );
+        expect(connections.activeConnections, isEmpty);
+        expect(
+          connections.audit.map((event) => event.action),
+          contains('disconnect'),
+        );
+      },
+    );
+
+    test(
+      'disconnect is explicit and audit metadata contains no scopes',
+      () async {
+        final connections = AccountCenterDeveloperToolsConnections(
+          manifest: _manifest(),
+          now: () => DateTime.utc(2026, 9, 26, 3),
+          reauthenticate: () async => true,
+        );
+        connections.connect(
+          providerId: 'github',
+          connectionId: 'github/main',
+          scopes: const {'repo:read'},
+          repositoryAccess: DeveloperRepositoryAccess.readOnly,
+        );
+
+        expect(
+          await connections.disconnect('github/main', confirmed: false),
+          isFalse,
+        );
+        expect(connections.activeConnections, hasLength(1));
+        expect(
+          await connections.disconnect('github/main', confirmed: true),
+          isTrue,
+        );
+        expect(connections.activeConnections, isEmpty);
+        expect(connections.audit.map((event) => event.action), [
+          'connect',
+          'denied_disconnect',
+          'disconnect',
+        ]);
+        expect(
+          connections.audit.map((event) => event.timestamp),
+          everyElement(DateTime.utc(2026, 9, 26, 3)),
+        );
+        expect(
+          connections.audit.expand((event) => event.toJson().keys),
+          isNot(contains('scopes')),
+        );
+      },
+    );
   });
 }
 

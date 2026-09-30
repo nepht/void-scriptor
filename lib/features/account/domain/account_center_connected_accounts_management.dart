@@ -145,10 +145,17 @@ final class AccountConnectedAccountsManagement {
       AccountHealthState.outage => AccountConnectionState.unavailable,
       AccountHealthState.unknown => account.connectionState,
     };
+    // A health observation is itself the proof that the provider answered with
+    // the token it is being asked about, so it clears a pending reauthentication
+    // request. Leaving the flag set here made a satisfied request indistinguishable
+    // from an outstanding one, and the banner asking the user to reauthenticate
+    // for a connection that demonstrably works never went away. 115.10 already
+    // clears `reauthRequired` on every health refresh; this seam did not.
     final checked = account.copyWith(
       connectionState: connectionState,
       healthState: healthState,
       lastCheckedAt: checkedAt.toUtc(),
+      reauthRequired: false,
     );
     _accounts[connectionId] = checked;
     return checked;

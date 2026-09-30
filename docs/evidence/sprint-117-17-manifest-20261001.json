@@ -1,0 +1,107 @@
+{
+  "canonical_step": "117.17",
+  "status": "pass",
+  "verdict": "DEVELOPER_CONNECTOR_WORKFLOW_VALIDATED_LOCAL",
+  "coverage": 1.0,
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "acceptance_satisfied": [
+    "audit",
+    "rate_limits",
+    "reauth",
+    "resource_access",
+    "revoke",
+    "scopes"
+  ],
+  "acceptance_unmet": [],
+  "open_items": [
+    "developer_connector_workflow_defined_not_executed_live",
+    "external_connector_specs_outside_repository",
+    "no_shipped_consumer_for_developer_connector_managers",
+    "organization_workspace_acceptance_undeclared_by_anchor_sources",
+    "rate_limit_acceptance_undeclared_by_anchor_sources"
+  ],
+  "checks": [
+    {
+      "check_id": "scopes",
+      "method": "connect with duplicated, cased, and padded scope text and record that the stored set is normalized, deduplicated, and unmodifiable, and that an empty or blank-only scope set is refused outright",
+      "expected_outcome": "a connection carries exactly the normalized scopes it was granted and cannot be widened or emptied afterwards",
+      "observed_outcome": "CONNECTION_SCOPE_SET_NORMALIZED_AND_UNMODIFIABLE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_developer_tools_connections.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "resource_access",
+      "method": "drive the repository-access rule in every direction and record that a declared access level wider than the granted scopes is refused, that a narrower level is refused, and that the shipped rule cannot be satisfied by a scope it never received",
+      "expected_outcome": "declared repository access never exceeds the granted scopes, in either direction",
+      "observed_outcome": "DECLARED_ACCESS_ALWAYS_MATCHES_THE_GRANTED_SCOPES",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_developer_tools_connections.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "rate_limits",
+      "method": "move a live connection through the RATE_LIMITED health state and record that the connection stays usable, that the limit is visible in the user-facing text, and that the limit is never laundered into a healthy or unknown state",
+      "expected_outcome": "a rate-limited connection stays connected, says so, and is never reported as healthy",
+      "observed_outcome": "RATE_LIMIT_VISIBLE_AND_NEVER_LAUNDERED_INTO_HEALTH",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "reauth",
+      "method": "request reauthentication, then record a health observation and prove the request is cleared by proof rather than left outstanding, and that the refresh carries the timestamp it claims",
+      "expected_outcome": "a reauthentication request is cleared by a health observation and not left outstanding",
+      "observed_outcome": "REAUTH_REQUEST_CLEARED_BY_PROOF_AND_ISOLATED_PER_CONNECTION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_connected_accounts_management.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "revoke",
+      "method": "revoke a live connection and record that the state is terminal, that no further transition is possible from it, that the refusal is visible, and that ending a developer connection is refused when the reauthentication gate refuses and recorded when it does not",
+      "expected_outcome": "a revoked connection is terminal, and ending a connection requires the gate and is audited either way",
+      "observed_outcome": "REVOKE_TERMINAL_AND_DISCONNECT_GATED_AND_AUDITED",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "audit",
+      "method": "walk every action a developer connection can take and record that each one emits exactly one row, that a refused sensitive action is audited as a refusal rather than as an absence, and that no row carries scope or repository-access material",
+      "expected_outcome": "every action, including every refusal, is audited and no row carries scope material",
+      "observed_outcome": "EVERY_CONNECTION_ACTION_AND_REFUSAL_AUDITED_WITHOUT_SCOPE_MATERIAL",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_developer_tools_connections.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_developer_tools_connections.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_connected_accounts_management.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_connection_health_state_machine.json": "DECLARED:acceptance:6"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_developer_tools_connections.json": true,
+      "docs/planning/v1.2/sprint_115_connected_accounts_management.json": true,
+      "docs/planning/v1.2/sprint_115_connection_health_state_machine.json": true
+    },
+    "developer_acceptance_declared": true,
+    "reauth_acceptance_declared": true,
+    "health_acceptance_declared": true,
+    "reauth_before_sensitive_action_declared": true,
+    "disconnect_provider_sensitive_action": true,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2
+  }
+}

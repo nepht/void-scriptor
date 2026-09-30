@@ -62,10 +62,19 @@ final class AccountCenterDeveloperToolsConnections {
   AccountCenterDeveloperToolsConnections({
     required this.manifest,
     DateTime Function()? now,
-  }) : _now = now ?? DateTime.now;
+    Future<bool> Function()? reauthenticate,
+  }) : _now = now ?? DateTime.now,
+       // Fail-closed. Ending an authorized connection is declared a sensitive
+       // action by the product spec, and a caller that supplies no gate has not
+       // proven the user is present, so the default is refusal rather than
+       // consent. A caller that really can reauthenticate passes the gate in.
+       _reauthenticate = reauthenticate ?? (() async => false);
 
   final ProviderConnectorManifest manifest;
   final DateTime Function() _now;
+
+  /// The gate a sensitive action must pass. Never absent; the default refuses.
+  final Future<bool> Function() _reauthenticate;
   final Map<String, DeveloperToolConnection> _connections =
       <String, DeveloperToolConnection>{};
   final List<DeveloperToolAuditEvent> _audit = <DeveloperToolAuditEvent>[];
@@ -111,13 +120,43 @@ final class AccountCenterDeveloperToolsConnections {
     return connection;
   }
 
-  bool disconnect(String connectionId, {required bool confirmed}) {
-    if (!confirmed) return false;
+  /// Ends a developer connection.
+  ///
+  /// `disconnect_provider` is one of the product spec's sensitive actions and
+  /// `reauth_before_sensitive_action` is one of its secret guarantees, so
+  /// ending an authorized connection runs behind the same kind of gate the
+  /// credential manager (115.27) already applies to `reveal_or_replace_key`.
+  /// A caller-supplied `confirmed` flag is an assertion, not a proof that the
+  /// user is present: with no gate at all, any caller could end a connection by
+  /// passing `true`, which is exactly the sensitive action the guarantee is
+  /// about.
+  ///
+  /// A refusal is a decided outcome, not an absence, so it is recorded. Before
+  /// this, a disconnect that never happened and a disconnect nobody attempted
+  /// produced identical audit trails, which is precisely the gap the
+  /// `audit_redaction` guarantee exists to close.
+  Future<bool> disconnect(
+    String connectionId, {
+    required bool confirmed,
+  }) async {
+    if (!confirmed) {
+      _recordRefusal(connectionId, 'denied_disconnect');
+      return false;
+    }
     final normalizedId = _required(connectionId, 'connectionId');
-    final connection = _connections.remove(normalizedId);
+    final connection = _connections[normalizedId];
     if (connection == null) {
       throw StateError('Unknown developer connection: $normalizedId');
     }
+    if (!await _reauthenticate()) {
+      _recordRefusal(
+        normalizedId,
+        'denied_disconnect',
+        providerId: connection.providerId,
+      );
+      return false;
+    }
+    _connections.remove(normalizedId);
     _record('disconnect', connection);
     return true;
   }
@@ -128,6 +167,26 @@ final class AccountCenterDeveloperToolsConnections {
         action: action,
         providerId: connection.providerId,
         connectionId: connection.connectionId,
+        timestamp: _now().toUtc(),
+      ),
+    );
+  }
+
+  /// Records a refusal that names the connection it was refused against.
+  ///
+  /// `providerId` is unknown when the refusal happens before the connection is
+  /// resolved, and the row says so with an empty provider rather than guessing
+  /// one. The attempt itself is the fact worth keeping.
+  void _recordRefusal(
+    String connectionId,
+    String action, {
+    String providerId = '',
+  }) {
+    _audit.add(
+      DeveloperToolAuditEvent(
+        action: action,
+        providerId: providerId,
+        connectionId: connectionId.trim(),
         timestamp: _now().toUtc(),
       ),
     );

@@ -118,6 +118,30 @@ void main() {
       },
     );
 
+    test(
+      'a recorded health observation clears a pending reauthentication request',
+      () {
+        // 115.10 refreshHealth sets reauthRequired to false for every health
+        // state, so the token that answered is the token that still works.
+        // 115.14 kept the flag set instead, so a reauthentication request
+        // outlived every proof that it had been satisfied.
+        final manager = AccountConnectedAccountsManagement(
+          <AccountConnectedAccount>[account()],
+        );
+        manager.reauthenticate('google/account-42');
+        expect(manager.connections.single.reauthRequired, isTrue);
+
+        final checked = manager.recordHealthCheck(
+          'google/account-42',
+          healthState: AccountHealthState.healthy,
+          checkedAt: DateTime.utc(2026, 9, 26, 4),
+        );
+
+        expect(checked.reauthRequired, isFalse);
+        expect(manager.connections.single.reauthRequired, isFalse);
+      },
+    );
+
     test('records an explicit health check timestamp', () {
       final manager = AccountConnectedAccountsManagement(
         <AccountConnectedAccount>[account()],

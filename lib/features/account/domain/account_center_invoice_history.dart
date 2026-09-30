@@ -383,14 +383,46 @@ final class InvoiceRefund {
   final DateTime requestedAt;
   RefundState state = RefundState.requested;
   DateTime? settledAt;
+  DateTime? resolvedAt;
 
   void settle(DateTime at) {
     _requireUtc(at, 'settledAt');
-    if (state != RefundState.requested) {
-      throw StateError('A ${state.name} refund cannot be settled.');
-    }
+    _requireRequested('settled');
     state = RefundState.settled;
     settledAt = at;
+    resolvedAt = at;
+  }
+
+  /// The provider declined this refund, so no money ever left the account.
+  ///
+  /// [RefundState.rejected] and [RefundState.cancelled] were reachable in the
+  /// enum but nothing could produce them: `settle` was the only transition, so
+  /// a declined request stayed `requested` forever and kept holding the
+  /// invoice's refundable budget that it had never been given. Both verdicts
+  /// are now reachable, and both leave `settledAt` null — a refusal returns
+  /// the amount to [AccountCenterInvoiceHistory.refundableRemaining].
+  void reject(DateTime at) {
+    _requireUtc(at, 'resolvedAt');
+    _requireRequested('rejected');
+    state = RefundState.rejected;
+    resolvedAt = at;
+  }
+
+  /// The user withdrew this refund before the provider decided it.
+  void cancel(DateTime at) {
+    _requireUtc(at, 'resolvedAt');
+    _requireRequested('cancelled');
+    state = RefundState.cancelled;
+    resolvedAt = at;
+  }
+
+  /// A request can only reach a terminal verdict once, and only from
+  /// `requested`. Re-settling a settled refund would double the amount the
+  /// ledger considers collected back.
+  void _requireRequested(String next) {
+    if (state != RefundState.requested) {
+      throw StateError('A ${state.name} refund cannot become $next.');
+    }
   }
 
   Map<String, Object?> toPublicJson() => <String, Object?>{
@@ -573,32 +605,61 @@ final class AccountCenterInvoiceHistory {
 
   /// Effective payment verdict, including the derived refunded/disputed
   /// states that a provider snapshot may not declare.
+  ///
+  /// The dispute verdict is part of the verdict, not just its open/closed
+  /// flag. It used to test `isOpen` alone, so a dispute the provider WON —
+  /// money returned to the user — reported `paid`: the account was told it
+  /// still owed a charge the provider had already reversed. [RefundState]
+  /// and [DisputeState] are both provider decisions, and both now decide the
+  /// invoice they belong to.
   InvoicePayment paymentStatusFor(String invoiceId) {
     final invoice = _knownInvoice(invoiceId);
+    final dispute = _disputes[invoice.invoiceId];
     final settled = _settledRefundTotal(invoice.invoiceId);
+    // A won chargeback is money the provider gave back, so it is refunded at
+    // the full collected amount even though no [InvoiceRefund] was raised: the
+    // dispute ledger is the receipt.
+    final disputeRefund = dispute?.state == DisputeState.won
+        ? (invoice.payment?.paidAmount ?? 0)
+        : 0.0;
+    final returned = settled + disputeRefund;
     final collected = invoice.payment?.paidAmount ?? 0;
-    if (settled > 0 && collected > 0) {
-      return settled >= collected
-          ? _derived(InvoicePaymentState.refunded, invoice)
-          : _derived(InvoicePaymentState.partiallyRefunded, invoice);
+    if (returned > 0 && collected > 0) {
+      final returnedMinor = (returned * 100).round();
+      final collectedMinor = (collected * 100).round();
+      if (returnedMinor >= collectedMinor) {
+        return _derived(InvoicePaymentState.refunded, invoice);
+      }
+      return _derived(InvoicePaymentState.partiallyRefunded, invoice);
     }
-    if (_disputes[invoice.invoiceId]?.isOpen ?? false) {
+    if (dispute?.isOpen ?? false) {
       return _derived(InvoicePaymentState.disputed, invoice);
     }
     return invoice.payment ?? InvoicePayment(state: InvoicePaymentState.unpaid);
   }
 
   /// Remaining amount that may still be refunded for this invoice.
+  ///
+  /// Only a request that is still `requested` or has actually `settled` holds
+  /// the budget. It used to subtract every refund ever raised, so a refund the
+  /// provider rejected — money that never left the account — kept reducing the
+  /// remainder, and a customer who had been refused twice could end up with
+  /// nothing left to refund at all. A lost or withdrawn chargeback consumes
+  /// nothing: the charge stands and stays refundable.
   double refundableRemaining(String invoiceId) {
     final invoice = _knownInvoice(invoiceId);
     final collected = invoice.payment?.paidAmount ?? 0;
-    final pending =
+    final held =
         _refunds[invoice.invoiceId]?.fold<double>(
           0,
-          (sum, refund) => sum + refund.amount,
+          (sum, refund) => switch (refund.state) {
+            RefundState.requested || RefundState.settled => sum + refund.amount,
+            RefundState.rejected || RefundState.cancelled => sum,
+          },
         ) ??
         0;
-    final remaining = collected - pending;
+    if (_disputes[invoice.invoiceId]?.state == DisputeState.won) return 0;
+    final remaining = collected - held;
     return remaining < 0 ? 0 : remaining;
   }
 

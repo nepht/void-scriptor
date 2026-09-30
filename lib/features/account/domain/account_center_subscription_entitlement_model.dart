@@ -327,6 +327,16 @@ final class AccountCenterSubscriptionEntitlementModel {
   /// clock, or one replaying a cached evaluation instant, could therefore
   /// unlock a feature the server had not issued. The window check is
   /// fail-closed on both ends.
+  ///
+  /// It also consults the subscription lifecycle before the window. The grant
+  /// document is issued for a paid period, so a subscription that has been
+  /// confirmed cancelled or has lost its grace window is no longer paid for:
+  /// asking this method only ever returned [EntitlementState.granted], so a
+  /// cancelled-and-confirmed subscription kept every entitlement until its
+  /// own `expiresAt` ran out, and a payment failure that had already ended
+  /// its grace window still read as live for the rest of the paid year. An
+  /// explicitly non-granted grant still wins over the lifecycle, because a
+  /// denial is the stronger statement.
   EntitlementState entitlementStateAt(String key, DateTime at) {
     _requireUtc(at, 'at');
     final grant = entitlementByKey(key);
@@ -334,11 +344,43 @@ final class AccountCenterSubscriptionEntitlementModel {
       return EntitlementState.notYetIssued;
     }
     if (grant.state != EntitlementState.granted) return grant.state;
+    final expiredBy = _lapseInstant;
+    if (expiredBy != null && !at.isBefore(expiredBy)) {
+      return EntitlementState.denied;
+    }
     final expiresAt = grant.expiresAt;
     if (expiresAt != null && !at.isBefore(expiresAt)) {
       return EntitlementState.expired;
     }
     return EntitlementState.granted;
+  }
+
+  /// The instant from which the subscription is no longer paid for, or null
+  /// when it is still in good standing.
+  ///
+  /// A cancellation revokes the grant at its `effectiveAt` — not at the moment
+  /// the user asked, because a period already paid for is still owed, and not
+  /// at `requestedAt`, which says nothing about the service. A grace period
+  /// covers a failed payment only while it is active, so once `endsAt` has
+  /// passed the grace has lapsed and there is nothing covering the failure.
+  /// The earlier of the two wins, because the first lost payment is the one
+  /// that ends the entitlement.
+  ///
+  /// This is structural, never a reading of the wall clock: a grace period
+  /// that has been entered has an end whether or not anyone has looked at it
+  /// yet, and `entitlementStateAt` decides against the instant the caller
+  /// asked about. Reading `DateTime.now()` here would make an evaluation at a
+  /// fixed instant answer differently tomorrow.
+  DateTime? get _lapseInstant {
+    final cancelledAt = switch (cancellation.state) {
+      CancellationState.cancelled => cancellation.effectiveAt,
+      CancellationState.scheduled || CancellationState.none => null,
+    };
+    // Entered and finished: its `endsAt` is the instant cover stopped.
+    final graceLapsedAt = gracePeriod.endsAt;
+    if (cancelledAt == null) return graceLapsedAt;
+    if (graceLapsedAt == null) return cancelledAt;
+    return cancelledAt.isBefore(graceLapsedAt) ? cancelledAt : graceLapsedAt;
   }
 
   bool hasEntitlement(String key, DateTime at) =>
@@ -423,6 +465,13 @@ final class AccountCenterSubscriptionEntitlementModel {
         effectiveAt: cancellation.effectiveAt,
         reason: cancellation.reason,
       ),
+      // A confirmed cancellation ends the subscription, so it must stop
+      // declaring a renewal that would charge a customer for a plan they
+      // cancelled. Leaving `auto`/`renewsAt` in place left the account
+      // carrying a live charge date for a dead plan; 116.40 requires
+      // `cancel_at_period_end` to keep entitlement only until the period end,
+      // which is exactly what the now-revoked grant does.
+      renewal: RenewalInfo(mode: RenewalMode.none),
     );
   }
 

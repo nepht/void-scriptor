@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.12",
-  "next_step": "117.13",
+  "last_verified_step": "117.13",
+  "next_step": "117.14",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -57,8 +57,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-09-30T07:56:00+07:00",
-  "updated_by": "core-worker-v5 cron (117.10 account configuration migration)",
+  "updated_at": "2026-09-30T20:05:00+07:00",
+  "updated_by": "hermes-cron-v4",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -614,10 +614,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.12",
+  "current_step": "117.13",
   "current_step_status": "VERIFIED-LOCAL",
   "last_run_summary": "2026-09-30: 117.10 Account Configuration Migration VERIFIED-LOCAL (slice e1c3ed7, ledger 42430e3). WIP dua file dari run cron sebelumnya yang mati di max_iterations 07:25 diadopsi (syarat WIP 1-6), RED exit 1 load failure (snapshot SHA-matched), GREEN 21/21, shard A 406/406, shard B 76/76, analyzer scoped exit 0, format 0 changed, diff-check 0, build windows --debug exit 0 19,7s.",
-  "last_commit": "4df02ee",
+  "last_commit": "e5d1def",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -2230,10 +2230,85 @@
     }
   },
   "sprint_117_step_11713": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "commit": "e5d1def",
+    "title": "Cloud Storage & Quota Validation",
+    "verdict": "CLOUD_STORAGE_QUOTA_VALIDATED_LOCAL",
+    "coverage": 1.0,
+    "checks": [
+      "provider_api_values",
+      "raw_bytes",
+      "display_units",
+      "freshness",
+      "partial_total",
+      "unavailable",
+      "local_separation"
+    ],
+    "defect_found_and_fixed": {
+      "file": "lib/features/account/domain/account_center_cloud_storage_aggregation.dart",
+      "line": 43,
+      "summary": "CloudStorageAggregation.from reduced lastUpdated with isBefore, keeping the OLDEST included reading; a multi-provider total was dated to a measurement no included account produced.",
+      "fix": "isBefore -> isAfter (1 hunk, 6 lines)",
+      "sha_before": "b32841d2a70dc4f0b17e15ec568751016350b17622d7f7f2dc6d1c05af5ded05",
+      "sha_after": "b7833465a3705ec0c463a09c4c945a19585914a1d04a51303910c942cfb47484",
+      "spec_basis": "115.18 acceptance 'last_updated'",
+      "sibling_correct_reference": "account_center_storage_distribution_report.dart:802 uses isAfter"
+    },
+    "necessity_two_directions": {
+      "without_fix": "exit 1, 36 pass / 5 fail",
+      "with_fix": "41/41 exit 0",
+      "revert_method": "git show HEAD:<path>, not git reset/restore"
+    },
+    "gate": {
+      "verdict": "CLOUD_STORAGE_QUOTA_VALIDATED_LOCAL",
+      "status": "pass",
+      "coverage": "7/7 = 1",
+      "violations": [],
+      "missing_fields": [],
+      "unmapped_checks": [],
+      "undetermined_checks": [],
+      "acceptance_unmet": [
+        "provider_api_values"
+      ],
+      "unresolvable_references": [
+        "no_shipped_provider_quota_adapter"
+      ],
+      "bite_during_dev": "first drill assumed isFreshAt window was exclusive; the gate returned FAIL with drill_observation_failed:local_separation instead of a green row; fixed in the drill after confirming both shipped windows are inclusive at the boundary"
+    },
+    "gates_measured": {
+      "red": "exit 1 (Expected 2026-09-25 07:55 newest vs Actual 2026-09-22 08:00 oldest)",
+      "focused": "41/41 exit 0",
+      "shard_a": "96/96 exit 0 (9 storage/quota/rail/local/formatting files)",
+      "shard_b": "88/88 exit 0 (117.12 + 117.10 + 117.9)",
+      "analyzer": "No issues found! exit 0 (5 scoped files)",
+      "format": "0 changed exit 0 (5 scoped files)",
+      "diff_check": "exit 0",
+      "manifest_determinism": "sha 35381825ef0d02fe..cf859, 6180 bytes, BYTE-IDENTICAL across two runs",
+      "external_pins": "3/3 MATCH re-hashed independently on this run",
+      "windows_build": "exit 0 but NOT claimed as slice evidence - see notes"
+    },
+    "windows_build_scope_honesty": {
+      "build_exit": 0,
+      "claim": "no regression to the reachable program (native assets, CMake, MSBuild, plugins)",
+      "does_not_prove": "that the changed Dart was compiled into the debug kernel",
+      "method": "poison test - invalid Dart appended to the changed file still built exit 0",
+      "method_validated_by_control": "same poison on a known-reachable file (storage_usage_card.dart) FAILED exit 1 with 16 dart errors, so the method does detect broken files",
+      "root_cause": "storage/quota domain chain is unreachable from main.dart (CloudStorageAggregation 0 occurrences in app.dill; StorageUsageCard 20, AccountCloudSnapshot 23)",
+      "precedent": "117.12 is equally unreferenced from lib/ outside its own file",
+      "poison_residue": "none; all three poisoned files restored, git status clean",
+      "real_coverage": "focused + shard test runs, which compile the file directly"
+    },
+    "open_items": [
+      "check_acceptance_unmet:provider_api_values",
+      "quota_defined_not_executed_live",
+      "external_storage_specs_outside_repository",
+      "unresolvable_reference:no_shipped_provider_quota_adapter"
+    ],
+    "external_gates": "DEFERRED-EXTERNAL (hosted CI, live provider quota API, public signing, publication)",
+    "preserved_dirty": [
+      "M macos/Flutter/Flutter GeneratedPluginRegistrant.swift (Flutter generated, user-owned, NOT reverted)",
+      "?? test/release/scratch_1179_bisect_test.dart (117.9 bisect probe, left in place on purpose)"
+    ]
   },
   "sprint_117_step_11714": {
     "status": "NOT_STARTED",

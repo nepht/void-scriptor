@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.20",
- "next_step": "117.21",
+ "last_verified_step": "117.21",
+ "next_step": "117.22",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -616,7 +616,7 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.20",
+ "current_step": "117.21",
  "current_step_status": "VERIFIED-LOCAL",
  "last_run_summary": "2026-10-01: 117.17 Developer Connector Workflow Validation VERIFIED-LOCAL (slice a77157b). 6 canonical evidence (scopes, resource_access, rate_limits, reauth, revoke, audit) diukur terhadap mekanisme yang di-ship; gate dan drill dipisah seperti 117.5-117.16. Slice memperbaiki TIGA defect nyata: disconnect developer tidak di-gate reauth padahal spec mendaftarkan disconnect_provider sebagai sensitive_action dengan jaminan reauth_before_sensitive_action (default gate fail-closed); disconnect yang ditolak tidak berverejak (kini denied_disconnect); recordHealthCheck tidak pernah membersihkan permintaan reauth sehingga prompt yang tak bisa dipenuhi terus tampil. DUA cacat pada mesin kejujuran slice sendiri: acceptance dibaca dari konstanta yang disalin ke harness (kini dari list acceptance tiap sumber), dan term subtree dihitung lalu diabaikan serta pencocokan daun bertitik ke subtree tingkat atas = NOL PALSU (kini di-AND-kan dan pencocokan berprefiks). Necessity dua arah terbukti: blob pra-fix via git cat-file -> suite gagal; subnet 115.10 dipersempit -> 4 test gate gagal; keduanya dipulihkan SHA MATCH. Gates: fokus 52/52, regresi account/domain 740/740, shard 117 17 file 626/626, analyzer 7 file No issues found, format 0 changed, diff-check 0, 2/2 pin MATCH, build exit 0. Build TIDAK diklaim bukti slice: dua build pertama exit 0 dalam 19-20 dtk dengan kernel tak tersentuh; setelah kernel + cache inkremental dipurge build 46,1 dtk menghasilkan kernel fresh (101.223.920 -> 101.390.088) dengan kontrol positif non-nol dan SETIAP simbol slice = 0, jadi rantai account/domain tidak terjangkau dari main.dart. Manifest docs/evidence/sprint-117-17-manifest-20261001.json byte-identical dua run (sha256 65cb34f2, 5783 byte); generator dihapus tanpa residu. Open item: no_shipped_consumer_for_developer_connector_managers, developer_connector_defined_not_executed_live, external_connector_specs_outside_repository, plus gap terukur organizations/workspaces dan rate-limit yang tidak dideklarasikan anchor mana pun.",
  "last_commit": "675b722e42d14307e944cf37ada4f633c8b6fd51",
@@ -2494,10 +2494,42 @@
   "external_gates": "DEFERRED-EXTERNAL"
  },
  "sprint_117_step_11721": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "title": "Subscription & Billing Workflow Validation",
+  "commit": "3635c12",
+  "required_checks": [
+   "plan",
+   "entitlements",
+   "payment_token",
+   "invoice",
+   "renewal",
+   "cancellation",
+   "refund",
+   "errors"
+  ],
+  "gates": {
+   "focused": "10/10 PASS exit 0",
+   "account_domain_regression": "753/753 PASS exit 0 (baseline 743, delta +10)",
+   "sprint_117_shard": "20 files 686/686 PASS exit 0 (baseline 686, delta 0)",
+   "analyzer": "3 files No issues found! exit 0",
+   "format": "3 files 0 changed exit 0 (idempotent)",
+   "diff_check": "exit 0",
+   "build_windows_release": "exit 0; NOT claimed as slice evidence - poison control proves seam unreachable from main.dart"
+  },
+  "defects_fixed_in_shipped_code": [
+   "refundableRemaining_failed_open: subtracted every refund ever raised regardless of provider verdict, so a rejected 80 on a 100 invoice left 20 refundable and stranded the last 20; only requested and settled hold the budget now",
+   "refund_terminal_states_unreachable: RefundState.rejected and RefundState.cancelled were decorative because settle was the only transition, so a declined request stayed requested forever and reserved an amount it was never granted; reject and cancel are reachable now and one request reaches at most one terminal verdict",
+   "paymentStatusFor_failed_open: consulted only dispute.isOpen, so a provider-WON chargeback reported the invoice as paid once resolved and told the account it still owed reversed money; a won dispute is refunded at full collected amount, a lost or withdrawn one leaves the charge payable and refundable",
+   "entitlementStateAt_failed_open: consulted only the grant window, so a confirmed cancellation never revoked anything - hasEntitlement answered true for a year after cancellation while the plan kept declaring a live auto renewal; a confirmed cancellation now revokes at effectiveAt and stops declaring the dead renewal"
+  ],
+  "canon_rule_honoured": "116.40 reconciliation_rules: payment_failed grants active_grace only until grace_end, after which the entitlement reports lapsed; it previously read granted for the rest of the paid year. The lapse instant is structural, never a wall-clock read, so an evaluation at a fixed instant does not answer differently tomorrow",
+  "necessity_two_directions": {
+   "api": "pre-fix blobs restored via git cat-file blob HEAD:<path>, suite FAILS TO LOAD because reject/cancel do not exist there",
+   "logic": "gate narrowed to the pre-fix EXPRESSIONS injected as temporary getters preFixRefundableRemaining / preFixPaymentStatus / preFixEntitlementStateAt; all 5 assertions fail on the fail-open mechanisms themselves (20.0 for 100.0, 0.0 for 60.0, paid for refunded, granted for denied twice) - the failure is in the old logic, not only the old API shape",
+   "residue": "both seams and all 4 probes removed, residue 0, sources restored from snapshot"
+  },
+  "build_honesty": "invalid Dart injected into BOTH files still built exit 0 in 19.3s; on the same kernel every symbol this slice repairs counts ZERO (AccountCenterInvoiceHistory 0, InvoiceRefund 0, RefundState 0, AccountCenterSubscriptionEntitlementModel 0, entitlementStateAt 0, confirmCancellation 0, refundableRemaining 0, paymentStatusFor 0) while the positive control is non-zero (main 115, RenderObject 130, WidgetsApp 5, runApp 3). Unreachable from main.dart, same as 117.12-117.18 and 117.20, opposite of 117.19",
+  "external_gates": "DEFERRED-EXTERNAL: live payment provider, real provider refund and dispute verdicts, checkout sessions, PCI certification, tax determination, dunning, hosted CI, signing, publication. Release cut is an operator decision"
  },
  "sprint_117_step_11722": {
   "status": "NOT_STARTED",

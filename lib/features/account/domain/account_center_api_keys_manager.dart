@@ -138,6 +138,10 @@ final class AccountCenterApiKeysManager {
       kind: VaultSecretKind.apiKey,
       secretId: key.id,
     );
+    // Rotation invalidates the old material. A clipboard still holding it is a
+    // live copy of a secret the user believes they just replaced, so it goes
+    // with the rotation instead of surviving on the timeout.
+    await vault.clearClipboard();
     key
       ..replacedAt = clock().toUtc()
       ..validation = ApiKeyValidation.unverified
@@ -156,7 +160,18 @@ final class AccountCenterApiKeysManager {
       kind: VaultSecretKind.apiKey,
       secretId: key.id,
     );
-    if (secret == null) return false;
+    if (secret == null) {
+      // A refused reauthentication is a decided answer — the key could not be
+      // proven good — not an absence of one. Returning early here left the key
+      // `unverified` with no timestamp and no audit row, so a key nobody could
+      // ever validate looked identical to a key nobody had validated yet, and
+      // the refusal itself left no trace.
+      key
+        ..validation = ApiKeyValidation.invalid
+        ..validatedAt = clock().toUtc();
+      _record('denied_validate', key.id);
+      return false;
+    }
     final valid = await validator(
       ApiKeyValidationRequest(
         providerId: key.providerId,
@@ -184,17 +199,27 @@ final class AccountCenterApiKeysManager {
       kind: VaultSecretKind.apiKey,
       secretId: key.id,
     );
+    // Deleting the stored copy leaves any clipboard copy as the only remaining
+    // copy of a key the caller just destroyed. Wipe it here instead of leaving
+    // it usable until the timeout expires on its own.
+    await vault.clearClipboard();
     key.status = ApiKeyStatus.revoked;
     _record('revoke', key.id);
   }
 
-  Future<bool> secureCopy(String id) {
+  Future<bool> secureCopy(String id) async {
     final key = _active(id);
-    return vault.copyToClipboard(
+    final copied = await vault.copyToClipboard(
       accountId: accountId,
       kind: VaultSecretKind.apiKey,
       secretId: key.id,
     );
+    // Copying is the one action that puts readable key material somewhere new,
+    // so it is the one action whose absence from the trail hides a real
+    // exfiltration. The vault audits its own copy; the managed key's trail did
+    // not record one at all.
+    _record(copied ? 'copy' : 'denied_copy', key.id);
+    return copied;
   }
 
   Future<int> clearExpiredClipboard() => vault.clearExpiredClipboard();

@@ -128,6 +128,81 @@ void main() {
       },
     );
 
+    test('a refused validation is a decided, audited result', () async {
+      final fixture = _Fixture();
+      await fixture.manager.add(
+        id: 'primary',
+        providerId: 'cloud-ai',
+        label: 'Primary key',
+        secret: 'valid-secret',
+        scopes: const {'models:read'},
+      );
+
+      fixture.reauthenticated = false;
+      expect(await fixture.manager.validate('primary'), isFalse);
+
+      expect(
+        fixture.manager.keys.single.validation,
+        ApiKeyValidation.invalid,
+        reason: 'a refused validation is a decided result, not unverified',
+      );
+      expect(fixture.manager.keys.single.validatedAt, fixture.now);
+      expect(
+        fixture.manager.audit.map((e) => e.action),
+        contains('denied_validate'),
+        reason: 'a refused validation must leave a trace',
+      );
+      expect(
+        fixture.validatedSecrets,
+        isEmpty,
+        reason: 'no secret is readable, so no probe may run',
+      );
+    });
+
+    test('a revoked key keeps no usable clipboard copy', () async {
+      final fixture = _Fixture();
+      await fixture.manager.add(
+        id: 'primary',
+        providerId: 'cloud-ai',
+        label: 'Primary key',
+        secret: 'copied-secret',
+        scopes: const {'models:read'},
+      );
+
+      expect(await fixture.manager.secureCopy('primary'), isTrue);
+      expect(fixture.clipboard, 'copied-secret');
+      await fixture.manager.revoke('primary');
+
+      expect(
+        fixture.clipboard,
+        anyOf(isNull, isEmpty),
+        reason: 'a revoked key must not survive on the clipboard',
+      );
+      expect(fixture.manager.audit.map((e) => e.action), contains('copy'));
+    });
+
+    test(
+      'a failed secure copy is recorded as a refusal, not a silent copy',
+      () async {
+        final fixture = _Fixture();
+        await fixture.manager.add(
+          id: 'primary',
+          providerId: 'cloud-ai',
+          label: 'Primary key',
+          secret: 'copy-secret',
+          scopes: const {'models:read'},
+        );
+
+        fixture.reauthenticated = false;
+        expect(await fixture.manager.secureCopy('primary'), isFalse);
+        expect(
+          fixture.manager.audit.map((e) => e.action),
+          contains('denied_copy'),
+        );
+        expect(fixture.clipboard, isNull);
+      },
+    );
+
     test(
       'fails closed for duplicate ids, empty scopes, and revoked actions',
       () async {

@@ -116,5 +116,19 @@ class AccountSecureTokenVault {
     return 1;
   }
 
+  /// Wipes a held clipboard immediately, ignoring the timeout.
+  ///
+  /// Revoking or replacing secret material must not leave a usable copy
+  /// sitting in the clipboard for the remainder of its window: the store copy
+  /// is already gone, so the clipboard copy is the only one left and it is
+  /// exactly the copy the caller asked to stop trusting. The timeout is a
+  /// backstop for the ordinary case, not the mechanism that ends a revoke.
+  Future<bool> clearClipboard() async {
+    if (_clipboardExpiresAt == null) return false;
+    _clipboardExpiresAt = null;
+    if (clipboardWriter != null) await clipboardWriter!('');
+    return true;
+  }
+
   String maskedDisplay(String secret) => secret.isEmpty ? '' : '••••••••••••';
 }

@@ -1,0 +1,137 @@
+{
+  "canonical_step": "117.16",
+  "status": "pass",
+  "verdict": "API_KEY_WORKFLOW_VALIDATED_LOCAL",
+  "coverage": 1.0,
+  "missing_fields": [],
+  "violations": [],
+  "unmapped_checks": [],
+  "undetermined_checks": [],
+  "acceptance_satisfied": [
+    "add_replace",
+    "audit",
+    "last_used",
+    "mask",
+    "no_plaintext",
+    "revoke",
+    "scope",
+    "secure_copy",
+    "validate"
+  ],
+  "acceptance_unmet": [],
+  "open_items": [
+    "api_key_workflow_defined_not_executed_live",
+    "external_credential_specs_outside_repository",
+    "no_shipped_consumer_for_credential_managers"
+  ],
+  "checks": [
+    {
+      "check_id": "add_replace",
+      "method": "add a key, rotate its secret, and record that the stored material is the rotated one, the public view stays masked, and a refused rotation leaves both the old secret and its validation untouched",
+      "expected_outcome": "a rotated key serves the new secret, its public view stays masked, and a refused rotation changes nothing",
+      "observed_outcome": "ROTATED_KEY_SERVES_NEW_SECRET_AND_REFUSAL_CHANGES_NOTHING",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "validate",
+      "method": "validate a good and a bad key, then refuse reauthentication at the gate and record that the refusal is a decided result with a timestamp and an audit row rather than an untouched key",
+      "expected_outcome": "a validation is decided, timestamped, and audited even when the reauthentication gate refuses it",
+      "observed_outcome": "VALIDATION_DECIDED_AND_AUDITED_INCLUDING_REFUSAL",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "mask",
+      "method": "render the public view of a key and record that neither the metadata nor its JSON projection contains the secret or a masked prefix of it",
+      "expected_outcome": "a key is never rendered as its secret",
+      "observed_outcome": "KEY_NEVER_RENDERED_AS_SECRET",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "scope",
+      "method": "add keys with disjoint scopes and record that each key keeps its own scope set unmodifiable, that the validator receives that exact set, and that an empty or duplicated scope set is refused",
+      "expected_outcome": "a key carries exactly the scopes it was added with and cannot be widened afterwards",
+      "observed_outcome": "EACH_KEY_SCOPE_SET_KEPT_OWN_AND_UNMODIFIABLE",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "secure_copy",
+      "method": "copy a secret to the clipboard with and without reauthentication and record that the copy is refused before the value is read when the gate refuses",
+      "expected_outcome": "a secret is copied only after reauthentication and never when the gate refuses",
+      "observed_outcome": "COPY_ONLY_AFTER_REAUTHENTICATION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "revoke",
+      "method": "revoke a key and record that the stored material is gone, the key is inert for every later action, and any clipboard copy of the revoked secret is wiped at the revoke rather than left to the timeout",
+      "expected_outcome": "a revoked key keeps no stored secret, no usable clipboard copy, and no working action",
+      "observed_outcome": "REVOKED_KEY_KEEPS_NO_SECRET_NO_CLIPBOARD_NO_ACTION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "audit",
+      "method": "walk every action the manager can take and record that each one emits exactly one audit row whose fields carry no secret material",
+      "expected_outcome": "every action emits one audit row that carries no secret",
+      "observed_outcome": "EVERY_ACTION_AUDITED_WITHOUT_SECRET_MATERIAL",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "no_plaintext",
+      "method": "store a secret through the encrypted credential store and record that the bytes at rest contain neither the secret nor a fragment of it, and that every audit row, public view, and masked display omits it",
+      "expected_outcome": "no credential is at rest or in a public view as readable plaintext",
+      "observed_outcome": "NO_PLAINTEXT_AT_REST_OR_IN_ANY_PROJECTION",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    },
+    {
+      "check_id": "last_used",
+      "method": "mark a key as used and record that the stamp appears on the key metadata only after that call, never before, and never carries the secret it recorded having been read",
+      "expected_outcome": "a use is stamped on the key metadata and that stamp never exposes the secret",
+      "observed_outcome": "USE_STAMPED_ON_KEY_METADATA_ONLY",
+      "executed": true,
+      "source_manifest": "docs/planning/v1.2/sprint_115_api_keys_manager.json",
+      "live_provider_result": false,
+      "drilled_against_live_provider": false
+    }
+  ],
+  "anchor": {
+    "declared_contract_sizes": {
+      "docs/planning/v1.2/sprint_115_api_keys_manager.json": "DECLARED:acceptance:7",
+      "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json": "DECLARED:acceptance:6",
+      "docs/planning/v1.2/sprint_115_security_billing_verification.json": "DECLARED:required_outputs:8"
+    },
+    "boundaries_declared": {
+      "docs/planning/v1.2/sprint_115_api_keys_manager.json": true,
+      "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json": true,
+      "docs/planning/v1.2/sprint_115_security_billing_verification.json": true
+    },
+    "never_plaintext_declared": true,
+    "reauth_before_sensitive_action_declared": true,
+    "audit_redaction_declared": true,
+    "sensitive_actions_declared": true,
+    "external_pins_matched": 2,
+    "external_pins_checked": 2
+  }
+}

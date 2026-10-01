@@ -3,7 +3,8 @@
 **Status 2026-10-01:** Fase 1 (kontras palet login), Fase 2 (error validator —
 terbukti bukan defect), Fase 3 (kontras tombol + ColorScheme global di 6
 preset tema), Fase 4 (indikator fokus 2.4.7/1.4.11 + reduced motion
-2.2.2/2.3.3) dan Fase 5 (focus order 2.4.3) selesai. Eksekusi & gate di Bagian 7–8 dan LAMPIRAN A–B.
+2.2.2/2.3.3), Fase 5 (focus order auth) dan Fase 6 (focus order account
+cloud center) selesai. Eksekusi & gate di Bagian 7–8 dan LAMPIRAN A–B.
 
 **Target**   : `D:/VoidScriptor/void_scriptor_multiplatform/lib/features/authentication/presentation/login_screen.dart` (459 baris)
 **Palette**  : `lib/design_system/theme/void_palette.dart`
@@ -18,8 +19,8 @@ preset tema), Fase 4 (indikator fokus 2.4.7/1.4.11 + reduced motion
 
 | | |
 |---|---|
-| Kriteria diuji | 10 pasangan warna + 12 kombinasi fokus + 18 stop focus order |
-| **PASS** | **10** warna + **18** stop focus order |
+| Kriteria diuji | 10 pasangan warna + 12 kombinasi fokus + 32 stop focus order |
+| **PASS** | **10** warna + **32** stop focus order |
 | **FAIL** | **0** |
 | Konformitas | **100%** — AA terpenuhi untuk kontras |
 
@@ -435,6 +436,110 @@ Fase 5 — ini audit + pengunci, bukan remediasi.
 - **2.1.1 / 4.1.2** keyboard traversal & nama-peran-nilai di layar lain.
 - **Skor AA penuh criterion 2.x** — butuh NVDA/VoiceOver live; NVDA belum
   terpasang di mesin ini.
+
+---
+## 11. Fase 6 — Focus Order di Account Cloud Center (2.4.3)
+
+### 11.1 Gap yang ditemukan di test yang sudah ada
+
+Test `account_cloud_center_keyboard_screen_reader_test.dart` (685 baris,
+sprint 115.48) sudah punya group `115.48 focus_order`, tapi assertion-nya:
+
+```dart
+expect(
+  () => AccountCenterKeyboardScreenReader.validateFocusOrder(
+    AccountCenterKeyboardScreenReader.expectedFocusStops,
+  ),
+  returnsNormally,
+);
+```
+
+`expectedFocusStops` **diturunkan dari `AccountCenterAccessibility.defaultFocusOrder`**
+— jadi ini membandingkan konstanta domain dengan dirinya sendiri. Tidak ada
+satu pun widget tree yang disentuh. Test tersebut membuktikan konsistensi
+kontrak internal, bukan urutan fokus yang benar-benar terjadi.
+
+### 11.2 Traversal nyata vs kontrak
+
+Diukur dengan `LogicalKeyboardKey.tab` di viewport 1536×1024:
+
+| | Jumlah stop |
+|---|---:|
+| Kontrak `expectedFocusStops` | 11 |
+| Traversal riil | **14** |
+
+Urutan riil:
+
+```
+ink (search) → Overview → Connected Accounts → Cloud Storage → AI Providers →
+API Keys → Team & Collaboration → Security → Backup & Sync → Billing →
+Edit Profile → + Add Another Method → Backup Project → AI Providers
+```
+
+Tiga stop terakhir **tidak ada di kontrak**: `Edit Profile`,
+`+ Add Another Method`, `Backup Project`, dan satu lagi berlabel `AI Providers`.
+
+**Verdikt: bukan defect.** Kontrak sengaja hanya meng-contract *chrome*
+(search + 9 tab + signIn), bukan tombol intra-page tiap tab.
+`AccountCenterAccessibility.isFocusable` menyaring `notifications`, dan
+`signIn` hanya ada saat belum login. Pemisahan ini benar — yang hilang
+adalah **bukti bahwa widget benar-benar bisa di-tab sesuai urutan itu**.
+
+### 11.3 Dua jebakan yang hampir jadi false positive
+
+**1. Tombol berlabel sama dengan tab.** Stop ke-14 berlabel `AI Providers` —
+identik dengan tab ke-4, tapi itu tombol di panel Overview, bukan tab.
+Deteksi berbasis label menghasilkan 10 tab, bukan 9. Diperbaiki dengan
+membaca **baris** (`rect.top`) yang sama: tab strip adalah satu baris
+horizontal, tombol intra-page punya `top` berbeda.
+
+**2. Posisi absolut bukan urutan.** Tab strip auto-scroll mengikuti fokus.
+Data probe:
+
+| Tab | left | width |
+|---|---:|---:|
+| Cloud Storage | 581 | 192 |
+| AI Providers | 588 | 179 |
+| Team & Collaboration | **535** | 285 |
+
+`Team & Collaboration` (535) muncul **di kiri** `Cloud Storage` (581) karena
+viewport 1536px memotong strip yang 2000px+ lebar. Assertion
+"setiap tab lebih kanan dari sebelumnya" akan gagal — dan itu **artefak
+harness, bukan defect produksi**. Ordinal yang benar sudah dibuktikan lewat
+urutan traversal, bukan koordinat.
+
+### 11.4 Test
+
+`test/features/account/presentation/account_cloud_center_focus_order_test.dart`
+— **4 test**:
+
+- sembilan tab muncul berurutan sesuai `AccountCenterInformationArchitecture.tabs`
+- tab strip satu baris (`rect.top` seragam), tidak berlapis
+- tab pertama muncul setelah kontrol header yang lebih tinggi
+- kontrak domain tidak mengklaim lebih banyak stop dari kenyataan
+
+**Negative control**: urutan IA di-sort alfabet di dalam test → **3/4 FAIL**
+dengan pesan `at location [0] is 'Overview' instead of 'AI Providers'`.
+Membuktikan assertion benar-benar menguji urutan, bukan selalu lolos.
+
+### 11.5 Gate (HEAD `232e6cd`, exit code nyata)
+
+| Gate | Hasil | Exit |
+|---|---|:--:|
+| `flutter test test/features/account/` | **937/937 PASS** (dari 933) | 0 |
+| `flutter test test/features/authentication/` | **8/8 PASS** | 0 |
+| `flutter test test/design_system/` | **80/80 PASS** | 0 |
+| `flutter test test/app/shell/` | **47/47 PASS** | 0 |
+
+Total **1.072 PASS, 0 FAIL, 4/4 exit 0**. Tidak ada kode produksi diubah.
+
+### 11.6 Cakupan
+
+Dua dari 89 layar (`login`, `register`, `forgot_password` di Bagian 10;
+`account_cloud_center` di sini) = **4 dari 89**. Sisa 85 layar belum.
+Harness `_tabOrder` + `_firstText` + klasifikasi baris bisa disalin, tapi tiap
+layar punya widget interaktif berbeda (dropdown, switch, slider, tab strip
+yang berbeda) yang perlu diklasifikasi ulang.
 
 ---
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)

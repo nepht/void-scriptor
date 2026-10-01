@@ -3183,17 +3183,38 @@ class _CenterTabState extends State<_CenterTab> {
       if (!mounted) {
         return;
       }
-      final strip = Scrollable.maybeOf(context);
-      final renderObject = context.findRenderObject();
-      if (strip == null || renderObject == null) {
-        return;
-      }
-      strip.position.ensureVisible(
-        renderObject,
-        duration: Duration.zero,
-        alignment: 0.2,
-      );
+      _ensureStripReveal();
     });
+  }
+
+  /// Memastikan strip horizontal memuat node ini, HANYA pada sumbu strip.
+  ///
+  /// 117.25: traversal keyboard menaruh fokus pada tab yang tergulir keluar
+  /// viewport. Fakta terukur (drill 1440x900): strip beku di
+  /// offset 924.8 dari maxScrollExtent 948.8 sepanjang 26 langkah
+  /// traversal, sementara tab yang difokuskan berada di koordinat konten
+  /// x=0.0 / 150.0 / 432.5 / 648.8 — yaitu empat tab pertama yang sudah
+  /// tergulir ke kiri. Akibatnya fokus mendarat di layar pada
+  /// left=-715.8 s/d -67.0 dan 8 dari 26 langkah traversal mendarat di
+  /// LUAR viewport: pengguna keyboard kehilangan jejak fokus yang sedang
+  /// aktif.
+  ///
+  /// `Scrollable.ensureVisible` (dipakai traversal default framework)
+  /// terbukti TIDAK menjangkau strip pada lintasan ini, jadi penarikan
+  /// dilakukan eksplisit lewat [ScrollPosition.ensureVisible] yang hanya
+  /// menggerakkan posisi strip sendiri — sama seperti perbaikan 117.24,
+  /// supaya page scroll vertikal tidak ikut bergeser.
+  void _ensureStripReveal() {
+    final strip = Scrollable.maybeOf(context);
+    final renderObject = context.findRenderObject();
+    if (strip == null || renderObject == null) {
+      return;
+    }
+    strip.position.ensureVisible(
+      renderObject,
+      duration: Duration.zero,
+      alignment: 0.5,
+    );
   }
 
   @override
@@ -3210,6 +3231,13 @@ class _CenterTabState extends State<_CenterTab> {
               return;
             }
             setState(() => _focused = focused);
+            // 117.25: fokus keyboard harus selalu menyisakan tab di dalam
+            // viewport strip. Rantai `Scrollable.ensureVisible` bawaan
+            // traversal tidak menjangkau strip pada lintasan ini, jadi
+            // penarikan dilakukan eksplisit pada sumbu strip saja.
+            if (focused) {
+              _revealInTabStrip();
+            }
           },
           child: DecoratedBox(
             decoration: BoxDecoration(

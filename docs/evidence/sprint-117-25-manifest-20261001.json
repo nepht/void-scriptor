@@ -1,0 +1,257 @@
+{
+  "canonical_step": "117.25",
+  "document_role": "SPRINT_117_25_ACCESSIBILITY_VALIDATION_EVIDENCE",
+  "required_areas": [
+    "keyboard",
+    "focus",
+    "screen_reader",
+    "status_text",
+    "chart_alternative",
+    "progress_semantics",
+    "touch_targets",
+    "scaling"
+  ],
+  "viewports": {
+    "keyboard": "1440x900 traversal keyboard penuh",
+    "focus": "1440x900 + 390x844 traversal + reduced motion",
+    "screen_reader": "1440x900 + 390x844 semantics sweep",
+    "status_text": "1440x900 semantics sweep (guest)",
+    "chart_alternative": "1440x900 semantics sweep (guest)",
+    "progress_semantics": "guest + StorageUsageCard fixture data",
+    "touch_targets": "1440x900 + 390x844 widget render boxes",
+    "scaling": "1920/1180/600/390 pada text scale 2.0"
+  },
+  "verdict": "ACCESSIBILITY_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "keyboard",
+      "check": "first_stop_is_search",
+      "status": "pass",
+      "declared": "stop #1 adalah tombol search header",
+      "observed": "focus=Rect.fromLTRB(982.0, 16.0, 1022.0, 56.0) search=Rect.fromLTRB(978.0, 12.0, 1026.0, 60.0) overlaps=true",
+      "note": "115.7/115.48 keyboard baseline"
+    },
+    {
+      "area": "keyboard",
+      "check": "tabs_traversed_in_canonical_ia_order",
+      "status": "pass",
+      "declared": "9/9 tab IA kanonik tercapai berurutan lewat keyboard",
+      "observed": "9/9 tab tercapai",
+      "note": "Overview s/d Billing"
+    },
+    {
+      "area": "keyboard",
+      "check": "panel_actions_reachable",
+      "status": "pass",
+      "declared": "tombol aksi panel (Edit Profile & Add Method) tercapai",
+      "observed": "2/2 tombol tercapai",
+      "note": "115.36 mockup auth stop"
+    },
+    {
+      "area": "keyboard",
+      "check": "traversal_no_exceptions",
+      "status": "pass",
+      "declared": "nol unhandled exception selama traversal keyboard",
+      "observed": "exception=none"
+    },
+    {
+      "area": "focus",
+      "check": "tab_focus_ring_width",
+      "status": "pass",
+      "declared": "2.0",
+      "observed": "2.0",
+      "note": "kontrak 115.7 tabFocusRingWidth=2px"
+    },
+    {
+      "area": "focus",
+      "check": "active_tab_semantics_selected",
+      "status": "pass",
+      "declared": "tab aktif Overview memiliki Semantics isSelected=true",
+      "observed": "isSelected=Tristate.isTrue",
+      "note": "screen reader feedback"
+    },
+    {
+      "area": "focus",
+      "check": "reduced_motion_honored",
+      "status": "pass",
+      "declared": "reducedMotion(context) membaca ambient disableAnimations",
+      "observed": "reducedMotion=true",
+      "note": "WCAG 2.3.3"
+    },
+    {
+      "area": "focus",
+      "check": "focus_kept_in_view_during_traversal",
+      "status": "pass",
+      "declared": "setiap langkah traversal keyboard menyisakan fokus di dalam viewport (strip horizontal ikut digulir ke fokus)",
+      "observed": "26/26 langkah in-view",
+      "note": "WCAG 2.4.7 Focus Visible / traversal keep-visible"
+    },
+    {
+      "area": "screen_reader",
+      "check": "search_button_semantics_label",
+      "status": "pass",
+      "declared": "Search account sections",
+      "observed": "Search account sections",
+      "note": "115.7 screen reader label"
+    },
+    {
+      "area": "screen_reader",
+      "check": "provider_semantics_label_format",
+      "status": "pass",
+      "declared": "Google Drive, Not connected",
+      "observed": "Google Drive, Not connected",
+      "note": "AccountCenterAccessibility.providerSemanticsLabel contract"
+    },
+    {
+      "area": "screen_reader",
+      "check": "tab_semantics_labels_present",
+      "status": "pass",
+      "declared": ">=3 tab punya Semantics label eksplisit pada 1440x900",
+      "observed": "8 label ditemukan",
+      "note": "IA kanonik sebagai label, bukan hanya glyph"
+    },
+    {
+      "area": "screen_reader",
+      "check": "semantics_tree_populated_390",
+      "status": "pass",
+      "declared": ">=15 Semantics node aktif pada 390x844",
+      "observed": "131 node, exception=none"
+    },
+    {
+      "area": "screen_reader",
+      "check": "mobile_provider_details_accessible_labels",
+      "status": "pass",
+      "declared": ">=5 provider tiles berlabel \"Provider details\" di mobile",
+      "observed": "5 tile actionable terdeteksi",
+      "note": "115.47 mobile provider sheet trigger"
+    },
+    {
+      "area": "status_text",
+      "check": "unconnected_status_text_present",
+      "status": "pass",
+      "declared": "teks status \"Not connected\" hadir pada layar guest",
+      "observed": "14 kemunculan"
+    },
+    {
+      "area": "status_text",
+      "check": "connection_count_summary_present",
+      "status": "pass",
+      "declared": "teks ringkasan \"0 of 11 connected\" hadir",
+      "observed": "hadir (1)",
+      "note": "status text agregat"
+    },
+    {
+      "area": "status_text",
+      "check": "section_subtitles_present",
+      "status": "pass",
+      "declared": "subjudul status \"Live balances from connected services\" hadir",
+      "observed": "hadir"
+    },
+    {
+      "area": "chart_alternative",
+      "check": "chart_semantics_alternatives_present",
+      "status": "pass",
+      "declared": "2/2 chart wajib punya Semantics image berlabel judul (115.7/115.47 requiredChartAlternatives)",
+      "observed": "2/2 [AI USAGE THIS MONTH=present STORAGE DISTRIBUTION=present] imageNode=2 [account-ai-usage-chart=1 account-ai-usage-chart:isImage=true account-storage-donut=1 account-storage-donut:isImage=true]",
+      "note": "chartTextAlternative membungkus CustomPaint"
+    },
+    {
+      "area": "chart_alternative",
+      "check": "chart_title_parity_text_and_semantics",
+      "status": "pass",
+      "declared": "2/2 judul chart hadir pada teks terlihat dan label semantics",
+      "observed": "2/2 [AI USAGE THIS MONTH(text=true,sem=true) STORAGE DISTRIBUTION(text=true,sem=true)]",
+      "note": "WCAG 1.1.1 parity teks terlihat vs terbaca"
+    },
+    {
+      "area": "chart_alternative",
+      "check": "services_have_text_names_alongside_icons",
+      "status": "pass",
+      "declared": "5/5 service row memiliki nama tekstual eksplisit",
+      "observed": "5/5 nama terdeteksi",
+      "note": "tidak mengandalkan icon semata"
+    },
+    {
+      "area": "progress_semantics",
+      "check": "empty_guest_progress_semantics_present",
+      "status": "pass",
+      "declared": "Semantics berlabel \"Storage usage progress: …\" hadir di guest",
+      "observed": "hadir (1)",
+      "note": "StorageUsageCard fallback message"
+    },
+    {
+      "area": "progress_semantics",
+      "check": "fixture_progress_semantics_value",
+      "status": "pass",
+      "declared": "value=\"75% used, 1.02 KB available of 4.1 KB\"",
+      "observed": "label=\"Storage usage progress: 75% used, 1.02 KB available of 4.1 KB\n3.0 KB used\n75% used, 1.02 KB available of 4.1 KB\nFresh\" value=\"75% used, 1.02 KB available of 4.1 KB\"",
+      "note": "LinearProgressIndicator dibungkus teks terstruktur"
+    },
+    {
+      "area": "progress_semantics",
+      "check": "fixture_freshness_label_present",
+      "status": "pass",
+      "declared": "label status \"Fresh\" hadir pada kartu fixture",
+      "observed": "hadir"
+    },
+    {
+      "area": "touch_targets",
+      "check": "search_button_touch_target_at_least_44",
+      "status": "pass",
+      "declared": ">= 44x44 (token minimumTouchTarget)",
+      "observed": "48.0x48.0",
+      "note": "IconButton desktop"
+    },
+    {
+      "area": "touch_targets",
+      "check": "auth_action_buttons_height_at_least_44",
+      "status": "pass",
+      "declared": "height >= 44",
+      "observed": "height=44.0",
+      "note": "OutlinedButton"
+    },
+    {
+      "area": "touch_targets",
+      "check": "tab_height_matches_token",
+      "status": "pass",
+      "declared": "40.0",
+      "observed": "40.0",
+      "note": "40px memenuhi minimumKeyboardTarget=32px (115.7/115.5)"
+    },
+    {
+      "area": "touch_targets",
+      "check": "mobile_quick_action_tiles_height_at_least_44",
+      "status": "pass",
+      "declared": "height >= 44",
+      "observed": "height=67.0",
+      "note": "ListTile mobile"
+    },
+    {
+      "area": "touch_targets",
+      "check": "mobile_nav_items_height_at_least_44",
+      "status": "pass",
+      "declared": "height >= 44",
+      "observed": "height=48.0",
+      "note": "bottom bar action"
+    },
+    {
+      "area": "scaling",
+      "check": "text_scale_200_all_viewports",
+      "status": "pass",
+      "declared": "4/4 viewport me-render skala teks 200% tanpa crash",
+      "observed": "1920x1080:pass 1180x900:pass 600x800:pass 390x844:pass",
+      "note": "WCAG 1.4.4 Resize text"
+    },
+    {
+      "area": "scaling",
+      "check": "scaling_no_unhandled_crashes",
+      "status": "pass",
+      "declared": "nol crash unhandled pada seluruh pengujian 200%",
+      "observed": "4/4 lulus"
+    }
+  ]
+}

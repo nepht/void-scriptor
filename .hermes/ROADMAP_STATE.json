@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.27",
- "next_step": "117.28",
+ "last_verified_step": "117.28",
+ "next_step": "117.29",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -48,7 +48,7 @@
   "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
   "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
   "rechecked_on": "2026-10-01",
-  "recheck_note": "Re-verified at 117.27 entry/exit: focused 2/2, test/features/account/domain/ 769/769, sprint_116 offline certification 18/18, slice re-checked after dart format (2/2), analyzer 3 files 'No issues found!', format pass2 0 changed, diff-check 0. Windows debug build exit 0 with a positive-control poison failing in a reachable file while the slice file itself does not compile into the kernel (account/domain not reachable from main.dart, same reachability pattern as 117.12-117.21). stability_gate stays PASS.",
+  "recheck_note": "Re-verified at 117.28 exit: slice 19/19, contract+slice 25/25, test/features/account/domain/ 769/769, sprint_116_offline_cached_metadata_certification + 117.27 slice 20/20, analyzer 3 files 'No issues found!' (one prefer_const_declarations introduced by the manifest generator was fixed), format pass2 0 changed, git diff --check 0. Windows debug build exit 0 25.0s with a positive-control poison failing in a reachable file (error G44692887) while account/domain is not reachable from main.dart, so the build proves no regression on the reachable program only. stability_gate stays PASS.",
   "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
   "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart.",
   "slice_117_27": {
@@ -65,6 +65,26 @@
    "manifest": "docs/evidence/sprint-117-27-manifest-20261001.json sha256 1ffdf398c235946c5e939f0a14aec6c7b418ef3b76d0cb3ff4737e679d3c52cf, 5621 byte, byte-identical over two regenerations, json.loads VALID, 12 checks 6 areas 0 violation 0 open",
    "gates": "focused 2/2; account domain 769/769 + 116.44 offline 18/18 + slice 2/2 = 789/789; analyzer 3 files clean; format 0 changed idempotent; diff-check 0",
    "build": "windows --debug exit 0 (47s, kernel fresh 101433368 byte). Slice symbols 0 on the fresh kernel while positive controls are non-zero; poison in the slice file still built exit 0, poison in a reachable file failed exit 1 with account_cloud_center_screen.dart(1914,3) error G077942FA — so the slice file is not reachable from main.dart and the build proves no regression on reachable code only."
+  },
+  "slice_117_28": {
+   "commits": [
+    "f4f7a56",
+    "0d147fa"
+   ],
+   "defects_fixed": [
+    "rateLimited() rendered a 30-second provider window as 'Try again after 0 minutes', telling the user to retry while the provider was still refusing",
+    "partial() accepted availableItemCount 0 and reported hasData=true with a retryable recovery, the same surface shape used when data really arrived"
+   ],
+   "drill_defects_corrected_before_claiming": [
+    "first RED probe did not compile: invented AccountCenterHealthStateMachine / AccountConnectionEvent.connectSucceeded (harness defect, not production)",
+    "initial expired/revoked test asserted a self-made map instead of the shipped state machine, so it was replaced with a real 115.10 measurement",
+    "the gate was first written with 'error' twice in requiredStates, which would double-count one state; fixed and guarded with non_canonical_required_states plus an anti-duplication assertion"
+   ],
+   "necessity": "each fix removed alone reproduces exactly one failure (partial_data, rate_limited)",
+   "gate": "9 required states measured, 9 checks, 0 violation, 0 open item, 0 structural failure",
+   "focused": "slice 19/19, contract+slice 25/25, account domain 769/769 (baseline 769, delta 0), 116.44 offline + 117.27 slice 20/20",
+   "manifest": "docs/evidence/sprint-117-28-manifest-20261001.json sha256 0548d0f98741b01a12c9371adf8ab47cf017abd2bca4988afc926c236b724892, 4285 bytes, byte-identical across two runs, json.loads VALID",
+   "build": "windows --debug exit 0 in 25.0s; positive-control poison in a reachable file exited 1 (account_cloud_center_screen.dart(3892,39) error G44692887), so the build proves no regression only — account/domain is not reachable from main.dart, same pattern as 117.12-117.27"
   }
  },
  "selection_rules": [

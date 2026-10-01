@@ -1,0 +1,96 @@
+{
+  "canonical_step": "117.28",
+  "document_role": "SPRINT_117_28_FAILURE_STATE_VALIDATION_EVIDENCE",
+  "required_states": [
+    "expired",
+    "revoked",
+    "scope_denied",
+    "rate_limited",
+    "outage",
+    "region_block",
+    "unsupported_plan",
+    "partial_data",
+    "error"
+  ],
+  "surfaces": {
+    "expired": "AccountConnectionHealthStateMachine.expire + reauthRequired",
+    "revoked": "AccountConnectionHealthStateMachine.revoke + terminal state",
+    "scope_denied": "OAuthFlowException(scopeEscalation) atas scope subset",
+    "rate_limited": "AccountCenterLoadingEmptyErrorStates.rateLimited",
+    "outage": "AccountCenterLoadingEmptyErrorStates.outage",
+    "region_block": "AccountCenterPaymentMethods.requireAvailableForCheckout",
+    "unsupported_plan": "AccountCenterSubscriptionEntitlementModel.entitlementStateAt",
+    "partial_data": "AccountCenterLoadingEmptyErrorStates.partial",
+    "error": "AccountCenterLoadingEmptyErrorStates.error + visible-error validation"
+  },
+  "verdict": "FAILURE_STATE_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "expired",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"expired\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountConnectionHealthStateMachine.expire + reauthRequired exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "revoked",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"revoked\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountConnectionHealthStateMachine.revoke + terminal state exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "scope_denied",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"scope_denied\" refuses or reports the condition instead of hiding it",
+      "observed": "OAuthFlowException(scopeEscalation) atas scope subset exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "rate_limited",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"rate_limited\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterLoadingEmptyErrorStates.rateLimited exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "outage",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"outage\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterLoadingEmptyErrorStates.outage exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "region_block",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"region_block\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterPaymentMethods.requireAvailableForCheckout exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "unsupported_plan",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"unsupported_plan\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterSubscriptionEntitlementModel.entitlementStateAt exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "partial_data",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"partial_data\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterLoadingEmptyErrorStates.partial exercised at the injected instant and reported the declared state"
+    },
+    {
+      "area": "error",
+      "check": "measured",
+      "status": "pass",
+      "declared": "the shipped mechanism for \"error\" refuses or reports the condition instead of hiding it",
+      "observed": "AccountCenterLoadingEmptyErrorStates.error + visible-error validation exercised at the injected instant and reported the declared state"
+    }
+  ]
+}

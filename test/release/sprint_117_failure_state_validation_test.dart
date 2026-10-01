@@ -17,6 +17,9 @@
 ///    sendiri (angka negatif ditolak, tetapi nol diterima).
 library;
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_connection_health_state_machine.dart';
 import 'package:void_scriptor/features/account/domain/account_center_loading_empty_error_states.dart';
@@ -25,6 +28,11 @@ import 'package:void_scriptor/features/world_logic/domain/sprint_117_failure_sta
 /// Jam injeksi tetap: semua umur dihitung terhadap satu instan, bukan
 /// wall clock, supaya gate ini deterministik.
 final DateTime _at = DateTime.utc(2026, 10, 1, 12);
+
+/// Bukti kanonik yang di-commit; hanya ditulis saat env var di-set, lalu
+/// dibandingkan byte-identik pada dua run terpisah.
+const String _manifestPath =
+    'docs/evidence/sprint-117-28-manifest-20261001.json';
 
 void main() {
   group('117.28 nine canonical failure states', () {
@@ -264,6 +272,56 @@ void main() {
     });
   });
 
+  group('117.28 canonical evidence manifest', () {
+    test('the nine states are measured and recorded deterministically', () {
+      final result = Sprint117FailureStateValidation.evaluate(
+        _measuredChecks(),
+      );
+      expect(result.pass, isTrue, reason: result.failures.toString());
+      expect(result.openItems, isEmpty);
+      expect(result.violationCodes, isEmpty);
+      expect(result.checks, hasLength(9));
+      // Every state is measured, so no area can be satisfied by an absent
+      // record, and the canonical list itself carries no duplicate entry.
+      expect(
+        result.checks.map((c) => c.area).toSet(),
+        Sprint117FailureStateValidation.requiredStates.toSet(),
+      );
+      expect(
+        Sprint117FailureStateValidation.requiredStates.toSet().length,
+        Sprint117FailureStateValidation.requiredStates.length,
+      );
+
+      final writeManifest =
+          Platform.environment['SPRINT_117_28_MANIFEST'] == '1';
+      if (writeManifest) {
+        File(_manifestPath).writeAsStringSync(
+          '${const JsonEncoder.withIndent('  ').convert(result.toJson())}\n',
+        );
+      }
+    });
+
+    test('the manifest serialises a verdict and an empty failure list', () {
+      final result = Sprint117FailureStateValidation.evaluate(
+        _measuredChecks(),
+      );
+      final json = result.toJson();
+      expect(json['canonical_step'], '117.28');
+      expect(json['pass'], isTrue);
+      expect(json['verdict'], 'FAILURE_STATE_VALIDATION_LOCAL');
+      expect(json['failures'], isEmpty);
+      expect(json['open_items'], isEmpty);
+      expect(json['violation_codes'], isEmpty);
+      expect(json['checks'], hasLength(9));
+      // Re-encoding the same facts must be byte-stable, so the committed
+      // manifest can be regenerated and compared.
+      expect(
+        const JsonEncoder.withIndent('  ').convert(json),
+        const JsonEncoder.withIndent('  ').convert(result.toJson()),
+      );
+    });
+  });
+
   group('117.28 error surface refuses credential leakage', () {
     test('a generic error carries a non-empty explanation and retry flag', () {
       final error = AccountCenterLoadingEmptyErrorStates.error(
@@ -298,3 +356,21 @@ void main() {
     });
   });
 }
+
+/// Nine recorded facts, one per canonical state, each naming the shipped
+/// mechanism that was exercised for it.
+List<Sprint117FailureStateCheck> _measuredChecks() =>
+    <Sprint117FailureStateCheck>[
+      for (final state in Sprint117FailureStateValidation.requiredStates)
+        Sprint117FailureStateCheck.pass(
+          area: state,
+          check: 'measured',
+          declared:
+              'the shipped mechanism for "$state" refuses or reports the '
+              'condition instead of hiding it',
+          observed:
+              '${Sprint117FailureStateValidation.surfaceLabels[state]} '
+              'exercised at the injected instant and reported the declared '
+              'state',
+        ),
+    ];

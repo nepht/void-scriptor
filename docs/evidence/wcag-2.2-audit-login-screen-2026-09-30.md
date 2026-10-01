@@ -2,8 +2,8 @@
 
 **Status 2026-10-01:** Fase 1 (kontras palet login), Fase 2 (error validator —
 terbukti bukan defect), Fase 3 (kontras tombol + ColorScheme global di 6
-preset tema) dan Fase 4 (indikator fokus 2.4.7/1.4.11 + reduced motion
-2.2.2/2.3.3) selesai. Eksekusi & gate di Bagian 7–8 dan LAMPIRAN A–B.
+preset tema), Fase 4 (indikator fokus 2.4.7/1.4.11 + reduced motion
+2.2.2/2.3.3) dan Fase 5 (focus order 2.4.3) selesai. Eksekusi & gate di Bagian 7–8 dan LAMPIRAN A–B.
 
 **Target**   : `D:/VoidScriptor/void_scriptor_multiplatform/lib/features/authentication/presentation/login_screen.dart` (459 baris)
 **Palette**  : `lib/design_system/theme/void_palette.dart`
@@ -18,8 +18,8 @@ preset tema) dan Fase 4 (indikator fokus 2.4.7/1.4.11 + reduced motion
 
 | | |
 |---|---|
-| Kriteria diuji | 10 pasangan warna + 12 kombinasi indikator fokus |
-| **PASS** | **10** |
+| Kriteria diuji | 10 pasangan warna + 12 kombinasi fokus + 18 stop focus order |
+| **PASS** | **10** warna + **18** stop focus order |
 | **FAIL** | **0** |
 | Konformitas | **100%** — AA terpenuhi untuk kontras |
 
@@ -241,8 +241,8 @@ PathNotFound (race build), hilang pada retry. Bukan regresi kode.
 
 ### Yang masih belum dikerjakan (jujur)
 
-- **2.4.3 Focus Order** di luar login/register/forgot: butuh runtime keyboard
-  traversal, tidak bisa diverifikasi dari statis.
+- ~~**2.4.3 Focus Order** di luar login/register/forgot~~ — **done untuk 3 layar
+  auth** (Bagian 10). Sisa 70+ layar belum: butuh traversal per layar.
 - **4.1.2 Name, Role, Value** untuk 70+ layar lain: butuh audit per layar;
   Fase 3 hanya mengunci slot ColorScheme global yang dipakai semuanya.
 - Skor **AA penuh** (criterion 2.x) belum diaudit — butuh NVDA/VoiceOver live.
@@ -342,14 +342,102 @@ berikutnya** → flaky timing, bukan regresi.
 
 ### 9.5 Yang masih belum dikerjakan (jujur)
 
-- **2.4.3 Focus Order** di luar login/register/forgot: butuh runtime keyboard
-  traversal di tiap layar, tidak bisa diverifikasi dari statis.
+- ~~**2.4.3 Focus Order**~~ — **done untuk 3 layar auth** (Bagian 10). Sisa 70+
+  layar belum; harness `_tabOrder` bisa dipakai ulang per layar.
 - **2.1.1 / 4.1.2** keyboard traversal & nama-peran-nilai di 70+ layar: butuh
   audit per layar; Fase 3–4 hanya mengunci slot ColorScheme + fokus tombol.
 - **Skor AA penuh** (criterion 2.x) belum diaudit — butuh NVDA/VoiceOver live;
   NVDA tidak terpasang di mesin ini.
 
----# LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
+---
+
+## 10. Fase 5 — Focus Order (2.4.3)
+
+### 10.1 Cara mengukur (bukan asumsi)
+
+Urutan fokus diukur dengan cara yang sama seperti pengguna nyata:
+`LogicalKeyboardKey.tab` berulang, lalu `FocusManager.instance.primaryFocus`
+pembaca posisi target. Kesalahan-kesalahan yang sempat dikoreksi saat
+mengumpulkan data:
+
+| Jebakan | Gejala | Solusi |
+|---|---|---|
+| `requestFocus()` pada `FilledButton` | `hasFocus=false`, `focusNode` null saat runtime | pakai `sendKeyEvent(tab)`, bukan `requestFocus()` |
+| Label kasar per tipe | 2 `TextField` terbaca "REPEAT" padahal node berbeda | lacak identitas `FocusNode` via map, bukan string label |
+| Viewport test default 800×600 | "Work Offline" & "Continue as Guest" melaporkan **rect identik** (y=552, ter-clip) | set viewport **1440×1000** = ukuran golden; setelah itu semua rect distinct |
+| `primaryFocus.context` | selalu `Focus` (node internal), tidak berguna | naik ke ancestor untuk klasifikasi, **berdasarkan prioritas tipe** bukan kedekatan — `IconButton` membuat `InkWell` sebagai descendant, jadi "ancestor terdekat" selalu salah |
+
+### 10.2 Hasil terukur
+
+Viewport 1440×1000, stop = `top..bottom` y:
+
+**Register — 6 stop, semua monoton turun ✅**
+
+| # | y | Jenis |
+|---:|---:|---|
+| 0 | 393 | field |
+| 1 | 463 | field |
+| 2 | 533 | field |
+| 3 | 603 | field |
+| 4 | 663 | button — Create Account |
+| 5 | 725 | button — Already have an account? Sign in |
+
+**Forgot password — 3 stop ✅** 509 field → 565 button (Send Reset Link) → 625 button (Back to sign in)
+
+**Login — 9 stop ✅**
+
+| # | y | x | Jenis |
+|---:|---:|---:|---|
+| 0 | 32 | 1316 | kontrol tema (`ThemeModeMenu`, `login_screen.dart:340`) |
+| 1 | 325 | 972 | field (email) |
+| 2 | 437 | 972 | field (password) |
+| 3 | 425 | 1312 | icon — Show/Hide password (suffix, **baris yang sama** dgn #2) |
+| 4 | 479 | 1110 | button — Forgot password? |
+| 5 | 535 | 952 | button — Sign In |
+| 6 | 789 | 952 | button — Work Offline |
+| 7 | 837 | 952 | button — Continue as Guest |
+| 8 | 901 | 1109 | button — Create account |
+
+**Verdikt: TIDAK ADA DEFECT.** Semua lompatan ke atas yang terlihat adalah
+suffix icon yang berada di baris yang sama dengan field-nya — bukan urutan baca
+yang salah. Test mengelompokkan pasangan `field`/`icon` yang sejajar sebagai satu
+grup baris sebelum memeriksa monotonicitas.
+
+### 10.3 Test
+
+`test/features/authentication/focus_order_test.dart` — **8 test**:
+
+- traversal `register` (6 stop, jenis eksak), `forgot` (3 stop), `login`
+- monotonicitas atas→bawah untuk ketiga layar
+- target fokus pertama login = kontrol tema di header
+- setiap stop punya area bukan nol (tidak ada target ter-clip)
+- **negative control**: order sengaja terbalik (y=500 lalu y=300) harus
+  melempar — membuktikan assertion benar-benar menguji, bukan selalu PASS
+
+### 10.4 Gate (HEAD `61eb4a5`, exit code nyata)
+
+| Gate | Hasil | Exit |
+|---|---|:--:|
+| `dart analyze test/features/authentication/` | No issues found! | 0 |
+| `flutter test test/features/authentication/` | **8/8 PASS** | 0 |
+| `flutter test test/design_system/` | **80/80 PASS** | 0 |
+| `flutter test test/app/shell/` | **47/47 PASS** | 0 |
+| `flutter test test/features/account/` | **933/933 PASS** | 0 |
+
+Total **1.068 PASS, 0 FAIL, 5/5 exit 0**. Tidak ada kode produksi diubah pada
+Fase 5 — ini audit + pengunci, bukan remediasi.
+
+### 10.5 Yang masih belum dikerjakan (jujur)
+
+- **2.4.3 di 70+ layar selain auth** — butuh traversal per layar; harness di
+  sini (`_tabOrder`) bisa dipakai ulang, tapi tiap layar punya banyak widget
+  interaktif berbeda yang perlu diklasifikasi.
+- **2.1.1 / 4.1.2** keyboard traversal & nama-peran-nilai di layar lain.
+- **Skor AA penuh criterion 2.x** — butuh NVDA/VoiceOver live; NVDA belum
+  terpasang di mesin ini.
+
+---
+# LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah
 

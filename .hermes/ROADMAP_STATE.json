@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.33",
-  "next_step": "117.34",
+  "last_verified_step": "117.34",
+  "next_step": "117.35",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -2728,10 +2728,59 @@
     "note": "slot allocated at operator stream transition; no work performed yet"
   },
   "sprint_117_step_11734": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.35",
+    "commit": "c978a7a",
+    "manifest": "docs/evidence/sprint-117-34-manifest-20261002.json",
+    "manifest_sha256": "4467e57c2897125b685bb90e4794650acf93c0a11b00c4114a5173f0526bb41a",
+    "manifest_bytes": 6024,
+    "areas": [
+      "signature",
+      "idempotency",
+      "retry",
+      "event_order",
+      "entitlement",
+      "refund",
+      "chargeback",
+      "audit"
+    ],
+    "defects_fixed": [
+      "signature decided AFTER processed.add(id): a forged copy that declares its own sequence sorted first and claimed evt_1, so the verified delivery of that id was discarded as a duplicate and the entitlement never applied; an unsigned copy of an already-applied id was reported as a plain duplicate so the signature was never checked. Authenticity is now decided before the id is consumed and before duplicate classification.",
+      "refund and dispute terminal transitions were never audited: InvoiceRefund had no transition observer (settle/reject/cancel unrecorded) and InvoiceDispute recorded only file_dispute, so a provider-LOST dispute (charge stands) and a provider-WON dispute (whole collected amount returned) both left a log claiming the dispute was merely opened."
+    ],
+    "not_wired_production_helper": "verifyWebhook / AccountWebhookReplayGuard in account_center_security_billing_verification.dart have ZERO callers in lib/ outside their own definition file; their existence is NOT evidence of end-to-end signature integration.",
+    "attempted_third_fix_reverted": "chargeback aggregate clamp (disputeRefund -> (collected - settled)) was applied then REVERTED: the drill showed the official suite still reports All tests passed when the clamp is removed, so no shipped public surface distinguishes old from new and the fix had no necessity evidence.",
+    "unmet_contract_item": {
+      "area": "chargeback",
+      "check": "no_exported_returned_total",
+      "detail": "toPublicJson exposes refunds and disputes as separate rows and no returned_total, so the aggregate returned by a chargeback together with its refunds cannot be observed or bounded from outside. Reported as an open item, not waived."
+    },
+    "necessity_two_way": {
+      "BLOCK_A": "rc=1, 2 event_order tests failed on the fail-open mechanism (forged delivery evicting the genuine event; unsigned duplicate not reported unsigned)",
+      "BLOCK_B": "rc=1, refund audit test failed; 3 observer calls removed",
+      "BLOCK_C": "rc=1, refund audit test failed; 1 observer call removed",
+      "positive_control": "unmodified tree exit 0, 33/33",
+      "restore": "RECON_SHA_MATCH=1, HIST_SHA_MATCH=1, PROBE_RESIDUE=0"
+    },
+    "harness_truth_defects": [
+      "drill v1 restored the file BEFORE running the test, so all three blocks reported one identical audit failure - a false necessity proof",
+      "drill v2 snapshotted an already-corrupt base; BLOCK_B removed settle+reject+cancel together and BLOCK_A never actually reordered anything, and the corrupt blocks left InvoiceDispute.resolve and settle without their observer until restored from the anchor snapshot",
+      "the harness labelled a green positive control as VOCUOUS_PASS and returned NECESSITY_FAILED even though all three blocks were necessary",
+      "refund in state requested legitimately holds the refundable budget, so the initial expectation of 20 was a test error, not a production defect; corrected to 15",
+      "the gate first rejected unmet as a failure; the expectation now names the open item explicitly while staying fail-closed for violation and structural failures"
+    ],
+    "gates": {
+      "slice": "33/33 All tests passed exit 0",
+      "regression": "832/832 All tests passed exit 0 across 5 targets",
+      "analyzer": "4 files, No issues found! exit 0",
+      "format": "4 files, 0 changed, idempotent exit 0",
+      "diff_check": "exit 0",
+      "build_windows_debug": "exit 0, 49,9s"
+    },
+    "preserved_untouched": [
+      "macos/Flutter/GeneratedPluginRegistrant.swift (Flutter GENERATED)"
+    ],
+    "external_gates": "DEFERRED-EXTERNAL: live payment provider, real refund/dispute verdicts, webhook with real HMAC secrets, PCI certification, dunning, hosted CI, signing, publication"
   },
   "sprint_117_step_11735": {
     "status": "NOT_STARTED",
@@ -2918,8 +2967,8 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "251d3fa",
-  "last_verified_on": "2026-10-01",
+  "last_slice_commit": "c978a7a216897e1eef7b9375903b83f52c61a84b",
+  "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
     "verdict": "TEAM_COLLABORATION_WORKFLOW_VALIDATED_LOCAL",
@@ -2964,11 +3013,11 @@
     "release_cut": "operator decision"
   },
   "steps": {
-    "117.33": {
+    "117.34": {
       "status": "VERIFIED-LOCAL",
-      "commit": "c4ef323",
+      "commit": "c978a7a",
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
-      "evidence": "docs/evidence/sprint-117-33-manifest-20261001.json"
+      "evidence": "docs/evidence/sprint-117-34-manifest-20261002.json"
     }
   }
 }

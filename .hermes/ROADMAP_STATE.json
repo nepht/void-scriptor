@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.24",
- "next_step": "117.25",
+ "last_verified_step": "117.25",
+ "next_step": "117.26",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -47,8 +47,8 @@
   ],
   "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
   "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
-  "rechecked_on": "2026-09-30",
-  "recheck_note": "Re-verified at 117.6 entry/exit: analyzer scoped exit 0 'No issues found!', focused 41/41 exit 0, sprint-117 regression 310/310 exit 0, source regression 154/154 exit 0, diff-check exit 0, Windows debug build exit 0 19.0s. stability_gate stays PASS.",
+  "rechecked_on": "2026-10-01",
+  "recheck_note": "Re-verified at 117.25 entry/exit: focused 2/2, account/domain regression 769/769 (baseline 769, delta 0), test/features/account/ 930/930, sprint-117 shard 23 file 693/693 (baseline 691/22, delta +2 = 117.25 test slice), 117.24 responsive suite 3/3, analyzer 3 files 'No issues found!', format 0 changed, diff-check 0, Windows debug build exit 0 with poison control failing at the fixed seam. stability_gate stays PASS.",
   "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
   "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart."
  },

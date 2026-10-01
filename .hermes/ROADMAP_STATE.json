@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.23",
- "next_step": "117.24",
+ "last_verified_step": "117.24",
+ "next_step": "117.25",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -59,8 +59,8 @@
   "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
- "updated_at": "2026-10-01T08:55:00+07:00",
- "updated_by": "hermes cron core worker — 117.22 Provider Icon & Brand Validation",
+ "updated_at": "2026-10-01T10:29:34+07:00",
+ "updated_by": "hermes cron core worker — 117.24 Responsive Layout Validation",
  "active_stream": "sequential_expansion",
  "novel_io_hunt_2026_09_12": {
   "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -616,9 +616,9 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.23",
+ "current_step": "117.24",
  "current_step_status": "VERIFIED-LOCAL",
- "last_run_summary": "2026-10-01: 117.23 Wide Desktop Visual Validation VERIFIED-LOCAL (slice 67d4578, 5 path eksplisit). 8 area bukti kanonik diukur terhadap layar Account & Cloud Center yang benar-benar dirender pada viewport 1536x1024, bukan deklarasi token: 25 pass / 3 open item (avatar:ring_size, avatar:compact_size, progress:production_data_supplier) / 0 violation / 0 failure struktural; manifest docs/evidence/sprint-117-23-manifest-20261001.json sha256 89657f1d byte-identical saat diregenerasi (SPRINT_117_23_MANIFEST=1). DUA defect fail-open di kode yang di-ship, dibuktikan ulang lewat mutation di run ini: (1) celah antar baris dipotong dua kali (kontrak rowHeightsFor sudah mengurangi gap, caller mengurangi lagi + Padding di dalam baris) menyisakan band mati; RED = ekspresi pra-fix disisipkan ke jalur live -> fokus GAGAL violation:card_grid:rows_fill_band dead=22.0 exit 1. (2) dua ikon (StorageUsageCard service row, unfold_more) tidak mem-pin ukuran token sehingga lahir dari IconTheme ambient; RED = size dihapus -> fokus GAGAL violation:icons:explicit_token_pinning '1 of 41 unpinned: U+ef63@24.0' exit 1. Kedua file dipulihkan dari snapshot, SHA MATCH, residu 0. WIP adopsi: snapshot pre-mutation di hermes cache scratch, 0 proses Dart/Flutter (writer tidak aktif). BUILD sebagai bukti kompilasi + POISON CONTROL: build exit 0 19.2s; baris Dart tidak valid di account_cloud_center_screen.dart -> build exit 1 dengan 3 error menunjuk file itu (baris 2816/2867/2875); pulih -> exit 0 25.4s; kernel fresh 101.248.384 byte simbol seam non-nol (rowHeightsFor 8, _AccountSectionAnchor 4, boundedRowHeight 6, AccountCloudCenterScreen 11) + kontrol positif (main 7441, WidgetsApp 212, runApp 76). Gerbang: fokus 2/2, test/features/account/ 930/930, account/domain 769/769 (baseline 769 delta 0), shard sprint_117 21 file 688/688 (baseline 686/20 delta +2), analyzer 4 file bersih, format 4 file 0 changed, diff --check 0, CJK scan 0. next_step=117.24. Semua gate eksternal DEFERRED-EXTERNAL.",
+ "last_run_summary": "2026-10-01: 117.24 Responsive Layout Validation VERIFIED-LOCAL (slice da1de2a, 5 path eksplisit). 8 area bukti kanonik diukur terhadap layar Account & Cloud Center yang benar-benar dirender pada viewport tiap tier: 36 pass / 0 open / 0 violation; manifest docs/evidence/sprint-117-24-manifest-20261001.json sha256 169b9eb8 byte-identical saat diregenerasi. Defect fail-open: _revealInTabStrip memakai Scrollable .ensureVisible yang men-scroll SEMUA scrollable pembungkus -> page scroll vertikal ikut tergeser saat paint pertama (tier 600 offset 32.8 dengan top navigation terpotong -20.8; mobile 79.4). Fix: hanya strip horizontal via ScrollPosition.ensureVisible. RED 3 violation exit 1; mutation pre-fix RED identik; restore SHA MATCH 356d16af. 4 test perf_resilience yang bergantung scroll phantom (tap tile di y800.5 di bawah action bar) diperbaiki dengan tester.ensureVisible; A/B: pre-fix blob 21/21 green, dengan fix 4 gagal, setelah patch 21/21. Poison control build exit 1 di account_cloud_center_screen.dart(3191) -> restore -> exit 0; kernel fresh 101249744, seam symbols non-nol, poison residu 0. Gerbang: fokus 3/3, account 930/930, domain 769/769 delta 0, shard 22 file 691/691 (baseline 688/21, delta +3), analyzer 4 file bersih, format idempoten, diff-check 0, CJK 0. next_step=117.25.",
  "last_commit": "67d45784d321efe4568da3902a655ab9a1dd1083",
  "sprint_112_step_11242": {
   "status": "VERIFIED-LOCAL",
@@ -2545,10 +2545,11 @@
   "note": "8 area bukti diukur pada render 1536x1024; 25 pass / 3 open item / 0 violation. Dua defect fail-open fixed (gap dipotong dua kali -> dead band 22px; ikon tanpa pin token). Poison control build exit 1 di file yang diperbaiki. Fokus 2/2, account 930/930, domain 769/769, shard 21 file 688/688, analyzer bersih, format idempoten, diff-check 0."
  },
  "sprint_117_step_11724": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "next_step": "117.25",
+  "manifest": "docs/evidence/sprint-117-24-manifest-20261001.json",
+  "manifest_sha256": "169b9eb8fd5b6c0f273b8aa40d8768701ef8e7b0f8df63c69ea80906704ac800",
+  "note": "8 area bukti diukur pada render lintas viewport tier (1920/1440/1439/1180/900/600/390); 36 pass / 0 open item / 0 violation. Defect phantom scroll (Scrollable.ensureVisible men-scroll page vertikal saat paint pertama; tablet nav atas -20.8, offset 32.8; mobile 79.4) fixed via ScrollPosition.ensureVisible. RED 3 violation, mutation RED identik, SHA MATCH. 4 test perf_resilience yang bergantung scroll phantom diperbaiki (tester.ensureVisible) dengan A/B necessity (pre-fix 21/21 green). Poison control build exit 1 di file yang diperbaiki. Fokus 3/3, account 930/930, domain 769/769, shard 22 file 691/691, analyzer bersih, format idempoten, diff-check 0."
  },
  "sprint_117_step_11725": {
   "status": "NOT_STARTED",
@@ -2795,7 +2796,7 @@
   ],
   "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
  },
- "last_slice_commit": "675b722e42d14307e944cf37ada4f633c8b6fd51",
+ "last_slice_commit": "da1de2a2676b13fdf565ae591132b13b1dae8fab",
  "last_verified_on": "2026-10-01",
  "sprint_117_19_team_collaboration": {
   "status": "VERIFIED-LOCAL",

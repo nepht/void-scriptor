@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:void_scriptor/design_system/theme/void_palette.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 class VoidButton extends StatelessWidget {
@@ -20,7 +21,7 @@ class VoidButton extends StatelessWidget {
       onPressed: onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: context.palette.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: onAccentForeground(context.palette.primary),
         minimumSize: const Size(0, 40),
         padding: const EdgeInsets.symmetric(horizontal: 18),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),

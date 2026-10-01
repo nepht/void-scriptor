@@ -214,3 +214,42 @@ class VoidPalette extends ThemeExtension<VoidPalette> {
     );
   }
 }
+
+/// Memilih warna label yang terbaca di atas [background].
+///
+/// Memakai ambang luminansi 0.179, titik di mana kontras terhadap putih dan
+/// terhadap hitam sama-sama 4.5:1 (WCAG 2.2 success criterion 1.4.3,
+/// Contrast Minimum, Level AA). Dipakai untuk slot `onPrimary`/`onSecondary`
+/// di ColorScheme dan untuk label VoidButton.
+///
+/// Sebelumnya slot itu memakai `Colors.white` statis. Preset tema gelap
+/// (darkInk/darkEmber/darkSage/darkRose/darkOcean) memakai hue aksen terang,
+/// sehingga putih di atasnya hanya mencapai 2.33-2.62:1 - gagal 1.4.3 dan
+/// tidak terbaca. Audit 2026-10-01 lewat skill wcag-audit-patterns.
+Color onAccentForeground(Color background) {
+  return background.computeLuminance() > 0.179
+      ? Colors.black
+      : Colors.white;
+}
+
+/// Lebar cincin fokus luar (px), digambar oleh `side` ButtonStyle.
+const double focusRingWidth = 3.0;
+
+/// Tebal cincin fokus dalam (px), digambar oleh `VoidFocusRingPainter`.
+const double focusRingInnerWidth = 1.5;
+
+/// Warna cincin fokus LUAR: menempel ke halaman, jadi harus kontras
+/// terhadap `palette.background`.
+///
+/// Tidak bisa satu warna sekaligus kontras terhadap background dan fill tombol:
+/// `primary` duduk di luminansi menengah, sehingga setiap kandidat token
+/// gagal minimal di satu sisi (terbaik `textPrimary`: 15.46:1 vs background
+/// tetapi 2.11:1 vs fill). Karena itu fokus memakai cincin dua nada.
+/// Audit 2026-10-01.
+Color focusRingOuter(VoidPalette palette) => palette.textPrimary;
+
+/// Warna cincin fokus DALAM: menempel ke fill tombol `palette.primary`,
+/// jadi memakai pasangan kontras yang sudah dijamin >= 4.5:1 oleh
+/// [onAccentForeground].
+Color focusRingInner(VoidPalette palette) =>
+    onAccentForeground(palette.primary);

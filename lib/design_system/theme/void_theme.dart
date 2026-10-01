@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'void_focus_ring.dart';
 import 'void_palette.dart';
 
 /// Pembangun tema Void Scriptor.
@@ -93,10 +94,10 @@ abstract final class VoidTheme {
       secondary: palette.secondary,
       surface: palette.surface,
       error: palette.danger,
-      onPrimary: Colors.white,
-      onSecondary: Colors.white,
+      onPrimary: onAccentForeground(palette.primary),
+      onSecondary: onAccentForeground(palette.secondary),
       onSurface: palette.textPrimary,
-      onError: Colors.white,
+      onError: onAccentForeground(palette.danger),
     );
 
     return ThemeData(
@@ -107,6 +108,11 @@ abstract final class VoidTheme {
       dividerColor: palette.divider,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
+
+      // Fokus tombol: cincin luar via `side`, cincin dalam via painter.
+      filledButtonTheme: FilledButtonThemeData(
+        style: _voidFocusButtonStyle(palette),
+      ),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -154,10 +160,10 @@ abstract final class VoidTheme {
       secondary: palette.secondary,
       surface: palette.surface,
       error: palette.danger,
-      onPrimary: Colors.white,
-      onSecondary: Colors.white,
+      onPrimary: onAccentForeground(palette.primary),
+      onSecondary: onAccentForeground(palette.secondary),
       onSurface: palette.textPrimary,
-      onError: Colors.white,
+      onError: onAccentForeground(palette.danger),
     );
 
     return ThemeData(
@@ -169,6 +175,11 @@ abstract final class VoidTheme {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       textTheme: textThemeFrom(palette),
+
+      // Fokus tombol: cincin luar via `side`, cincin dalam via painter.
+      filledButtonTheme: FilledButtonThemeData(
+        style: _voidFocusButtonStyle(palette),
+      ),
 
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -209,4 +220,43 @@ abstract final class VoidTheme {
       ),
     );
   }
+}
+
+/// Fokus keyboard harus terlihat (WCAG 2.2 - 2.4.7 Focus Visible, dan
+/// 1.4.11 Non-text Contrast >= 3:1).
+///
+/// Default Material 3 tidak menyediakan apa pun untuk ini: pada state
+/// focused yang berubah hanya `overlayColor` `onPrimary.withOpacity(0.1)`,
+/// dan `ButtonStyleButton` tidak menggambar outline fokus. Probe piksel
+/// 2026-10-01 mengukur perubahan 1.19-1.32:1 di 12 kombinasi preset x mode,
+/// jauh di bawah 3:1.
+///
+/// Cincin dua nada dipakai karena satu warna tidak mungkin cukup: `primary`
+/// duduk di luminansi menengah sehingga kandidat token apa pun gagal minimal
+/// di satu sisi (terbaik `textPrimary` 15.46:1 vs background tetapi 2.11:1 vs
+/// fill). Cincin luar menempel ke halaman, cincin dalam menempel ke fill.
+ButtonStyle _voidFocusButtonStyle(VoidPalette palette) {
+  return ButtonStyle(
+    side: WidgetStateProperty.resolveWith((states) {
+      if (!states.contains(WidgetState.focused)) return null;
+      return BorderSide(
+        color: focusRingOuter(palette),
+        width: focusRingWidth,
+      );
+    }),
+    // Slot painter tidak ada di ButtonStyle; slot yang tersedia adalah
+    // `foregroundBuilder` (ButtonLayerBuilder), fungsi yang menerima state
+    // tombol lalu mengembalikan Widget. Cincin dalam digambar lewat
+    // CustomPaint di atas isi tombol.
+    foregroundBuilder: (BuildContext context, Set<WidgetState> states,
+        Widget? child) {
+      if (!states.contains(WidgetState.focused)) return child!;
+      return CustomPaint(
+        foregroundPainter: VoidFocusRingPainter(
+          innerColor: focusRingInner(palette),
+        ),
+        child: child,
+      );
+    },
+  );
 }

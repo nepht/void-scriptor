@@ -479,10 +479,50 @@ final class AiUsageRow {
 
   bool get isCurrent => freshness == AiUsageFreshness.live;
 
-  /// `Estimated`, `Reported`, or `Cost unavailable` — never a bare number and
-  /// never a zero standing in for an unknown cost.
+  /// `true` when the record's billing period names a different month than the
+  /// month it was measured in.
+  ///
+  /// 117.30: the period axis is built from `billing_period`, so a record billed
+  /// to September and measured in October used to be folded into the September
+  /// bar and the September total with nothing anywhere saying so.
+  bool get billingPeriodMismatches =>
+      period.year != measuredAt.toUtc().year ||
+      period.month != measuredAt.toUtc().month;
+
+  /// The origin of a cost, in the words a reader can act on.
+  ///
+  /// 117.30: `providerApi`, `localLog`, and `userDeclared` used to render an
+  /// identical `Reported` cell, so a number the user typed was indistinguishable
+  /// from a number the provider metered.
+  String get originLabel => switch (source) {
+    AiUsageSource.providerApi => 'Reported',
+    AiUsageSource.localLog => 'Local estimate',
+    AiUsageSource.userDeclared => 'Declared by you',
+  };
+
+  /// Lower-case form used inside the sentence-level summary.
+  String get sourcePhrase => switch (source) {
+    AiUsageSource.providerApi => 'provider API',
+    AiUsageSource.localLog => 'local estimate',
+    AiUsageSource.userDeclared => 'declared by you',
+  };
+
+  /// A cost that did not come from the provider API is never a reported
+  /// measurement, whatever the record's estimate flag says.
+  ///
+  /// 117.30: an `isEstimate: false` user-declared row claimed to be reported.
+  bool get isProviderReported =>
+      source == AiUsageSource.providerApi && !isEstimate;
+
+  /// `Estimated`, `Reported`, `Local estimate`, `Declared by you`, or
+  /// `Cost unavailable` — never a bare number and never a zero standing in for
+  /// an unknown cost.
+  ///
+  /// 117.30: the label follows the row's origin first, so a figure that never
+  /// came from the provider API can never wear the `Reported` label.
   String get costLabel {
     if (costAmount == null) return 'Cost unavailable';
+    if (source != AiUsageSource.providerApi) return originLabel;
     return isEstimate ? 'Estimated' : 'Reported';
   }
 
@@ -527,6 +567,7 @@ final class AiUsageCostTotal {
     required this.recordCount,
     required this.recordsMissingCost,
     required this.isEstimate,
+    required this.providerReportedRows,
     required this.reason,
   });
 
@@ -543,13 +584,43 @@ final class AiUsageCostTotal {
 
   final bool isEstimate;
 
+  /// 117.30: how many of [recordCount] came from the provider API with a clear
+  /// estimate flag. The rest keep the bucket out of the `Reported` label.
+  final int providerReportedRows;
+
   /// Non-blank whenever [subtotal] is `null`.
   final String? reason;
 
+  /// `Estimated`, `Reported`, or `Incomplete`.
+  ///
+  /// 117.30: a bucket that mixes provider, local-log, and user-declared rows is
+  /// an estimate even when no row carries the estimate flag, so the label now
+  /// follows the bucket's weakest source.
   String get label {
     if (subtotal == null) return 'Incomplete';
-    return isEstimate ? 'Estimated' : 'Reported';
+    return isEstimate || !isProviderReported ? 'Estimated' : 'Reported';
   }
+
+  /// `true` when every row in this bucket came from the provider API with its
+  /// own estimate flag clear.
+  ///
+  /// 117.30: `isEstimate` alone let a user-declared figure keep the
+  /// `Reported` label.
+  bool get isProviderReported =>
+      providerReportedRows == recordCount && recordCount > 0;
+}
+
+/// Per-source bookkeeping for one currency bucket.
+final class _CostBucket {
+  double subtotal = 0;
+  int recordCount = 0;
+  bool hasEstimate = false;
+
+  /// 117.30: rows whose source is not the provider API, so the bucket can
+  /// refuse the `Reported` label without re-reading the rows.
+  int nonProviderRows = 0;
+
+  int get providerReportedRows => recordCount - nonProviderRows;
 }
 
 /// A quantity total for one usage type and unit.
@@ -581,6 +652,11 @@ final class AccountCenterAiUsageReport {
     required this.freshnessLabel,
     required this.lastUpdatedAt,
     required this.applicationCreditsRemaining,
+    required this.creditsMeasuredAt,
+    required this.credits,
+    required this.periodMismatchNote,
+    required this._policy,
+    required this._clock,
   });
 
   /// Product-spec `billing_contract.status`; this step never claims a live
@@ -670,7 +746,9 @@ final class AccountCenterAiUsageReport {
         hidden: all.length - kept.length,
         total: all.length,
         unknownValues: unknownValues,
-        creditsRemaining: view.applicationCredits.remaining,
+        credits: view.applicationCredits,
+        policy: policy,
+        clock: clock,
       ),
       unknownFilterValues: List<String>.unmodifiable(unknownValues),
       hiddenRecordCount: all.length - kept.length,
@@ -691,6 +769,11 @@ final class AccountCenterAiUsageReport {
       freshnessLabel: _freshnessLabel(freshnessCounts),
       lastUpdatedAt: lastUpdatedAt,
       applicationCreditsRemaining: view.applicationCredits.remaining,
+      creditsMeasuredAt: view.applicationCredits.measuredAt,
+      credits: view.applicationCredits,
+      periodMismatchNote: _periodMismatchNote(rows),
+      policy: policy,
+      clock: clock,
     );
   }
 
@@ -723,6 +806,20 @@ final class AccountCenterAiUsageReport {
   /// Application credits, kept out of every provider cost total.
   final double? applicationCreditsRemaining;
 
+  /// When the credit balance itself was measured, `null` when unavailable.
+  final DateTime? creditsMeasuredAt;
+
+  /// The balance as handed to the report, kept so the credits clause can be
+  /// classified at read time instead of baked into the summary string.
+  final ApplicationCreditBalance credits;
+
+  /// Names the months a cross-period record was billed to but measured in, or
+  /// is empty when every row's billing period matches its measurement month.
+  final String periodMismatchNote;
+
+  final AiUsageFreshnessPolicy _policy;
+  final DateTime _clock;
+
   bool get isEmpty => rows.isEmpty;
 
   bool get filtersAreNarrowing => hiddenRecordCount > 0;
@@ -734,16 +831,49 @@ final class AccountCenterAiUsageReport {
     return null;
   }
 
-  /// True only when every total is complete, single-currency, and reported
-  /// rather than estimated.
+  /// True only when exactly one figure could represent the whole report:
+  /// every total is complete, single-currency, provider-reported, free of a
+  /// billing-period mismatch, and built from rows that are all live.
+  ///
+  /// 117.30 measured two ways this failed open: USD + IDR totals both complete
+  /// and reported returned `true`, and a record billed to one month but
+  /// measured in another returned `true` with nothing disclosing it.
   bool get costIsExact {
     if (costTotals.isEmpty) return false;
+    if (costTotals.length > 1) return false;
+    if (periodMismatchCount > 0) return false;
     for (final total in costTotals) {
       if (total.subtotal == null) return false;
       if (total.isEstimate) return false;
+      if (!total.isProviderReported) return false;
     }
     return true;
   }
+
+  /// Rows whose billing period names a different month than the month they
+  /// were measured in.
+  ///
+  /// 117.30: previously invisible, so a cross-period record was summed into
+  /// the billed month's bar and total with no disclosure anywhere.
+  int get periodMismatchCount =>
+      rows.where((row) => row.billingPeriodMismatches).length;
+
+  /// Freshness of the application credit balance, classified with the same
+  /// policy the provider rows use.
+  ///
+  /// 117.30: the balance carried no freshness of its own, so a balance last
+  /// measured in 2020 printed as the plain number `5`.
+  AiUsageFreshness? get applicationCreditsFreshness {
+    final measuredAt = creditsMeasuredAt;
+    if (measuredAt == null) return null;
+    return _policy.classify(measuredAt: measuredAt, now: _clock);
+  }
+
+  bool get applicationCreditsIsCurrent =>
+      applicationCreditsFreshness == AiUsageFreshness.live;
+
+  /// The credits clause exactly as the summary prints it.
+  String get creditsText => _creditsClause(_policy, _clock, credits);
 
   /// True only when every row is live. A report with a stale, expired, or
   /// future-dated row is not current, whatever the chart shows.
@@ -753,11 +883,13 @@ final class AccountCenterAiUsageReport {
   }
 
   /// The product-spec `ui_states` entry this report represents.
+  ///
+  /// 117.30: the old test read `costTotals.every(subtotal != null)` directly,
+  /// so a live, complete, multi-currency report claimed `CONNECTED` while no
+  /// single figure represented it. The claim now follows [costIsExact].
   String get uiState {
     if (isEmpty) return 'EMPTY';
-    if (costIsCurrent && costTotals.every((total) => total.subtotal != null)) {
-      return 'CONNECTED';
-    }
+    if (costIsCurrent && costIsExact) return 'CONNECTED';
     return 'PARTIAL_DATA';
   }
 }
@@ -859,6 +991,7 @@ List<AiUsageCostTotal> _costTotals(
     bucket.subtotal += amount;
     bucket.recordCount += 1;
     if (row.isEstimate) bucket.hasEstimate = true;
+    if (!row.isProviderReported) bucket.nonProviderRows += 1;
   }
   return <AiUsageCostTotal>[
     for (final entry in byCurrency.entries)
@@ -868,17 +1001,12 @@ List<AiUsageCostTotal> _costTotals(
         recordCount: entry.value.recordCount,
         recordsMissingCost: recordsMissingCost,
         isEstimate: entry.value.hasEstimate,
+        providerReportedRows: entry.value.providerReportedRows,
         reason: recordsMissingCost == 0
             ? null
             : AccountCenterAiUsageReport.noCostReason,
       ),
   ];
-}
-
-class _CostBucket {
-  double subtotal = 0;
-  int recordCount = 0;
-  bool hasEstimate = false;
 }
 
 List<AiUsageQuantityTotal> _quantityTotals(List<AiUsageRow> rows) {
@@ -928,8 +1056,11 @@ String _summary({
   required int hidden,
   required int total,
   required List<String> unknownValues,
-  required double? creditsRemaining,
+  required ApplicationCreditBalance credits,
+  required AiUsageFreshnessPolicy policy,
+  required DateTime clock,
 }) {
+  final creditsClause = _creditsClause(policy, clock, credits);
   if (rows.isEmpty) {
     final buffer = StringBuffer('No AI usage to show.');
     if (hidden > 0) {
@@ -940,7 +1071,7 @@ String _summary({
     if (unknownValues.isNotEmpty) {
       buffer.write(' Unknown filter value(s): ${unknownValues.join(', ')}.');
     }
-    buffer.write(' Application credits: ${_creditsText(creditsRemaining)}.');
+    buffer.write(' $creditsClause');
     return buffer.toString();
   }
 
@@ -966,9 +1097,57 @@ String _summary({
   if (costTotals.isEmpty) {
     buffer.write(' Cost unavailable.');
   }
+  // 117.30: name every source that is not the provider API, so a declared or
+  // locally-estimated figure can never read as a metered measurement.
+  final nonProvider = <String>{
+    for (final row in rows)
+      if (!row.isProviderReported) row.sourcePhrase,
+  }.toList()..sort();
+  if (nonProvider.isNotEmpty) {
+    buffer.write(' Includes ${nonProvider.join(' and ')} figures.');
+  }
+  final mismatch = _periodMismatchNote(rows);
+  if (mismatch.isNotEmpty) {
+    buffer.write(' $mismatch');
+  }
   buffer.write(' ${_freshnessLabel(freshnessCounts)}.');
-  buffer.write(' Application credits: ${_creditsText(creditsRemaining)}.');
+  buffer.write(' $creditsClause');
   return buffer.toString();
+}
+
+/// 117.30: a balance measured outside the freshness window is unavailable, not
+/// a current number.
+String _creditsClause(
+  AiUsageFreshnessPolicy policy,
+  DateTime clock, [
+  ApplicationCreditBalance? credits,
+]) {
+  final remaining = credits?.remaining;
+  if (remaining == null) return 'Application credits: unavailable.';
+  final measuredAt = credits!.measuredAt;
+  if (measuredAt == null) return 'Application credits: unavailable.';
+  final freshness = policy.classify(measuredAt: measuredAt, now: clock);
+  if (freshness != AiUsageFreshness.live) {
+    return 'Application credits: unavailable (${freshness.name}).';
+  }
+  return 'Application credits: '
+      '${AccountCenterLocalizationFormatting.formatAmount(remaining)}.';
+}
+
+/// 117.30: names the billed and measured months of every cross-period record.
+String _periodMismatchNote(List<AiUsageRow> rows) {
+  final mismatched = rows
+      .where((row) => row.billingPeriodMismatches)
+      .toList(growable: false);
+  if (mismatched.isEmpty) return '';
+  final pairs = <String>{
+    for (final row in mismatched)
+      '${row.period.label} billed but measured '
+          '${row.measuredAt.toUtc().year}-'
+          '${row.measuredAt.toUtc().month.toString().padLeft(2, '0')}',
+  }.toList()..sort();
+  return '${mismatched.length} record(s) have a billing period that does not '
+      'match the measured month (${pairs.join('; ')}).';
 }
 
 String _suggestedAction({
@@ -997,10 +1176,6 @@ int _distinctPeriods(List<AiUsageRow> rows) {
   }
   return labels.length;
 }
-
-String _creditsText(double? remaining) => remaining == null
-    ? 'unavailable'
-    : AccountCenterLocalizationFormatting.formatAmount(remaining);
 
 // 115.49: amount formatting lives in AccountCenterLocalizationFormatting
 // (currencies evidence); this file no longer owns a private formatter.

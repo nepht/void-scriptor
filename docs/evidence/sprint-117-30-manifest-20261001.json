@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "canonical_step": "117.30",
+  "title": "Usage, Credits & Cost Reconciliation",
+  "document_role": "SPRINT_117_30_USAGE_CREDITS_COST_RECONCILIATION_EVIDENCE",
+  "generated_by": "cron core worker (b0c2c7d744d9), 2026-10-01",
+  "verdict": "VERIFIED-LOCAL",
+  "pass": true,
+  "stream": "sequential_expansion",
+  "required_areas": [
+    "source_match",
+    "app_credit_separation",
+    "provider_usage",
+    "estimated_label",
+    "currency",
+    "period",
+    "unavailable_balance"
+  ],
+  "surfaces": {
+    "source_match": "ProviderUsageRecord.source -> AiUsageRow.costLabel/costText + AccountCenterAiUsageReport.textSummary",
+    "app_credit_separation": "ApplicationCreditBalance -> AccountCenterAiUsageReport.applicationCreditsRemaining (never a provider cost bucket) + RightRailCredits",
+    "provider_usage": "ProviderUsageRecord.quantity -> AiUsageRow + AccountCenterAiUsageReport.quantityTotals",
+    "estimated_label": "AiUsageRow.costLabel/costText + AiUsageCostTotal.label + AccountCenterAiUsageReport.costIsExact",
+    "currency": "ProviderUsageRecord.currency -> AiUsageCostTotal.bucket key + AccountCenterLocalizationFormatting.formatCurrency + costIsExact",
+    "period": "ProviderUsageRecord.billingPeriod vs measuredAt -> AiUsageChart.periods + AccountCenterAiUsageReport.periodMismatchCount",
+    "unavailable_balance": "ApplicationCreditBalance.unavailable + ProviderBalance.unavailable + textSummary credits clause"
+  },
+  "defects_found_and_fixed": [
+    {
+      "id": "117.30-D1",
+      "area": "currency",
+      "measured_fact": "costIsExact returned true for a live, complete, reported two-currency report (costTotals=[USD=1.0, IDR=900.0], freshnessCounts={live: 2}); uiState then reported CONNECTED because it tested costTotals.every(subtotal != null) directly instead of the exactness contract.",
+      "root_cause": "costIsExact never checked the currency count, and uiState bypassed costIsExact entirely.",
+      "fix": "costIsExact now refuses more than one currency bucket; uiState follows costIsExact.",
+      "necessity_proof": "removing 'if (costTotals.length > 1) return false;' -> rc=1, exactly one failing test"
+    },
+    {
+      "id": "117.30-D2",
+      "area": "source_match",
+      "measured_fact": "providerApi, localLog, and userDeclared rows produced byte-identical costText ('Reported 0.5 USD') and byte-identical textSummary; a user-declared figure was indistinguishable from a metered provider measurement. A user-declared row also kept costIsExact=true.",
+      "root_cause": "costLabel read only the isEstimate flag and never the row's source; the summary never named a non-provider source.",
+      "fix": "originLabel/sourcePhrase/isProviderReported added; costLabel follows the row's origin first; the summary names every non-provider source; costIsExact requires isProviderReported.",
+      "necessity_proof": "removing the originLabel getter -> rc=1 (compile-level refusal of the label); removing the period-mismatch note -> rc=1"
+    },
+    {
+      "id": "117.30-D3",
+      "area": "period",
+      "measured_fact": "A record billed to 2026-09 but measured 2026-10-20 was summed in full into the 2026-09 bar and total with costIsExact=true and no disclosure anywhere: textSummary never mentioned 2026-10, unknownFilterValues was empty, emptyReason was null, and suggestedAction blamed freshness instead.",
+      "root_cause": "The period axis is built from billing_period alone; nothing compared billing_period against measuredAt.",
+      "fix": "AiUsageRow.billingPeriodMismatches plus report.periodMismatchCount; costIsExact refuses any mismatch; the summary discloses the billed/measured month pair.",
+      "necessity_proof": "removing 'if (periodMismatchCount > 0) return false;' -> rc=1, exactly one failing test; removing the disclosure clause -> rc=1, exactly one failing test"
+    },
+    {
+      "id": "117.30-D4",
+      "area": "unavailable_balance",
+      "measured_fact": "An application credit balance measured 2020-01-01 was rendered as the plain number 'Application credits: 5.' with no freshness applied, while provider rows in the same report were aged against the clock.",
+      "root_cause": "The balance carried no freshness classification and the summary formatted the raw double.",
+      "fix": "applicationCreditsFreshness/applicationCreditsIsCurrent/creditsText classify the balance with the same AiUsageFreshnessPolicy used for rows; a non-live balance prints 'unavailable (stale|expired)'.",
+      "necessity_proof": "removing the 'unavailable (${freshness.name})' clause -> rc=1, exactly one failing test"
+    }
+  ],
+  "harness_defects_corrected_before_claiming": [
+    "the four probe files each failed to compile on first run (a declaration inside a set literal, a nullable DateTime dereference, and AiUsageChartSeries.buckets which does not exist); all three were harness faults, corrected before any defect claim",
+    "costLabel was first made to return originLabel unconditionally, which broke the pre-existing 115.40 pin 'a provider row with isEstimate=true reads Estimated' (Expected 'Estimated', Actual 'Reported'); the label now checks the origin first and the estimate flag second, and that pin is green again",
+    "the first necessity run used LF markers against a CRLF file and matched nothing; the run was rewritten to strip lines by regex with DOTALL"
+  ],
+  "necessity_proof": {
+    "method": "each fix block removed one at a time from the shipped file, the slice gate re-run, then the file restored from in-memory bytes and re-verified by SHA-256",
+    "blocks_proved": 5,
+    "result_per_block": "rc=1 with exactly one failing test each",
+    "restore_verified": "byte-identical, SHA-256 725be741d84300a9... and a final green run rc=0"
+  },
+  "gates": {
+    "slice_test": "13/13 PASS, exit 0",
+    "account_domain_regression": "769/769 PASS, exit 0 (baseline 769, delta 0)",
+    "focused_regression": "52/52 PASS across account_center_ai_usage_report_test.dart, account_center_ai_usage_credits_cost_view_test.dart, account_center_right_rail_summary_test.dart",
+    "analyzer": "3 files, No issues found!",
+    "format": "pass1 changed 2 files, pass2 0 changed, exit 0 (idempotent)",
+    "git_diff_check": "exit 0"
+  },
+  "windows_evidence": {
+    "debug_build": "exit 0, 23s (clean) / 34.3s (final clean)",
+    "release_build": "exit 0, 76.2s on a forced-fresh kernel",
+    "caveat": "the build is NOT slice evidence. A positive-control type error in lib/main.dart failed the build (exit 1, error G44692867), proving the Dart kernel really is recompiled, while the same type error in the slice file still exited 0 because lib/features/account/domain/ is not reachable from main.dart. An earlier poison attempt using an unused throwing function was discarded as a harness fault: tree-shaking removes an unreferenced function, so it proved nothing either way. The build therefore proves no regression on the reachable program only, not on this slice.",
+    "poison_residue": "none; both poisoned files restored and verified byte-identical against HEAD"
+  },
+  "files_changed": [
+    "lib/features/account/domain/account_center_ai_usage_report.dart",
+    "lib/features/world_logic/domain/sprint_117_usage_credits_cost_reconciliation.dart",
+    "test/release/sprint_117_usage_credits_cost_reconciliation_test.dart",
+    "docs/evidence/sprint-117-30-manifest-20261001.json"
+  ],
+  "preserved_untouched": [
+    "macos/Flutter/GeneratedPluginRegistrant.swift (Flutter-generated, pre-existing M)",
+    "13 scratch probe files from runs 117.9 and 117.23-117.25"
+  ],
+  "fail_closed_blocks": [
+    "no_checks",
+    "missing_area:<area>",
+    "area_without_pass:<area>",
+    "vacuous_declared:<area>:<check>",
+    "vacuous:<area>:<check>",
+    "duplicate_check:<area>:<check>",
+    "unknown_area:<area>",
+    "non_canonical_required_areas"
+  ],
+  "next_step": "117.31"
+}

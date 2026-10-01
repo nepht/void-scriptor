@@ -183,6 +183,13 @@ void main() {
     Future<void> openSheetViaProviderTile(WidgetTester tester) async {
       final tile = find.widgetWithText(InkWell, 'OpenAI');
       expect(tile, findsWidgets, reason: 'provider tile must be rendered');
+      // 117.24: paint pertama tidak lagi men-scroll halaman secara
+      // phantom (fix `_revealInTabStrip`), sehingga tile provider di bawah
+      // fold berada di posisi alaminya — di bawah viewport konten mobile
+      // dan tertindih action bar. Gulir dulu ke tile supaya tap mengenai
+      // tile-nya, bukan bar yang menutupinya.
+      await tester.ensureVisible(tile.first);
+      await tester.pump();
       await tester.tap(tile.first);
       await tester.pump();
       expect(

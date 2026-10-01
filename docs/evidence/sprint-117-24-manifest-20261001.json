@@ -1,0 +1,303 @@
+{
+  "canonical_step": "117.24",
+  "document_role": "SPRINT_117_24_RESPONSIVE_LAYOUT_VALIDATION_EVIDENCE",
+  "required_areas": [
+    "1440_plus",
+    "1180",
+    "900",
+    "600",
+    "mobile",
+    "drawer",
+    "reflow",
+    "no_overflow"
+  ],
+  "viewports": {
+    "1440_plus": "1920x1080 + boundary 1440x900",
+    "1180": "1180x900 (desktop)",
+    "900": "900x800 (compact_desktop)",
+    "600": "600x800 (tablet)",
+    "mobile": "390x844 (mobile)",
+    "drawer": "1180x900 drawer open/close",
+    "reflow": "1920/1440/1439/1180/900/600/390",
+    "no_overflow": "semua viewport + siklus drawer"
+  },
+  "verdict": "RESPONSIVE_LAYOUT_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "1440_plus",
+      "check": "frame_chrome_1920",
+      "status": "pass",
+      "declared": "4/4 band frame 115.45, exception none",
+      "observed": "4/4 exception=none",
+      "note": "1920x1080"
+    },
+    {
+      "area": "1440_plus",
+      "check": "frame_geometry_1920",
+      "status": "pass",
+      "declared": "band frame == kontrak 115.45 (nav/main/rail/status)",
+      "observed": "nav=192.0/192.0 main=1345.0/1345.0 rail=349.0/349.0 status=40.0/40.0"
+    },
+    {
+      "area": "1440_plus",
+      "check": "frame_boundary_1440",
+      "status": "pass",
+      "declared": "4/4 band frame pada lebar tepat 1440",
+      "observed": "4/4 tier=wide_desktop"
+    },
+    {
+      "area": "1440_plus",
+      "check": "tier_resolution",
+      "status": "pass",
+      "declared": "wide_desktop@1920 & wide_desktop@1440",
+      "observed": "wide_desktop@1920 wide_desktop@1440"
+    },
+    {
+      "area": "1180",
+      "check": "desktop_chrome_present",
+      "status": "pass",
+      "declared": "desktop_left_navigation + drawer_toggle, band frame tidak dipaksa, exception none",
+      "observed": "nav=true toggle=true frame_nav=false frame_grid=false exception=none"
+    },
+    {
+      "area": "1180",
+      "check": "navigation_band_width",
+      "status": "pass",
+      "declared": "192.0",
+      "observed": "192.0",
+      "note": "band kiri tier desktop == token 115.5"
+    },
+    {
+      "area": "1180",
+      "check": "content_width_matches_contract",
+      "status": "pass",
+      "declared": "954.0",
+      "observed": "954.0",
+      "note": "lebar konten ter-render == kontrak 115.46"
+    },
+    {
+      "area": "1180",
+      "check": "drawer_capability",
+      "status": "pass",
+      "declared": "summaryPresentation=drawer + toggle dirender",
+      "observed": "summary=drawer toggle=true"
+    },
+    {
+      "area": "900",
+      "check": "collapsed_rail_present",
+      "status": "pass",
+      "declared": "collapsed rail hadir, band navigasi lebar tidak, exception none",
+      "observed": "rail=true wide_nav=false exception=none"
+    },
+    {
+      "area": "900",
+      "check": "collapsed_rail_width",
+      "status": "pass",
+      "declared": "52.0",
+      "observed": "52.0",
+      "note": "rail = target sentuh 44 + padding, dari token 115.5"
+    },
+    {
+      "area": "900",
+      "check": "navigation_labels_hidden",
+      "status": "pass",
+      "declared": "0 label teks di rail + kontrak labelsVisible=false",
+      "observed": "label_texts=0 labelsVisible=false"
+    },
+    {
+      "area": "900",
+      "check": "content_width_matches_contract",
+      "status": "pass",
+      "declared": "814.0",
+      "observed": "814.0",
+      "note": "lebar konten ter-render == kontrak 115.46"
+    },
+    {
+      "area": "600",
+      "check": "top_navigation_present",
+      "status": "pass",
+      "declared": "top navigation dirender + exception none",
+      "observed": "present=true exception=none",
+      "note": "spec tier tablet: top navigation"
+    },
+    {
+      "area": "600",
+      "check": "no_left_band",
+      "status": "pass",
+      "declared": "tanpa band kiri + navigationWidth=0 (nav pindah ke atas)",
+      "observed": "desktop_nav=false collapsed_rail=false navWidth=0.0"
+    },
+    {
+      "area": "600",
+      "check": "content_width_matches_contract",
+      "status": "pass",
+      "declared": "566.0",
+      "observed": "566.0",
+      "note": "seluruh lebar tersisa dipakai konten (band nol)"
+    },
+    {
+      "area": "600",
+      "check": "top_navigation_visible_on_open",
+      "status": "pass",
+      "declared": "nav.top >= 12.0 (padding halaman atas) saat paint pertama",
+      "observed": "12.0",
+      "note": "chrome wajib tier tablet tidak boleh terpotong di atas"
+    },
+    {
+      "area": "600",
+      "check": "initial_scroll_at_top",
+      "status": "pass",
+      "declared": "0.0 offset scroll halaman pada paint pertama",
+      "observed": "0.0 (vertical ancestors=1)"
+    },
+    {
+      "area": "mobile",
+      "check": "mobile_chrome_present",
+      "status": "pass",
+      "declared": "3/3 key chrome mobile 115.47 + exception none",
+      "observed": "3/3 exception=none"
+    },
+    {
+      "area": "mobile",
+      "check": "action_bar_height",
+      "status": "pass",
+      "declared": "52.0",
+      "observed": "52.0",
+      "note": "bar aksi menempel bawah dari token 115.5"
+    },
+    {
+      "area": "mobile",
+      "check": "single_column_cards",
+      "status": "pass",
+      "declared": "kolom kontrak=1, baris kartu ter-render max=1",
+      "observed": "contract=1 observed_max=1 lines=[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]"
+    },
+    {
+      "area": "mobile",
+      "check": "initial_scroll_at_top",
+      "status": "pass",
+      "declared": "0.0 offset scroll halaman pada paint pertama",
+      "observed": "0.0 (vertical ancestors=1)"
+    },
+    {
+      "area": "drawer",
+      "check": "toggle_opens_and_closes_drawer",
+      "status": "pass",
+      "declared": "tap#1 -> drawer 1, tap#2 -> drawer 0",
+      "observed": "open=1 close=0"
+    },
+    {
+      "area": "drawer",
+      "check": "drawer_width_matches_token",
+      "status": "pass",
+      "declared": "349.0",
+      "observed": "349.0",
+      "note": "lebar drawer == token ringkasan 115.5"
+    },
+    {
+      "area": "drawer",
+      "check": "main_content_keeps_width",
+      "status": "pass",
+      "declared": "konten utama saat drawer buka = 605.0 >= 220.0 (card.minWidth)",
+      "observed": "rendered=605.0 keepVisible=true",
+      "note": "right_drawer tidak boleh menghapus konten utama"
+    },
+    {
+      "area": "drawer",
+      "check": "drawer_cycle_no_exception",
+      "status": "pass",
+      "declared": "exception none saat buka + tutup",
+      "observed": "open=none close=none"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_1920",
+      "status": "pass",
+      "declared": "5.0",
+      "observed": "5.0",
+      "note": "aturan fit frame 115.45 pada band main 1920"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_1440",
+      "status": "pass",
+      "declared": "3.0",
+      "observed": "3.0",
+      "note": "aturan fit frame pada boundary 1440"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_1180",
+      "status": "pass",
+      "declared": "3.0",
+      "observed": "3.0",
+      "note": "gridPlan.columnsFor(lebar konten terukur)"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_900",
+      "status": "pass",
+      "declared": "2.0",
+      "observed": "2.0",
+      "note": "gridPlan.columnsFor(lebar konten terukur)"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_600",
+      "status": "pass",
+      "declared": "2.0",
+      "observed": "2.0",
+      "note": "gridPlan.columnsFor(lebar konten terukur)"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_mobile",
+      "status": "pass",
+      "declared": "1.0",
+      "observed": "1.0",
+      "note": "kolom mobile 115.47 = 1"
+    },
+    {
+      "area": "reflow",
+      "check": "columns_track_viewport",
+      "status": "pass",
+      "declared": "urutan tak-naik 1920->390 dengan >=3 nilai berbeda",
+      "observed": "[5, 3, 3, 2, 2, 1] distinct=4 monotone=true",
+      "note": "grid benar-benar mengikuti viewport, bukan beku"
+    },
+    {
+      "area": "reflow",
+      "check": "tier_boundary_1440",
+      "status": "pass",
+      "declared": "1439=chrome adaptif 115.46, 1440=chrome frame 115.45",
+      "observed": "1439=3/3 frame_nav=false 1440=4/4 adaptive_nav=false",
+      "note": "tier=desktop vs wide_desktop; frameBelow=false"
+    },
+    {
+      "area": "no_overflow",
+      "check": "no_exception_viewports",
+      "status": "pass",
+      "declared": "exception none di 7 viewport",
+      "observed": "1920:none 1440:none 1439:none 1180:none 900:none 600:none 390:none"
+    },
+    {
+      "area": "no_overflow",
+      "check": "bands_fit_adaptive",
+      "status": "pass",
+      "declared": "band navigasi + konten <= lebar viewport - padding",
+      "observed": "1180:1163.0<=1163.0(true) 900:883.0<=883.0(true) 600:583.0<=583.0(true)",
+      "note": "no_horizontal_overflow 115.46"
+    },
+    {
+      "area": "no_overflow",
+      "check": "mobile_content_fits",
+      "status": "pass",
+      "declared": "konten mobile <= 373.0 dan tinggi > 0",
+      "observed": "right=373.0 height=768.0 contentAreaPositive=true"
+    }
+  ]
+}

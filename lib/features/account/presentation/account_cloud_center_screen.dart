@@ -3168,13 +3168,28 @@ class _CenterTabState extends State<_CenterTab> {
   /// Tab aktif (termasuk hasil deep link) wajib terlihat di tab strip.
   /// Hanya saat inisialisasi halaman: perubahan tab lokal tidak menggeser
   /// strip agar target tap yang sudah terlihat tetap stabil.
+  ///
+  /// 117.24: yang digeser HANYA strip horizontal ini. `Scrollable
+  /// .ensureVisible` mem-scroll SEMUA scrollable yang membungkus konten
+  /// (Flutter: "Scrolls all scrollables that enclose the given context"),
+  /// sehingga page scroll vertikal ikut menarik tab ke tanda 20% viewport:
+  /// pada paint pertama tier `tablet` navigasi atas (chrome wajib tier)
+  /// terpotong 32.8px ke atas dan tier `mobile` membuka halaman pada
+  /// offset 79.4px. Posisi strip terdekat digerakkan langsung lewat
+  /// [ScrollPosition.ensureVisible] yang hanya menggerakkan posisinya
+  /// sendiri.
   void _revealInTabStrip() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
-      Scrollable.ensureVisible(
-        context,
+      final strip = Scrollable.maybeOf(context);
+      final renderObject = context.findRenderObject();
+      if (strip == null || renderObject == null) {
+        return;
+      }
+      strip.position.ensureVisible(
+        renderObject,
         duration: Duration.zero,
         alignment: 0.2,
       );

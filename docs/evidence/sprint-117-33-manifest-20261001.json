@@ -1,0 +1,74 @@
+{
+  "sprint": 117,
+  "step": 117.33,
+  "title": "Privacy Assessment",
+  "generated_on": "2026-10-01",
+  "commit": "c4ef3230ac218296e1a8c318102e673e2189f3bd",
+  "scope_status": "VERIFIED-LOCAL",
+  "canonical_evidence_areas": [
+    "consent",
+    "minimization",
+    "destinations",
+    "content_exclusion",
+    "retention",
+    "deletion",
+    "disconnect",
+    "telemetry_controls"
+  ],
+  "area_notes": {
+    "consent": "MEASURED-ENFORCED: PrivacyPolicy.evaluate denies InputConsent.revoked.",
+    "minimization": "DEFECT-FOUND-AND-FIXED: WorkflowPrivacyPolicy.strict shipped an empty allowlist behind an isNotEmpty guard, so the strictest policy performed zero minimization.",
+    "destinations": "MEASURED-ENFORCED: an empty destination allowlist denies the request.",
+    "content_exclusion": "DEFECT-FOUND-AND-FIXED: ArchiveSecretPolicy.isSecretPath allowed .git/config and sub/.git/config; git remote URLs can embed credentials in plain text. Export-path evidence is folded into this axis, not a ninth axis.",
+    "retention": "MEASURED-ENFORCED: a non-positive retention window is rejected.",
+    "deletion": "UNMET, REPORTED-NOT-WAIVED: the surface offers unlink only, with no irreversible delete operation. Recorded as an open item, never claimed as satisfied.",
+    "disconnect": "MEASURED-ENFORCED: AccountDisconnectResult cannot report providerRevoked without providerRevokeAttempted.",
+    "telemetry_controls": "MEASURED-ENFORCED: telemetry surface aggregates safely and is surfaced as a control."
+  },
+  "gate_harness_defect_fixed": {
+    "where": "lib/features/world_logic/domain/sprint_117_privacy_assessment.dart",
+    "what": "classifyDataKind defaulted unrecognised names to operational, so any data kind could be walked by typing a new one.",
+    "fix": "unknown data kinds now classify as unknown."
+  },
+  "files": [
+    {
+      "path": "lib/features/world_logic/domain/sprint_117_privacy_assessment.dart",
+      "sha256": "289f99c4803fc796ed9c8484cdfb355d13a5bfbb0f377564b1ff126fc20001d5",
+      "bytes": 12868,
+      "state": "new"
+    },
+    {
+      "path": "lib/workflow/workflow_security.dart",
+      "sha256": "6ba57cf4bbc641a18e11a896c3b58c13e87a611ac1ed1f64be0933f43650b741",
+      "bytes": 4604,
+      "state": "modified"
+    },
+    {
+      "path": "lib/features/project_resilience/application/archive_secret_policy.dart",
+      "sha256": "8ae65953066c2fa9709df10c55ee7b5b3250dd24d2b10815fb92b8d6a9986b90",
+      "bytes": 4847,
+      "state": "modified"
+    },
+    {
+      "path": "test/release/sprint_117_privacy_assessment_test.dart",
+      "sha256": "d5e7e870cb52c8d6bfec03f5572d1ca328045b0ab64d8a3ffe6d43582cb4566c",
+      "bytes": 16329,
+      "state": "new"
+    }
+  ],
+  "verification": {
+    "slice_tests": "27/27 pass (flutter test test/release/sprint_117_privacy_assessment_test.dart)",
+    "regression": "450 passed, 1 skipped, 0 failed across test/workflow, test/features/project_resilience, test/core/observability, test/features/intent",
+    "analyzer": "No issues found! on all 4 slice files, exit 0",
+    "format": "pass 1 applied, pass 2 idempotent (0 changed)",
+    "diff_check": "git diff --check clean, exit 0",
+    "necessity": "NECESSITY_ALL_OK, 2/2 fixes load-bearing (rc=1 with 3 and 4 failing tests), byte-identical restores via SHA-256",
+    "line_endings": "a Python restore in the necessity drill converted two files to CRLF; both were detected by SHA-256 mismatch and normalized back to the committed LF form before commit",
+    "roadmap_guard": "PASS, recommended_step=117.33, last_resolved_step=117.32, canonical_sha256=b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6"
+  },
+  "open_items": [
+    "deletion axis has no irreversible delete operation; only unlink is offered. Not waived.",
+    "project.sqlite is not excluded by ArchiveSecretPolicy; whether the export contract requires excluding the project database is unreconciled and was not widened in this slice."
+  ],
+  "secrets_policy": "No API key, token, password, secret, credential, or connection string is recorded in this manifest. Any such value is represented as [REDACTED]."
+}

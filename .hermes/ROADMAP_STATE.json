@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.32",
-  "next_step": "117.33",
+  "last_verified_step": "117.33",
+  "next_step": "117.34",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -118,8 +118,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-01T12:00:00Z",
-  "updated_by": "cron b0c2c7d744d9 core worker run 117.32",
+  "updated_at": "2026-10-02T02:05:00Z",
+  "updated_by": "cron b0c2c7d744d9 core worker run 117.33 (record phase; gates re-verified independently)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -270,7 +270,7 @@
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
   "last_worker_run": "2026-09-21T17:15:00Z",
-  "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41.",
+  "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -675,10 +675,10 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.24",
+  "current_step": "117.33",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "117.32 Security Assessment VERIFIED-LOCAL. 8 sumbu kanonik diukur terhadap kode yang benar-benar di-ship; 7 defect fail-open ditemukan lewat probe fakta mentah lalu diperbaiki (redactor case/order, callback authority, http redirect remote, _pending OAuth menumpuk, session shape crash, permission validate tak dipanggil, scanner 4 regex). Drill necessity 8 blok dua arah NECESSITY_ALL_OK, 6 cacat harness diperbaiki sebelum diklaim. Slice commit 251d3fa (7 path eksplisit). Re-verifikasi independen di run 117.33: 29/29 hijau, analyzer 7 file No issues found!, format idempoten, diff-check 0.",
-  "last_commit": "251d3faf8f89ba593f95068667d7ba2155028540",
+  "last_run_summary": "117.33 Privacy Assessment VERIFIED-LOCAL. 8 sumbu kanonik (consent, minimization, destinations, content_exclusion, retention, deletion, disconnect, telemetry_controls) diukur terhadap kode yang benar-benar di-ship. 2 defect fail-open ditemukan lalu diperbaiki: WorkflowPrivacyPolicy.strict mengirim allowlist kosong di belakang guard isNotEmpty sehingga kebijakan paling ketat melakukan ZERO minimization (creative content & credential lolos) -> allowlist eksplisit 9 data kind; ArchiveSecretPolicy._secretFolders tidak memuat .git sehingga kredensial di remote URL VCS plaintext ikut ter-ekspor -> .git masuk daftar folder rahasia. Cacat harness necessityketahuan dan diperbaiki sebelum diklaim: revert pertama memotong brace sehingga berkas gagal kompilasi (rc=1) = BUKAN bukti necessity; drill ditulis ulang jadi perilaku (allowlist jadi <String>{}), lalu minimize rc=1 dengan 3 test gagal dan content_exclusion rc=1 dengan 1 test gagal, 2 berkas dipulihkan byte-identical via SHA-256 (residu 0). Sumbu deletion DILAPORKAN TIDAK TERPENUHI (hanya unlink, tanpa delete irreversible), bukan diwaive; project.sqlite tidak dikecualikan dan kontrak ekspor belum rekonsiliasi. Re-verifikasi independen run ini pada HEAD c4ef323: slice 27/27 exit 0, regresi 450 pass +1 skip exit 0 di 4 target, analyzer 4 file No issues found! exit 0, format pass1 0 changed + pass2 idempoten, git diff --check exit 0. Slice commit c4ef323; commit ledger/state/manifest dicatat pada HEAD berikutnya. next_step=117.34 Billing & Webhook Integrity.",
+  "last_commit": "c4ef3230ac218296e1a8c318102e673e2189f3bd",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -789,7 +789,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.32",
+  "last_resolved_step": "117.33",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -2962,5 +2962,13 @@
     "manifest": "docs/evidence/sprint-117-19-manifest-20261001.json sha256 122ed9d4, 7782 bytes, byte-identical across two runs, json.loads valid, 7 checks, coverage 1.0, 4 open items reported; generator deleted with no residue",
     "external_gates": "DEFERRED-EXTERNAL: real identity provider, invitation delivery and acceptance, native team-management GUI, hosted CI, signing, publication",
     "release_cut": "operator decision"
+  },
+  "steps": {
+    "117.33": {
+      "status": "VERIFIED-LOCAL",
+      "commit": "c4ef323",
+      "ledger": "docs/sprints/sprint-117-beta-validation.md",
+      "evidence": "docs/evidence/sprint-117-33-manifest-20261001.json"
+    }
   }
 }

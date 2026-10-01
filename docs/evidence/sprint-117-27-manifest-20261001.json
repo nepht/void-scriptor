@@ -1,0 +1,121 @@
+{
+  "canonical_step": "117.27",
+  "document_role": "SPRINT_117_27_OFFLINE_CACHED_STATE_VALIDATION_EVIDENCE",
+  "required_areas": [
+    "cached_metadata",
+    "freshness",
+    "remote_disabled",
+    "local_available",
+    "reconnect",
+    "cache_clear"
+  ],
+  "surfaces": {
+    "cached_metadata": "AccountCenterOfflineMode.cached + notice render",
+    "freshness": "AccountCenterOfflineFreshnessPolicy.classify jam injeksi",
+    "remote_disabled": "performRemoteAction untuk 7 aksi + notice setelah reconnect",
+    "local_available": "AccountCenterLocalSetting/AccountCenterLocalStorageDetails",
+    "reconnect": "AccountCenterReconnectPlan.apply pada jam injeksi",
+    "cache_clear": "ProjectCacheService.clear pada package sementara"
+  },
+  "verdict": "OFFLINE_CACHED_STATE_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "cached_metadata",
+      "check": "every_cached_entry_keeps_its_own_identity",
+      "status": "pass",
+      "declared": "setiap entri cache membawa providerId/label/detail miliknya sendiri",
+      "observed": "4 entri: drive=fresh, github=old, dropbox=expired, onedrive=future",
+      "note": "115.44 AccountCenterCachedEntry"
+    },
+    {
+      "area": "cached_metadata",
+      "check": "absent_local_data_is_unavailable_not_zero",
+      "status": "pass",
+      "declared": "detail lokal yang absen tetap unavailable, bukan nol karangan",
+      "observed": "settings=false storage=false storageIsNull=true",
+      "note": "115.44: absent summary stays null, never zero bytes"
+    },
+    {
+      "area": "freshness",
+      "check": "classify_separates_fresh_stale_expired_future",
+      "status": "pass",
+      "declared": "umur 3j/3h/30h/5m -> live/stale/expired/futureTimestamped",
+      "observed": "3j=live 3d=stale 30d=expired kunu=futureTimestamped",
+      "note": "115.44 policy staleAfter=24h expiresAfter=7d"
+    },
+    {
+      "area": "freshness",
+      "check": "non_live_reading_always_carries_a_label",
+      "status": "pass",
+      "declared": "live tanpa label dan usable; stale usable tapi berlabel; expired/future tidak usable dan tetap berlabel",
+      "observed": "live=null stale=Stale expired=Expired future=Timestamped in the future futureUsable=false"
+    },
+    {
+      "area": "freshness",
+      "check": "ttl_boundary_stays_fresh_and_past_it_stales",
+      "status": "pass",
+      "declared": "umur tepat staleAfter masih live; 1 detik lewatnya stale",
+      "observed": "tepat 24j=live, 24j+1s=stale",
+      "note": "batas diukur pada jam injeksi, bukan label pilihan"
+    },
+    {
+      "area": "remote_disabled",
+      "check": "every_remote_action_refused_while_offline",
+      "status": "pass",
+      "declared": "ketua aksi remote ditolak fail-closed dan tidak pernah selesai",
+      "observed": "refreshQuota=allowed:false,completed:false | fetchUsage=allowed:false,completed:false | startTransfer=allowed:false,completed:false | listBackups=allowed:false,completed:false | readInvoices=allowed:false,completed:false | manageBilling=allowed:false,completed:false | rotateToken=allowed:false,completed:false",
+      "note": "7 aksi dari AccountCenterRemoteAction"
+    },
+    {
+      "area": "local_available",
+      "check": "device_scoped_data_survives_the_offline_session",
+      "status": "pass",
+      "declared": "local settings dan local storage tetap terbaca saat offline",
+      "observed": "settings=1 storage=true bytes=12884901888 category=assets",
+      "note": "115.44 acceptance local_settings_available/local_storage_available"
+    },
+    {
+      "area": "local_available",
+      "check": "nonsensical_local_detail_is_refused_at_the_boundary",
+      "status": "pass",
+      "declared": "detail lokal yang tidak masuk akal ditolak di sumber, bukan diteruskan",
+      "observed": "ArgumentError saat konstruksi",
+      "note": "label kosong / byte negatif tidak boleh jadi keputusan kontrak"
+    },
+    {
+      "area": "reconnect",
+      "check": "plan_is_explicit_before_it_happens",
+      "status": "pass",
+      "declared": "rencana reconnect dinyatakan dulu: butuh jaringan, ganti cache, buang data lokal = tidak",
+      "observed": "needsNetwork=true replaces=true discardsLocal=false providers=4",
+      "note": "115.44 AccountCenterReconnectPlan"
+    },
+    {
+      "area": "reconnect",
+      "check": "refresh_replaces_cache_and_keeps_local_data",
+      "status": "pass",
+      "declared": "setelah reconnect: cache=live, aksi remote hidup, local data utuh",
+      "observed": "offline=false remote=true fresh=true stale=0 settings=1 storage=12884901888"
+    },
+    {
+      "area": "reconnect",
+      "check": "state_notice_matches_the_actual_connection_state",
+      "status": "pass",
+      "declared": "notice menyatakan offline/konek + berapa bacaan basi, dan catatan \"remote actions disabled\" hanya muncul saat memang offline",
+      "observed": "offline=Offline. Showing cached metadata for 4 connection(s). 3 of 4 cached reading(s) are not current. Remote actions are disabled until you reconnect and refresh. | after=Connected. Showing 1 live reading(s).",
+      "note": "defect 117.27: notice tetap mengklaim remote disabled setelah reconnect berhasil"
+    },
+    {
+      "area": "cache_clear",
+      "check": "clear_removes_every_cached_entry_not_just_the_top_level",
+      "status": "pass",
+      "declared": "clear mengosongkan cache sampai entri bersarang dan tetap idempoten",
+      "observed": "ok|leftovers=0 flat=false nested=false deep=false repeatClear=noThrow",
+      "note": "ProjectCacheService.clear pada package sementara"
+    }
+  ]
+}

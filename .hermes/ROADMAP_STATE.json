@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.26",
- "next_step": "117.27",
+ "last_verified_step": "117.27",
+ "next_step": "117.28",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -48,9 +48,24 @@
   "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
   "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
   "rechecked_on": "2026-10-01",
-  "recheck_note": "Re-verified at 117.26 entry/exit: focused 2/2, sprint_117 shard 24 files 695/695 (baseline 693/23), account domain 769/769 (baseline 769), account presentation 161/161, analyzer 3 files 'No issues found!', format 0 changed, diff-check 0, Windows debug build exit 0 with a poison control failing at the fixed seam. stability_gate stays PASS.",
+  "recheck_note": "Re-verified at 117.27 entry/exit: focused 2/2, test/features/account/domain/ 769/769, sprint_116 offline certification 18/18, slice re-checked after dart format (2/2), analyzer 3 files 'No issues found!', format pass2 0 changed, diff-check 0. Windows debug build exit 0 with a positive-control poison failing in a reachable file while the slice file itself does not compile into the kernel (account/domain not reachable from main.dart, same reachability pattern as 117.12-117.21). stability_gate stays PASS.",
   "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
-  "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart."
+  "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart.",
+  "slice_117_27": {
+   "commit": "f39f6cd",
+   "defects_fixed": [
+    "notice kept claiming \"Remote actions are disabled until you reconnect and refresh\" after a successful reconnect (clause was unconditional)",
+    "AccountCenterLocalSetting/AccountCenterLocalStorageDetails accepted blank identities and negative totalBytes and reported them available, inverting the file own absent-stays-null rule"
+   ],
+   "drill_defects_corrected_before_claiming": [
+    "Duration(minutes: 5) meant 5 minutes AGO, not a future timestamp, so the futureTimestamped expectation could never hold",
+    "assertion used \"!isUsable == false\", comparing a bool against an inverted bool"
+   ],
+   "necessity": "git cat-file blob HEAD:<path> (no reset/restore) reproduced the identical two violations; reverting each fix block alone reproduced exactly its own violation",
+   "manifest": "docs/evidence/sprint-117-27-manifest-20261001.json sha256 1ffdf398c235946c5e939f0a14aec6c7b418ef3b76d0cb3ff4737e679d3c52cf, 5621 byte, byte-identical over two regenerations, json.loads VALID, 12 checks 6 areas 0 violation 0 open",
+   "gates": "focused 2/2; account domain 769/769 + 116.44 offline 18/18 + slice 2/2 = 789/789; analyzer 3 files clean; format 0 changed idempotent; diff-check 0",
+   "build": "windows --debug exit 0 (47s, kernel fresh 101433368 byte). Slice symbols 0 on the fresh kernel while positive controls are non-zero; poison in the slice file still built exit 0, poison in a reachable file failed exit 1 with account_cloud_center_screen.dart(1914,3) error G077942FA — so the slice file is not reachable from main.dart and the build proves no regression on reachable code only."
+  }
  },
  "selection_rules": [
   "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -60,7 +75,7 @@
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
  "updated_at": "2026-10-01T15:05:00+07:00",
- "updated_by": "hermes cron core worker — 117.26 Localization & Formatting Validation",
+ "updated_by": "hermes cron core worker — 117.27 Offline & Cached-State Validation",
  "active_stream": "sequential_expansion",
  "novel_io_hunt_2026_09_12": {
   "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

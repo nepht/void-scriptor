@@ -80,6 +80,14 @@ final class AccountCenterLoadingEmptyErrorStates {
     required String unavailableReason,
   }) {
     _validateCount(availableItemCount);
+    if (availableItemCount == 0) {
+      throw ArgumentError.value(
+        availableItemCount,
+        'availableItemCount',
+        'A partial response carries no partial data when nothing arrived. '
+            'Use empty() or error() instead.',
+      );
+    }
     return _create(
       source,
       AccountCenterSurfaceState.partial,
@@ -120,14 +128,33 @@ final class AccountCenterLoadingEmptyErrorStates {
     if (retryAfter <= Duration.zero) {
       throw ArgumentError.value(retryAfter, 'retryAfter', 'must be positive');
     }
-    final minutes = retryAfter.inMinutes;
     return _create(
       source,
       AccountCenterSurfaceState.rateLimited,
-      'Rate limited. Try again after $minutes minutes.',
+      'Rate limited. Try again after ${_retryWindow(retryAfter)}.',
       canRetry: true,
       retryAfter: retryAfter,
     );
+  }
+
+  /// The provider window rendered for the user, in the largest unit that
+  /// still fits, and never rounded down.
+  ///
+  /// The message used `retryAfter.inMinutes` alone, so a 30-second provider
+  /// window rendered as "Try again after 0 minutes". That is the failure this
+  /// file exists to make impossible: it told the user to retry immediately
+  /// while the provider was still refusing, and `retryAfter` — the value the
+  /// caller is given and the one the retry scheduler uses — said 30 seconds.
+  /// Sub-minute windows are therefore rendered in seconds, and windows at or
+  /// above one minute round up, so the rendered wait is never shorter than
+  /// the window the provider actually reported.
+  static String _retryWindow(Duration retryAfter) {
+    if (retryAfter.inMinutes < 1) {
+      final seconds = retryAfter.inSeconds;
+      return '$seconds second${seconds == 1 ? '' : 's'}';
+    }
+    final minutes = (retryAfter.inSeconds / Duration.secondsPerMinute).ceil();
+    return '$minutes minute${minutes == 1 ? '' : 's'}';
   }
 
   factory AccountCenterLoadingEmptyErrorStates.outage({

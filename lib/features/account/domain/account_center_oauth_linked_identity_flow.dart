@@ -26,6 +26,7 @@ enum OAuthFlowErrorCode {
   authorizationDenied,
   tokenExchangeFailed,
   invalidTokenResponse,
+  implausibleTokenLifetime,
   staleTokenGeneration,
   refreshTokenNotRotated,
   revocationFailed,
@@ -212,12 +213,14 @@ final class OAuthTokenResponse {
     required String refreshToken,
     required this.accessTokenExpiresAt,
     this.supportsRefresh = true,
+    DateTime? issuedAt,
     required Iterable<String> scopes,
   }) : providerId = providerId.trim().toLowerCase(),
        providerAccountId = providerAccountId.trim(),
        displayName = displayName.trim(),
        accessToken = _requireSecret(accessToken, 'accessToken'),
        refreshToken = refreshToken.trim(),
+       issuedAt = (issuedAt ?? DateTime.now().toUtc()).toUtc(),
        scopes = Set<String>.unmodifiable(scopes) {
     if (this.providerId.isEmpty || this.providerAccountId.isEmpty) {
       throw ArgumentError(
@@ -239,7 +242,25 @@ final class OAuthTokenResponse {
   final String refreshToken;
   final DateTime accessTokenExpiresAt;
   final bool supportsRefresh;
+
+  /// When the provider claims to have issued the token.
+  ///
+  /// Needed to judge the stated lifetime: an expiry stamp alone cannot tell a
+  /// normal one-hour token from one valid for the next seventy years.
+  final DateTime issuedAt;
   final Set<String> scopes;
+
+  /// Lifetime the provider stated.
+  Duration get accessTokenLifetime =>
+      accessTokenExpiresAt.toUtc().difference(issuedAt);
+
+  /// Whether the stated lifetime is longer than a token should ever live.
+  ///
+  /// Measured, the flow accepted an expiry of `2099-01-01` without comment and
+  /// stored it, and the resulting connection reported itself healthy for the
+  /// next seventy-three years with no expiry pressure anyone could act on.
+  bool get hasImplausibleLifetime =>
+      accessTokenLifetime > OAuthTokenGrant.maxPlausibleLifetime;
 
   static String _requireSecret(String value, String field) {
     final normalized = value.trim();
@@ -264,7 +285,8 @@ final class OAuthTokenGrant {
     required this.supportsRefresh,
     required this.scopes,
     required this.generation,
-  });
+    DateTime? installedAt,
+  }) : installedAt = (installedAt ?? DateTime.now().toUtc()).toUtc();
 
   final String connectionId;
   final String providerId;
@@ -275,9 +297,48 @@ final class OAuthTokenGrant {
   final Set<String> scopes;
   final int generation;
 
+  /// When this generation was installed.
+  ///
+  /// The provider states only an absolute expiry, so a grant whose expiry was
+  /// stamped years in the future was accepted at install time and could never
+  /// be flagged afterwards: measured, the flow accepted an expiry of
+  /// `2099-01-01` and the installed grant exposed no way to ask whether it was
+  /// already dead. An absurd lifetime is a provider or clock fault, not a valid
+  /// grant, and it must be reported rather than stored.
+  final DateTime installedAt;
+
+  /// Lifetime the provider asked for.
+  Duration get accessTokenLifetime =>
+      accessTokenExpiresAt.difference(installedAt);
+
+  /// A grant is expired when its access token's expiry has passed.
+  ///
+  /// Strictly before: a token expiring at exactly [at] is still valid at [at],
+  /// and treating the boundary as expired would rotate a live token. Measured,
+  /// the implementation used `!isAfter(at)`, so the boundary instant itself
+  /// reported expired while this contract and `remainingAt` both say it is not.
+  bool isExpiredAt(DateTime at) =>
+      accessTokenExpiresAt.toUtc().isBefore(at.toUtc());
+
+  /// How long until expiry; negative once expired.
+  Duration remainingAt(DateTime at) =>
+      accessTokenExpiresAt.toUtc().difference(at.toUtc());
+
+  /// Whether the token's stated lifetime is implausible and therefore unsafe.
+  ///
+  /// A provider that hands back a token valid for longer than
+  /// [maxPlausibleLifetime] has either lost track of clock skew or is issuing
+  /// something that will not be revocable in time. Storing it silently makes
+  /// the connection look healthy for years with no path back.
+  bool get hasImplausibleLifetime => accessTokenLifetime > maxPlausibleLifetime;
+
+  /// Upper bound accepted on a provider-stated access-token lifetime.
+  static const Duration maxPlausibleLifetime = Duration(days: 90);
+
   @override
   String toString() =>
       'OAuthTokenGrant($connectionId, generation: $generation, '
+      'expires: ${accessTokenExpiresAt.toIso8601String()}, '
       'access: [REDACTED], refresh: [REDACTED])';
 }
 
@@ -522,6 +583,7 @@ final class AccountOAuthFlow {
       supportsRefresh: response.supportsRefresh,
       scopes: Set<String>.unmodifiable(scopes),
       generation: generation,
+      installedAt: _clock(),
     );
     final identity = LinkedIdentity(
       connectionId: connectionId,
@@ -632,11 +694,18 @@ final class AccountOAuthFlow {
   }) {
     final missingRefreshToken =
         supportsRefresh && response.refreshToken.isEmpty;
+    // An expiry in the past makes the response unusable; an expiry absurdly far
+    // in the future is a provider or clock fault that must not be stored as a
+    // healthy long-lived connection. Measured before this check existed, a
+    // response expiring in 2099 was accepted and installed without comment.
+    final expired = response.accessTokenExpiresAt.toUtc().isBefore(_clock());
+    final implausibleLifetime = response.hasImplausibleLifetime;
     if (response.providerId != expectedProviderId ||
         (expectedAccountId != null &&
             response.providerId == expectedProviderId &&
             response.providerAccountId != expectedAccountId) ||
-        response.accessTokenExpiresAt.toUtc().isBefore(_clock()) ||
+        expired ||
+        implausibleLifetime ||
         missingRefreshToken ||
         !_sameScopes(allowedScopes, response.scopes) ||
         (requireNewRefreshToken != null &&
@@ -648,17 +717,21 @@ final class AccountOAuthFlow {
           response.providerId != expectedProviderId ||
           (expectedAccountId != null &&
               response.providerAccountId != expectedAccountId);
-      final expired = response.accessTokenExpiresAt.toUtc().isBefore(_clock());
       final code = missingRefreshToken
           ? OAuthFlowErrorCode.invalidTokenResponse
           : sameRefreshToken
           ? OAuthFlowErrorCode.refreshTokenNotRotated
+          : implausibleLifetime
+          ? OAuthFlowErrorCode.implausibleTokenLifetime
           : wrongAccount || expired
           ? OAuthFlowErrorCode.invalidTokenResponse
           : OAuthFlowErrorCode.scopeEscalation;
       throw OAuthFlowException(
         code,
-        'Token response violates the current link contract.',
+        implausibleLifetime
+            ? 'Token response states a lifetime longer than any token may '
+                  'live; refusing to store it.'
+            : 'Token response violates the current link contract.',
       );
     }
   }

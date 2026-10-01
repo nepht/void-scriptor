@@ -568,12 +568,15 @@ class Sprint117IdentityWorkflowDrill {
         reauthRequired: false,
       ),
     );
-    final unconfirmed = management.unlink(
+    final unconfirmed = await management.unlink(
       'fixture/account-1',
       confirmed: false,
     );
     final stillPresent = management.connections.length;
-    final confirmed = management.unlink('fixture/account-1', confirmed: true);
+    final confirmed = await management.unlink(
+      'fixture/account-1',
+      confirmed: true,
+    );
     final goneAfterConfirm = management.connections.length;
 
     final passed =
@@ -586,9 +589,15 @@ class Sprint117IdentityWorkflowDrill {
         identitiesAfterRevoke == 0 &&
         working.revokedGrants.length == 1 &&
         replayAfterUnlink == 'staleTokenGeneration' &&
-        !unconfirmed &&
+        !unconfirmed.localRemoved &&
+        !unconfirmed.providerRevokeAttempted &&
         stillPresent == 1 &&
-        confirmed &&
+        // This drill constructs the management seam without a revoker, so the
+        // disconnect is local-only by declaration. The result says so
+        // explicitly instead of returning an indistinguishable `true`.
+        confirmed.localRemoved &&
+        !confirmed.providerRevokeAttempted &&
+        !confirmed.providerRevoked &&
         goneAfterConfirm == 0;
 
     return Sprint117IdentityWorkflowObservation(
@@ -606,9 +615,17 @@ class Sprint117IdentityWorkflowDrill {
         'identities_after_successful_unlink': identitiesAfterRevoke,
         'provider_revocations_recorded': working.revokedGrants.length,
         'second_unlink_error': replayAfterUnlink,
-        'management_unlink_without_confirmation': unconfirmed,
+        // The fact keys stay boolean: `unlink` now returns an
+        // `AccountDisconnectResult`, and recording the object itself made these
+        // declared-boolean facts compare against an unrelated type. Each keeps
+        // its original meaning — whether the call dropped the local row — while
+        // the provider-call detail that motivated the richer return value is
+        // reported beside it rather than dropped.
+        'management_unlink_without_confirmation': unconfirmed.localRemoved,
         'connections_after_unconfirmed': stillPresent,
-        'management_unlink_with_confirmation': confirmed,
+        'management_unlink_with_confirmation': confirmed.localRemoved,
+        'management_unlink_provider_called': confirmed.providerRevokeAttempted,
+        'management_unlink_provider_revoked': confirmed.providerRevoked,
         'connections_after_confirmed': goneAfterConfirm,
         'mechanism':
             'AccountOAuthFlow.unlink + AccountConnectedAccountsManagement',

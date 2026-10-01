@@ -5,6 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_connected_accounts_management.dart';
 import 'package:void_scriptor/features/account/domain/account_center_connection_health_state_machine.dart';
 
+/// Stand-in for a provider failure that must not leak into user-visible text.
+class _ProviderExploded implements Exception {
+  const _ProviderExploded();
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -58,7 +63,7 @@ void main() {
 
     test('replaces a label while preserving provider and scopes', () {
       final manager = AccountConnectedAccountsManagement(
-        <AccountConnectedAccount>[account()],
+        initial: <AccountConnectedAccount>[account()],
       );
 
       final renamed = manager.rename(
@@ -73,7 +78,7 @@ void main() {
 
     test('rejects duplicate ids, blank labels, and unknown scope review', () {
       final manager = AccountConnectedAccountsManagement(
-        <AccountConnectedAccount>[account()],
+        initial: <AccountConnectedAccount>[account()],
       );
 
       expect(() => manager.add(account()), throwsArgumentError);
@@ -88,7 +93,7 @@ void main() {
       'reauth marks only the selected connection and exposes its scopes',
       () {
         final manager = AccountConnectedAccountsManagement(
-          <AccountConnectedAccount>[
+          initial: <AccountConnectedAccount>[
             account(),
             account(connectionId: 'github/account-7', label: 'Code'),
           ],
@@ -105,18 +110,96 @@ void main() {
     );
 
     test(
-      'unlink requires explicit confirmation and removes only confirmed account',
-      () {
-        final manager = AccountConnectedAccountsManagement(
-          <AccountConnectedAccount>[account()],
+          'unlink requires explicit confirmation and removes only confirmed account',
+          () async {
+            final manager = AccountConnectedAccountsManagement(
+              initial: <AccountConnectedAccount>[account()],
+            );
+
+            final unconfirmed = await manager.unlink(
+              'google/account-42',
+              confirmed: false,
+            );
+            expect(unconfirmed.localRemoved, isFalse);
+            expect(unconfirmed.providerRevokeAttempted, isFalse);
+            expect(manager.connections, hasLength(1));
+
+            // No revoker was supplied, so this disconnect is local-only by
+            // declaration and says so; it is not the same row as a revoked one.
+            final confirmed = await manager.unlink(
+              'google/account-42',
+              confirmed: true,
+            );
+            expect(confirmed.localRemoved, isTrue);
+            expect(confirmed.providerRevokeAttempted, isFalse);
+            expect(confirmed.providerRevoked, isFalse);
+            expect(manager.connections, isEmpty);
+          },
         );
 
-        expect(manager.unlink('google/account-42', confirmed: false), isFalse);
-        expect(manager.connections, hasLength(1));
-        expect(manager.unlink('google/account-42', confirmed: true), isTrue);
-        expect(manager.connections, isEmpty);
-      },
-    );
+        test(
+          'a disconnect revokes at the provider when a revoker is supplied',
+          () async {
+            final calls = <String>[];
+            final manager = AccountConnectedAccountsManagement(
+              initial: <AccountConnectedAccount>[account()],
+              providerRevoker: (connectionId, providerId) async {
+                calls.add('$connectionId@$providerId');
+                return true;
+              },
+            );
+
+            final result = await manager.unlink('google/account-42', confirmed: true);
+
+            expect(calls, <String>['google/account-42@google']);
+            expect(result.providerRevokeAttempted, isTrue);
+            expect(result.providerRevoked, isTrue);
+            expect(result.localRemoved, isTrue);
+            expect(result.isComplete, isTrue);
+            expect(result.needsProviderRetry, isFalse);
+            expect(manager.connections, isEmpty);
+          },
+        );
+
+        test(
+          'a failed provider revocation keeps the link so it can be retried',
+          () async {
+            final manager = AccountConnectedAccountsManagement(
+              initial: <AccountConnectedAccount>[account()],
+              providerRevoker: (connectionId, providerId) async => false,
+            );
+
+            final result = await manager.unlink('google/account-42', confirmed: true);
+
+            expect(result.providerRevokeAttempted, isTrue);
+            expect(result.providerRevoked, isFalse);
+            expect(result.localRemoved, isFalse);
+            expect(result.needsProviderRetry, isFalse);
+            // The row survives, so the retry has something to retry from.
+            expect(manager.connections, hasLength(1));
+            expect(result.summary, contains('failed'));
+          },
+        );
+
+        test(
+          'a throwing revoker is reported without leaking provider internals',
+          () async {
+            final manager = AccountConnectedAccountsManagement(
+              initial: <AccountConnectedAccount>[account()],
+              providerRevoker: (connectionId, providerId) async =>
+                  throw const _ProviderExploded(),
+            );
+
+            final result = await manager.unlink('google/account-42', confirmed: true);
+
+            expect(result.providerRevokeAttempted, isTrue);
+            expect(result.providerRevoked, isFalse);
+            expect(result.localRemoved, isFalse);
+            expect(result.providerRevokeError.runtimeType.toString(), '_ProviderExploded');
+            expect(result.summary, isNot(contains('_ProviderExploded')));
+            expect(manager.connections, hasLength(1));
+          },
+        );
 
     test(
       'a recorded health observation clears a pending reauthentication request',
@@ -126,7 +209,7 @@ void main() {
         // 115.14 kept the flag set instead, so a reauthentication request
         // outlived every proof that it had been satisfied.
         final manager = AccountConnectedAccountsManagement(
-          <AccountConnectedAccount>[account()],
+          initial: <AccountConnectedAccount>[account()],
         );
         manager.reauthenticate('google/account-42');
         expect(manager.connections.single.reauthRequired, isTrue);
@@ -144,7 +227,7 @@ void main() {
 
     test('records an explicit health check timestamp', () {
       final manager = AccountConnectedAccountsManagement(
-        <AccountConnectedAccount>[account()],
+        initial: <AccountConnectedAccount>[account()],
       );
       final checkedAt = DateTime.utc(2026, 9, 25, 9);
 

@@ -76,14 +76,115 @@ final class AccountReauthenticationRequest {
   final Set<String> scopes;
 }
 
+/// Outcome of a disconnect attempt on [AccountConnectedAccountsManagement].
+///
+/// A local disconnect has three honest outcomes, and collapsing them into a
+/// single `bool` is what made the disconnect path unmeasurable: measured,
+/// `unlink(confirmed: true)` returned `true` in every case, so a row whose
+/// provider was revoked and a row whose provider was never told looked the same
+/// to every caller and to every test.
+final class AccountDisconnectResult {
+  AccountDisconnectResult({
+    required this.connectionId,
+    required this.localRemoved,
+    required this.providerRevokeAttempted,
+    required this.providerRevoked,
+    this.providerRevokeError,
+  }) {
+    if (!providerRevokeAttempted && providerRevoked) {
+      throw ArgumentError.value(
+        providerRevoked,
+        'providerRevoked',
+        'A revocation cannot be confirmed without attempting it.',
+      );
+    }
+  }
+
+  final String connectionId;
+
+  /// Whether the local link was dropped.
+  final bool localRemoved;
+
+  /// Whether a provider call was actually made for this decision.
+  final bool providerRevokeAttempted;
+
+  /// Whether the provider confirmed the revocation.
+  ///
+  /// `false` for a `keepLinked` decision and for a declared-absent revoker
+  /// (disconnect without provider call), which is not the same as "tried and
+  /// failed": see [providerRevokeAttempted].
+  final bool providerRevoked;
+
+  /// Why the revocation failed, when it was attempted and did not succeed.
+  final Object? providerRevokeError;
+
+  /// The local link is gone and nothing was left half-done at the provider.
+  bool get isComplete => localRemoved && providerRevoked;
+
+  /// The local link is gone but the provider still holds a live grant.
+  ///
+  /// This is the state that must not be reported as a finished disconnect: the
+  /// token remains usable at the provider until the revocation is retried.
+  bool get needsProviderRetry =>
+      localRemoved && providerRevokeAttempted && !providerRevoked;
+
+  /// Text a caller can show without leaking provider internals.
+  String get summary => providerRevokeAttempted
+      ? localRemoved
+            ? providerRevoked
+                  ? 'Disconnected and revoked at $connectionId.'
+                  : 'Disconnected locally; the provider revocation at '
+                        '$connectionId did not complete and can be retried.'
+            : 'The link was kept: the provider revocation at $connectionId '
+                  'failed.'
+      : localRemoved
+      ? 'Disconnected locally at $connectionId; no provider call was made.'
+      : 'The link at $connectionId was kept.';
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'connection_id': connectionId,
+    'local_removed': localRemoved,
+    'provider_revoked': providerRevoked,
+    'provider_revoke_attempted': providerRevokeAttempted,
+    'provider_revoke_failed': providerRevokeAttempted && !providerRevoked,
+    'needs_provider_retry': needsProviderRetry,
+    if (providerRevokeError != null)
+      'provider_revoke_error': providerRevokeError.runtimeType.toString(),
+    'summary': summary,
+  };
+
+  @override
+  String toString() => summary;
+}
+
+/// Requests a provider-side revocation for a connection being disconnected.
+typedef AccountProviderRevoker =
+    Future<bool> Function(String connectionId, String providerId);
+
 final class AccountConnectedAccountsManagement {
-  AccountConnectedAccountsManagement([
+  AccountConnectedAccountsManagement({
     Iterable<AccountConnectedAccount>? initial,
-  ]) {
+    // `prefer_initializing_formals` is suppressed on the initializer below:
+    // Dart forbids `this._providerRevoker` in a *named* parameter list, and
+    // the public parameter must keep the name `providerRevoker` because eight
+    // call sites pass it by that name. The initializing formal the lint asks
+    // for cannot be written without breaking that API.
+    AccountProviderRevoker? providerRevoker,
+    // ignore: prefer_initializing_formals
+  }) : _providerRevoker = providerRevoker {
     for (final account in initial ?? const <AccountConnectedAccount>[]) {
       add(account);
     }
   }
+
+  final AccountProviderRevoker? _providerRevoker;
+
+  /// Whether this seam can revoke at the provider at all.
+  ///
+  /// Declared-absent means the caller supplied no revoker, so a disconnect is
+  /// local-only by construction rather than by accident. That distinction is
+  /// what [AccountDisconnectResult.providerRevokeAttempted] reports.
+  bool get canRevokeAtProvider => _providerRevoker != null;
 
   final Map<String, AccountConnectedAccount> _accounts =
       <String, AccountConnectedAccount>{};
@@ -125,11 +226,60 @@ final class AccountConnectedAccountsManagement {
     );
   }
 
-  bool unlink(String connectionId, {required bool confirmed}) {
-    if (!confirmed) return false;
-    _require(connectionId);
-    _accounts.remove(connectionId);
-    return true;
+  /// Disconnects a connection, reporting whether the provider was actually told.
+  ///
+  /// The old signature returned a bare `bool` that was `true` for every
+  /// confirmed disconnect, so a caller could not tell a revoked-at-provider row
+  /// from a local-only deletion, and the disconnect path produced no audit
+  /// evidence of the provider call at all. `confirmed: false` is still a no-op,
+  /// now reported as such instead of silently returning `false`.
+  Future<AccountDisconnectResult> unlink(
+    String connectionId, {
+    required bool confirmed,
+    bool revokeAtProvider = true,
+  }) async {
+    if (!confirmed) {
+      return AccountDisconnectResult(
+        connectionId: connectionId,
+        localRemoved: false,
+        providerRevokeAttempted: false,
+        providerRevoked: false,
+      );
+    }
+    final account = _require(connectionId);
+    final revoker = _providerRevoker;
+    if (!revokeAtProvider || revoker == null) {
+      // Disconnect without a provider call is a declared outcome, not a silent
+      // one: the caller asked for a local drop and the result says the provider
+      // was never told, so nobody can read this row as a revoked token.
+      _accounts.remove(connectionId);
+      return AccountDisconnectResult(
+        connectionId: connectionId,
+        localRemoved: true,
+        providerRevokeAttempted: false,
+        providerRevoked: false,
+      );
+    }
+    Object? failure;
+    var revoked = false;
+    try {
+      revoked = await revoker(connectionId, account.providerId);
+    } catch (error) {
+      failure = error;
+    }
+    if (revoked) {
+      _accounts.remove(connectionId);
+    }
+    // A revocation that did not happen leaves the local link in place: dropping
+    // it anyway would strand a live grant at the provider with no row left to
+    // retry from, which is the opposite of a clean disconnect.
+    return AccountDisconnectResult(
+      connectionId: connectionId,
+      localRemoved: revoked,
+      providerRevokeAttempted: true,
+      providerRevoked: revoked,
+      providerRevokeError: failure,
+    );
   }
 
   AccountConnectedAccount recordHealthCheck(

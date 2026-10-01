@@ -10,6 +10,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
     required this.canRevoke,
     required this.isRevoked,
     required this.localDataPreserved,
+    required this.localDataScope,
     required this.notice,
   });
 
@@ -29,18 +30,48 @@ final class AccountCenterTokenExpiryReauthenticationUx {
   final bool canRetry;
   final bool canRevoke;
   final bool isRevoked;
+
+  /// Whether local data survives this connection outcome.
+  ///
+  /// This is a caller assertion, not a measurement. The seam has no view of the
+  /// project store, so a caller that passes `hasLocalData: true` for a project
+  /// whose files were already deleted gets `true` back (measured: the factory
+  /// returned `localDataPreserved == true` for a call site with no store in
+  /// reach). [localDataScope] now names what the assertion covers, so the claim
+  /// can be read at the size it was actually made.
   final bool localDataPreserved;
+
+  /// What [localDataPreserved] covers, in the caller's words.
+  ///
+  /// Empty means "unscoped claim": nothing was stated about what data survives.
+  /// A non-empty scope is required before the claim can be treated as evidence.
+  final String localDataScope;
+
+  /// Whether the preservation claim names what it covers.
+  bool get hasLocalDataScope => localDataScope.trim().isNotEmpty;
+
+  /// The claim is usable evidence only when it is both positive and scoped.
+  bool get localDataPreservedWithScope =>
+      localDataPreserved && hasLocalDataScope;
+
   final String notice;
 
   String get retryLabel => affectedCapabilities.isEmpty
       ? 'Retry connection'
       : 'Retry ${affectedCapabilities.first}';
 
+  /// Notice that carries the scope, so a screen cannot render a bare
+  /// "local data preserved" with nothing behind it.
+  String get scopedNotice => localDataPreservedWithScope
+      ? '$notice Local data preserved: $localDataScope.'
+      : notice;
+
   factory AccountCenterTokenExpiryReauthenticationUx.expired({
     required String providerId,
     required String accountLabel,
     required List<String> affectedCapabilities,
     required bool hasLocalData,
+    String localDataScope = '',
   }) {
     final provider = _text(providerId, 'providerId');
     final label = _text(accountLabel, 'accountLabel');
@@ -54,6 +85,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
       canRevoke: true,
       isRevoked: false,
       localDataPreserved: hasLocalData,
+      localDataScope: localDataScope.trim(),
       notice: 'Connection expired for $label.',
     );
   }
@@ -63,6 +95,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
     required String accountLabel,
     required List<String> affectedCapabilities,
     required bool hasLocalData,
+    String localDataScope = '',
   }) => AccountCenterTokenExpiryReauthenticationUx._(
     providerId: _text(providerId, 'providerId'),
     accountLabel: _text(accountLabel, 'accountLabel'),
@@ -72,6 +105,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
     canRevoke: true,
     isRevoked: false,
     localDataPreserved: hasLocalData,
+    localDataScope: localDataScope.trim(),
     notice: 'Connection restored for ${_text(accountLabel, 'accountLabel')}.',
   );
 
@@ -81,6 +115,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
         accountLabel: accountLabel,
         affectedCapabilities: affectedCapabilities,
         hasLocalData: localDataPreserved,
+        localDataScope: localDataScope,
       );
 
   AccountCenterTokenExpiryReauthenticationUx revoked() =>
@@ -93,6 +128,7 @@ final class AccountCenterTokenExpiryReauthenticationUx {
         canRevoke: false,
         isRevoked: true,
         localDataPreserved: localDataPreserved,
+        localDataScope: localDataScope,
         notice: 'Connection revoked for $accountLabel.',
       );
 

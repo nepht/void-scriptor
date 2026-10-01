@@ -308,6 +308,70 @@ void main() {
     });
   });
 
+  group('117.22 dark-surface brand legibility', () {
+    // DIAG terukur pada slice ini: tile provider yang benar-benar dirender di
+    // overview adalah lima entri cloud storage (Google Drive, OneDrive,
+    // Dropbox, Mega, Local storage). Provider AI seperti Anthropic TIDAK
+    // dirender di surface ini, jadi test memakai Dropbox sebagai bukti nyata
+    // bahwa perilaku dark-surface benar-benar terjadi di widget.
+    testWidgets('a light-ink mark still renders its real asset on dark', (
+      tester,
+    ) async {
+      // dropbox_0.webp adalah 96.3% tinta terang (p50 luminansi 0.9401),
+      // sehingga mark-nya tetap terbaca di surface gelap dan TIDAK boleh
+      // digantikan glyph generik.
+      final dropbox = ProviderIconRegistry.standard.require('dropbox');
+      expect(dropbox.supportsDarkSurface, isTrue);
+      expect(dropbox.themeVariants, <String>['light', 'dark']);
+      expect(dropbox.intrinsicSize!.width, 768);
+      expect(dropbox.intrinsicSize!.height, 768);
+
+      await pumpCenter(
+        tester,
+        size: const Size(1536, 1024),
+        theme: VoidTheme.dark,
+      );
+
+      // Di gelap: mark asli tetap dipakai, bukan fallback.
+      expect(find.bySemanticsLabel('Dropbox icon'), findsWidgets);
+      expect(find.bySemanticsLabel('Dropbox icon unavailable'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('an unbundled provider announces absence on the dark theme', (
+      tester,
+    ) async {
+      // mega TIDAK punya mark resmi yang boleh dibundel, jadi pada KEDUA
+      // theme nama aksesibelnya harus jujur berbunyi "icon unavailable".
+      final mega = ProviderIconRegistry.standard.require('mega');
+      expect(mega.hasBundledAsset, isFalse);
+
+      await pumpCenter(
+        tester,
+        size: const Size(1536, 1024),
+        theme: VoidTheme.dark,
+      );
+      expect(find.bySemanticsLabel('Mega icon unavailable'), findsWidgets);
+      expect(find.bySemanticsLabel('Mega icon'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+      'the same light-ink mark renders its asset on the light theme',
+      (tester) async {
+        // Resolve untuk surface terang tidak boleh menurunkan mark apa pun:
+        // setiap mark minimal harus usable di surface terang.
+        await pumpCenter(
+          tester,
+          size: const Size(1536, 1024),
+          theme: VoidTheme.light,
+        );
+        expect(find.bySemanticsLabel('Dropbox icon'), findsWidgets);
+        expect(tester.takeException(), isNull);
+      },
+    );
+  });
+
   group('115.52 loading and error states', () {
     testWidgets('a pending metrics provider shows the loading copy', (
       tester,

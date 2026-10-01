@@ -129,7 +129,11 @@ void main() {
     test('aspect ratio is constrained to contain without crop or stretch', () {
       final entry = ProviderIconRegistry.standard.require('openai');
       expect(entry.aspectRatioPolicy, ProviderIconAspectRatio.preserve);
-      expect(entry.widthForHeight(48), 48);
+      // 117.22: assertion ini dulu mengunci fail-open-nya sendiri. Mark OpenAI
+      // berdimensi 1180x320 (rasio 3.6875) tetapi `widthForHeight(48)`
+      // mengembalikan 48, yaitu wordmark yang dipipihkan menjadi bujur sangkar.
+      // Geometri terukur membuat preservasi rasio menjadi aritmetika.
+      expect(entry.widthForHeight(48), closeTo(48 * (1180 / 320), 0.001));
       expect(entry.heightForWidth(100), greaterThan(0));
       expect(entry.fit, ProviderIconFit.contain);
     });

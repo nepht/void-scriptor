@@ -2348,17 +2348,15 @@ class _StorageDonutPainter extends CustomPainter {
       // donut tetap memakai tinta palet LAMA setelah tema berganti —
       // persis cacat yang step ini temukan di kedua painter chart.
       AccountCenterPerformanceResilience.chartPalette(
-            values: values,
-            colors: colors.map((color) => color.toARGB32()).toList(),
-            trackColor: trackColor.toARGB32(),
-          ).toString() !=
-          AccountCenterPerformanceResilience.chartPalette(
-            values: oldDelegate.values,
-            colors: oldDelegate.colors
-                .map((color) => color.toARGB32())
-                .toList(),
-            trackColor: oldDelegate.trackColor.toARGB32(),
-          ).toString();
+        values: values,
+        colors: colors.map((color) => color.toARGB32()).toList(),
+        trackColor: trackColor.toARGB32(),
+      ).toString() !=
+      AccountCenterPerformanceResilience.chartPalette(
+        values: oldDelegate.values,
+        colors: oldDelegate.colors.map((color) => color.toARGB32()).toList(),
+        trackColor: oldDelegate.trackColor.toARGB32(),
+      ).toString();
 }
 
 // 115.49: integer, byte, percentage, and money formatting live in
@@ -3559,12 +3557,31 @@ class _ProviderIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = ProviderIconRegistry.standard.resolve(entry.providerId);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Sprint 117.22: seven of the fourteen bundled marks are dark-ink-only
+    // (anthropic #1f1f1e at luminance 0.0137, paypal 0.0363, bitbucket 0.1039,
+    // canva 0.1179, plus the openai/github/midtrans marks whose fills are black
+    // or near-black). Painting those on the dark chrome surface produced an
+    // invisible mark. `resolveForSurface` degrades such a mark to the approved
+    // generic category glyph AND corrects the accessible name, because keeping
+    // "Anthropic icon" while drawing a generic glyph tells a screen-reader user
+    // a mark is present when it is not.
+    final icon = ProviderIconRegistry.standard.resolveForSurface(
+      entry.providerId,
+      isDark: isDark,
+    );
     final assetPath = isDark
         ? icon.assetDark ?? icon.assetLight
         : icon.assetLight ?? icon.assetDark;
     final size = AccountCenterDesignTokens.iconSizes.action;
+
+    // Sprint 117.22: aspect preservation is now arithmetic from the measured
+    // source box, so a 1180x320 wordmark is no longer squeezed into a square.
+    final height = size;
+    final width = icon.intrinsicSize == null
+        ? size
+        : icon.widthForHeight(height).clamp(0.0, size * 2.5);
 
     return Semantics(
       image: true,
@@ -3574,8 +3591,8 @@ class _ProviderIcon extends StatelessWidget {
             ? Icon(Icons.cloud_queue_outlined, size: size)
             : BrandLogo(
                 assetPath: assetPath,
-                width: size,
-                height: size,
+                width: width,
+                height: height,
                 fallbackIcon: Icons.cloud_queue_outlined,
               ),
       ),

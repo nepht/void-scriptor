@@ -62,6 +62,22 @@ final class ProviderQuotaResult {
     Duration staleAfter = const Duration(hours: 24),
   }) {
     final age = now.toUtc().difference(reading.measuredAt.toUtc());
+    // 117.29: a reading stamped in the future cannot be live data. The old
+    // `age > staleAfter` test made a future stamp negative, so it fell
+    // through to `fresh` — the two sibling seams
+    // (`StorageUsageCardData._freshness` -> `unknown`,
+    // `StorageDistributionFreshnessPolicy.classify` ->
+    // `futureTimestamped`) both refused it while this one reported live data.
+    // Measured on the same +5h stamp: provider said `fresh`, card said
+    // `unknown`, row said `futureTimestamped`.
+    if (age.isNegative) {
+      return ProviderQuotaResult._(
+        providerId: reading.providerId,
+        status: ProviderQuotaStatus.unavailable,
+        reading: null,
+        reason: 'Reading is stamped after the current clock.',
+      );
+    }
     return ProviderQuotaResult._(
       providerId: reading.providerId,
       status: age > staleAfter

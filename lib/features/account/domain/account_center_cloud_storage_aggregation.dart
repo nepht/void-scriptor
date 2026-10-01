@@ -30,14 +30,22 @@ final class CloudStorageAggregation {
 
     for (final result in results) {
       final reading = result.reading;
-      if (result.status == ProviderQuotaStatus.unavailable ||
-          reading == null ||
-          reading.unit != ProviderQuotaUnit.bytes) {
+      if (result.status == ProviderQuotaStatus.unavailable || reading == null) {
         excluded.add(result.providerId);
         continue;
       }
-      used += reading.usedBytes;
-      quota += reading.quotaBytes;
+      // 117.29: a provider that reports GiB/MiB/KiB/TiB was dropped from the
+      // total entirely, so a Mega account simply vanished from the aggregate
+      // and the user saw a smaller "total cloud usage" than they actually have.
+      // Convert the declared unit to bytes first; only a unit this build
+      // cannot convert stays excluded.
+      final converted = _convertToBytes(reading);
+      if (converted == null) {
+        excluded.add(result.providerId);
+        continue;
+      }
+      used += converted.usedBytes;
+      quota += converted.quotaBytes;
       included.add(reading.providerId);
       if (result.status == ProviderQuotaStatus.stale) hasStale = true;
       // A total is only as current as its newest member. Reducing with
@@ -77,4 +85,27 @@ final class CloudStorageAggregation {
   final DateTime? lastUpdated;
 
   bool get isStale => status == CloudStorageAggregationStatus.stale;
+}
+
+/// The reading's three values expressed in bytes, or `null` when the provider
+/// reported a unit this build cannot convert.
+({int usedBytes, int quotaBytes, int availableBytes})? _convertToBytes(
+  ProviderQuotaReading reading,
+) {
+  final multiplier = switch (reading.unit) {
+    ProviderQuotaUnit.bytes => 1,
+    ProviderQuotaUnit.kibibytes => 1024,
+    ProviderQuotaUnit.mebibytes => 1024 * 1024,
+    ProviderQuotaUnit.gibibytes => 1024 * 1024 * 1024,
+    ProviderQuotaUnit.tebibytes => 1024 * 1024 * 1024 * 1024,
+    // A provider-defined unit has no meaning this build can assert, so it
+    // stays excluded rather than being guessed at.
+    ProviderQuotaUnit.providerDefined => null,
+  };
+  if (multiplier == null) return null;
+  return (
+    usedBytes: reading.usedBytes * multiplier,
+    quotaBytes: reading.quotaBytes * multiplier,
+    availableBytes: reading.availableBytes * multiplier,
+  );
 }

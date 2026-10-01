@@ -112,16 +112,27 @@ abstract final class AccountCenterLocalizationFormatting {
   static String storageUnits(int bytes) {
     if (bytes < 0) return 'unavailable';
     if (bytes < kilobyte) return '$bytes B';
-    if (bytes < megabyte) return '${_trim(bytes / kilobyte)} KB';
-    if (bytes < gigabyte) return '${_trim(bytes / megabyte)} MB';
-    if (bytes < terabyte) return '${_trim(bytes / gigabyte)} GB';
-    return '${_trim(bytes / terabyte)} TB';
+    if (bytes < megabyte) return '${_trim(bytes / kilobyte, kilobyte)} KB';
+    if (bytes < gigabyte) return '${_trim(bytes / megabyte, megabyte)} MB';
+    if (bytes < terabyte) return '${_trim(bytes / gigabyte, gigabyte)} GB';
+    return '${_trim(bytes / terabyte, terabyte)} TB';
   }
 
   /// Trailing zeros are dropped so `1.50 GB` prints `1.5 GB` and `1.00 GB`
   /// prints `1 GB` — precision is never invented, never padded.
-  static String _trim(double value) {
-    var text = value.toStringAsFixed(2);
+  ///
+  /// 117.29: rounding to two decimals can carry a value out of its own unit
+  /// — `999999` bytes is `999.999 KB`, which formats to `1000 KB`, i.e. the
+  /// `1 MB` the value is not. When the rounded figure reaches the [ceiling]
+  /// of the unit, the value is truncated to two decimals instead, so the
+  /// printed statement stays inside the unit the formatter chose. An in-unit
+  /// value still rounds normally: `4096` prints `4.1 KB`.
+  static String _trim(double value, int ceiling) {
+    var rounded = double.parse(value.toStringAsFixed(2));
+    if (rounded >= ceiling) {
+      rounded = (value * 100).floorToDouble() / 100;
+    }
+    var text = rounded.toStringAsFixed(2);
     text = text.replaceFirst(RegExp(r'0+$'), '');
     text = text.replaceFirst(RegExp(r'\.$'), '');
     return text;

@@ -1,0 +1,134 @@
+{
+  "canonical_step": "117.29",
+  "document_role": "SPRINT_117_29_QUOTA_ACCURACY_RECONCILIATION_EVIDENCE",
+  "required_areas": [
+    "api_match",
+    "local_scan_match",
+    "timestamp",
+    "unit_conversion",
+    "rounding",
+    "no_mock",
+    "unavailable_state"
+  ],
+  "surfaces": {
+    "api_match": "ProviderQuotaReading -> StorageUsageCardData + CloudStorageAggregation.from",
+    "local_scan_match": "StorageDistributionRecord(localScan) -> AccountCenterStorageDistributionReport.chart.totalBytes",
+    "timestamp": "ProviderQuotaResult.fromReading + StorageUsageCardData._freshness + StorageDistributionFreshnessPolicy.classify",
+    "unit_conversion": "ProviderQuotaUnit -> bytes in CloudStorageAggregation.from",
+    "rounding": "AccountCenterLocalizationFormatting.storageUnits boundary",
+    "no_mock": "StorageRecordSource.userDeclared + AccountCenterStorageDistributionReport.referenceMockValuesAllowed",
+    "unavailable_state": "CloudStorageAggregationStatus.unavailable + StorageUsageCardData.unknownQuota + RightRailStorageLine"
+  },
+  "verdict": "QUOTA_ACCURACY_RECONCILED_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "api_match",
+      "check": "provider_bytes_reach_surface_unmodified",
+      "status": "pass",
+      "declared": "A provider byte reading reaches the card unmodified: no rescaling, no refill, no default.",
+      "observed": "reading 12345678901/100000000000 -> card 12345678901/100000000000"
+    },
+    {
+      "area": "api_match",
+      "check": "aggregate_total_is_the_sum_of_the_readings_it_included",
+      "status": "pass",
+      "declared": "The aggregate total equals the sum of the readings it included, never an independent estimate.",
+      "observed": "status=CloudStorageAggregationStatus.complete, used=12345679401, quota=100000000900, available=87654321499"
+    },
+    {
+      "area": "local_scan_match",
+      "check": "local_scan_bytes_enter_the_distribution_total",
+      "status": "pass",
+      "declared": "Bytes a local scan measured enter the distribution total at their measured value.",
+      "observed": "localScan 4096 + providerApi 1048576 -> chart.totalBytes=1052672"
+    },
+    {
+      "area": "local_scan_match",
+      "check": "local_scan_cannot_be_reported_under_the_remote_scope",
+      "status": "pass",
+      "declared": "A local scan never produces a remote-scope record; the constructor refuses it instead of relabelling it.",
+      "observed": "localScan reported as remote is refused"
+    },
+    {
+      "area": "timestamp",
+      "check": "a_future_dated_provider_reading_is_never_live_data",
+      "status": "pass",
+      "declared": "A reading stamped after the injected clock cannot be live data; it is refused rather than reported as fresh.",
+      "observed": "measuredAt now+5h -> status=ProviderQuotaStatus.unavailable"
+    },
+    {
+      "area": "timestamp",
+      "check": "every_seam_agrees_on_the_same_future_stamp",
+      "status": "pass",
+      "declared": "All shipped seams classify one future stamp the same way, so two surfaces cannot disagree about what is live.",
+      "observed": "provider=ProviderQuotaStatus.unavailable, card=StorageUsageFreshness.unknown, row=StorageDistributionFreshness.futureTimestamped"
+    },
+    {
+      "area": "timestamp",
+      "check": "a_reading_past_the_stale_window_reads_stale",
+      "status": "pass",
+      "declared": "A reading older than the stale window is marked stale, not fresh.",
+      "observed": "measuredAt now-48h, staleAfter 24h -> status=ProviderQuotaStatus.stale"
+    },
+    {
+      "area": "unit_conversion",
+      "check": "a_binary_provider_unit_is_converted_not_dropped",
+      "status": "pass",
+      "declared": "A provider-reported binary unit is converted to bytes before the total is folded, and the raw reading itself keeps the value the provider reported; the account is never silently excluded from its own total.",
+      "observed": "mega raw 3/20 (gibibytes); aggregate used=3221226472 quota=21474838480 available=18253612008 included=[mega, dropbox] excluded=[]"
+    },
+    {
+      "area": "unit_conversion",
+      "check": "a_unit_this_build_cannot_convert_stays_excluded",
+      "status": "pass",
+      "declared": "A provider-defined unit stays excluded and visible instead of being guessed at.",
+      "observed": "providerDefined -> status=ProviderQuotaStatus.fresh, included=[], excluded=[vendor]"
+    },
+    {
+      "area": "rounding",
+      "check": "a_size_never_rounds_up_into_the_next_unit",
+      "status": "pass",
+      "declared": "A value below a unit boundary keeps that unit: it may be rounded inside the unit, but never up to the next one, where `1000 KB` would read as the 1 MB it is not.",
+      "observed": "raw 999999 B rendered as \"999.99 KB\" = 999990 B, unit ceiling 1000000 B"
+    },
+    {
+      "area": "rounding",
+      "check": "the_card_prints_one_unit_rule_not_two",
+      "status": "pass",
+      "declared": "One card renders used/available/quota through one unit rule, so a reader can reconcile the numbers printed on it.",
+      "observed": "card: \"100% used, 1 B available of 1 MB\""
+    },
+    {
+      "area": "no_mock",
+      "check": "a_user_typed_value_is_flagged_not_passed_off_as_measured",
+      "status": "pass",
+      "declared": "A user-declared value keeps its own source label and makes the total non-exact; it never reports as measured data.",
+      "observed": "sourceLabel=\"User declared\", totalIsExact=false, uiState=PARTIAL_DATA"
+    },
+    {
+      "area": "no_mock",
+      "check": "the_report_declares_no_production_mock_and_reads_no_provider",
+      "status": "pass",
+      "declared": "The distribution report declares reference mock values unusable in production and performs no provider read itself.",
+      "observed": "referenceMockValuesAllowed=false, performsProviderRead=false"
+    },
+    {
+      "area": "unavailable_state",
+      "check": "no_readable_reading_reports_unavailable_not_zero",
+      "status": "pass",
+      "declared": "With no readable provider reading the aggregate reports unavailable with null totals, never zero bytes.",
+      "observed": "status=CloudStorageAggregationStatus.unavailable, used=null, quota=null"
+    },
+    {
+      "area": "unavailable_state",
+      "check": "an_omitted_quota_reads_unavailable_not_zero",
+      "status": "pass",
+      "declared": "A provider that omits its quota reads \"Quota unavailable\" on every surface, never a zero-byte quota.",
+      "observed": "card=\"Quota unavailable\", rail=\"Remote cloud — unavailable\""
+    }
+  ]
+}

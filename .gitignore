@@ -61,3 +61,8 @@ app.*.map.json
 # Golden-test failure artifacts (masterImage/isolatedDiff/maskedDiff/testImage)
 **/failures/*.png
 **/failures/
+
+# Throwaway probe scripts the autonomous workers write while investigating a step
+# (test/release/scratch_<sprint>_<step>_probe*_test.dart). They are single-use and
+# never part of a deliverable; without this they accumulate and bury real WIP.
+test/release/scratch_*

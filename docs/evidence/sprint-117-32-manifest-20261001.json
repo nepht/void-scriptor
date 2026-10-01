@@ -1,0 +1,120 @@
+{
+  "canonical_step": "117.32",
+  "verdict": "SECURITY_ASSESSMENT_LOCAL",
+  "pass": true,
+  "commit": "251d3faf8f89ba593f95068667d7ba2155028540",
+  "canonical_sha256": "b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6",
+  "evidence_axes": [
+    "oauth",
+    "redirects",
+    "vault",
+    "sessions",
+    "permissions",
+    "webhooks",
+    "dependencies",
+    "log_redaction"
+  ],
+  "slice_files": [
+    {
+      "path": "lib/core/auth/auth_session_store_io.dart",
+      "sha256": "d8b5bad48f6f89e8a1fdaba07f4bc38684921a05acd2ce5c9c3f35de390b3aee"
+    },
+    {
+      "path": "lib/core/plugin/domain/plugin_manifest.dart",
+      "sha256": "c28737130ceb6771429b31d30360a703eec999c28aeb6772e2bd6ff5a2ae3dc5"
+    },
+    {
+      "path": "lib/core/security/application/secret_redactor.dart",
+      "sha256": "87a77ef0f87da468e0e3f56ad48fea5ced7e01a617269d91addc2efd26cae7af"
+    },
+    {
+      "path": "lib/core/security/application/secret_scanner.dart",
+      "sha256": "94bd77a7dde7ac44d40d58a6f911b1163bc038e4fb2479e1bc08e184f0470cf9"
+    },
+    {
+      "path": "lib/features/account/domain/account_center_oauth_linked_identity_flow.dart",
+      "sha256": "e3f028e84da4ebcf7f91924b4ccd15d9f79aea8f7c3a405618e0a27f726cf42d"
+    },
+    {
+      "path": "lib/features/world_logic/domain/sprint_117_security_assessment.dart",
+      "sha256": "f18e32d14b1985134fc78cbf3ab39e6dab92297a7ad4ebc79ff2b104b207b67b"
+    },
+    {
+      "path": "test/release/sprint_117_security_assessment_test.dart",
+      "sha256": "368280aa27bfa4b4d711a8fa0f9c03104255443104746cb7137cf8e06c84dc8a"
+    }
+  ],
+  "fail_open_defects_fixed": [
+    {
+      "id": 1,
+      "axis": "log_redaction",
+      "defect": "redact() case-sensitive dan order-dependent",
+      "evidence": "varian uppercase lolos penuh; urutan daftar mengubah hasil",
+      "fix": "urut panjang-desc, dedup case-insensitive, RegExp.escape"
+    },
+    {
+      "id": 2,
+      "axis": "redirects",
+      "defect": "callback match mengabaikan port dan userInfo",
+      "evidence": "https host:8443 diterima untuk redirect port 443; user:pw@host dianggap host terdaftar",
+      "fix": "scheme/host/port/path identik, userInfo wajib kosong"
+    },
+    {
+      "id": 3,
+      "axis": "redirects",
+      "defect": "redirect http ke host remote diterima",
+      "evidence": "endpoint otorisasi wajib https sejak awal; redirect URI tidak pernah diperiksa",
+      "fix": "tolak authority remote http; loopback tetap legal"
+    },
+    {
+      "id": 4,
+      "axis": "oauth",
+      "defect": "_pending hanya bertambah; verifier PKCE resident selamanya",
+      "evidence": "entris ditandai consumed tapi tak pernah dihapus; satu-satunya ledger replay",
+      "fix": "_pending.remove(state) saat resolve + liveAuthorizationCount"
+    },
+    {
+      "id": 5,
+      "axis": "sessions",
+      "defect": "cast jsonDecode melempar TypeError yang tak tertangkap",
+      "evidence": "berkas sesi berisi JSON valid bentuk salah membuat crash, bukan state logout",
+      "fix": "pemeriksaan bentuk sebelum cast + on TypeError"
+    },
+    {
+      "id": 6,
+      "axis": "permissions",
+      "defect": "PluginPermissionSet.validate ada tapi tak pernah dipanggil",
+      "evidence": "izin asing lolos pada jalur parsing manifest",
+      "fix": "dipanggil di PluginManifest.fromJson"
+    },
+    {
+      "id": 7,
+      "axis": "log_redaction",
+      "defect": "SecretScanner hanya 4 regex",
+      "evidence": "7 dari 8 keluarga realistis (PEM, OpenSSH, Google, Anthropic, GitHub fine-grained, Slack, Stripe, JWT) tidak terdeteksi",
+      "fix": "pola keluarga ditambahkan"
+    }
+  ],
+  "axes_reported_clean": [
+    "dependencies"
+  ],
+  "axes_already_fail_closed": [
+    "vault"
+  ],
+  "axes_enforced_newly": [
+    "webhooks"
+  ],
+  "gates": {
+    "red_confirmed": true,
+    "slice_test": "29/29",
+    "regression": "1154 pass +1 skip across 7 targets",
+    "necessity": "NECESSITY_ALL_OK (8 blocks, each rc=1 with exactly the mapped test failing)",
+    "analyzer": "No issues found! (7 files)",
+    "format": "pass1 2 changed, pass2 0 changed (idempotent)",
+    "diff_check": "clean",
+    "windows_build": "exit 0, 41.3s",
+    "build_positive_control": "G1173201 exit 1 (main.dart restored byte-identical sha 05ac3e150af93ec8)",
+    "roadmap_guard": "PASS, recommended_step 117.32"
+  },
+  "harness_defects_found_before_claiming": 6
+}

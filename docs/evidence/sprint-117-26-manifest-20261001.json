@@ -1,0 +1,254 @@
+{
+  "canonical_step": "117.26",
+  "document_role": "SPRINT_117_26_LOCALIZATION_FORMATTING_VALIDATION_EVIDENCE",
+  "required_areas": [
+    "rtl",
+    "text_expansion",
+    "relative_time",
+    "storage_units",
+    "percentages",
+    "currency",
+    "tax",
+    "provider_names"
+  ],
+  "viewports": {
+    "rtl": "1536x1024 + 390x844 ambient TextDirection.rtl",
+    "text_expansion": "1536x1024 + 390x844 pada text scale 2.0",
+    "relative_time": "jam injeksi (tanpa wall clock) pada locale en",
+    "storage_units": "1536x1024 + widget StorageUsageCard terisolasi",
+    "percentages": "1536x1024 kartu metrik + domain storage",
+    "currency": "1536x1024 kartu AI Usage + domain kontrak",
+    "tax": "token Invoice.taxInformation + kontrak taxDisplay",
+    "provider_names": "1536x1024 panel Quick Connect + registry manifest"
+  },
+  "verdict": "LOCALIZATION_FORMATTING_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [
+    "currency:cost_currency_measured_from_source_row"
+  ],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "rtl",
+      "check": "bands_mirror_on_ambient_rtl",
+      "status": "pass",
+      "declared": "nav+rail bertukar sisi pada ambient RTL tanpa crash (exc=none)",
+      "observed": "LTR nav=17.0 grid=209.0 rail=1170.0 | RTL nav=1327.0 grid=366.0 rail=17.0",
+      "note": "115.49 ambient Directionality mirroring"
+    },
+    {
+      "area": "rtl",
+      "check": "outer_edges_mirror_symmetrically",
+      "status": "pass",
+      "declared": "tepi luar nav dan rail mencerminkan LTR dengan padding yang sama",
+      "observed": "navOff=0.00 railOff=0.00"
+    },
+    {
+      "area": "text_expansion",
+      "check": "tab_labels_survive_200_percent_1536",
+      "status": "pass",
+      "declared": "seluruh label tab tetap dirender pada teks 200% tanpa crash",
+      "observed": "9/9 label utuh (exc=none)",
+      "note": "WCAG 1.4.4"
+    },
+    {
+      "area": "text_expansion",
+      "check": "rendered_text_wrappable_1536",
+      "status": "pass",
+      "declared": "semua teks yang dirender bebas karakter non-wrappable",
+      "observed": "160 teks bersih",
+      "note": "115.49 text_expansion contract"
+    },
+    {
+      "area": "text_expansion",
+      "check": "tab_labels_survive_200_percent_390",
+      "status": "pass",
+      "declared": "seluruh label tab tetap dirender pada teks 200% tanpa crash",
+      "observed": "9/9 label utuh (exc=none)",
+      "note": "WCAG 1.4.4"
+    },
+    {
+      "area": "text_expansion",
+      "check": "rendered_text_wrappable_390",
+      "status": "pass",
+      "declared": "semua teks yang dirender bebas karakter non-wrappable",
+      "observed": "140 teks bersih",
+      "note": "115.49 text_expansion contract"
+    },
+    {
+      "area": "text_expansion",
+      "check": "no_unhandled_crash_under_200_percent",
+      "status": "pass",
+      "declared": "nol crash unhandled pada kedua viewport pada teks 200%",
+      "observed": "0/2 viewport crash",
+      "note": "1536x1024:160 teks 390x844:140 teks"
+    },
+    {
+      "area": "relative_time",
+      "check": "sub_minute_is_just_now",
+      "status": "pass",
+      "declared": "selisih di bawah 60 detik dirender \"just now\"",
+      "observed": "just now",
+      "note": "115.49 relative_time; jam injeksi, tanpa wall clock"
+    },
+    {
+      "area": "relative_time",
+      "check": "singular_plural_agrees",
+      "status": "pass",
+      "declared": "jam dan hari memakai bentuk tunggal jamur yang benar",
+      "observed": "60s=1 minute ago",
+      "note": "label relatif harus cocok dengan instantsa yang diukur"
+    },
+    {
+      "area": "relative_time",
+      "check": "beyond_week_falls_back_to_absolute_date",
+      "status": "pass",
+      "declared": "selisih di atas 7 hari jatuh ke tanggal absolut, bukan hari yang terus bertambah",
+      "observed": "7d=on 2026-09-24 400d=on 2025-08-27",
+      "note": "tidak boleh ada penghitung hari yang tumbuh tanpa batas"
+    },
+    {
+      "area": "relative_time",
+      "check": "future_timestamp_rejected",
+      "status": "pass",
+      "declared": "timestamp masa depan ditolak, bukan dirender ke belakang",
+      "observed": "ArgumentError"
+    },
+    {
+      "area": "storage_units",
+      "check": "decimal_units_not_binary",
+      "status": "pass",
+      "declared": "satuan desimal (1000), bukan biner (1024)",
+      "observed": "4096B=4.1 KB 999999B=1000 KB 1000000B=1 MB 1500000000B=1.5 GB 1000000000000B=1 TB",
+      "note": "nilai biner di bawah label GB adalah kebohongan pembulatan"
+    },
+    {
+      "area": "storage_units",
+      "check": "no_invented_precision",
+      "status": "pass",
+      "declared": "nol nol di belakang yang mengarang presisi",
+      "observed": "999B=999 B 1000B=1 KB 1e6B=1 MB"
+    },
+    {
+      "area": "storage_units",
+      "check": "negative_bytes_report_unavailable",
+      "status": "pass",
+      "declared": "ukuran negatif melaporkan \"unavailable\", bukan angka karangan",
+      "observed": "unavailable"
+    },
+    {
+      "area": "storage_units",
+      "check": "rendered_card_uses_contract_units",
+      "status": "pass",
+      "declared": "kartu yang dirender memakai satuan desimal kontrak, bukan formatter privat 1024",
+      "observed": "4.1 KB used | 50% used, 4.1 KB available of 8.19 KB",
+      "note": "StorageUsageCard._formatBytes memakai 1024 di bawah label KB desimal"
+    },
+    {
+      "area": "percentages",
+      "check": "share_percent_is_rounded_whole_within_range",
+      "status": "pass",
+      "declared": "bagian dihitung sebagai persen bulat di dalam 0..100",
+      "observed": "1024/4096=25 3072/4096=75 1/3=33"
+    },
+    {
+      "area": "percentages",
+      "check": "percent_label_rejects_out_of_range",
+      "status": "pass",
+      "declared": "label persen menolak nilai di luar 0..100",
+      "observed": "ArgumentError"
+    },
+    {
+      "area": "percentages",
+      "check": "rendered_shares_match_measured_data",
+      "status": "pass",
+      "declared": "persen yang tampil berasal dari data terukur (75% / 25%)",
+      "observed": "4.1 KB indexed\nImages 75%\nDatabase 25%"
+    },
+    {
+      "area": "percentages",
+      "check": "progress_ratio_never_exceeds_one",
+      "status": "pass",
+      "declared": "rasio progress bar untuk setiap usage<=quota tetap di dalam 0..1",
+      "observed": "0..1",
+      "note": "LinearProgressIndicator menolak nilai di luar rentang"
+    },
+    {
+      "area": "currency",
+      "check": "currency_string_carries_explicit_code",
+      "status": "pass",
+      "declared": "setiap string uang membawa kode tiga huruf yang eksplisit",
+      "observed": "1.25 usd | 0.5 EUR | 1234.5 IDR",
+      "note": "simbol telanjang adalah klaim mata uang tanpa label"
+    },
+    {
+      "area": "currency",
+      "check": "amount_never_invents_precision",
+      "status": "pass",
+      "declared": "jumlah bulat tanpa desimal, jumlah pecatan tanpa ekor nol karangan",
+      "observed": "2.0=2 1.25=1.25"
+    },
+    {
+      "area": "currency",
+      "check": "rendered_cost_carries_currency_marker",
+      "status": "pass",
+      "declared": "baris biaya yang dirender menyatakan penanda mata uang tepat sebelum angkanya",
+      "observed": "1,540 tokens $1.25 estimated",
+      "note": "penanda yang ditemukan: $1.25"
+    },
+    {
+      "area": "currency",
+      "check": "cost_currency_measured_from_source_row",
+      "status": "unmet",
+      "declared": "kode mata uang biaya dibaca dari baris usage yang di-ship",
+      "observed": "kolom currency tidak ada di tabel ai_usage_logs; chrome hanya bisa menandai asumsi",
+      "note": "AiUsageLogs (lib/database/project/tables/ai_usage_logs.dart) punya cost tanpa currency"
+    },
+    {
+      "area": "tax",
+      "check": "tax_line_keeps_region_and_rate",
+      "status": "pass",
+      "declared": "teks cocok ^VAT 20\\.00% \\(GB\\)$",
+      "observed": "VAT 20.00% (GB)",
+      "note": "115.49 taxDisplay menerima baris \"<label> NN.NN% (<region>)\""
+    },
+    {
+      "area": "tax",
+      "check": "wire_tax_tokens_never_print_verbatim",
+      "status": "pass",
+      "declared": "token kawat tidak pernah dicetak apa adanya ke UI",
+      "observed": "not_applicable=\"Not applicable\" unavailable=\"Tax unavailable\""
+    },
+    {
+      "area": "tax",
+      "check": "malformed_tax_line_rejected",
+      "status": "pass",
+      "declared": "baris tax yang tidak berbentuk kanonik ditolak, bukan dirender bebas",
+      "observed": "ArgumentError"
+    },
+    {
+      "area": "provider_names",
+      "check": "display_names_are_whitespace_normalized",
+      "status": "pass",
+      "declared": "nama tampilan provider dinormalkan (dipangkas, spasi dalam dirapatkan)",
+      "observed": "32 nama diperiksa, 0 tidak normal",
+      "note": "115.49 providerDisplayName"
+    },
+    {
+      "area": "provider_names",
+      "check": "rendered_names_never_expose_raw_provider_id",
+      "status": "pass",
+      "declared": "nama yang dirender tidak pernah menampilkan id mentah provider",
+      "observed": "9 nama manifest tampil; id mentah yang bocor: ",
+      "note": "id mesin seperti openai_chat harus tampil sebagai nama, bukan slug"
+    },
+    {
+      "area": "provider_names",
+      "check": "blank_display_name_rejected",
+      "status": "pass",
+      "declared": "nama tampilan kosong ditolak di sumber, bukan dirender kosong",
+      "observed": "ArgumentError"
+    }
+  ]
+}

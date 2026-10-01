@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../design_system/theme/void_theme_context.dart';
 import '../domain/account_center_accessibility.dart';
 import '../domain/account_center_design_tokens.dart';
+import '../domain/account_center_localization_formatting.dart';
 import '../domain/account_center_storage_usage_card.dart';
 
 class StorageUsageCard extends StatelessWidget {
@@ -110,6 +111,17 @@ class StorageUsageCard extends StatelessWidget {
     null => Icons.cloud_queue_outlined,
   };
 
+  /// The visible byte count.
+  ///
+  /// 117.26: this used to be a private binary formatter
+  /// (`bytes / 1024` under a `KB` label) while every other size on the
+  /// account surface went through [AccountCenterLocalizationFormatting], which
+  /// is decimal. Measured on the rendered card: `4096` bytes printed
+  /// `4.0 KB used` here and `4.1 KB available of 8.19 KB` from the very same
+  /// widget's own `accessibleProgress` — one card, two units, and a reader
+  /// comparing the two numbers has no way to reconcile them. The domain type
+  /// already formats through the contract, so the widget now uses the same
+  /// one instead of a second rule.
   static String _formatBytes(int bytes) =>
-      bytes < 1024 ? '$bytes B' : '${(bytes / 1024).toStringAsFixed(1)} KB';
+      AccountCenterLocalizationFormatting.storageUnits(bytes);
 }

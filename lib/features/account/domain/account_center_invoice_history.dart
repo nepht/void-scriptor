@@ -374,6 +374,7 @@ final class InvoiceRefund {
     required this.amount,
     required this.reason,
     required this.requestedAt,
+    required this.onTransition,
   });
 
   final String refundId;
@@ -385,12 +386,22 @@ final class InvoiceRefund {
   DateTime? settledAt;
   DateTime? resolvedAt;
 
+  /// Called with the verdict that was just applied.
+  ///
+  /// The refund verdict is the one that moves money, and it used to leave no
+  /// trace at all: `request_refund` was audited, so the audit log read as a
+  /// complete record of the request while the settlement — or the refusal
+  /// that returned the budget — existed nowhere. The invoice's payment state
+  /// and refundable budget then changed with no audit event explaining it.
+  final void Function(RefundState verdict) onTransition;
+
   void settle(DateTime at) {
     _requireUtc(at, 'settledAt');
     _requireRequested('settled');
     state = RefundState.settled;
     settledAt = at;
     resolvedAt = at;
+    onTransition(state);
   }
 
   /// The provider declined this refund, so no money ever left the account.
@@ -406,6 +417,7 @@ final class InvoiceRefund {
     _requireRequested('rejected');
     state = RefundState.rejected;
     resolvedAt = at;
+    onTransition(state);
   }
 
   /// The user withdrew this refund before the provider decided it.
@@ -414,6 +426,7 @@ final class InvoiceRefund {
     _requireRequested('cancelled');
     state = RefundState.cancelled;
     resolvedAt = at;
+    onTransition(state);
   }
 
   /// A request can only reach a terminal verdict once, and only from
@@ -477,6 +490,7 @@ final class InvoiceDispute {
     required this.reason,
     required this.filedAt,
     required Iterable<DisputeEvidence> evidence,
+    required this.onTransition,
   }) : _evidence = List<DisputeEvidence>.of(evidence);
 
   final String disputeId;
@@ -488,6 +502,15 @@ final class InvoiceDispute {
   DateTime? resolvedAt;
 
   List<DisputeEvidence> get evidence => UnmodifiableListView(_evidence);
+
+  /// Called with the verdict that was just applied.
+  ///
+  /// A chargeback verdict is a money event, and it used to be audited
+  /// nowhere: `file_dispute` was the last entry for the invoice, so a dispute
+  /// the provider LOST — charge stands — and one the provider WON — the
+  /// whole collected amount comes back — left an audit log that claimed the
+  /// dispute was merely opened.
+  final void Function(DisputeState verdict) onTransition;
 
   bool get isOpen => state == DisputeState.filed;
 
@@ -505,6 +528,7 @@ final class InvoiceDispute {
     }
     state = next;
     resolvedAt = at;
+    onTransition(next);
   }
 
   List<DisputeEvidence> get immutableEvidence => evidence;
@@ -764,6 +788,8 @@ final class AccountCenterInvoiceHistory {
       amount: amount,
       reason: trimmed,
       requestedAt: _now().toUtc(),
+      onTransition: (verdict) =>
+          _record('refund_${verdict.name}', invoice.invoiceId),
     );
     _refunds
         .putIfAbsent(invoice.invoiceId, () => <InvoiceRefund>[])
@@ -819,6 +845,8 @@ final class AccountCenterInvoiceHistory {
       reason: trimmed,
       filedAt: now,
       evidence: evidence,
+      onTransition: (verdict) =>
+          _record('dispute_${verdict.name}', invoice.invoiceId),
     );
     _disputes[invoice.invoiceId] = dispute;
     _record('file_dispute', invoice.invoiceId);

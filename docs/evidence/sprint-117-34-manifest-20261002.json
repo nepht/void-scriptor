@@ -1,0 +1,102 @@
+{
+  "schema": "void-scriptor-slice-evidence/1",
+  "canonical_step": "117.34",
+  "title": "Billing & Webhook Integrity",
+  "generated_on": "2026-10-02",
+  "head_at_measurement": "5cc75d2f297f1378a52be4002c180a8ea464f975",
+  "canonical_contract_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
+  "required_evidence_areas_verbatim": [
+    "signature",
+    "idempotency",
+    "retry",
+    "event_order",
+    "entitlement",
+    "refund",
+    "chargeback",
+    "audit"
+  ],
+  "artifacts": {
+    "gate": {
+      "path": "lib/features/world_logic/domain/sprint_117_billing_webhook_integrity.dart",
+      "sha256": "cb0098fcfb6d0175cee3ec2292d70c11085839e17064c01a3d41e4b023732c9c",
+      "bytes": 9304
+    },
+    "slice_test": {
+      "path": "test/release/sprint_117_billing_webhook_integrity_test.dart",
+      "sha256": "a6b35552d2dff5417919aae3591bcb6710e6f53f714d2b3d64288b83f7cc1bcd",
+      "bytes": 38141
+    },
+    "recon_fix": {
+      "path": "lib/features/world_logic/domain/sprint_116_billing_entitlement_webhook_reconciliation.dart",
+      "sha256": "deeecab83f507fefe375ad9633245e08f90b115cb08725ee435f302d44042a87",
+      "bytes": 10585
+    },
+    "audit_fix": {
+      "path": "lib/features/account/domain/account_center_invoice_history.dart",
+      "sha256": "94a95ac1ce7bb9c32d43446fadbc96904b9e99fed66912d2cf7dd76650a41036",
+      "bytes": 34684
+    }
+  },
+  "defects_fixed": [
+    {
+      "id": "signature_after_idempotency",
+      "seam": "sprint_116_billing_entitlement_webhook_reconciliation.dart",
+      "declared": "An unauthenticated delivery never consumes an event id and never evicts the genuine delivery that owns it.",
+      "observed_before": "processed.add(id) ran BEFORE the signature check, so a forged copy that declares its own sequence sorted first, claimed evt_1, and the verified delivery of the same id was then discarded as a duplicate while the entitlement never applied. An unsigned copy of an already-applied id was reported as a plain duplicate, so the signature was never checked and nothing was recorded as invalid.",
+      "fix": "Signature authentication is now decided before processed.add(id), and before duplicate classification.",
+      "necessity_block": "BLOCK_A"
+    },
+    {
+      "id": "refund_and_dispute_terminal_transitions_unaudited",
+      "seam": "account_center_invoice_history.dart",
+      "declared": "Every money-moving transition is recorded, not only the request.",
+      "observed_before": "InvoiceRefund had no transition observer, so settle/reject/cancel were never audited; InvoiceDispute likewise recorded only file_dispute, so a provider-LOST dispute (charge stands) and a provider-WON dispute (whole collected amount comes back) both left an audit log claiming the dispute was merely opened.",
+      "fix": "InvoiceRefund and InvoiceDispute take a transition observer invoked after every successful state change; AccountCenterInvoiceHistory wires it to the audit log as refund_<verdict> and dispute_<verdict>.",
+      "necessity_blocks": [
+        "BLOCK_B",
+        "BLOCK_C"
+      ]
+    }
+  ],
+  "attempted_third_fix_reverted": {
+    "id": "chargeback_aggregate_double_count",
+    "claim": "A won dispute plus a settled refund on one invoice returned 32 on a 20 invoice.",
+    "action": "clamped disputeRefund to (collected - settled)",
+    "necessity_result": "BLOCK_D reverted the clamp and the official suite still reported All tests passed",
+    "conclusion": "There is no shipped public surface that distinguishes the old and new implementation; toPublicJson exposes refunds and disputes as separate rows and no returned_total.",
+    "disposition": "PRODUCTION FIX REVERTED; reported as an unmet contract item, NOT as a violation and NOT as a silent pass."
+  },
+  "unmet_contract_items": [
+    {
+      "area": "chargeback",
+      "check": "no_exported_returned_total",
+      "declared": "The total a chargeback and its refunds return together is reported, not only summed internally.",
+      "observed": "toPublicJson exposes refunds and disputes as separate rows and no returned_total, so the aggregate cannot be observed or bounded from outside.",
+      "status": "unmet (open item, not waived)"
+    }
+  ],
+  "necessity": {
+    "method": "each fix block re-applied to the LIVE file from an anchor asserted against current text, slice test re-run, file restored and SHA-256 verified",
+    "BLOCK_A": "rc=1, 2 event_order tests failed on the fail-open mechanism (forged delivery evicting the genuine event; unsigned duplicate not reported unsigned)",
+    "BLOCK_B": "rc=1, refund audit test failed; 3 observer calls removed",
+    "BLOCK_C": "rc=1, refund audit test failed; 1 observer call removed",
+    "positive_control": "unmodified tree exit 0, 33/33 All tests passed",
+    "restore": "RECON_SHA_MATCH=1, HIST_SHA_MATCH=1",
+    "residue": "PROBE_RESIDUE=0",
+    "harness_defects_found_before_claiming": [
+      "drill v1 restored the file BEFORE running the test, so all three blocks reported one identical audit failure - a false necessity proof",
+      "drill v2 snapshotted an already-corrupt base file, so BLOCK_B removed settle+reject+cancel together and BLOCK_A never actually reordered anything",
+      "the harness labelled a green positive control as VACUOUS_PASS and returned NECESSITY_FAILED even though every block was necessary"
+    ]
+  },
+  "gates": {
+    "slice": "33/33 All tests passed exit 0",
+    "regression": "832/832 All tests passed exit 0 (slice + test/features/account/domain + 116 reconciliation + 116 retry/backoff + automation/safety_runtime)",
+    "analyzer": "4 files No issues found! exit 0",
+    "format": "4 files 0 changed exit 0 (idempotent)",
+    "diff_check": "exit 0",
+    "build_windows_debug": "exit 0, 49,9s"
+  },
+  "external_gates": "DEFERRED-EXTERNAL: live payment provider, real provider refund/dispute verdicts, webhook delivery with real HMAC secrets, PCI certification, dunning, hosted CI, signing, publication",
+  "release_cut": "operator decision"
+}

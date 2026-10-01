@@ -151,14 +151,22 @@ class Sprint116BillingReconciliation {
       }
       // Fail-closed idempotency: an event id is consumed exactly once, so a
       // provider retry or duplicate delivery can never replay an effect.
-      if (!processed.add(id)) {
-        deduped.add(id);
-        continue;
-      }
+      // Authenticity is decided BEFORE the id is consumed. A ledger that
+      // claimed the id first let any unauthenticated delivery evict the
+      // genuine one: a forged copy declares its own `sequence`, so it sorts
+      // first, claims `evt_1`, and the verified delivery of the same id was
+      // then discarded as a duplicate while the renewal never applied. It
+      // also let an unsigned copy of an id that was already applied be
+      // reported as a plain duplicate, so the signature was never checked
+      // and nothing was recorded as invalid at all.
       if (event.signatureStatus.trim().toUpperCase() !=
           Sprint116BillingReconciliationContract.verifiedSignature) {
         rejected.add(id);
         invalid.add('signature:$id');
+        continue;
+      }
+      if (!processed.add(id)) {
+        deduped.add(id);
         continue;
       }
       if (event.retryCount >

@@ -248,6 +248,7 @@ final class AccountCenterOfflineMode {
     AccountCenterLocalStorageDetails? localStorage,
   }) {
     _rejectDuplicateProviders(entries);
+    _rejectNonsensicalLocalDetail(localSettings, localStorage);
     final reference = now.toUtc();
     final views = <AccountCenterCachedEntryView>[
       for (final entry in entries)
@@ -334,9 +335,21 @@ final class AccountCenterOfflineMode {
     if (!localStorageAvailable) {
       buffer.write(' Local storage details are unavailable.');
     }
-    buffer.write(
-      ' Remote actions are disabled until you reconnect and refresh.',
-    );
+    // 117.27: kalimat ini hanya boleh muncul saat aksi remote memang mati.
+    // Sebelumnya ditulis tanpa syarat, jadi SESUDAH reconnect berhasil — saat
+    // [remoteActionsEnabled] sudah `true` — notice tetap memberitahu pengguna
+    // bahwa aksi remote dimatikan sampai ia me-reconnect, padahal ia baru
+    // saja selesai reconnect. Notifikasi yang mengada-ada membuat pengguna
+    // mencari penyebab yang tidak ada, dan yang lebih buruk: [isFullyFresh]
+    // bernilai `true` sementara notice menyatakan ada bacaan yang tidak
+    // current.
+    if (!remoteActionsEnabled) {
+      buffer.write(
+        ' Remote actions are disabled until you reconnect and refresh.',
+      );
+    } else if (!isFullyFresh) {
+      buffer.write(' Some readings are not current.');
+    }
     return buffer.toString();
   }
 
@@ -367,6 +380,38 @@ final class AccountCenterOfflineMode {
         );
       }
     }
+  }
+
+  /// Menolak detail lokal yang tidak bisa jadi hasil pengukuran apa pun.
+  ///
+  /// Entri cache sudah menolak identitas kosong lewat [_text], tetapi
+  /// [AccountCenterLocalSetting] dan [AccountCenterLocalStorageDetails] punya
+  /// constructor `const` sehingga tidak bisa melempar tanpa merusak setiap
+  /// call site `const`. Hasilnya: `label: '   '`, `value: ''`, dan
+  /// `totalBytes: -1` diterima lalu dilaporkan sebagai
+  /// `localSettingsAvailable == true` / `localStorageAvailable == true` —
+  /// membalik doktrin file ini sendiri ("an absent summary stays `null`; it is
+  /// never reported as zero bytes"). Penolakan diletakkan di boundary yang
+  /// sama dengan [_rejectDuplicateProviders] supaya tidak ada jalur yang
+  /// melewati validasi.
+  static void _rejectNonsensicalLocalDetail(
+    List<AccountCenterLocalSetting> settings,
+    AccountCenterLocalStorageDetails? storage,
+  ) {
+    for (final setting in settings) {
+      _text(setting.id, 'localSettings.id');
+      _text(setting.label, 'localSettings.label');
+      _text(setting.value, 'localSettings.value');
+    }
+    if (storage == null) return;
+    if (storage.totalBytes < 0) {
+      throw ArgumentError.value(
+        storage.totalBytes,
+        'localStorage.totalBytes',
+        'must not be negative (absent storage is null, never a fabricated count)',
+      );
+    }
+    _text(storage.largestCategory, 'localStorage.largestCategory');
   }
 }
 

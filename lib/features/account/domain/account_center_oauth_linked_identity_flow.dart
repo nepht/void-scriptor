@@ -72,6 +72,20 @@ final class OAuthProviderConfiguration {
         'Redirect URI must be absolute and must not contain query or fragment.',
       );
     }
+    // 117.32: the redirect URI was never checked for `http`, while the
+    // authorization endpoint two clauses up was required to be `https`. A
+    // cleartext redirect is exactly where the authorization code and state
+    // land, so registering one meant the code returned in the clear to any
+    // network observer. Loopback `http` stays legal because the desktop
+    // native-redirect flow depends on it, and a custom scheme (`voidscriptor:`)
+    // is unaffected — only a remote `http` authority is refused.
+    if (redirectUri.scheme == 'http' && !_isLoopback(redirectUri.host)) {
+      throw ArgumentError.value(
+        redirectUri,
+        'redirectUri',
+        'Redirect URI must use https; http is only allowed for loopback hosts.',
+      );
+    }
   }
 
   final ProviderConnectorEntry connector;
@@ -80,6 +94,23 @@ final class OAuthProviderConfiguration {
   final Set<String> scopes;
   final bool nonceRequired;
   final bool supportsRefresh;
+
+  /// Loopback authorities, the only hosts allowed to receive a cleartext
+  /// redirect. `localhost` and the RFC 1122 `.localhost` special-use domain
+  /// never leave the machine; `127.0.0.0/8` and `[::1]` are literal
+  /// loopback. Anything else is a remote authority.
+  static bool _isLoopback(String host) {
+    if (host.isEmpty) return false;
+    final lower = host.toLowerCase();
+    if (lower == 'localhost' || lower.endsWith('.localhost')) return true;
+    if (lower == '[::1]' || lower == '::1') return true;
+    final octets = lower.split('.');
+    if (octets.length != 4) return false;
+    if (octets.any((o) => int.tryParse(o) == null || int.parse(o) > 255)) {
+      return false;
+    }
+    return octets.first == '127';
+  }
 
   static Set<String> _normalizeScopes(Iterable<String> scopes) {
     final normalized = scopes
@@ -416,6 +447,17 @@ final class AccountOAuthFlow {
   List<LinkedIdentity> get linkedIdentities =>
       List<LinkedIdentity>.unmodifiable(_identities.values);
 
+  /// Authorizations that were issued and not yet resolved.
+  ///
+  /// 117.32: `_pending` only ever grew. A spent entry was flagged
+  /// `consumed` and left in the map forever, so the PKCE verifier for every
+  /// authorization the user ever started stayed resident in memory, and the
+  /// map was the sole replay ledger — entries marked consumed from a year ago
+  /// were indistinguishable from live ones. The entry is now released the
+  /// moment it resolves, which makes the size of this map equal to the number
+  /// of authorizations actually in flight.
+  int get liveAuthorizationCount => _pending.length;
+
   OAuthAuthorizationRequest beginAuthorization({
     required OAuthProviderConfiguration configuration,
     required OAuthScopeConsent consent,
@@ -480,7 +522,13 @@ final class AccountOAuthFlow {
       'code',
       OAuthFlowErrorCode.callbackInvalid,
     );
-    pending.consumed = true;
+    // The authorization is spent from this point on: the code is redeemed by
+    // the broker call below and can never legitimately be replayed, so the
+    // pending entry is released before that call rather than flagged and
+    // retained. A broker fault therefore cannot leave a spent entry resident
+    // either, and a second callback with the same state fails on the unknown
+    // state rather than on a boolean nobody clears.
+    _pending.remove(state);
     final response = await _callBroker(
       () => broker.exchange(
         OAuthTokenExchangeRequest(
@@ -673,9 +721,21 @@ final class AccountOAuthFlow {
       );
     }
     final expected = pending.request.configuration.redirectUri;
+    // 117.32: the port and the callback's own user info were both ignored.
+    // `https://app.example.test:8443/callback` and
+    // `https://app.example.test/callback` were both accepted for a redirect
+    // registered on port 443, and `https://user:pw@app.example.test/callback`
+    // matched as well — user info is what a parser reads first when deciding
+    // which host it is talking to, so a callback that looks like it names a
+    // different authority was treated as the registered one. Scheme, host,
+    // port, and path must all be identical, and the callback must carry no
+    // user info of its own.
     if (callback.scheme != expected.scheme ||
         callback.host != expected.host ||
-        callback.path != expected.path) {
+        callback.hasPort != expected.hasPort ||
+        (callback.hasPort && callback.port != expected.port) ||
+        callback.path != expected.path ||
+        callback.userInfo.isNotEmpty) {
       throw const OAuthFlowException(
         OAuthFlowErrorCode.callbackMismatch,
         'OAuth callback does not match the registered redirect URI.',

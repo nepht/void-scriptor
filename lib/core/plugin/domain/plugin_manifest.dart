@@ -1,4 +1,5 @@
 import 'plugin_api_version.dart';
+import '../sandbox/plugin_permission.dart';
 
 class PluginManifestException implements Exception {
   const PluginManifestException(this.message);
@@ -56,14 +57,23 @@ class PluginManifest {
       throw const PluginManifestException('missing "entrypoint"');
     }
 
+    final capabilities = _stringList(json['capabilities']);
+    final permissions = _stringList(json['permissions']);
+    // 117.32: `PluginPermissionSet.validate` existed but nothing on the parse
+    // path ever called it, so an arbitrary permission string survived manifest
+    // loading unchecked and was only rejected later — if the requesting
+    // surface happened to consult the set. Validate here so an unknown
+    // permission is refused at the boundary it enters the process through.
+    PluginPermissionSet.validate(permissions);
+
     return PluginManifest(
       id: id,
       name: name,
       version: version,
       author: author,
       apiVersion: PluginApiVersion.parse(apiVersion),
-      capabilities: _stringList(json['capabilities']),
-      permissions: _stringList(json['permissions']),
+      capabilities: capabilities,
+      permissions: permissions,
       entrypoint: entrypoint,
     );
   }

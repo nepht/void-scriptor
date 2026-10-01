@@ -1,0 +1,121 @@
+{
+  "sprint": "117.31",
+  "title": "OAuth Reauth & Revocation Validation",
+  "verdict": "VERIFIED-LOCAL",
+  "commit": "17d3e216f8e69d51f0ccbc6d1f4c27e6ec6e44d8",
+  "utc_date": "2026-10-01",
+  "authored_by": "core-worker-cron",
+  "adopted_wip": true,
+  "production_fixes": [
+    {
+      "id": "A",
+      "file": "account_center_secure_token_vault.dart",
+      "defect": "revoke left the clipboard copy of the revoked secret",
+      "fix": "revoke calls clearClipboard(onlyKey: key) immediately",
+      "necessity": "OK rc=1 failing=1"
+    },
+    {
+      "id": "B",
+      "file": "account_center_connected_accounts_management.dart",
+      "defect": "unlink dropped the local row even when the provider revoke failed; the caller could not tell",
+      "fix": "AccountDisconnectResult reports providerRevokeAttempted/providerRevoked, localRemoved: revoked",
+      "necessity": "OK rc=1 failing=1"
+    },
+    {
+      "id": "C",
+      "file": "account_center_oauth_linked_identity_flow.dart",
+      "defect": "a provider-stated lifetime beyond any real token was accepted; isExpiredAt contradicted its own doc and marked the boundary instant expired",
+      "fix": "implausible lifetime refused; isExpiredAt uses exclusive isBefore at toUtc()",
+      "necessity": "OK rc=1 failing=1"
+    },
+    {
+      "id": "D",
+      "file": "account_center_token_expiry_reauthentication_ux.dart",
+      "defect": "a local-data claim could be reported without naming its scope",
+      "fix": "localDataPreservedWithScope requires localDataPreserved && hasLocalDataScope",
+      "necessity": "OK rc=1 failing=1"
+    },
+    {
+      "id": "E",
+      "file": "sprint_117_oauth_reauth_revocation_validation.dart",
+      "defect": "an evidence area carrying a measured violation still counted as covered, so a violating area passed the gate by also holding one pass",
+      "fix": "!hasPass || hasViolation -> area_without_pass:<area> names the offending area",
+      "necessity": "OK rc=1 failing=1"
+    },
+    {
+      "id": "F",
+      "file": "sprint_117_identity_workflow_drill.dart",
+      "defect": "unlink facts recorded an AccountDisconnectResult object where the contract declares booleans",
+      "fix": "facts stay boolean, provider detail reported beside them",
+      "necessity": "OK rc=1 failing=1 (measured on the drill test, not the slice test)"
+    }
+  ],
+  "gates": {
+    "slice_plus_drill": "53/53 PASS exit 0",
+    "account_domain": "772/772 PASS exit 0 (baseline 769, +3 slice tests)",
+    "shell": "47/47 PASS exit 0",
+    "analyzer": "No issues found! 7 files exit 0",
+    "format": "pass1 6 changed, pass2 0 changed (idempotent) exit 0",
+    "diff_check": "exit 0, no output",
+    "windows_build_debug": "exit 0, 41s, void_scriptor.exe built",
+    "build_evidence_scope": "NOT slice evidence: account/domain is not reachable from lib/main.dart. Positive control G1173101 (type error injected into lib/main.dart) makes the same build exit 1, proving the build gate is not vacuous. main.dart restored byte-identical sha 05ac3e150af93ec8.",
+    "roadmap_guard": "PASS exit 0, canonical sha b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6"
+  },
+  "necessity_run": {
+    "blocks": 6,
+    "result": "NECESSITY_ALL_OK exit 0",
+    "all_restored_byte_identical": true,
+    "harness_defects_found_and_fixed_before_claiming": [
+      "block B first cut replaced a constructor field with a getter and broke compilation at every call site - proves nothing, harness rejected",
+      "block A anchor was LF-anchored against a CRLF file - reported ANCHOR_MISSING for a block that was present; matching made newline-agnostic",
+      "block A anchor had 6 leading spaces but dart format re-indented the line to 4",
+      "block F ran the slice test while the drill facts are asserted by the drill test, so it reported rc=0 failing=0 - a fake necessity proof; blocks now select their own test file"
+    ]
+  },
+  "residue": {
+    "necessity_markers_in_source": 0,
+    "lib_main_dart": "CLEAN vs HEAD"
+  },
+  "files": [
+    {
+      "path": "lib/features/world_logic/domain/sprint_117_oauth_reauth_revocation_validation.dart",
+      "sha256": "98bd62fc8d9c7300b5968b0da290906b5f66fe14bf6cb6f80f095590b9228417",
+      "bytes": 8802
+    },
+    {
+      "path": "test/release/sprint_117_oauth_reauth_revocation_validation_test.dart",
+      "sha256": "32538936cecc043e920a242beb4382f98213c0de311c78a868b30c6736da893b",
+      "bytes": 41537
+    },
+    {
+      "path": "lib/features/account/domain/account_center_connected_accounts_management.dart",
+      "sha256": "dc998e38f811e9041e81f673e279ee2308cf323aab27bfff75ccc3b0458a9ef3",
+      "bytes": 11924
+    },
+    {
+      "path": "lib/features/account/domain/account_center_oauth_linked_identity_flow.dart",
+      "sha256": "64717152e899fc17d6ca74be064c7ac89a4e15fc4d6648fcb7ee937109d2a037",
+      "bytes": 26792
+    },
+    {
+      "path": "lib/features/account/domain/account_center_secure_token_vault.dart",
+      "sha256": "9d679c6b147239d90e30fc79d1c5ab8a15c8aaa4b9b88c6ac8b3844ceb5d5134",
+      "bytes": 7806
+    },
+    {
+      "path": "lib/features/account/domain/account_center_token_expiry_reauthentication_ux.dart",
+      "sha256": "9d4458704859569cd59759c183992704cfe14b962c24de7a674be776e7a0bfa2",
+      "bytes": 6043
+    },
+    {
+      "path": "lib/features/world_logic/domain/sprint_117_identity_workflow_drill.dart",
+      "sha256": "1f7e41e479a108ecb99620a8091d6484ce9bf8a93e64515f38fe1029700b0107",
+      "bytes": 43779
+    },
+    {
+      "path": "test/features/account/domain/account_center_connected_accounts_management_test.dart",
+      "sha256": "380428ae22bc7700a97bdc6d99a73a5ca866a3b2ba226fadb17b7797995c9339",
+      "bytes": 9134
+    }
+  ]
+}

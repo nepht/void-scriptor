@@ -46,7 +46,10 @@ class StorageUsageCard extends StatelessWidget {
             value: message,
             child: Row(
               children: [
-                Icon(_iconFor(value?.icon)),
+                Icon(
+                  _iconFor(value?.icon),
+                  size: AccountCenterDesignTokens.iconSizes.serviceRow,
+                ),
                 SizedBox(width: AccountCenterDesignTokens.spacing.md),
                 Expanded(
                   child: Column(
@@ -82,7 +85,10 @@ class StorageUsageCard extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
               onPressed: onManage,
-              icon: const Icon(Icons.settings_outlined),
+              icon: Icon(
+                Icons.settings_outlined,
+                size: AccountCenterDesignTokens.iconSizes.action,
+              ),
               label: const Text('Manage storage'),
               style: TextButton.styleFrom(
                 minimumSize: const Size(

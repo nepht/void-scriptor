@@ -2047,7 +2047,11 @@ class _AccountSummaryRail extends StatelessWidget {
       final header = Row(
         children: [
           Expanded(child: Text('ACCOUNT SUMMARY', style: _sectionTitle)),
-          Icon(Icons.unfold_more, color: context.palette.textMuted),
+          Icon(
+            Icons.unfold_more,
+            color: context.palette.textMuted,
+            size: AccountCenterDesignTokens.iconSizes.section,
+          ),
         ],
       );
       final gap = SizedBox(height: AccountCenterDesignTokens.spacing.md);
@@ -2784,14 +2788,13 @@ class _FocusedAccountArea extends StatelessWidget {
           // Band main memuat chrome (header, breadcrumb, tab strip) sebelum
           // kartu. Tinggi yang benar untuk grid adalah sisa SETELAH chrome,
           // jadi tinggi baris dihitung dari tinggi yang benar-benar tersedia
-          // — bukan dari tinggi band. Algoritmanya tetap milik kontrak
-          // ([rowHeightsFor]); frame hanya quiebra tinggi band dan lebar kolom.
+          // — bukan dari tinggi band. Algoritma tetap milik kontrak
+          // ([rowHeightsFor]); kontrak juga sudah mengurangi celah antar
+          // baris di dalamnya, jadi caller TIDAK boleh mengurangi celah lagi
+          // (celah terpotong dua kali menyisakan 44px band kosong — 117.23).
           availableHeight = constraints.maxHeight;
           rowHeights = AccountCenterWideDesktopFrame.rowHeightsFor(
-            (availableHeight - rowGap * (rowCount - 1)).clamp(
-              0.0,
-              availableHeight,
-            ),
+            availableHeight,
           );
         } else if (wideFrame != null) {
           // Harness tanpa Scaffold memberi tinggi tak terbatas; anggaran
@@ -2806,11 +2809,11 @@ class _FocusedAccountArea extends StatelessWidget {
           availableHeight = constraints.maxHeight.isFinite
               ? constraints.maxHeight
               : fallbackHeight;
+          // Sama seperti jalur live: celah sudah dipotong di dalam
+          // [rowHeightsFor], jadi tinggi yang dikirim = tinggi tersedia apa
+          // adanya.
           rowHeights = AccountCenterWideDesktopFrame.rowHeightsFor(
-            (availableHeight - rowGap * (rowCount - 1)).clamp(
-              0.0,
-              availableHeight,
-            ),
+            availableHeight,
           );
         }
         // 115.36: tiga baris mockup hanya sah di tier `wide_desktop` (viewport
@@ -2849,36 +2852,35 @@ class _FocusedAccountArea extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (var index = 0; index < rowCount; index++) ...[
+              // Celah antar baris di LUAR anchor: [rowHeightsFor] sudah
+              // menyisakan (rowCount - 1) * gap dari tinggi band, sehingga
+              // baris + celah = tinggi tersedia persis, tanpa sisa 44px di
+              // bawah baris (cacat fail-closed yang diukur 117.23).
+              if (index > 0) SizedBox(height: rowGap),
               _AccountSectionAnchor(
                 // Key pada anchor = seam yang dipakai tab strip & deep link.
                 key: ValueKey('account-anchor-${rows[index].tab.slug}'),
                 tab: rows[index].tab,
                 active: rows[index].tab == tab,
                 child: SizedBox(
-                  // Padding baris DI DALAM tinggi baris: kalau di luar, total
-                  // tinggi menjadi 3 * rowHeight + 3 * gap dan melampaui
-                  // tinggi viewport yang tersisa.
                   height: rowHeights[index],
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: rowGap),
-                    child: _RowCards(
-                      cards: rows[index].cards,
-                      contentWidth: contentWidth,
-                      gap: rowGap,
-                      // Padding bawah baris ada DI DALAM tinggi baris, jadi
-                      // anggaran kartu adalah tinggi baris dikurangi padding
-                      // tersebut — kalau tidak, kartu meluap sebesar rowGap.
-                      boundedRowHeight: rowHeights[index] - rowGap,
-                      // Mockup 1536x1024 memakai lima kolom pada baris 2 dan
-                      // 3; batas itu hanya sah di tier wide_desktop, dan
-                      // pada frame 115.45 angka kolom berasal dari kontrak
-                      // (1536 hanya muat 4 kolom setelah nav 192px).
-                      maxColumns:
-                          frame?.rowColumns[index] ??
-                          (gridPlan.tier == AccountCenterLayoutTier.wideDesktop
-                              ? 5
-                              : gridPlan.maxColumns),
-                    ),
+                  child: _RowCards(
+                    cards: rows[index].cards,
+                    contentWidth: contentWidth,
+                    gap: rowGap,
+                    // Anggaran kartu = seluruh tinggi baris; celah antar
+                    // baris kini berada di luar anchor sehingga tidak lagi
+                    // dipotong dari dalam baris.
+                    boundedRowHeight: rowHeights[index],
+                    // Mockup 1536x1024 memakai lima kolom pada baris 2 dan
+                    // 3; batas itu hanya sah di tier wide_desktop, dan
+                    // pada frame 115.45 angka kolom berasal dari kontrak
+                    // (1536 hanya muat 4 kolom setelah nav 192px).
+                    maxColumns:
+                        frame?.rowColumns[index] ??
+                        (gridPlan.tier == AccountCenterLayoutTier.wideDesktop
+                            ? 5
+                            : gridPlan.maxColumns),
                   ),
                 ),
               ),

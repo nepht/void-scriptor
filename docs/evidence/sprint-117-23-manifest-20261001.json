@@ -1,0 +1,238 @@
+{
+  "canonical_step": "117.23",
+  "document_role": "SPRINT_117_23_WIDE_DESKTOP_VISUAL_VALIDATION_EVIDENCE",
+  "viewport": "1536x1024",
+  "spec_document": "C:/Users/nepht/Documents/Codex/2026-08-22/referenced-chatgpt-conversation-this-is-an-2/outputs/account_cloud_center_spec.json",
+  "spec_sha256": "f0589fe77428b94a608f44939df8bbd599e11b45d8605c59866ddaede99bd88a",
+  "required_areas": [
+    "1536x1024",
+    "layout_dimensions",
+    "card_grid",
+    "avatar",
+    "icons",
+    "progress",
+    "charts",
+    "status_bar"
+  ],
+  "verdict": "WIDE_DESKTOP_VISUAL_VALIDATION_LOCAL",
+  "pass": true,
+  "failures": [],
+  "open_items": [
+    "avatar:ring_size",
+    "avatar:compact_size",
+    "progress:production_data_supplier"
+  ],
+  "violation_codes": [],
+  "checks": [
+    {
+      "area": "1536x1024",
+      "check": "render_without_exception",
+      "status": "pass",
+      "declared": "no exception at 1536x1024",
+      "observed": "exception=null physical=1536.0x1024.0"
+    },
+    {
+      "area": "1536x1024",
+      "check": "frame_bands_present",
+      "status": "pass",
+      "declared": "4/4",
+      "observed": "4/4"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "left_navigation_width",
+      "status": "pass",
+      "declared": "192.0",
+      "observed": "192.0",
+      "note": "kontrak frame 115.45 vs band ter-render"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "main_grid_width",
+      "status": "pass",
+      "declared": "961.0",
+      "observed": "961.0"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "right_rail_width",
+      "status": "pass",
+      "declared": "349.0",
+      "observed": "349.0"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "status_bar_height",
+      "status": "pass",
+      "declared": "40.0",
+      "observed": "40.0"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "main_grid_height",
+      "status": "pass",
+      "declared": "949.0",
+      "observed": "949.0"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "page_horizontal_padding",
+      "status": "pass",
+      "declared": "17.0",
+      "observed": "17.0",
+      "note": "band nav mulai dari padding halaman"
+    },
+    {
+      "area": "layout_dimensions",
+      "check": "status_bar_top",
+      "status": "pass",
+      "declared": "972.0",
+      "observed": "972.0",
+      "note": "status bar menempel di tepi bawah viewport"
+    },
+    {
+      "area": "card_grid",
+      "check": "row_columns",
+      "status": "pass",
+      "declared": "[3, 4, 4]",
+      "observed": "[3, 4, 4]",
+      "note": "kolom per baris = aturan fit card.minWidth terhadap band main"
+    },
+    {
+      "area": "card_grid",
+      "check": "card_counts",
+      "status": "pass",
+      "declared": "[3, 5, 5]",
+      "observed": "[3, 5, 5]",
+      "note": "jumlah kartu per baris mockup 3/5/5"
+    },
+    {
+      "area": "card_grid",
+      "check": "card_min_width",
+      "status": "pass",
+      "declared": "220.0",
+      "observed": "232.0"
+    },
+    {
+      "area": "card_grid",
+      "check": "cards_uniform_per_line",
+      "status": "pass",
+      "declared": "equal width within each physical line",
+      "observed": "all lines uniform"
+    },
+    {
+      "area": "card_grid",
+      "check": "rows_fill_band",
+      "status": "pass",
+      "declared": "dead band 0.0, no overflow",
+      "observed": "dead=-0.0 overflow=0.0 gridBottom=961.0 lastAnchorBottom=961.0",
+      "note": "chrome=781.8 px di atas baris"
+    },
+    {
+      "area": "avatar",
+      "check": "image_size",
+      "status": "pass",
+      "declared": "80.0",
+      "observed": "80.0",
+      "note": "token profile_avatar.image_size_px"
+    },
+    {
+      "area": "avatar",
+      "check": "ring_size",
+      "status": "unmet",
+      "declared": "96.0",
+      "observed": "no 96.0px concentric ancestor (ancestor widths: 113.2,113.2,113.2,283.0,283.0,283.0)",
+      "note": "token profile_avatar.ring_size_px dideklarasikan tetapi layar referensi tidak menggambar cincin"
+    },
+    {
+      "area": "avatar",
+      "check": "compact_size",
+      "status": "unmet",
+      "declared": "40.0",
+      "observed": "0 avatars at 40.0px; profile avatar rendered once at 80.0px",
+      "note": "token profile_avatar.compact_size_px tidak punya konteks render di layar referensi"
+    },
+    {
+      "area": "icons",
+      "check": "token_set_membership",
+      "status": "pass",
+      "declared": "[20.0, 24.0, 36.0, 28.0, 8.0]",
+      "observed": "41 icons, all sizes in token set"
+    },
+    {
+      "area": "icons",
+      "check": "explicit_token_pinning",
+      "status": "pass",
+      "declared": "every rendered Icon pins an explicit token size",
+      "observed": "41 icons, all explicit"
+    },
+    {
+      "area": "icons",
+      "check": "navigation_icon_size",
+      "status": "pass",
+      "declared": "20.0",
+      "observed": "{20.0}"
+    },
+    {
+      "area": "icons",
+      "check": "storage_action_icon_size",
+      "status": "pass",
+      "declared": "20.0",
+      "observed": "20.0",
+      "note": "ikon tombol Manage storage = action_icon_size_px 20"
+    },
+    {
+      "area": "progress",
+      "check": "no_bar_without_data",
+      "status": "pass",
+      "declared": "0 bars while no quota data exists",
+      "observed": "LinearProgressIndicator count=0",
+      "note": "kartu storage jujur menampilkan Usage unavailable"
+    },
+    {
+      "area": "progress",
+      "check": "production_data_supplier",
+      "status": "unmet",
+      "declared": ">=1 shipped call site supplies StorageUsageCardData",
+      "observed": "1 shipped call site(s), 0 pass data: (StorageUsageCard(onManage: ...))",
+      "note": "token progress bar terbukti jalan saat data ada (cek bar_height_with_data), tetapi tidak ada jalur produksi yang menyuplai data kuota"
+    },
+    {
+      "area": "charts",
+      "check": "account-ai-usage-chart",
+      "status": "pass",
+      "declared": "painted at reference with accessible text alternative",
+      "observed": "319.0x72.0 painter=_UsageCompositionPainter candidates=1 labelChars=73"
+    },
+    {
+      "area": "charts",
+      "check": "account-storage-donut",
+      "status": "pass",
+      "declared": "painted at reference with accessible text alternative",
+      "observed": "68.0x68.0 painter=_StorageDonutPainter candidates=1 labelChars=79"
+    },
+    {
+      "area": "status_bar",
+      "check": "height",
+      "status": "pass",
+      "declared": "40.0",
+      "observed": "40.0"
+    },
+    {
+      "area": "status_bar",
+      "check": "items_from_snapshot",
+      "status": "pass",
+      "declared": "Mode | Offline mode | Services | 0 of 11 connected | Remote | Local data only",
+      "observed": "Mode | Offline mode | Services | 0 of 11 connected | Remote | Local data only",
+      "note": "nilai diturunkan dari AccountCloudSnapshot tanpa fabrikasi"
+    },
+    {
+      "area": "progress",
+      "check": "bar_height_with_data",
+      "status": "pass",
+      "declared": "8.0",
+      "observed": "8.0",
+      "note": "token progress_bar_height_px diukur pada bar terisi"
+    }
+  ]
+}

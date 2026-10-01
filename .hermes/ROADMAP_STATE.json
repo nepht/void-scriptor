@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.21",
- "next_step": "117.22",
+ "last_verified_step": "117.22",
+ "next_step": "117.23",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -59,8 +59,8 @@
   "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
- "updated_at": "2026-10-01T05:25:00+07:00",
- "updated_by": "hermes cron core worker — 117.20 Security Center Workflow Validation",
+ "updated_at": "2026-10-01T08:55:00+07:00",
+ "updated_by": "hermes cron core worker — 117.22 Provider Icon & Brand Validation",
  "active_stream": "sequential_expansion",
  "novel_io_hunt_2026_09_12": {
   "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -616,10 +616,10 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.21",
+ "current_step": "117.22",
  "current_step_status": "VERIFIED-LOCAL",
- "last_run_summary": "2026-10-01: 117.17 Developer Connector Workflow Validation VERIFIED-LOCAL (slice a77157b). 6 canonical evidence (scopes, resource_access, rate_limits, reauth, revoke, audit) diukur terhadap mekanisme yang di-ship; gate dan drill dipisah seperti 117.5-117.16. Slice memperbaiki TIGA defect nyata: disconnect developer tidak di-gate reauth padahal spec mendaftarkan disconnect_provider sebagai sensitive_action dengan jaminan reauth_before_sensitive_action (default gate fail-closed); disconnect yang ditolak tidak berverejak (kini denied_disconnect); recordHealthCheck tidak pernah membersihkan permintaan reauth sehingga prompt yang tak bisa dipenuhi terus tampil. DUA cacat pada mesin kejujuran slice sendiri: acceptance dibaca dari konstanta yang disalin ke harness (kini dari list acceptance tiap sumber), dan term subtree dihitung lalu diabaikan serta pencocokan daun bertitik ke subtree tingkat atas = NOL PALSU (kini di-AND-kan dan pencocokan berprefiks). Necessity dua arah terbukti: blob pra-fix via git cat-file -> suite gagal; subnet 115.10 dipersempit -> 4 test gate gagal; keduanya dipulihkan SHA MATCH. Gates: fokus 52/52, regresi account/domain 740/740, shard 117 17 file 626/626, analyzer 7 file No issues found, format 0 changed, diff-check 0, 2/2 pin MATCH, build exit 0. Build TIDAK diklaim bukti slice: dua build pertama exit 0 dalam 19-20 dtk dengan kernel tak tersentuh; setelah kernel + cache inkremental dipurge build 46,1 dtk menghasilkan kernel fresh (101.223.920 -> 101.390.088) dengan kontrol positif non-nol dan SETIAP simbol slice = 0, jadi rantai account/domain tidak terjangkau dari main.dart. Manifest docs/evidence/sprint-117-17-manifest-20261001.json byte-identical dua run (sha256 65cb34f2, 5783 byte); generator dihapus tanpa residu. Open item: no_shipped_consumer_for_developer_connector_managers, developer_connector_defined_not_executed_live, external_connector_specs_outside_repository, plus gap terukur organizations/workspaces dan rate-limit yang tidak dideklarasikan anchor mana pun.",
- "last_commit": "675b722e42d14307e944cf37ada4f633c8b6fd51",
+ "last_run_summary": "2026-10-01: 117.22 Provider Icon & Brand Validation VERIFIED-LOCAL (slice 129680c, 5 path eksplisit). 7 bukti kanonik (asset_source, permission, asset_version, theme_variants, clear_space, fallback, accessible_name) diukur terhadap registry icon yang benar-benar dipakai layar Account & Cloud Center, bukan dideklarasikan. LIMA defect fail-open ditemukan lewat probe pengukuran file: (1) widthForHeight mengembalikan argumen tanpa diubah, sehingga wordmark OpenAI 1180x320 jadi 24.0x24.0 pada tinggi 24 dan test lama justru memaku cacat itu (expect(widthForHeight(48), 48)); kini intrinsicSize terukur dan rasio aritmetik (24 -> 88.5). (2) asset_version cuma dua literal 'bundled-v1'/'generic-v1' untuk 14 mark; kini bundled-sha256-<12> per mark. (3) asset_source memakai satu kalimat trademarkNotice identik; kini path file konkret. (4) theme_variants tidak punya rekaman sama sekali - _entry tidak pernah mengisi assetDark - dan tujuh mark bertinta gelap (anthropic luminansi 0.0137, paypal 0.0363, bitbucket 0.1039, canva 0.1179, raster hitam openai/github/midtrans) menjadi tak terlihat di surface gelap; supportsDarkSurface kini diukur dari ink. (5) accessible_name tetap 'Anthropic icon' sambil menggambar glyph generik = bohong ke pembaca layar; resolveForSurface menukar mark DAN nama sekaligus di domain, diuji widget. permission fail-closed unverified (ada file di repo = bukan lisensi), clear_space 0.25 dideklarasikan + divalidasi constructor, fallback membuka 2 temuan: monochromeFallback tidak dikonsumsi lib/ dan sertifikasi 116.7 hanya menutupi fixture sintetis, bukan 32 provider asli. Probe presentasi mengukur overview cuma me-render 5 tile cloud storage, jadi test dark-surface memakai Dropbox (tinta terang 96.3%) - bukan Anthropic yang tidak dirender di surface itu. NECESSITY dua arah: git cat-file blob HEAD -> contract test Failed to load 48 undefined-symbol; seam ekspresi pra-fix membuktikan jawaban berbeda, dan MUTATION CHECK (kembalikan widthForHeight ke identitas) menggagalkan test dengan 'Expected within 0.001 of <88.5> Actual <24.0>' exit 1 sehingga tidak vakum. Seam+scratch dihapus, residu 0. BUILD: exit 0 42.6s dan KEBALIKAN 117.20/117.21 - AccountCloudCenterScreen terjangkau dari main.dart, jadi kernel_blob.bin 101.425.696 byte mencetak semua simbol slice NON-NOL (runner 3, resolveForSurface 4, supportsDarkSurface 26, clearSpaceRatio 31, assetSource 15, assetDigest 29, intrinsicSize 28, genericForCategory 4) dengan kontrol positif non-nol (main 7441, RenderObject 2870, WidgetsApp 212, runApp 76); simbol ter-compile membuktikan ikut dibangun, perilaku tetap dipegang test. Gerbang: fokus 57/57, account-domain 769/769 (baseline 753, delta +16), shard sprint_117 686/686 (delta 0), analyzer 5 file No issues found, format 5 file 0 changed idempoten, diff --check 0, CJK scan file-wide 0. Tidak ada manifest JSON (perbaikan kode+test murni, sama seperti 117.21). Semua gate eksternal DEFERRED-EXTERNAL.",
+ "last_commit": "129680c8e918b6f12b18355ebc636ff400c10027",
  "sprint_112_step_11242": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",

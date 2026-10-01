@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.25",
- "next_step": "117.26",
+ "last_verified_step": "117.26",
+ "next_step": "117.27",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -48,7 +48,7 @@
   "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
   "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
   "rechecked_on": "2026-10-01",
-  "recheck_note": "Re-verified at 117.25 entry/exit: focused 2/2, account/domain regression 769/769 (baseline 769, delta 0), test/features/account/ 930/930, sprint-117 shard 23 file 693/693 (baseline 691/22, delta +2 = 117.25 test slice), 117.24 responsive suite 3/3, analyzer 3 files 'No issues found!', format 0 changed, diff-check 0, Windows debug build exit 0 with poison control failing at the fixed seam. stability_gate stays PASS.",
+  "recheck_note": "Re-verified at 117.26 entry/exit: focused 2/2, sprint_117 shard 24 files 695/695 (baseline 693/23), account domain 769/769 (baseline 769), account presentation 161/161, analyzer 3 files 'No issues found!', format 0 changed, diff-check 0, Windows debug build exit 0 with a poison control failing at the fixed seam. stability_gate stays PASS.",
   "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
   "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart."
  },
@@ -59,8 +59,8 @@
   "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
   "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
  ],
- "updated_at": "2026-10-01T10:29:34+07:00",
- "updated_by": "hermes cron core worker — 117.24 Responsive Layout Validation",
+ "updated_at": "2026-10-01T15:05:00+07:00",
+ "updated_by": "hermes cron core worker — 117.26 Localization & Formatting Validation",
  "active_stream": "sequential_expansion",
  "novel_io_hunt_2026_09_12": {
   "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -2558,10 +2558,42 @@
   "note": "slot allocated at operator stream transition; no work performed yet"
  },
  "sprint_117_step_11726": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "next_step": "117.27",
+  "manifest": "docs/evidence/sprint-117-26-manifest-20261001.json",
+  "manifest_sha256": "e694e209cc846d61a36a0cbe736a5dabbf7af5fb0d4638c78a39691ae1076877",
+  "slice_commit": "2c94494d584220df94132bb30ecb677a32f95901",
+  "checks": 29,
+  "areas": [
+   "rtl",
+   "text_expansion",
+   "relative_time",
+   "storage_units",
+   "percentages",
+   "currency",
+   "tax",
+   "provider_names"
+  ],
+  "defect_fixed": "StorageUsageCard._formatBytes was a private binary formatter (bytes / 1024) under a decimal KB label while the domain type that calls it already formatted through the decimal contract; measured on the rendered card with 4096 B: '4.0 KB used' beside '50% used, 4.1 KB available of 8.19 KB'. The private formatter was removed so the widget uses AccountCenterLocalizationFormatting.",
+  "necessity_two_way": "pre-fix blob restored via git cat-file blob HEAD:<path> > <path> (no reset/restore) -> the same violation reappeared, exit 1; fix restored from snapshot, git diff held only the two intended blocks, GREEN 2/2 re-verified",
+  "harness_faults_fixed_before_claiming_defect": "first RED run reported three violations; two were drill faults, not production defects: wrong absolute-date arithmetic (2026-08-25 vs the correct 2026-09-24 for now=2026-10-01 minus 7 days) and a currency check that matched the card subtitle instead of the cost line. Both corrected before the remaining violation was called a defect.",
+  "measured_gaps_open_items": [
+   "currency:cost_currency_measured_from_source_row"
+  ],
+  "gates": {
+   "focused": "2/2 PASS exit 0",
+   "sprint_117_shard": "24 files 695/695 PASS exit 0 (baseline 693/23, delta +2)",
+   "account_domain_regression": "769/769 PASS exit 0 (baseline 769, delta 0)",
+   "account_presentation_regression": "161/161 PASS exit 0",
+   "analyzer": "3 files, No issues found! exit 0",
+   "format": "3 files 0 changed exit 0 (idempotent re-check)",
+   "diff_check": "exit 0",
+   "build_windows_debug": "exit 0 in 42.8s on a purged, regenerated kernel (101433368 bytes)",
+   "poison_control": "invalid Dart in storage_usage_card.dart -> build exit 1 naming that file (125,44); restored, residue 0, build exit 0 again in 25.5s",
+   "manifest_determinism": "byte-identical across two runs, sha256 e694e209cc846d61a36a0cbe736a5dabbf7af5fb0d4638c78a39691ae1076877, 9355 bytes, json.loads valid"
+  },
+  "external_gates": "DEFERRED-EXTERNAL: full locale certification (Intl/ICU), IME, native platform RTL mirroring, real non-English locale fixtures, physical touch hardware",
+  "release_cut": "operator decision"
  },
  "sprint_117_step_11727": {
   "status": "NOT_STARTED",
@@ -2796,7 +2828,7 @@
   ],
   "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
  },
- "last_slice_commit": "da1de2a2676b13fdf565ae591132b13b1dae8fab",
+ "last_slice_commit": "2c94494d584220df94132bb30ecb677a32f95901",
  "last_verified_on": "2026-10-01",
  "sprint_117_19_team_collaboration": {
   "status": "VERIFIED-LOCAL",

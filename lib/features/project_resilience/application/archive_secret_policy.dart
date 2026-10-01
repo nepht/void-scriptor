@@ -39,7 +39,17 @@ class ArchiveSecretPolicy {
     'credentials.yaml',
     'secrets.yaml',
   };
-  static const _secretFolders = <String>{'.aws', '.ssh', '.gcloud', '.kube'};
+  static const _secretFolders = <String>{
+    '.aws',
+    '.ssh',
+    '.gcloud',
+    '.kube',
+    // Version-control metadata stores credentials in plain text: `.git/config`
+    // remote URLs commonly embed a token or a password
+    // (`https://user:token@host/...`). A portable archive must drop the whole
+    // repository metadata directory, not only the well-known key filenames.
+    '.git',
+  };
 
   /// True when [entryName] (archive-relative, POSIX separators) refers to a
   /// file that must be excluded from portable archives.

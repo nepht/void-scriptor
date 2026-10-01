@@ -67,6 +67,22 @@ class WorkflowPrivacyPolicy {
   static const WorkflowPrivacyPolicy strict = WorkflowPrivacyPolicy(
     localOnly: true,
     auditExternalTransfers: true,
+    // The policy named "strict" must actually constrain data kinds. Shipping it
+    // with an empty allowlist combined with the `isNotEmpty` guard below meant
+    // the strictest policy in the app performed zero data minimization: every
+    // dataKind passed, including creative content and credentials. An explicit
+    // allowlist makes the minimization branch reachable under `strict`.
+    allowedDataKinds: <String>{
+      'chapter_count',
+      'scene_count',
+      'word_count',
+      'session_duration',
+      'feature_flag',
+      'outcome',
+      'surface',
+      'user.profile',
+      'account.profile',
+    },
   );
 
   final bool localOnly;
@@ -103,11 +119,18 @@ class WorkflowPrivacyEvaluator {
           policy.auditExternalTransfers) {
         audited.add(t);
       }
-      if (policy.allowedDataKinds.isNotEmpty &&
-          !policy.allowedDataKinds.contains(t.dataKind)) {
+      // Minimization applies to every transfer that actually declares a data kind.
+      // A transfer with no declared kind has no payload category to constrain, so it
+      // is left to the `localOnly` gate above; this keeps the 103.21 contract that an
+      // in-process transfer with no declaration is allowed and unaudited. Once a kind
+      // IS declared, an unlisted kind is denied even when the allowlist is small.
+      final declaredKind = t.dataKind?.trim();
+      if (declaredKind != null &&
+          declaredKind.isNotEmpty &&
+          policy.allowedDataKinds.isNotEmpty &&
+          !policy.allowedDataKinds.contains(declaredKind)) {
         violations.add(
-          'data_minimization_violation: undeclared dataKind '
-          '${t.dataKind ?? '<null>'}',
+          'data_minimization_violation: undeclared dataKind $declaredKind',
         );
       }
     }

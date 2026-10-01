@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.29",
-  "next_step": "117.30",
+  "last_verified_step": "117.30",
+  "next_step": "117.31",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -48,7 +48,7 @@
     "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
     "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
     "rechecked_on": "2026-10-01",
-    "recheck_note": "Re-verified at 117.28 exit: slice 19/19, contract+slice 25/25, test/features/account/domain/ 769/769, sprint_116_offline_cached_metadata_certification + 117.27 slice 20/20, analyzer 3 files 'No issues found!' (one prefer_const_declarations introduced by the manifest generator was fixed), format pass2 0 changed, git diff --check 0. Windows debug build exit 0 25.0s with a positive-control poison failing in a reachable file (error G44692887) while account/domain is not reachable from main.dart, so the build proves no regression on the reachable program only. stability_gate stays PASS.",
+    "recheck_note": "Re-verified at 117.30 exit: slice 13/13, account domain 769/769, focused regression 52/52, analyzer 3 files 'No issues found!', format pass2 0 changed idempotent, git diff --check 0. Windows debug and release builds exit 0 but are NOT slice evidence; the positive control proves the poison can bite while the slice file itself is not reachable from main.dart, so the build shows no regression on the reachable program only. stability_gate stays PASS.",
     "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
     "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart.",
     "slice_117_27": {
@@ -85,6 +85,30 @@
       "focused": "slice 19/19, contract+slice 25/25, account domain 769/769 (baseline 769, delta 0), 116.44 offline + 117.27 slice 20/20",
       "manifest": "docs/evidence/sprint-117-28-manifest-20261001.json sha256 0548d0f98741b01a12c9371adf8ab47cf017abd2bca4988afc926c236b724892, 4285 bytes, byte-identical across two runs, json.loads VALID",
       "build": "windows --debug exit 0 in 25.0s; positive-control poison in a reachable file exited 1 (account_cloud_center_screen.dart(3892,39) error G44692887), so the build proves no regression only — account/domain is not reachable from main.dart, same pattern as 117.12-117.27"
+    },
+    "slice_117_30": {
+      "commit": "ca0456f",
+      "defects_fixed": [
+        "costIsExact never checked the currency count, so a live complete reported two-currency report returned true and uiState claimed CONNECTED by testing costTotals.every(subtotal != null) instead of the exactness contract",
+        "source was never visible: providerApi, localLog and userDeclared rows rendered byte-identical costText and textSummary, and a user-declared row kept costIsExact=true",
+        "period reconciliation was blind: a record billed to 2026-09 but measured 2026-10-20 was summed into the September bar and total with costIsExact=true and no disclosure in summary, unknownFilterValues, emptyReason or suggestedAction",
+        "an application credit balance measured 2020-01-01 printed as the plain number 5 while provider rows in the same report were aged against the clock"
+      ],
+      "harness_defects_corrected_before_claiming": [
+        "costLabel first returned originLabel unconditionally, breaking the pre-existing 115.40 pin (Expected 'Estimated' Actual 'Reported'); the origin is now checked first and the estimate flag second",
+        "the first necessity run used LF markers against a CRLF file and matched nothing; rewritten with DOTALL regex line stripping",
+        "the first poison attempt used an unreferenced throwing function, which tree-shaking removes and which therefore proves nothing; discarded and rerun with a real type error"
+      ],
+      "necessity": "5 fix blocks removed one at a time, 5x rc=1 with exactly one failing test each, no cross-contamination, restored byte-identical from in-memory bytes (sha256 725be741d84300a9 verified) then green rc=0",
+      "slice_test": "13/13 PASS exit 0",
+      "account_domain_regression": "769/769 PASS exit 0, baseline 769 delta 0",
+      "focused_regression": "52/52 PASS (ai_usage_report + ai_usage_credits_cost_view + right_rail_summary)",
+      "analyzer": "3 files, No issues found!",
+      "format": "pass1 changed 2 files, pass2 0 changed, exit 0 idempotent",
+      "diff_check": "exit 0",
+      "manifest": "docs/evidence/sprint-117-30-manifest-20261001.json sha256 2497da9465206cb9a5cb3c769b65f6ef 7880 bytes, byte-identical across two reads, json.loads VALID",
+      "windows_build": "debug exit 0 23s and release exit 0 76.2s on a forced-fresh kernel, recorded as NOT slice evidence: a positive-control type error in lib/main.dart fails the build (exit 1, error G44692867) while the same error in the slice file exits 0, so lib/features/account/domain/ is not reachable from main.dart",
+      "poison_residue": "none; lib/main.dart verified CLEAN against HEAD via git status after restore"
     }
   },
   "selection_rules": [

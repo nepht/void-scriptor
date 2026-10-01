@@ -28,8 +28,8 @@
  "active_sprint": 117,
  "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
  "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
- "last_verified_step": "117.22",
- "next_step": "117.23",
+ "last_verified_step": "117.23",
+ "next_step": "117.24",
  "stability_gate": {
   "status": "PASS",
   "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -616,10 +616,10 @@
   "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
   "next_step": "112.41"
  },
- "current_step": "117.22",
+ "current_step": "117.23",
  "current_step_status": "VERIFIED-LOCAL",
- "last_run_summary": "2026-10-01: 117.22 Provider Icon & Brand Validation VERIFIED-LOCAL (slice 129680c, 5 path eksplisit). 7 bukti kanonik (asset_source, permission, asset_version, theme_variants, clear_space, fallback, accessible_name) diukur terhadap registry icon yang benar-benar dipakai layar Account & Cloud Center, bukan dideklarasikan. LIMA defect fail-open ditemukan lewat probe pengukuran file: (1) widthForHeight mengembalikan argumen tanpa diubah, sehingga wordmark OpenAI 1180x320 jadi 24.0x24.0 pada tinggi 24 dan test lama justru memaku cacat itu (expect(widthForHeight(48), 48)); kini intrinsicSize terukur dan rasio aritmetik (24 -> 88.5). (2) asset_version cuma dua literal 'bundled-v1'/'generic-v1' untuk 14 mark; kini bundled-sha256-<12> per mark. (3) asset_source memakai satu kalimat trademarkNotice identik; kini path file konkret. (4) theme_variants tidak punya rekaman sama sekali - _entry tidak pernah mengisi assetDark - dan tujuh mark bertinta gelap (anthropic luminansi 0.0137, paypal 0.0363, bitbucket 0.1039, canva 0.1179, raster hitam openai/github/midtrans) menjadi tak terlihat di surface gelap; supportsDarkSurface kini diukur dari ink. (5) accessible_name tetap 'Anthropic icon' sambil menggambar glyph generik = bohong ke pembaca layar; resolveForSurface menukar mark DAN nama sekaligus di domain, diuji widget. permission fail-closed unverified (ada file di repo = bukan lisensi), clear_space 0.25 dideklarasikan + divalidasi constructor, fallback membuka 2 temuan: monochromeFallback tidak dikonsumsi lib/ dan sertifikasi 116.7 hanya menutupi fixture sintetis, bukan 32 provider asli. Probe presentasi mengukur overview cuma me-render 5 tile cloud storage, jadi test dark-surface memakai Dropbox (tinta terang 96.3%) - bukan Anthropic yang tidak dirender di surface itu. NECESSITY dua arah: git cat-file blob HEAD -> contract test Failed to load 48 undefined-symbol; seam ekspresi pra-fix membuktikan jawaban berbeda, dan MUTATION CHECK (kembalikan widthForHeight ke identitas) menggagalkan test dengan 'Expected within 0.001 of <88.5> Actual <24.0>' exit 1 sehingga tidak vakum. Seam+scratch dihapus, residu 0. BUILD: exit 0 42.6s dan KEBALIKAN 117.20/117.21 - AccountCloudCenterScreen terjangkau dari main.dart, jadi kernel_blob.bin 101.425.696 byte mencetak semua simbol slice NON-NOL (runner 3, resolveForSurface 4, supportsDarkSurface 26, clearSpaceRatio 31, assetSource 15, assetDigest 29, intrinsicSize 28, genericForCategory 4) dengan kontrol positif non-nol (main 7441, RenderObject 2870, WidgetsApp 212, runApp 76); simbol ter-compile membuktikan ikut dibangun, perilaku tetap dipegang test. Gerbang: fokus 57/57, account-domain 769/769 (baseline 753, delta +16), shard sprint_117 686/686 (delta 0), analyzer 5 file No issues found, format 5 file 0 changed idempoten, diff --check 0, CJK scan file-wide 0. Tidak ada manifest JSON (perbaikan kode+test murni, sama seperti 117.21). Semua gate eksternal DEFERRED-EXTERNAL.",
- "last_commit": "129680c8e918b6f12b18355ebc636ff400c10027",
+ "last_run_summary": "2026-10-01: 117.23 Wide Desktop Visual Validation VERIFIED-LOCAL (slice 67d4578, 5 path eksplisit). 8 area bukti kanonik diukur terhadap layar Account & Cloud Center yang benar-benar dirender pada viewport 1536x1024, bukan deklarasi token: 25 pass / 3 open item (avatar:ring_size, avatar:compact_size, progress:production_data_supplier) / 0 violation / 0 failure struktural; manifest docs/evidence/sprint-117-23-manifest-20261001.json sha256 89657f1d byte-identical saat diregenerasi (SPRINT_117_23_MANIFEST=1). DUA defect fail-open di kode yang di-ship, dibuktikan ulang lewat mutation di run ini: (1) celah antar baris dipotong dua kali (kontrak rowHeightsFor sudah mengurangi gap, caller mengurangi lagi + Padding di dalam baris) menyisakan band mati; RED = ekspresi pra-fix disisipkan ke jalur live -> fokus GAGAL violation:card_grid:rows_fill_band dead=22.0 exit 1. (2) dua ikon (StorageUsageCard service row, unfold_more) tidak mem-pin ukuran token sehingga lahir dari IconTheme ambient; RED = size dihapus -> fokus GAGAL violation:icons:explicit_token_pinning '1 of 41 unpinned: U+ef63@24.0' exit 1. Kedua file dipulihkan dari snapshot, SHA MATCH, residu 0. WIP adopsi: snapshot pre-mutation di hermes cache scratch, 0 proses Dart/Flutter (writer tidak aktif). BUILD sebagai bukti kompilasi + POISON CONTROL: build exit 0 19.2s; baris Dart tidak valid di account_cloud_center_screen.dart -> build exit 1 dengan 3 error menunjuk file itu (baris 2816/2867/2875); pulih -> exit 0 25.4s; kernel fresh 101.248.384 byte simbol seam non-nol (rowHeightsFor 8, _AccountSectionAnchor 4, boundedRowHeight 6, AccountCloudCenterScreen 11) + kontrol positif (main 7441, WidgetsApp 212, runApp 76). Gerbang: fokus 2/2, test/features/account/ 930/930, account/domain 769/769 (baseline 769 delta 0), shard sprint_117 21 file 688/688 (baseline 686/20 delta +2), analyzer 4 file bersih, format 4 file 0 changed, diff --check 0, CJK scan 0. next_step=117.24. Semua gate eksternal DEFERRED-EXTERNAL.",
+ "last_commit": "67d45784d321efe4568da3902a655ab9a1dd1083",
  "sprint_112_step_11242": {
   "status": "VERIFIED-LOCAL",
   "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -2538,10 +2538,11 @@
   "note": "slot allocated at operator stream transition; no work performed yet"
  },
  "sprint_117_step_11723": {
-  "status": "NOT_STARTED",
-  "next_step": null,
-  "manifest": null,
-  "note": "slot allocated at operator stream transition; no work performed yet"
+  "status": "VERIFIED-LOCAL",
+  "next_step": "117.24",
+  "manifest": "docs/evidence/sprint-117-23-manifest-20261001.json",
+  "manifest_sha256": "89657f1d7b22f78b92d08f3d3f773d9ecccf77260c07471ba452b23516218ab3",
+  "note": "8 area bukti diukur pada render 1536x1024; 25 pass / 3 open item / 0 violation. Dua defect fail-open fixed (gap dipotong dua kali -> dead band 22px; ikon tanpa pin token). Poison control build exit 1 di file yang diperbaiki. Fokus 2/2, account 930/930, domain 769/769, shard 21 file 688/688, analyzer bersih, format idempoten, diff-check 0."
  },
  "sprint_117_step_11724": {
   "status": "NOT_STARTED",

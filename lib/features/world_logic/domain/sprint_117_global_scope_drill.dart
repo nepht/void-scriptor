@@ -61,14 +61,17 @@ class Sprint117GlobalScopeDrill {
         : _nestedString(ia, const <String>['global_route', 'scope']);
     final shortcutKey = ia == null
         ? null
-        : _nestedString(ia, const <String>['profile_shortcut', 'navigation_key']);
+        : _nestedString(ia, const <String>[
+            'profile_shortcut',
+            'navigation_key',
+          ]);
     final shortcutRoute = ia == null
         ? null
         : _nestedString(ia, const <String>['profile_shortcut', 'route']);
 
     final legacyBlock = router == null ? null : _legacyRedirectBlock(router);
-    final routerRegistersCanonical = router != null &&
-        router.contains('path: AppRoutes.accountCloud,');
+    final routerRegistersCanonical =
+        router != null && router.contains('path: AppRoutes.accountCloud,');
     final manifestMatchesShipped =
         globalRoute == AppRoutes.accountCloud &&
         legacyAlias == AppRoutes.accountCloudLegacy &&
@@ -76,8 +79,10 @@ class Sprint117GlobalScopeDrill {
 
     // The contract itself must classify the canonical route as global and
     // reject workspace, studio, and relative routes (fail closed).
-    final classifiedGlobal = AccountCenterWorkspaceBoundaryContract
-        .isGlobalSurfaceRoute(AppRoutes.accountCloud);
+    final classifiedGlobal =
+        AccountCenterWorkspaceBoundaryContract.isGlobalSurfaceRoute(
+          AppRoutes.accountCloud,
+        );
     final workspaceRoutesRejected =
         !AccountCenterWorkspaceBoundaryContract.isGlobalSurfaceRoute(
           AppRoutes.workspace,
@@ -90,13 +95,16 @@ class Sprint117GlobalScopeDrill {
         );
 
     final navEntries = _allNavigationDestinations();
-    final shortcutDeclared = shortcutKey != null &&
+    final shortcutDeclared =
+        shortcutKey != null &&
         shortcutRoute == AppRoutes.accountCloud &&
         navEntries.any(
-          (entry) => entry.key == shortcutKey && entry.route == AppRoutes.accountCloud,
+          (entry) =>
+              entry.key == shortcutKey && entry.route == AppRoutes.accountCloud,
         );
 
-    final passed = manifestMatchesShipped &&
+    final passed =
+        manifestMatchesShipped &&
         declaredScope == 'GLOBAL_USER' &&
         classifiedGlobal &&
         workspaceRoutesRejected &&
@@ -161,23 +169,29 @@ class Sprint117GlobalScopeDrill {
                 in (spec.json['acceptance_invariants'] ?? const <dynamic>[]))
               if (value is String) value,
           ];
-    final invariantCovered =
-        invariants.contains('profile_contains_summary_and_shortcut_only');
-    final alphaHeld = alpha != null &&
+    final invariantCovered = invariants.contains(
+      'profile_contains_summary_and_shortcut_only',
+    );
+    final alphaHeld =
+        alpha != null &&
         Sprint117GlobalScopeLoader._alphaCheckHeld(
           alpha,
           'invariant_2_profile_summary_covered',
         );
     final shortcutKey = ia == null
         ? null
-        : _nestedString(ia, const <String>['profile_shortcut', 'navigation_key']);
-    final navDeclared = shortcutKey != null &&
+        : _nestedString(ia, const <String>[
+            'profile_shortcut',
+            'navigation_key',
+          ]);
+    final navDeclared =
+        shortcutKey != null &&
         _allNavigationDestinations().any(
           (entry) =>
               entry.key == shortcutKey && entry.route == AppRoutes.accountCloud,
         );
-    final menuCarriesShortcut = shortcutKey != null &&
-        menuValues.contains(shortcutKey);
+    final menuCarriesShortcut =
+        shortcutKey != null && menuValues.contains(shortcutKey);
 
     final resolved = <String, String>{};
     final unresolved = <String>[];
@@ -195,13 +209,17 @@ class Sprint117GlobalScopeDrill {
       }
     }
 
-    final modelFields = _readSource(Sprint117GlobalScopeContract.summaryModelSource);
+    final modelFields = _readSource(
+      Sprint117GlobalScopeContract.summaryModelSource,
+    );
     final snapshotFields = modelFields == null
         ? const <String>[]
         : _finalFieldNames(modelFields);
-    final snapshotFieldsSummaryOnly = snapshotFields.isNotEmpty &&
+    final snapshotFieldsSummaryOnly =
+        snapshotFields.isNotEmpty &&
         snapshotFields.every(
-          (field) => _namespaceHits(field).isEmpty &&
+          (field) =>
+              _namespaceHits(field).isEmpty &&
               !field.toLowerCase().contains('workspace'),
         );
 
@@ -221,7 +239,8 @@ class Sprint117GlobalScopeDrill {
     ].join('\n');
     final snapshotNamespaceHits = _namespaceHits(snapshotStrings);
 
-    final passed = spec != null &&
+    final passed =
+        spec != null &&
         declaredRole == Sprint117GlobalScopeContract.profileSurfaceRole &&
         declaredShows.isNotEmpty &&
         invariantCovered &&
@@ -312,14 +331,16 @@ class Sprint117GlobalScopeDrill {
     required String checkId,
     required AccountCenterDataScope target,
   }) {
-    final denied = AccountCenterWorkspaceBoundaryContract.resolveWorkspaceAccess(
-      target: target,
-      hasExplicitWorkspacePermission: false,
-    );
-    final allowed = AccountCenterWorkspaceBoundaryContract.resolveWorkspaceAccess(
-      target: target,
-      hasExplicitWorkspacePermission: true,
-    );
+    final denied =
+        AccountCenterWorkspaceBoundaryContract.resolveWorkspaceAccess(
+          target: target,
+          hasExplicitWorkspacePermission: false,
+        );
+    final allowed =
+        AccountCenterWorkspaceBoundaryContract.resolveWorkspaceAccess(
+          target: target,
+          hasExplicitWorkspacePermission: true,
+        );
     final globalAlwaysAllowed =
         AccountCenterWorkspaceBoundaryContract.resolveWorkspaceAccess(
           target: AccountCenterDataScope.globalUser,
@@ -361,7 +382,8 @@ class Sprint117GlobalScopeDrill {
         denied == WorkspaceBoundaryDecision.deniedWorkspacePermissionRequired &&
         allowed == WorkspaceBoundaryDecision.allowedWorkspaceScoped &&
         globalAlwaysAllowed == WorkspaceBoundaryDecision.allowedGlobalScope;
-    final policyGateHolds = !projectionWithoutLink &&
+    final policyGateHolds =
+        !projectionWithoutLink &&
         projectionWithOwnerAndLink &&
         !writeWithoutOwnerApi &&
         writeWithOwnerApi &&
@@ -477,18 +499,26 @@ class Sprint117GlobalScopeDrill {
   Sprint117GlobalScopeObservation _observeNoCrossWorkspaceLeak() {
     final package = ProjectPackage(
       projectId: 'sprint-117-global-scope-drill',
-      root: Directory(_joinPath('C:/void-scriptor-sprint-117', 'drill-package')),
+      root: Directory(
+        _joinPath('C:/void-scriptor-sprint-117', 'drill-package'),
+      ),
     );
     final namespace = WorkspaceFileNamespace(package);
-    final novelRelative = _relativeInside(package.root.path, namespace.novelRoot.path);
+    final novelRelative = _relativeInside(
+      package.root.path,
+      namespace.novelRoot.path,
+    );
     final characterRelative = _relativeInside(
       package.root.path,
       namespace.characterRoot.path,
     );
     final namespacesMatch =
-        novelRelative == AccountCenterWorkspaceBoundaryContract.novelWorkspaceDataNamespace &&
+        novelRelative ==
+            AccountCenterWorkspaceBoundaryContract
+                .novelWorkspaceDataNamespace &&
         characterRelative ==
-            AccountCenterWorkspaceBoundaryContract.characterWorkspaceDataNamespace;
+            AccountCenterWorkspaceBoundaryContract
+                .characterWorkspaceDataNamespace;
 
     // Real traversal rejection: escaping paths must throw.
     var traversalRejected = false;
@@ -501,51 +531,65 @@ class Sprint117GlobalScopeDrill {
     final violationResults = <String, List<String>>{
       'account_global_holds_novel_data':
           AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
-        boundary: AccountBackupBoundary.accountGlobal,
-        relativePaths: const <String>['workspaces/novels/novel-1/chapter.md'],
-      ),
-      'novel_boundary_holds_character_data': AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
-        boundary: AccountBackupBoundary.novelWorkspace,
-        relativePaths: const <String>['workspaces/characters/char-1/x.json'],
-      ),
-      'character_boundary_holds_novel_data': AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
-        boundary: AccountBackupBoundary.characterWorkspace,
-        relativePaths: const <String>['workspaces/novels/novel-1/x.json'],
-      ),
-      'account_global_clean': AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
-        boundary: AccountBackupBoundary.accountGlobal,
-        relativePaths: const <String>['database/project.db'],
-      ),
-      'novel_boundary_clean': AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
-        boundary: AccountBackupBoundary.novelWorkspace,
-        relativePaths: const <String>['workspaces/novels/novel-1/notes.md'],
-      ),
+            boundary: AccountBackupBoundary.accountGlobal,
+            relativePaths: const <String>[
+              'workspaces/novels/novel-1/chapter.md',
+            ],
+          ),
+      'novel_boundary_holds_character_data':
+          AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
+            boundary: AccountBackupBoundary.novelWorkspace,
+            relativePaths: const <String>[
+              'workspaces/characters/char-1/x.json',
+            ],
+          ),
+      'character_boundary_holds_novel_data':
+          AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
+            boundary: AccountBackupBoundary.characterWorkspace,
+            relativePaths: const <String>['workspaces/novels/novel-1/x.json'],
+          ),
+      'account_global_clean':
+          AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
+            boundary: AccountBackupBoundary.accountGlobal,
+            relativePaths: const <String>['database/project.db'],
+          ),
+      'novel_boundary_clean':
+          AccountCenterWorkspaceBoundaryContract.backupBoundaryViolations(
+            boundary: AccountBackupBoundary.novelWorkspace,
+            relativePaths: const <String>['workspaces/novels/novel-1/notes.md'],
+          ),
     };
     final violationsBehave =
-        violationResults['account_global_holds_novel_data']!
-                .contains('ACCOUNT_GLOBAL_MUST_NOT_HOLD_WORKSPACE_DATA') &&
-            violationResults['novel_boundary_holds_character_data']!
-                .contains('NOVEL_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_CHARACTER_DATA') &&
-            violationResults['character_boundary_holds_novel_data']!
-                .contains('CHARACTER_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_NOVEL_DATA') &&
-            violationResults['account_global_clean']!.isEmpty &&
-            violationResults['novel_boundary_clean']!.isEmpty;
+        violationResults['account_global_holds_novel_data']!.contains(
+          'ACCOUNT_GLOBAL_MUST_NOT_HOLD_WORKSPACE_DATA',
+        ) &&
+        violationResults['novel_boundary_holds_character_data']!.contains(
+          'NOVEL_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_CHARACTER_DATA',
+        ) &&
+        violationResults['character_boundary_holds_novel_data']!.contains(
+          'CHARACTER_WORKSPACE_BOUNDARY_MUST_NOT_HOLD_NOVEL_DATA',
+        ) &&
+        violationResults['account_global_clean']!.isEmpty &&
+        violationResults['novel_boundary_clean']!.isEmpty;
 
     // Any account surface other than the contract that declares them must
     // not carry workspace namespace payloads.
-    final accountSurfaceFiles = _filesContaining(
-      'lib/features/account',
-      <String>[
-        AccountCenterWorkspaceBoundaryContract.novelWorkspaceDataNamespace,
-        AccountCenterWorkspaceBoundaryContract.characterWorkspaceDataNamespace,
-      ],
-    ).where(
-      (path) => !path.endsWith('account_center_workspace_boundary_contract.dart'),
-    );
+    final accountSurfaceFiles =
+        _filesContaining('lib/features/account', <String>[
+          AccountCenterWorkspaceBoundaryContract.novelWorkspaceDataNamespace,
+          AccountCenterWorkspaceBoundaryContract
+              .characterWorkspaceDataNamespace,
+        ]).where(
+          (path) =>
+              !path.endsWith('account_center_workspace_boundary_contract.dart'),
+        );
 
     final callSites = _callSites('backupBoundaryViolations');
     final passed =
-        namespacesMatch && traversalRejected && violationsBehave && accountSurfaceFiles.isEmpty;
+        namespacesMatch &&
+        traversalRejected &&
+        violationsBehave &&
+        accountSurfaceFiles.isEmpty;
 
     return Sprint117GlobalScopeObservation(
       checkId: 'no_cross_workspace_leak',
@@ -579,11 +623,12 @@ String _joinPath(String a, String b) => '$a/$b';
 
 /// Every navigation destination the shipped registry offers, across core,
 /// mobile, and optional lists.
-List<AppNavigationDestination> _allNavigationDestinations() => <AppNavigationDestination>[
-  ...coreNavigationDestinations,
-  ...mobilePrimaryDestinations,
-  ...optionalNavigationDestinations,
-];
+List<AppNavigationDestination> _allNavigationDestinations() =>
+    <AppNavigationDestination>[
+      ...coreNavigationDestinations,
+      ...mobilePrimaryDestinations,
+      ...optionalNavigationDestinations,
+    ];
 
 /// Reads a nested string field by key path, or null when any level is absent.
 String? _nestedString(Map<String, dynamic> source, List<String> keys) {

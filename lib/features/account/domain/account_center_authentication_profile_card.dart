@@ -5,24 +5,27 @@ class ProfileAvatar {
 
   const ProfileAvatar.none() : this._(ProfileAvatarKind.none, null);
   const ProfileAvatar.image(String assetId)
-      : this._(ProfileAvatarKind.image, assetId);
+    : this._(ProfileAvatarKind.image, assetId);
   const ProfileAvatar.initials(String value)
-      : this._(ProfileAvatarKind.initials, value);
+    : this._(ProfileAvatarKind.initials, value);
 
   final ProfileAvatarKind kind;
   final String? value;
 
-  Map<String, Object?> toJson() => {
-        'kind': kind.name,
-        'value': value,
-      };
+  Map<String, Object?> toJson() => {'kind': kind.name, 'value': value};
 }
 
 enum AccountPlan { free, pro, team, enterprise }
 
 enum SignInMethod { email, google, github, apple }
 
-enum AccountProfileState { active, signedOut, reauthRequired, suspended, offline }
+enum AccountProfileState {
+  active,
+  signedOut,
+  reauthRequired,
+  suspended,
+  offline,
+}
 
 class AuthenticationProfileCard {
   AuthenticationProfileCard({
@@ -33,9 +36,9 @@ class AuthenticationProfileCard {
     required Iterable<SignInMethod> signInMethods,
     required this.primaryIdentity,
     required this.accountState,
-  })  : displayName = _required(displayName, 'displayName'),
-        email = _required(email, 'email'),
-        signInMethods = Set.unmodifiable(signInMethods) {
+  }) : displayName = _required(displayName, 'displayName'),
+       email = _required(email, 'email'),
+       signInMethods = Set.unmodifiable(signInMethods) {
     if (this.signInMethods.isEmpty) {
       throw ArgumentError.value(signInMethods, 'signInMethods');
     }
@@ -52,14 +55,14 @@ class AuthenticationProfileCard {
     required Iterable<SignInMethod> signInMethods,
     required SignInMethod primaryIdentity,
   }) : this(
-          avatar: avatar,
-          displayName: displayName,
-          email: email,
-          plan: plan,
-          signInMethods: signInMethods,
-          primaryIdentity: primaryIdentity,
-          accountState: AccountProfileState.active,
-        );
+         avatar: avatar,
+         displayName: displayName,
+         email: email,
+         plan: plan,
+         signInMethods: signInMethods,
+         primaryIdentity: primaryIdentity,
+         accountState: AccountProfileState.active,
+       );
 
   final ProfileAvatar avatar;
   final String displayName;
@@ -78,8 +81,8 @@ class AuthenticationProfileCard {
 
 class EditProfileRequest {
   EditProfileRequest({required String displayName, required String email})
-      : displayName = _required(displayName, 'displayName'),
-        email = _required(email, 'email');
+    : displayName = _required(displayName, 'displayName'),
+      email = _required(email, 'email');
 
   final String displayName;
   final String email;

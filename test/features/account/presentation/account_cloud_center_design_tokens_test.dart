@@ -178,12 +178,18 @@ void main() {
       );
       expect(
         avatarBox.width,
-        moreOrLessEquals(AccountCenterDesignTokens.avatarSizes.image, epsilon: 0.01),
+        moreOrLessEquals(
+          AccountCenterDesignTokens.avatarSizes.image,
+          epsilon: 0.01,
+        ),
         reason: 'avatar kartu authentication memakai image 80px',
       );
       expect(
         avatarBox.height,
-        moreOrLessEquals(AccountCenterDesignTokens.avatarSizes.image, epsilon: 0.01),
+        moreOrLessEquals(
+          AccountCenterDesignTokens.avatarSizes.image,
+          epsilon: 0.01,
+        ),
       );
 
       final cardContainers = tester

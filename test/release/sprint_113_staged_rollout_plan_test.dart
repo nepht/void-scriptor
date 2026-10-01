@@ -100,7 +100,8 @@ void main() {
       expect(
         manifest['execution_authorized'],
         isTrue,
-        reason: 'an explicitly approved plan authorizes execution subject to stage gates',
+        reason:
+            'an explicitly approved plan authorizes execution subject to stage gates',
       );
     });
 

@@ -293,23 +293,26 @@ void main() {
       expect(cancelEval.notes.join(' '), contains('decision: cancel'));
     });
 
-    test('manifest parses into the domain and evaluates to approved release-pass', () {
-      final manifest =
-          jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
-      final gate = GaApprovalGate.fromManifest(manifest);
-      expect(GaApprovalGate.missingEvidence(gate), isEmpty);
-      expect(gate.decision, GaDecision.release);
-      expect(gate.approval, GaApprovalState.approved);
-      expect(gate.rollbackReady, isTrue);
-      expect(gate.releaseBlocked, isFalse);
+    test(
+      'manifest parses into the domain and evaluates to approved release-pass',
+      () {
+        final manifest =
+            jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
+        final gate = GaApprovalGate.fromManifest(manifest);
+        expect(GaApprovalGate.missingEvidence(gate), isEmpty);
+        expect(gate.decision, GaDecision.release);
+        expect(gate.approval, GaApprovalState.approved);
+        expect(gate.rollbackReady, isTrue);
+        expect(gate.releaseBlocked, isFalse);
 
-      final evaluation = GaApprovalGate.evaluate(gate);
-      expect(evaluation.state, GaGateState.pass);
-      expect(evaluation.notes.join(' '), contains('decision: release'));
-      expect(evaluation.notes.join(' '), contains('approval: APPROVED'));
+        final evaluation = GaApprovalGate.evaluate(gate);
+        expect(evaluation.state, GaGateState.pass);
+        expect(evaluation.notes.join(' '), contains('decision: release'));
+        expect(evaluation.notes.join(' '), contains('approval: APPROVED'));
 
-      // Approval is explicit and execution is authorized for the approved release.
-      expect(manifest['approval']['execution_authorized'], isTrue);
-    });
+        // Approval is explicit and execution is authorized for the approved release.
+        expect(manifest['approval']['execution_authorized'], isTrue);
+      },
+    );
   });
 }

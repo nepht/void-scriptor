@@ -84,7 +84,9 @@ class Sprint116GeminiCertification {
       }
     }
     return Sprint116GeminiReport(
-      state: invalid.isEmpty ? Sprint116GeminiState.pass : Sprint116GeminiState.fail,
+      state: invalid.isEmpty
+          ? Sprint116GeminiState.pass
+          : Sprint116GeminiState.fail,
       invalidRecords: invalid,
     );
   }
@@ -102,7 +104,8 @@ class Sprint116GeminiCertification {
           .map(
             (item) => Sprint116GeminiRecord(
               providerId: item['provider_id']?.toString() ?? '',
-              supportedModalities: item['supported_modalities']?.toString() ?? '',
+              supportedModalities:
+                  item['supported_modalities']?.toString() ?? '',
               models: item['models']?.toString() ?? '',
               auth: item['auth']?.toString() ?? '',
               usageMetadata: item['usage_metadata']?.toString() ?? '',

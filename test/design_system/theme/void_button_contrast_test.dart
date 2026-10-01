@@ -88,27 +88,26 @@ void main() {
       }
     }
 
-    testWidgets(
-      'foreground dipilih by luminance, bukan Colors.white statis',
-      (tester) async {
-        // Guard akar masalah: kalau pemilihan foreground ever kembali ke
-        // Colors.white hardcoded, test ini gagal di 5 preset gelap. voidPurple
-        // dark sengaja dikecualikan: primary #7C3AED + putih = 5.70:1 sudah
-        // lulus, jadi tidak membuktikan apa pun.
-        final lightPresets = ['ink', 'ember', 'sage', 'rose', 'ocean'];
-        for (final variant in VoidThemeVariant.values) {
-          if (!lightPresets.contains(variant.name)) continue;
-          final pair = await _renderedPair(tester, variant.darkTheme);
-          expect(
-            pair.fg,
-            isNot(Colors.white),
-            reason:
-                '${variant.name}/dark memakai primary terang '
-                '${pair.bg.toARGB32().toRadixString(16)}; label putih di atasnya '
-                'tidak terbaca. VoidButton harus memilih foreground by luminance.',
-          );
-        }
-      },
-    );
+    testWidgets('foreground dipilih by luminance, bukan Colors.white statis', (
+      tester,
+    ) async {
+      // Guard akar masalah: kalau pemilihan foreground ever kembali ke
+      // Colors.white hardcoded, test ini gagal di 5 preset gelap. voidPurple
+      // dark sengaja dikecualikan: primary #7C3AED + putih = 5.70:1 sudah
+      // lulus, jadi tidak membuktikan apa pun.
+      final lightPresets = ['ink', 'ember', 'sage', 'rose', 'ocean'];
+      for (final variant in VoidThemeVariant.values) {
+        if (!lightPresets.contains(variant.name)) continue;
+        final pair = await _renderedPair(tester, variant.darkTheme);
+        expect(
+          pair.fg,
+          isNot(Colors.white),
+          reason:
+              '${variant.name}/dark memakai primary terang '
+              '${pair.bg.toARGB32().toRadixString(16)}; label putih di atasnya '
+              'tidak terbaca. VoidButton harus memilih foreground by luminance.',
+        );
+      }
+    });
   });
 }

@@ -96,8 +96,9 @@ void main() {
       .toList();
 
   group('2.4.3 focus order nyata (bukan konstanta domain)', () {
-    testWidgets('sembilan tab muncul berurutan sesuai IA saat di-tab',
-        (tester) async {
+    testWidgets('sembilan tab muncul berurutan sesuai IA saat di-tab', (
+      tester,
+    ) async {
       final order = await _tabOrder(tester);
       final actual = order.map((s) => s.label).toList();
 
@@ -117,28 +118,33 @@ void main() {
       expect(
         tabIndexes.length,
         9,
-        reason: 'harus ada 9 tab di baris strip (top=$stripTop), dapat '
+        reason:
+            'harus ada 9 tab di baris strip (top=$stripTop), dapat '
             '$tabIndexes dari $actual',
       );
       expect(
         actual.sublist(tabIndexes.first, tabIndexes.first + 9),
         tabLabels,
-        reason: 'urutan tab harus sama dengan urutan AccountCenterInformation'
+        reason:
+            'urutan tab harus sama dengan urutan AccountCenterInformation'
             'Architecture, tidak diacak atau diputar',
       );
     });
 
-    testWidgets('tab strip sebaris (satu baris, tidak berlapis)',
-        (tester) async {
+    testWidgets('tab strip sebaris (satu baris, tidak berlapis)', (
+      tester,
+    ) async {
       final order = await _tabOrder(tester);
       final stripTop = order
           .where((s) => tabLabels.contains(s.label))
           .map((s) => s.rect.top)
           .reduce((a, b) => a < b ? a : b);
       final tabs = order
-          .where((s) =>
-              tabLabels.contains(s.label) &&
-              (s.rect.top - stripTop).abs() < 2)
+          .where(
+            (s) =>
+                tabLabels.contains(s.label) &&
+                (s.rect.top - stripTop).abs() < 2,
+          )
           .toList();
       expect(tabs.length, 9);
 
@@ -158,8 +164,9 @@ void main() {
       // benar sudah dibuktikan test pertama (label == IA).
     });
 
-    testWidgets('tab pertama muncul setelah kontrol header, bukan قبلnya',
-        (tester) async {
+    testWidgets('tab pertama muncul setelah kontrol header, bukan قبلnya', (
+      tester,
+    ) async {
       final order = await _tabOrder(tester);
       final firstTab = order.indexWhere((s) => tabLabels.contains(s.label));
       expect(firstTab, greaterThanOrEqualTo(0));
@@ -169,7 +176,8 @@ void main() {
         expect(
           order[i].rect.top,
           lessThan(order[firstTab].rect.top + 1),
-          reason: 'kontrol header harus lebih tinggi dari tab strip, tapi '
+          reason:
+              'kontrol header harus lebih tinggi dari tab strip, tapi '
               '${order[i].label}@${order[i].rect.top.round()} >= tab@'
               '${order[firstTab].rect.top.round()}',
         );
@@ -191,7 +199,8 @@ void main() {
       expect(
         contract.length,
         lessThanOrEqualTo(actual.length),
-        reason: 'kontrak tidak boleh mengklaim lebih banyak stop dari kenyataan',
+        reason:
+            'kontrak tidak boleh mengklaim lebih banyak stop dari kenyataan',
       );
     });
   });

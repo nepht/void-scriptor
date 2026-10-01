@@ -40,7 +40,8 @@ double _ratio(Color a, Color b) {
 
 String _hex(Color? c) {
   if (c == null) return '<null>';
-  final v = (c.r * 255).round() << 16 |
+  final v =
+      (c.r * 255).round() << 16 |
       (c.g * 255).round() << 8 |
       (c.b * 255).round();
   return '#${v.toRadixString(16).padLeft(6, '0')}';
@@ -56,14 +57,19 @@ Future<Color> _pixelAt(GlobalKey key, Offset local) async {
   final y = local.dy.round().clamp(0, image.height - 1);
   final i = (y * w + x) * 4;
   return Color.fromARGB(
-      255, data!.getUint8(i), data.getUint8(i + 1), data.getUint8(i + 2));
+    255,
+    data!.getUint8(i),
+    data.getUint8(i + 1),
+    data.getUint8(i + 2),
+  );
 }
 
 void main() {
   for (final variant in VoidThemeVariant.values) {
     for (final mode in ['dark', 'light']) {
-      testWidgets('${variant.name}/$mode: focus ring >= 3:1 & terlihat',
-          (tester) async {
+      testWidgets('${variant.name}/$mode: focus ring >= 3:1 & terlihat', (
+        tester,
+      ) async {
         final theme = mode == 'dark' ? variant.darkTheme : variant.lightTheme;
         final key = GlobalKey();
 
@@ -90,7 +96,8 @@ void main() {
         expect(
           ring,
           isNotNull,
-          reason: '${variant.name}/$mode: theme tidak memasang focus ring '
+          reason:
+              '${variant.name}/$mode: theme tidak memasang focus ring '
               'untuk FilledButton; fokus hanya mengandalkan overlay M3 '
               '(terukur 1.19-1.32:1).',
         );
@@ -99,7 +106,8 @@ void main() {
         expect(
           ratio,
           greaterThanOrEqualTo(focusIndicatorThreshold),
-          reason: '${variant.name}/$mode: ring ${_hex(ring.color)} vs '
+          reason:
+              '${variant.name}/$mode: ring ${_hex(ring.color)} vs '
               'background ${_hex(theme.scaffoldBackgroundColor)} = '
               '${ratio.toStringAsFixed(2)}:1',
         );
@@ -134,20 +142,23 @@ void main() {
         expect(
           idleOuter,
           isNot(equals(focusedOuter)),
-          reason: '${variant.name}/$mode: piksel tepi tombol tidak berubah '
+          reason:
+              '${variant.name}/$mode: piksel tepi tombol tidak berubah '
               'saat fokus - cincin luar tidak digambar.',
         );
         expect(
           drawnRatio,
           greaterThanOrEqualTo(focusIndicatorThreshold),
-          reason: '${variant.name}/$mode: cincin luar yang benar-benar '
+          reason:
+              '${variant.name}/$mode: cincin luar yang benar-benar '
               'dirender ${_hex(focusedOuter)} vs background ${_hex(bg)} = '
               '${drawnRatio.toStringAsFixed(2)}:1',
         );
         expect(
           focusedInner,
           isNot(equals(focusedOuter)),
-          reason: '${variant.name}/$mode: cincin dalam tidak digambar '
+          reason:
+              '${variant.name}/$mode: cincin dalam tidak digambar '
               '(sama dengan cincin luar ${_hex(focusedOuter)}) - '
               'cincin dalam akan hilang di atas fill primary.',
         );

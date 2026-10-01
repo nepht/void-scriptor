@@ -54,8 +54,11 @@ class _Stop {
       name = w.tooltip ?? '';
     } else if (w is TextFormField || w is TextField) {
       kind = 'field';
-    } else if (w is FilledButton || w is ElevatedButton || w is OutlinedButton ||
-        w is TextButton || w is InkWell) {
+    } else if (w is FilledButton ||
+        w is ElevatedButton ||
+        w is OutlinedButton ||
+        w is TextButton ||
+        w is InkWell) {
       kind = 'button';
     } else {
       return true;
@@ -77,12 +80,16 @@ Future<List<_Stop>> _tabOrder(WidgetTester tester, Widget child) async {
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
-  await tester.pumpWidget(ProviderScope(
-    overrides: [
-      initialAuthSessionProvider.overrideWithValue(const AuthSession.loggedOut()),
-    ],
-    child: MaterialApp(home: child),
-  ));
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        initialAuthSessionProvider.overrideWithValue(
+          const AuthSession.loggedOut(),
+        ),
+      ],
+      child: MaterialApp(home: child),
+    ),
+  );
   await tester.pump();
 
   final seen = <FocusNode, int>{};
@@ -120,9 +127,11 @@ void main() {
     // keduanya satu baris baca, jadi posisinya digabung menjadi satu grup.
     final groups = <List<_Stop>>[];
     for (final s in order) {
-      final isInlineCompanion = groups.isNotEmpty &&
+      final isInlineCompanion =
+          groups.isNotEmpty &&
           (s.kind == 'icon' || s.kind == 'field') &&
-          (groups.last.last.kind == 'icon' || groups.last.last.kind == 'field') &&
+          (groups.last.last.kind == 'icon' ||
+              groups.last.last.kind == 'field') &&
           (groups.last.last.rect.top - s.rect.top).abs() <=
               sameRowTolerance * 2;
       if (isInlineCompanion) {
@@ -139,7 +148,8 @@ void main() {
       expect(
         drop,
         lessThanOrEqualTo(sameRowTolerance),
-        reason: '$label: fokus melompat ke ATAS dari '
+        reason:
+            '$label: fokus melompat ke ATAS dari '
             '${groups[g - 1].join(",")}@y=${prevTop.round()} ke '
             '${groups[g].join(",")}@y=${curTop.round()}. '
             'Urutan tab harus mengikuti urutan baca.',
@@ -148,37 +158,53 @@ void main() {
   }
 
   test('NEGATIVE CONTROL: urutan terbalik harus terdeteksi', () {
-      // Bukti assertion-nya tidak lumpuh. `_Stop` dibuat di atas dengan y=500
-      // lalu y=300 - fokus lompat ke ATAS. expectTopToBottom harus melempar.
-      final bad = <_Stop>[
-        _Stop('field', '', const Rect.fromLTWH(0, 500, 100, 20)),
-        _Stop('button', '', const Rect.fromLTWH(0, 300, 100, 20)),
-      ];
-      var threw = false;
-      try {
-        expectTopToBottom(bad, 'negctl');
-      } on TestFailure {
-        threw = true;
-      }
-      expect(threw, isTrue,
-          reason: 'urutan terbalik harus GAGAL. Kalau lolos, assertion 2.4.3 '
-              'tidak benar-benar menguji apa pun.');
-    });
+    // Bukti assertion-nya tidak lumpuh. `_Stop` dibuat di atas dengan y=500
+    // lalu y=300 - fokus lompat ke ATAS. expectTopToBottom harus melempar.
+    final bad = <_Stop>[
+      _Stop('field', '', const Rect.fromLTWH(0, 500, 100, 20)),
+      _Stop('button', '', const Rect.fromLTWH(0, 300, 100, 20)),
+    ];
+    var threw = false;
+    try {
+      expectTopToBottom(bad, 'negctl');
+    } on TestFailure {
+      threw = true;
+    }
+    expect(
+      threw,
+      isTrue,
+      reason:
+          'urutan terbalik harus GAGAL. Kalau lolos, assertion 2.4.3 '
+          'tidak benar-benar menguji apa pun.',
+    );
+  });
 
   group('2.4.3 Focus Order - urutan mengikuti urutan baca', () {
-    testWidgets('register: 4 field lalu 2 tombol, monoton turun',
-        (tester) async {
+    testWidgets('register: 4 field lalu 2 tombol, monoton turun', (
+      tester,
+    ) async {
       final order = await _tabOrder(
-          tester, RegisterScreen(onBackToLogin: () {}));
-      expect(order.map((s) => s.kind).toList(),
-          ['field', 'field', 'field', 'field', 'button', 'button']);
+        tester,
+        RegisterScreen(onBackToLogin: () {}),
+      );
+      expect(order.map((s) => s.kind).toList(), [
+        'field',
+        'field',
+        'field',
+        'field',
+        'button',
+        'button',
+      ]);
       expectTopToBottom(order, 'register');
     });
 
-    testWidgets('forgot password: field lalu 2 tombol, monoton turun',
-        (tester) async {
-      final order =
-          await _tabOrder(tester, ForgotPasswordScreen(onBack: () {}));
+    testWidgets('forgot password: field lalu 2 tombol, monoton turun', (
+      tester,
+    ) async {
+      final order = await _tabOrder(
+        tester,
+        ForgotPasswordScreen(onBack: () {}),
+      );
       expect(order.map((s) => s.kind).toList(), ['field', 'button', 'button']);
       expectTopToBottom(order, 'forgot');
     });
@@ -191,8 +217,11 @@ void main() {
       expectTopToBottom(order, 'login');
       // Kontrol tema di top-right adalah target fokus pertama di layar ini.
       // Dikonfirmasi di produksi: login_screen.dart:340 `ThemeModeMenu`.
-      expect(order.first.rect.top, lessThan(100),
-          reason: 'fokus pertama seharusnya kontrol tema di header');
+      expect(
+        order.first.rect.top,
+        lessThan(100),
+        reason: 'fokus pertama seharusnya kontrol tema di header',
+      );
     });
   });
 
@@ -203,10 +232,16 @@ void main() {
         LoginScreen(onForgotPassword: () {}, onRegister: () {}),
       );
       for (final s in order) {
-        expect(s.rect.width, greaterThan(0),
-            reason: 'target ${s.kind} lebar 0 - tidak bisa difokuskan');
-        expect(s.rect.height, greaterThan(0),
-            reason: 'target ${s.kind} tinggi 0 - tidak bisa difokuskan');
+        expect(
+          s.rect.width,
+          greaterThan(0),
+          reason: 'target ${s.kind} lebar 0 - tidak bisa difokuskan',
+        );
+        expect(
+          s.rect.height,
+          greaterThan(0),
+          reason: 'target ${s.kind} tinggi 0 - tidak bisa difokuskan',
+        );
       }
     });
   });

@@ -227,9 +227,7 @@ class VoidPalette extends ThemeExtension<VoidPalette> {
 /// sehingga putih di atasnya hanya mencapai 2.33-2.62:1 - gagal 1.4.3 dan
 /// tidak terbaca. Audit 2026-10-01 lewat skill wcag-audit-patterns.
 Color onAccentForeground(Color background) {
-  return background.computeLuminance() > 0.179
-      ? Colors.black
-      : Colors.white;
+  return background.computeLuminance() > 0.179 ? Colors.black : Colors.white;
 }
 
 /// Lebar cincin fokus luar (px), digambar oleh `side` ButtonStyle.

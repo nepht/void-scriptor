@@ -13,10 +13,7 @@ import 'void_palette.dart';
 /// Geometri sengaja deterministik: cincin dalam berpusat pada jarak
 /// [focusRingWidth] dari tepi, sehingga pixel di offset itu pasti warna cincin.
 class VoidFocusRingPainter extends CustomPainter {
-  const VoidFocusRingPainter({
-    required this.innerColor,
-    this.radius = 8.0,
-  });
+  const VoidFocusRingPainter({required this.innerColor, this.radius = 8.0});
 
   final Color innerColor;
   final double radius;
@@ -38,6 +35,5 @@ class VoidFocusRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(VoidFocusRingPainter oldDelegate) =>
-      oldDelegate.innerColor != innerColor ||
-      oldDelegate.radius != radius;
+      oldDelegate.innerColor != innerColor || oldDelegate.radius != radius;
 }

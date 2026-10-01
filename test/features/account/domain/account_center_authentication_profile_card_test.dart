@@ -3,25 +3,31 @@ import 'package:void_scriptor/features/account/domain/account_center_authenticat
 
 void main() {
   group('115.13 authentication and profile card', () {
-    test('authenticated profile exposes identity, plan, methods, and active state', () {
-      final profile = AuthenticationProfileCard.authenticated(
-        avatar: const ProfileAvatar.initials('VC'),
-        displayName: 'Verified Creator',
-        email: 'verified@example.com',
-        plan: AccountPlan.pro,
-        signInMethods: const [SignInMethod.email, SignInMethod.google],
-        primaryIdentity: SignInMethod.email,
-      );
+    test(
+      'authenticated profile exposes identity, plan, methods, and active state',
+      () {
+        final profile = AuthenticationProfileCard.authenticated(
+          avatar: const ProfileAvatar.initials('VC'),
+          displayName: 'Verified Creator',
+          email: 'verified@example.com',
+          plan: AccountPlan.pro,
+          signInMethods: const [SignInMethod.email, SignInMethod.google],
+          primaryIdentity: SignInMethod.email,
+        );
 
-      expect(profile.avatar.kind, ProfileAvatarKind.initials);
-      expect(profile.avatar.value, 'VC');
-      expect(profile.displayName, 'Verified Creator');
-      expect(profile.email, 'verified@example.com');
-      expect(profile.plan, AccountPlan.pro);
-      expect(profile.signInMethods, containsAll([SignInMethod.email, SignInMethod.google]));
-      expect(profile.primaryIdentity, SignInMethod.email);
-      expect(profile.accountState, AccountProfileState.active);
-    });
+        expect(profile.avatar.kind, ProfileAvatarKind.initials);
+        expect(profile.avatar.value, 'VC');
+        expect(profile.displayName, 'Verified Creator');
+        expect(profile.email, 'verified@example.com');
+        expect(profile.plan, AccountPlan.pro);
+        expect(
+          profile.signInMethods,
+          containsAll([SignInMethod.email, SignInMethod.google]),
+        );
+        expect(profile.primaryIdentity, SignInMethod.email);
+        expect(profile.accountState, AccountProfileState.active);
+      },
+    );
 
     test('avatar states and account states are explicit and serializable', () {
       expect(const ProfileAvatar.none().toJson(), {
@@ -54,7 +60,8 @@ void main() {
       expect(request.displayName, 'Creator');
       expect(request.email, 'creator@example.com');
       expect(
-        () => EditProfileRequest(displayName: ' ', email: 'creator@example.com'),
+        () =>
+            EditProfileRequest(displayName: ' ', email: 'creator@example.com'),
         throwsArgumentError,
       );
       expect(

@@ -110,96 +110,108 @@ void main() {
     );
 
     test(
-          'unlink requires explicit confirmation and removes only confirmed account',
-          () async {
-            final manager = AccountConnectedAccountsManagement(
-              initial: <AccountConnectedAccount>[account()],
-            );
+      'unlink requires explicit confirmation and removes only confirmed account',
+      () async {
+        final manager = AccountConnectedAccountsManagement(
+          initial: <AccountConnectedAccount>[account()],
+        );
 
-            final unconfirmed = await manager.unlink(
-              'google/account-42',
-              confirmed: false,
-            );
-            expect(unconfirmed.localRemoved, isFalse);
-            expect(unconfirmed.providerRevokeAttempted, isFalse);
-            expect(manager.connections, hasLength(1));
+        final unconfirmed = await manager.unlink(
+          'google/account-42',
+          confirmed: false,
+        );
+        expect(unconfirmed.localRemoved, isFalse);
+        expect(unconfirmed.providerRevokeAttempted, isFalse);
+        expect(manager.connections, hasLength(1));
 
-            // No revoker was supplied, so this disconnect is local-only by
-            // declaration and says so; it is not the same row as a revoked one.
-            final confirmed = await manager.unlink(
-              'google/account-42',
-              confirmed: true,
-            );
-            expect(confirmed.localRemoved, isTrue);
-            expect(confirmed.providerRevokeAttempted, isFalse);
-            expect(confirmed.providerRevoked, isFalse);
-            expect(manager.connections, isEmpty);
+        // No revoker was supplied, so this disconnect is local-only by
+        // declaration and says so; it is not the same row as a revoked one.
+        final confirmed = await manager.unlink(
+          'google/account-42',
+          confirmed: true,
+        );
+        expect(confirmed.localRemoved, isTrue);
+        expect(confirmed.providerRevokeAttempted, isFalse);
+        expect(confirmed.providerRevoked, isFalse);
+        expect(manager.connections, isEmpty);
+      },
+    );
+
+    test(
+      'a disconnect revokes at the provider when a revoker is supplied',
+      () async {
+        final calls = <String>[];
+        final manager = AccountConnectedAccountsManagement(
+          initial: <AccountConnectedAccount>[account()],
+          providerRevoker: (connectionId, providerId) async {
+            calls.add('$connectionId@$providerId');
+            return true;
           },
         );
 
-        test(
-          'a disconnect revokes at the provider when a revoker is supplied',
-          () async {
-            final calls = <String>[];
-            final manager = AccountConnectedAccountsManagement(
-              initial: <AccountConnectedAccount>[account()],
-              providerRevoker: (connectionId, providerId) async {
-                calls.add('$connectionId@$providerId');
-                return true;
-              },
-            );
-
-            final result = await manager.unlink('google/account-42', confirmed: true);
-
-            expect(calls, <String>['google/account-42@google']);
-            expect(result.providerRevokeAttempted, isTrue);
-            expect(result.providerRevoked, isTrue);
-            expect(result.localRemoved, isTrue);
-            expect(result.isComplete, isTrue);
-            expect(result.needsProviderRetry, isFalse);
-            expect(manager.connections, isEmpty);
-          },
+        final result = await manager.unlink(
+          'google/account-42',
+          confirmed: true,
         );
 
-        test(
-          'a failed provider revocation keeps the link so it can be retried',
-          () async {
-            final manager = AccountConnectedAccountsManagement(
-              initial: <AccountConnectedAccount>[account()],
-              providerRevoker: (connectionId, providerId) async => false,
-            );
+        expect(calls, <String>['google/account-42@google']);
+        expect(result.providerRevokeAttempted, isTrue);
+        expect(result.providerRevoked, isTrue);
+        expect(result.localRemoved, isTrue);
+        expect(result.isComplete, isTrue);
+        expect(result.needsProviderRetry, isFalse);
+        expect(manager.connections, isEmpty);
+      },
+    );
 
-            final result = await manager.unlink('google/account-42', confirmed: true);
-
-            expect(result.providerRevokeAttempted, isTrue);
-            expect(result.providerRevoked, isFalse);
-            expect(result.localRemoved, isFalse);
-            expect(result.needsProviderRetry, isFalse);
-            // The row survives, so the retry has something to retry from.
-            expect(manager.connections, hasLength(1));
-            expect(result.summary, contains('failed'));
-          },
+    test(
+      'a failed provider revocation keeps the link so it can be retried',
+      () async {
+        final manager = AccountConnectedAccountsManagement(
+          initial: <AccountConnectedAccount>[account()],
+          providerRevoker: (connectionId, providerId) async => false,
         );
 
-        test(
-          'a throwing revoker is reported without leaking provider internals',
-          () async {
-            final manager = AccountConnectedAccountsManagement(
-              initial: <AccountConnectedAccount>[account()],
-              providerRevoker: (connectionId, providerId) async =>
-                  throw const _ProviderExploded(),
-            );
-
-            final result = await manager.unlink('google/account-42', confirmed: true);
-
-            expect(result.providerRevokeAttempted, isTrue);
-            expect(result.providerRevoked, isFalse);
-            expect(result.localRemoved, isFalse);
-            expect(result.providerRevokeError.runtimeType.toString(), '_ProviderExploded');
-            expect(result.summary, isNot(contains('_ProviderExploded')));
-            expect(manager.connections, hasLength(1));
-          },
+        final result = await manager.unlink(
+          'google/account-42',
+          confirmed: true,
         );
+
+        expect(result.providerRevokeAttempted, isTrue);
+        expect(result.providerRevoked, isFalse);
+        expect(result.localRemoved, isFalse);
+        expect(result.needsProviderRetry, isFalse);
+        // The row survives, so the retry has something to retry from.
+        expect(manager.connections, hasLength(1));
+        expect(result.summary, contains('failed'));
+      },
+    );
+
+    test(
+      'a throwing revoker is reported without leaking provider internals',
+      () async {
+        final manager = AccountConnectedAccountsManagement(
+          initial: <AccountConnectedAccount>[account()],
+          providerRevoker: (connectionId, providerId) async =>
+              throw const _ProviderExploded(),
+        );
+
+        final result = await manager.unlink(
+          'google/account-42',
+          confirmed: true,
+        );
+
+        expect(result.providerRevokeAttempted, isTrue);
+        expect(result.providerRevoked, isFalse);
+        expect(result.localRemoved, isFalse);
+        expect(
+          result.providerRevokeError.runtimeType.toString(),
+          '_ProviderExploded',
+        );
+        expect(result.summary, isNot(contains('_ProviderExploded')));
+        expect(manager.connections, hasLength(1));
+      },
+    );
 
     test(
       'a recorded health observation clears a pending reauthentication request',

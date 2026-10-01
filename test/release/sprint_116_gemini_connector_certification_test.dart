@@ -64,19 +64,22 @@ void main() {
       expect(report.invalidRecords, contains('limitations:gemini'));
     });
 
-    test('manifest is local-only and does not claim certified Gemini access', () {
-      final manifest =
-          jsonDecode(
-                File(Sprint116GeminiContract.manifestPath).readAsStringSync(),
-              )
-              as Map<String, dynamic>;
-      expect(manifest['canonical_step'], '116.22');
-      expect(manifest['status'], 'VERIFIED-LOCAL');
-      expect(manifest['external_gates'], 'DEFERRED-EXTERNAL');
-      expect(manifest['records'], isNotEmpty);
-      for (final record in manifest['records'] as List<dynamic>) {
-        expect((record as Map<String, dynamic>)['status'], 'UNVERIFIED');
-      }
-    });
+    test(
+      'manifest is local-only and does not claim certified Gemini access',
+      () {
+        final manifest =
+            jsonDecode(
+                  File(Sprint116GeminiContract.manifestPath).readAsStringSync(),
+                )
+                as Map<String, dynamic>;
+        expect(manifest['canonical_step'], '116.22');
+        expect(manifest['status'], 'VERIFIED-LOCAL');
+        expect(manifest['external_gates'], 'DEFERRED-EXTERNAL');
+        expect(manifest['records'], isNotEmpty);
+        for (final record in manifest['records'] as List<dynamic>) {
+          expect((record as Map<String, dynamic>)['status'], 'UNVERIFIED');
+        }
+      },
+    );
   });
 }

@@ -59,10 +59,9 @@ void main() {
         reason: '_ConnectionBadge must keep a const named constructor',
       );
 
-      final declared = RegExp(r'this\.(\w+)')
-          .allMatches(constructor!.group(1)!)
-          .map((m) => m.group(1)!)
-          .toSet();
+      final declared = RegExp(
+        r'this\.(\w+)',
+      ).allMatches(constructor!.group(1)!).map((m) => m.group(1)!).toSet();
 
       expect(declared, isNotEmpty, reason: 'constructor must take state');
 

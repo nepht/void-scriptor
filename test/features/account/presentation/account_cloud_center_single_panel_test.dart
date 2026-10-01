@@ -335,7 +335,8 @@ void main() {
     expect(
       rowIcons.length,
       greaterThanOrEqualTo(4),
-      reason: 'lima metode harus memakai ikon provider yang berbeda, '
+      reason:
+          'lima metode harus memakai ikon provider yang berbeda, '
           'bukan satu ikon generik: ditemukan ${rowIcons.length} ikon unik',
     );
   });
@@ -404,16 +405,18 @@ void main() {
     // Kolom kiri: avatar, nama, email, plan, lalu Edit Profile. Kolom kanan:
     // panel berborder dengan daftar metode dan tombol Add Another Method.
     expect(
-      find.descendant(of: card, matching: find.byKey(
-            const ValueKey('account-auth-profile-column'),
-          )),
+      find.descendant(
+        of: card,
+        matching: find.byKey(const ValueKey('account-auth-profile-column')),
+      ),
       findsOneWidget,
       reason: 'kolom profil harus ada sebagai owner sendiri',
     );
     expect(
-      find.descendant(of: card, matching: find.byKey(
-            const ValueKey('account-auth-methods-panel'),
-          )),
+      find.descendant(
+        of: card,
+        matching: find.byKey(const ValueKey('account-auth-methods-panel')),
+      ),
       findsOneWidget,
       reason: 'panel sign-in methods harus terpisah dari kolom profil',
     );
@@ -427,10 +430,7 @@ void main() {
     expect(find.text('Edit profile'), findsNothing);
 
     // Subjudul mockup di panel metode.
-    expect(
-      find.text('Manage how you sign in to your account'),
-      findsOneWidget,
-    );
+    expect(find.text('Manage how you sign in to your account'), findsOneWidget);
   });
 
   testWidgets('tidak ada kartu sign-in terpisah di luar kartu authentication', (

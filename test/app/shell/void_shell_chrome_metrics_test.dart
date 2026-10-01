@@ -32,7 +32,10 @@ void main() {
         overrides: themeTestOverrides(),
         child: const MaterialApp(
           home: Scaffold(
-            body: SizedBox(width: 1280, child: VoidTopBar(onMenuSelected: _noop)),
+            body: SizedBox(
+              width: 1280,
+              child: VoidTopBar(onMenuSelected: _noop),
+            ),
           ),
         ),
       ),

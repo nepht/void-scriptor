@@ -239,24 +239,21 @@ ButtonStyle _voidFocusButtonStyle(VoidPalette palette) {
   return ButtonStyle(
     side: WidgetStateProperty.resolveWith((states) {
       if (!states.contains(WidgetState.focused)) return null;
-      return BorderSide(
-        color: focusRingOuter(palette),
-        width: focusRingWidth,
-      );
+      return BorderSide(color: focusRingOuter(palette), width: focusRingWidth);
     }),
     // Slot painter tidak ada di ButtonStyle; slot yang tersedia adalah
     // `foregroundBuilder` (ButtonLayerBuilder), fungsi yang menerima state
     // tombol lalu mengembalikan Widget. Cincin dalam digambar lewat
     // CustomPaint di atas isi tombol.
-    foregroundBuilder: (BuildContext context, Set<WidgetState> states,
-        Widget? child) {
-      if (!states.contains(WidgetState.focused)) return child!;
-      return CustomPaint(
-        foregroundPainter: VoidFocusRingPainter(
-          innerColor: focusRingInner(palette),
-        ),
-        child: child,
-      );
-    },
+    foregroundBuilder:
+        (BuildContext context, Set<WidgetState> states, Widget? child) {
+          if (!states.contains(WidgetState.focused)) return child!;
+          return CustomPaint(
+            foregroundPainter: VoidFocusRingPainter(
+              innerColor: focusRingInner(palette),
+            ),
+            child: child,
+          );
+        },
   );
 }

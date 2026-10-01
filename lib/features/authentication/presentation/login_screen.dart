@@ -49,9 +49,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final dark = Theme.of(context).brightness == Brightness.dark;
     final reduced = MediaQuery.disableAnimationsOf(context);
     final base = dark ? context.palette.background : context.palette.surface;
-    final ink = dark ? context.palette.textPrimary : context.palette.textPrimary;
+    final ink = dark
+        ? context.palette.textPrimary
+        : context.palette.textPrimary;
     final muted = dark ? context.palette.textMuted : context.palette.textMuted;
-    final accent = dark ? context.palette.primaryBright : context.palette.primary;
+    final accent = dark
+        ? context.palette.primaryBright
+        : context.palette.primary;
     final edge = dark ? context.palette.border : context.palette.border;
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
@@ -60,7 +64,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final theme = Theme.of(context).copyWith(
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: dark ? context.palette.surfaceElevated : context.palette.surface,
+        fillColor: dark
+            ? context.palette.surfaceElevated
+            : context.palette.surface,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,

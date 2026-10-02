@@ -5,6 +5,7 @@
 /// and ownership declarations. Fail-closed: any inconsistency blocks.
 library;
 
+import 'account_center_ai_provider_registry.dart';
 import 'account_center_provider_connector_manifest.dart';
 import 'account_center_provider_icon_registry.dart';
 
@@ -107,6 +108,7 @@ class ProviderRegistryReconciliation {
   ProviderRegistryReconciliationReport reconcile({
     ProviderIconRegistry? iconRegistry,
     ProviderConnectorManifest? connectorManifest,
+    AccountCenterAiProviderRegistry? aiProviderRegistry,
   }) {
     final icons = iconRegistry ?? ProviderIconRegistry.standard;
     final connectors = connectorManifest ?? ProviderConnectorManifest.standard;
@@ -167,6 +169,20 @@ class ProviderRegistryReconciliation {
       }
     }
 
+    // ai_availability: an AI provider that claims an availability the
+    // connector manifest contradicts is a contradiction between two SHIPPED
+    // registries, so it is measured, not assumed.
+    //
+    // 117.41: this field used to be a hardcoded `const <String>[]`, so the
+    // report returned zero mismatches whatever the registries said and could
+    // hand out `PROVIDER_REGISTRY_RECONCILED` while they contradicted each
+    // other. The AI registry already ships the seam that measures it
+    // (`validateAvailabilityAgainst`), so the report now delegates instead of
+    // carrying a second empty literal that can never disagree.
+    final aiRegistry = aiProviderRegistry;
+    final aiAvailabilityMismatches = aiRegistry == null
+        ? const <String>[]
+        : aiRegistry.validateAvailabilityAgainst(connectors);
     // owner: all owner declarations must be non-empty
     for (final entry
         in ProviderRegistryReconciliationContract.ownerDeclarations.entries) {
@@ -180,6 +196,7 @@ class ProviderRegistryReconciliation {
         categoryMismatches.isNotEmpty ||
         capabilityMismatches.isNotEmpty ||
         availabilityViolations.isNotEmpty ||
+        aiAvailabilityMismatches.isNotEmpty ||
         missingOwners.isNotEmpty;
 
     final state = hasBlockers
@@ -203,7 +220,9 @@ class ProviderRegistryReconciliation {
       availabilityViolations: availabilityViolations,
       duplicateConnectors: duplicateConnectors,
       missingOwners: missingOwners,
-      aiAvailabilityMismatches: const <String>[],
+      aiAvailabilityMismatches: List<String>.unmodifiable(
+        aiAvailabilityMismatches,
+      ),
     );
   }
 }

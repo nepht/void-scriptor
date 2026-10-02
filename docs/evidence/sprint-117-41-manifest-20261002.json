@@ -1,0 +1,83 @@
+{
+  "canonical_step": "117.41",
+  "document_role": "EVIDENCE",
+  "verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
+  "pass": true,
+  "required_fields": [
+    "provider_id",
+    "connector_version",
+    "status",
+    "evidence",
+    "limitations",
+    "visibility",
+    "recheck_date"
+  ],
+  "provider_count": 32,
+  "status_counts": {
+    "CERTIFIED": 0,
+    "LIMITED": 0,
+    "UNVERIFIED": 32,
+    "PLANNED": 0,
+    "DEGRADED": 0,
+    "BLOCKED": 0
+  },
+  "visibility_counts": {
+    "EXPOSED": 0,
+    "WITHHELD": 32
+  },
+  "exposed_provider_ids": [],
+  "withheld_provider_ids": [
+    "adobe",
+    "anthropic",
+    "apple",
+    "azure_devops",
+    "bitbucket",
+    "blender_cloud",
+    "canva",
+    "discord",
+    "dropbox",
+    "email",
+    "facebook",
+    "figma",
+    "flux",
+    "gemini",
+    "github",
+    "gitlab",
+    "google",
+    "google_drive",
+    "kofi",
+    "local_ai",
+    "local_storage",
+    "mega",
+    "microsoft",
+    "midtrans",
+    "onedrive",
+    "openai",
+    "openrouter",
+    "paypal",
+    "saweria",
+    "sketchfab",
+    "stripe",
+    "x"
+  ],
+  "checks": 32,
+  "failures": [],
+  "open_items": [],
+  "probes": {
+    "standard_reconciliation_clean": true,
+    "ai_availability_drift_surfaced": true,
+    "drift_is_not_a_pass": true,
+    "unmappable_visibility_withheld": true,
+    "blocked_row_never_exposed": true,
+    "canonical_blocked_stays_blocked": true,
+    "canonical_certified_stays_exposed": true,
+    "status_drift_detected": true,
+    "drift_not_exposed": true
+  },
+  "defects_fixed": [
+    "117.41-01: aiAvailabilityMismatches was a hardcoded empty literal; the report now delegates to the shipped AI registry seam",
+    "117.41-02: an unmappable visibility produced an empty lock status that failed the != BLOCKED test and read as exposed",
+    "117.41-03: a locked status that contradicts its recorded visibility could decide beta exposure without a violation"
+  ],
+  "claim_boundary": "No live beta, no participant, and no release is claimed. Every status here is local certification state measured on test-owned fixtures and on the shipped manifests. Live provider health, quota, cost, hosted CI, and publication remain DEFERRED-EXTERNAL."
+}

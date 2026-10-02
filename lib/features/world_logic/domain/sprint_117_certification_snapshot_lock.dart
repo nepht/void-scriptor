@@ -261,6 +261,23 @@ abstract final class Sprint117SnapshotContract {
   /// A recertification window that has elapsed must be declared, not hidden.
   static const String expiredStatus = 'EXPIRED';
 
+  /// 117.41 — a visibility the lock cannot interpret.
+  ///
+  /// This is deliberately NOT an empty string and deliberately NOT an exposable
+  /// status: an unknown value must withhold the provider from the exposed
+  /// subset instead of quietly reading as "not blocked".
+  static const String unmappedStatus = 'UNMAPPED_VISIBILITY';
+
+  /// The statuses a provider may be published to users with.
+  ///
+  /// Everything else — including [unmappedStatus] — is withheld. Exposing a
+  /// provider whose own status says nothing about certification is the exact
+  /// failure 117.41 exists to prevent.
+  static const List<String> exposableStatuses = <String>[
+    certifiedStatus,
+    limitedStatus,
+  ];
+
   /// A placeholder the source itself records in place of a verified version.
   static const String unclaimedApiVersion = 'not-claimed';
 
@@ -430,13 +447,20 @@ class Sprint117SnapshotLoader {
   /// The entry gate records lowercase visibility; the certification policy
   /// records uppercase statuses. A blocked provider keeps its blocked status so
   /// the lock can never present it as beta-eligible.
+  ///
+  /// 117.41: an unrecognised visibility used to yield `''` here. The exposed
+  /// subset is computed by comparing the result against [blockedStatus], so an
+  /// empty result passed the "not blocked" test and the provider was PUBLISHED
+  /// — fail-open on a value nobody could interpret. It now yields
+  /// [unmappedStatus], which is neither the blocked nor an exposable status, so
+  /// an unmappable visibility withholds the provider and is reported by name.
   static String _lockStatus(String visibility) =>
       switch (visibility.trim().toLowerCase()) {
         'certified' => Sprint117SnapshotContract.certifiedStatus,
         'limited' => Sprint117SnapshotContract.limitedStatus,
         'blocked' => Sprint117SnapshotContract.blockedStatus,
         'expired' => Sprint117SnapshotContract.expiredStatus,
-        _ => '',
+        _ => Sprint117SnapshotContract.unmappedStatus,
       };
 
   static Map<String, dynamic>? _readJsonObject(String path) {
@@ -625,7 +649,12 @@ class Sprint117SnapshotGate {
             continue;
           }
           final expected = Sprint117SnapshotLoader._lockStatus(visibility);
-          if (expected.isEmpty) {
+          if (expected == Sprint117SnapshotContract.unmappedStatus) {
+            // 117.41: the lock could not interpret this visibility, so the
+            // status it expects is unknown rather than "any". `continue` here
+            // means the row's own claim is NOT compared against a value we
+            // cannot derive — the exposure allow-list above already withholds
+            // the provider, and the violation names the uninterpretable value.
             violations.add('visibility_unknown:$providerId:$visibility');
             continue;
           }
@@ -673,19 +702,29 @@ class Sprint117SnapshotGate {
     // contradicts its recorded visibility is already a violation, and letting
     // that bad row decide beta exposure would hide a blocked provider behind a
     // drifted status.
+    //
+    // 117.41: the filter used to be `status != BLOCKED`, which is fail-OPEN. A
+    // visibility the lock cannot map produced an empty status, an empty status
+    // is not BLOCKED, and the provider was published. It is now an allow-list
+    // of the statuses a provider may actually be published with, so anything
+    // else — blocked, expired, unmapped — withholds the row by construction.
     final resolved = records ?? const <Sprint117SnapshotRecord>[];
     final visibility = anchor?.entryVisibility ?? const <String, String>{};
+    final exposable = Sprint117SnapshotContract.exposableStatuses.toSet();
     final exposed = <String>[
       for (final providerId in visibility.keys)
-        if (Sprint117SnapshotLoader._lockStatus(visibility[providerId]!) !=
-                Sprint117SnapshotContract.blockedStatus &&
+        if (exposable.contains(
+              Sprint117SnapshotLoader._lockStatus(visibility[providerId]!),
+            ) &&
             lockedIds.contains(providerId))
           providerId,
     ];
     final blocked = <String>[
       for (final providerId in visibility.keys)
-        if (Sprint117SnapshotLoader._lockStatus(visibility[providerId]!) ==
-            Sprint117SnapshotContract.blockedStatus)
+        if (!exposable.contains(
+              Sprint117SnapshotLoader._lockStatus(visibility[providerId]!),
+            ) &&
+            lockedIds.contains(providerId))
           providerId,
     ];
 

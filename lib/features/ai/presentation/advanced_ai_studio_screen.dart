@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../application/output_review_controller.dart';
+import '../domain/output_review.dart';
 import 'output_review_panel.dart';
 
 /// Unified advanced AI studio surface (Step 28.22).
@@ -12,10 +14,24 @@ class AdvancedAiStudioScreen extends StatefulWidget {
     super.key,
     this.onOpenImageGenerator,
     this.onOpenVideoGenerator,
+    this.reviewController,
+    this.reviewedGenerationId,
   });
 
   final VoidCallback? onOpenImageGenerator;
   final VoidCallback? onOpenVideoGenerator;
+
+  /// Records review decisions. Null when the host has no project database
+  /// wired, and the review controls are then disabled rather than accepting a
+  /// tap that goes nowhere.
+  final OutputReviewController? reviewController;
+
+  /// Which generation the review controls act on.
+  ///
+  /// Separate from [reviewController] on purpose: a repository with no target is
+  /// a wiring mistake, and it should read differently on screen from a target
+  /// that has not been generated yet.
+  final String? reviewedGenerationId;
 
   @override
   State<AdvancedAiStudioScreen> createState() => _AdvancedAiStudioScreenState();
@@ -85,10 +101,9 @@ class _AdvancedAiStudioScreenState extends State<AdvancedAiStudioScreen> {
                 Expanded(
                   child: _Section(
                     title: 'Review',
-                    child: OutputReviewPanel(
-                      onApprove: () {},
-                      onReject: () {},
-                      onFeedback: (_) {},
+                    child: _ReviewSection(
+                      controller: widget.reviewController,
+                      generationId: widget.reviewedGenerationId,
                     ),
                   ),
                 ),
@@ -122,6 +137,145 @@ class _Section extends StatelessWidget {
         ),
         Expanded(child: child),
       ],
+    );
+  }
+}
+
+/// Wires the review controls to a real decision surface.
+///
+/// The controls are only live when there is somewhere to write. With no
+/// controller or no target they are disabled and the reason is on screen,
+/// because a button that accepts a tap and records nothing is worse than one
+/// that visibly cannot be pressed.
+class _ReviewSection extends StatefulWidget {
+  const _ReviewSection({this.controller, this.generationId});
+
+  final OutputReviewController? controller;
+  final String? generationId;
+
+  @override
+  State<_ReviewSection> createState() => _ReviewSectionState();
+}
+
+class _ReviewSectionState extends State<_ReviewSection> {
+  String? _message;
+  bool _messageIsError = false;
+
+  String? get _target {
+    final id = widget.generationId?.trim();
+    return (id == null || id.isEmpty) ? null : id;
+  }
+
+  String? get _unavailableReason {
+    if (widget.controller == null) {
+      return 'Review is unavailable: no review store is connected.';
+    }
+    if (_target == null) {
+      return 'Review is unavailable: no generation is selected.';
+    }
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  @override
+  void didUpdateWidget(_ReviewSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.generationId != widget.generationId) {
+      _message = null;
+      _load();
+    }
+  }
+
+  Future<void> _load() async {
+    final controller = widget.controller;
+    final target = _target;
+    if (controller == null || target == null) return;
+    await controller.load(target);
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _decide(OutputReviewState next) async {
+    final controller = widget.controller;
+    final target = _target;
+    if (controller == null || target == null) return;
+    final ok = switch (next) {
+      OutputReviewState.approved => await controller.approve(target),
+      OutputReviewState.rejected => await controller.reject(target),
+      OutputReviewState.pending => await controller.reopen(target),
+    };
+    if (!mounted) return;
+    setState(() {
+      _messageIsError = !ok;
+      _message = ok
+          ? 'Recorded ${next.name}.'
+          : controller.lastError ?? 'The decision was not recorded.';
+    });
+  }
+
+  void _stageFeedback(String text) {
+    final controller = widget.controller;
+    final target = _target;
+    if (controller == null || target == null) return;
+    controller.stageFeedback(target, text);
+    setState(() {
+      _messageIsError = false;
+      _message = controller.hasUnsavedFeedback(target)
+          ? 'Feedback noted. It is recorded with your next decision.'
+          : null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final unavailable = _unavailableReason;
+    final controller = widget.controller;
+    final target = _target;
+    final decision = target == null || controller == null
+        ? OutputReviewDecision.unknown
+        : controller.decisionFor(target);
+    final unsaved =
+        target != null && controller?.hasUnsavedFeedback(target) == true;
+
+    // `_Section` hands its child an `Expanded`, so this column is given a
+    // bounded box and must fill it: a `mainAxisSize.min` column inside a tight
+    // height overflowed as soon as real status lines were added. The body
+    // scrolls instead of overflowing, and the review panel keeps its own
+    // natural height.
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (unavailable != null)
+            Text(unavailable, style: Theme.of(context).textTheme.bodySmall)
+          else
+            OutputReviewPanel(
+              onApprove: () => _decide(OutputReviewState.approved),
+              onReject: () => _decide(OutputReviewState.rejected),
+              onFeedback: _stageFeedback,
+            ),
+          if (unsaved)
+            const Text(
+              'Unsaved feedback will be recorded with the next decision.',
+            ),
+          if (_message != null)
+            Text(
+              _message!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: _messageIsError
+                    ? Theme.of(context).colorScheme.error
+                    : null,
+              ),
+            ),
+          if (target != null && unavailable == null)
+            Text('Reviewing generation $target (${decision.name}).'),
+        ],
+      ),
     );
   }
 }

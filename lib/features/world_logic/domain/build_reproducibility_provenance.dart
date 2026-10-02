@@ -109,6 +109,19 @@ class ArtifactComparison {
       }
       return true;
     }
+    // Sprint 117.43-06 (fail-open, fixed): the mirror image of 117.43-01.
+    // 117.43-01 made the `bitIdentical` branch verify the recorded digests, so a
+    // false identity claim failed closed. This branch verified NOTHING: it fell
+    // straight through to the `limits` documentation test below, so a
+    // `notBitIdentical` claim whose two rebuilds record byte-identical digests
+    // was reported as well formed, the 113.39 evaluation returned `pass`, and
+    // the 117.43 gate reported the `provenance` output as `pass` while printing
+    // a verdict that says the artifacts are not reproducible. A difference
+    // claim needs at least one recorded difference to be evidence of one.
+    final differing = rebuildA!.artifactHashes.entries.any(
+      (entry) => rebuildB!.artifactHashes[entry.key] != entry.value,
+    );
+    if (!differing) return false;
     if (limits == null || limits!.isEmpty) return false;
     if (limits!.any((limit) => limit.trim().isEmpty)) return false;
     return true;

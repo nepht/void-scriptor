@@ -868,4 +868,138 @@ void main() {
       },
     );
   });
+
+  // RED-first for defect 117.43-06: the mirror image of 117.43-01, in the
+  // OTHER direction. That fix made a `bitIdentical` claim verify the recorded
+  // digests, because a false identity claim was accepted. Its mirror was never
+  // checked: a `notBitIdentical` claim verified nothing at all. `isWellFormed`
+  // walked straight past the verdict branch to the `limits` documentation test,
+  // so `ArtifactComparison` with verdict `notBitIdentical` whose two rebuilds
+  // record byte-identical digests reported `isWellFormed == true`,
+  // `BuildProvenanceEvidence.evaluate` returned `pass`, and
+  // `measureProvenance` reported the `provenance` output as `pass`.
+  //
+  // That is the same trust boundary the gate's own docstring already promises
+  // not to cross: a reproducibility claim is only accepted when the recorded
+  // digests support it. The manifest we SHIP records `NOT_BIT_IDENTICAL`, and
+  // the committed 117.43 manifest reports that output as `pass` with
+  // `observed: ... NOT_BIT_IDENTICAL (6 artifact)`. The gate cannot
+  // simultaneously claim reproducibility evidence passed and print a verdict
+  // that says the artifacts are not reproducible.
+  group('117.43-06 a notBitIdentical claim must be measured, not assumed', () {
+    String digest(String seed) => seed * 64;
+
+    RebuildResult rebuild(String label, Map<String, String> hashes) =>
+        RebuildResult(label: label, artifactHashes: hashes, exitCode: 0);
+
+    ArtifactComparison comparisonWith(
+      RebuildVerdict verdict, {
+      Map<String, String>? hashesA,
+      Map<String, String>? hashesB,
+    }) {
+      return ArtifactComparison(
+        method: 'SHA-256 over the recorded artifacts',
+        rebuildA: rebuild(
+          'rebuild_a',
+          hashesA ?? <String, String>{'a.exe': digest('a')},
+        ),
+        rebuildB: rebuild(
+          'rebuild_b',
+          hashesB ?? <String, String>{'a.exe': digest('a')},
+        ),
+        verdict: verdict,
+        limits: <String>['a documented limit, as the verdict requires'],
+      );
+    }
+
+    test(
+      'identical digests behind a notBitIdentical claim is not well formed',
+      () {
+        // The shipped shape, minus the disagreement: same claim, no evidence for
+        // it. Before the fix this reported isWellFormed == true.
+        final comparison = comparisonWith(RebuildVerdict.notBitIdentical);
+
+        expect(
+          comparison.isWellFormed,
+          isFalse,
+          reason: 'a difference claim needs at least one differing digest',
+        );
+      },
+    );
+
+    test(
+      'a genuine difference behind a notBitIdentical claim still passes',
+      () {
+        final comparison = comparisonWith(
+          RebuildVerdict.notBitIdentical,
+          hashesA: <String, String>{'a.exe': digest('a'), 'b.dll': digest('b')},
+          hashesB: <String, String>{'a.exe': digest('a'), 'b.dll': digest('c')},
+        );
+
+        expect(comparison.isWellFormed, isTrue);
+      },
+    );
+
+    test(
+      'the shipped manifest passes provenance only because it records a real difference',
+      () {
+        final manifest = Sprint117GaArtifactGate.readManifest(
+          Sprint117GaPackagingContract.provenanceManifestPath,
+        );
+
+        expect(manifest, isNotNull);
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest!,
+        );
+
+        // The shipped manifest DOES record a genuine difference (4 of 6
+        // artifacts differ), so this stays `pass`. The assertion exists so that a
+        // future edit which erases the real difference cannot quietly leave the
+        // provenance output passing on a claim with no evidence behind it.
+        expect(check.status, Sprint117GaArtifactStatus.pass);
+        expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+      },
+    );
+
+    test('measureProvenance reports a claim with no difference as unmet', () {
+      // The gate-level consequence: the same shipped-shaped evidence whose
+      // rebuilds agree byte for byte must not be reported as a passing
+      // provenance output.
+      final matching = <String, String>{'a.exe': digest('a')};
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: <String, Object?>{
+          'required_evidence': <String, Object?>{
+            'build_inputs': <String>['a'],
+            'toolchain_versions': <String>['a'],
+            'dependency_lock': <String>['a'],
+            'rebuild_results': <Map<String, Object?>>[
+              <String, Object?>{
+                'label': 'rebuild_a',
+                'artifact_hashes': matching,
+                'exit_code': 0,
+              },
+              <String, Object?>{
+                'label': 'rebuild_b',
+                'artifact_hashes': matching,
+                'exit_code': 0,
+              },
+            ],
+            'artifact_comparison': <String, Object?>{
+              'method': 'SHA-256 over the recorded artifacts',
+              'verdict': 'NOT_BIT_IDENTICAL',
+              'limits': <String>['a documented limit, as the verdict requires'],
+            },
+            'provenance_record': <String>['a'],
+          },
+        },
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'reproducibility evidence that shows no difference is not a pass',
+      );
+    });
+  });
 }

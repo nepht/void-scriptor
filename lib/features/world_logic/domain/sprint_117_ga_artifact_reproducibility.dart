@@ -27,8 +27,10 @@
 /// 4. every checksum line matches the bytes on disk, and every signed artifact
 ///    is covered by a checksum line;
 /// 5. provenance is measured through `BuildProvenanceEvidence.evaluate`, and a
-///    `bitIdentical` claim is only ever accepted when the two rebuilds really
-///    do record identical hashes.
+///    reproducibility claim is only ever accepted when the recorded digests
+///    actually support it: `bitIdentical` needs every digest equal, and
+///    `notBitIdentical` needs at least one digest that differs (defects
+///    117.43-01 and 117.43-06, the two mirrors of the same trust boundary).
 ///
 /// Defect 117.43-01 (fail-open, fixed here): `ArtifactComparison.isWellFormed`
 /// compared only the two rebuilds' artifact NAME SETS and never their hash

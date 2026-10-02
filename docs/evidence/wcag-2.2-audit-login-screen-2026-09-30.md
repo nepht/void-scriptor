@@ -637,6 +637,87 @@ diubah; hanya satu file test baru. Layar story ditunda, bukan diews, dan
 DEFERRED dengan alasannya (butuh fixture database untuk merepresentasikan
 kondisi nyata).
 ---
+## 13. Fase 8 — Focus Order di Portability Wizard (2.4.3)
+
+Layar ketiga yang diaudit untuk kriteria 2.4.3, setelah Account Cloud Center (Bagian 11) dan AI Prompt Composer (Bagian 12).
+
+### 13.1 Kenapa layar ini dipilih
+
+Kandidat `portability_wizard_screen.dart` dipilih setelah `story_workspace_screen.dart` di-DEFERRED di Bagian 12, dengan dua bukti sebelum menulis test:
+
+| Kandidat | Bukti | Putusan |
+| --- | --- | --- |
+| `story_workspace_screen.dart` | traversal hanya 2 stop (Navigator lalu loop), branch `'Outline'` merender nyaris kosong | DEFERRED, butuh fixture database |
+| `portability_wizard_screen.dart` | `const PortabilityWizardScreen({super.key})` — nol parameter wajib, seluruh data dari list statis, tanpa future/async | Dipilih |
+
+Berkas target juga bersih di git sebelum dan sesudah pekerjaan ini, sehingga tidak bercampur dengan WIP Core Worker.
+
+### 13.2 Data traversal terukur
+
+Probe memakai traversal Tab nyata (`sendKeyEvent(LogicalKeyboardKey.tab)`) pada viewport 1536x1024 dengan devicePixelRatio 1.0. Sepuluh stop, tertutup rapi:
+
+| # | Label | t | l | w | h | Wilayah |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | Canon Prime | 216 | 54 | 379 | 24 | dropdown universe sumber |
+| 1 | What If: Echoes | 216 | 491 | 379 | 24 | dropdown universe tujuan |
+| 2 | Reference | 267 | 41 | 171 | 37 | chip mode |
+| 3 | Clone | 267 | 224 | 100 | 37 | chip mode |
+| 4 | Variant | 267 | 335 | 126 | 37 | chip mode |
+| 5 | Locked Identity | 267 | 473 | 231 | 37 | chip mode |
+| 6 | Character: Arin Vale | 329 | 41 | 841 | 63 | chip aset |
+| 7 | Environment: Obsidian Keep | 392 | 41 | 841 | 63 | chip aset |
+| 8 | Prop: Aether Blade | 455 | 41 | 841 | 63 | chip aset |
+| 9 | Timeline: Fall of Embers | 518 | 41 | 841 | 63 | chip aset |
+
+Tiga wilayah terurut dari atas ke bawah dan traversal mengikuti urutan baca tiap wilayah: dua dropdown universe (sumber lalu tujuan, satu baris, `left` naik monoton pada `top` sama), empat chip mode (satu baris `Wrap`, `left` naik monoton pada `top` sama), lalu empat chip aset (satu chip per baris, `top` naik monoton pada `left` dan lebar sama).
+
+Urutan chip mode mengikuti urutan deklarasi `enum PortMode.values`; urutan chip aset mengikuti list statis `_PortAsset`. Keduanya dibuktikan terhadap sumber, bukan ditebak dari tampilan.
+
+### 13.3 Tombol footer yang disabled bukan stop fokus
+
+Traversal berhenti tepat pada 10 stop. Tombol aksi di `bottomNavigationBar` tidak masuk, karena `onPressed`-nya `_selectedAssets.isEmpty ? null : () {}` (baris 129). Saat belum ada aset yang dipilih, tombol itu dalam keadaan nonaktif sehingga dilewati traversal Tab.
+
+Ini perilaku yang benar untuk kontrol disabled, bukan kontrol yang urutan fokusnya tersesat, sehingga tidak dikontrak sebagai stop fokus. Kontrak 2.4.3 di sini adalah urutan relatif stop yang aktif, bukan jumlah elemen interaktif di layar.
+
+### 13.4 Test sempat RED dengan sebab nyata
+
+Run pertama menghasilkan 3 dari 4 PASS. Assertion yang runtuh adalah pengklasifan tipe stop:
+
+```
+Expected: 'dropdown'
+  Actual: 'ink'
+```
+
+Penyebabnya ada di harness, bukan di produksi: `DropdownButton` tidak pernah menjadi node fokus. Ia membungkus field-nya di `StatefulWidget` internal, dan node fokus yang benar-benar diisi adalah `InkWell` atau `InputDecorator` di dalamnya. Walk ancestor yang berhenti di kemunculan pertama `InkWell` ikut menghentikan penelusuran sebelum mencapai `DropdownButton`, sehingga kedua dropdown universe terklasifikasi `ink`.
+
+Perbaikan ada di classifier test: telusuri seluruh rantai ancestor lebih dulu untuk mendeteksi ada/tidaknya `DropdownButton`, baru putuskan kelas stop dari `InkWell` atau field yang ditemukan. Widget produksi tidak diubah. Run kedua 4 dari 4 PASS.
+
+### 13.5 Negative control
+
+Urutan `_modeLabels` dibalik di dalam test lalu dijalankan ulang. Hasil 3 dari 4 FAIL, dengan test yang runtuh tepat di "empat chip mode terurut sesuai urutan enum". Jadi assertion urutan benar-benar menguji urutan, bukan sekadar menghitung stop.
+
+### 13.6 Temuan sampingan di luar cakupan a11y
+
+Satu temuan ditemukan saat membaca sumber, dan sengaja tidak disentuh karena bukan defect a11y:
+
+`enum PortMode` dideklarasikan dua kali dengan nilai yang identik — di `lib/features/multiverse/domain/portability.dart:23` dan di `lib/features/multiverse/presentation/portability_wizard_screen.dart:160`. Layar tidak meng-import berkas domain, jadi field `_mode` pada baris 55 bertipe enum presentation, bukan enum domain. Pencarian di seluruh `lib/` menunjukkan enum versi domain tidak dipakai presentation manapun.
+
+Klasifikasi: duplikasi kode, bukan defect aksesibilitas. Tidak ada perubahan produksi pada fase ini; dicatat di sini agar tidak hilang.
+
+### 13.7 Gate
+
+| Gate | Hasil |
+| --- | --- |
+| `portability_wizard_focus_order_test.dart` | 4 dari 4 PASS |
+| Negative control (urutan mode dibalik) | 3 dari 4 FAIL — assertion terbukti punya kekuatan |
+| `dart analyze` berkas test | No issues found |
+| CJK/Cyrillic scan | none |
+| `test/features/multiverse/` (12 berkas test) | 38 PASS, 0 FAIL |
+
+Test lama `portability_wizard_screen_test.dart` hanya 22 baris smoke test tanpa traversal fokus, jadi tidak ada tumpang tindih cakupan dengan kontrak baru.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -28,107 +28,11 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.40",
-  "next_step": "117.41",
+  "last_verified_step": "117.41",
+  "next_step": "117.42",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.40 full regression and gate rerun: all 10 contract-declared required_suites measured end to end, 574 test cases, 0 failures, across 4 deterministic shards at exit 0. HEAD was self-inconsistent at run start (3 suites failing) and was repaired inside the slice.",
-    "evaluated_on": "2026-10-02",
-    "commit": "99b0da4",
-    "analyzer": "exit 0, No issues found! (was exit 1 with 3 curly_braces_in_flow_control_structures lints in 116.27 and 116.7)",
-    "focused_tests": "8/8 PASS exit 0 (sprint_116_ai_usage_cost_reconciliation, sprint_116_brand_asset_icon_certification)",
-    "format": "dart format --set-exit-if-changed 2 files 0 changed exit 0",
-    "diff_check": "exit 0",
-    "build_windows_release": "PASS exit 0, 142.1s (build/windows/x64/runner/Release/void_scriptor.exe)",
-    "known_preexisting_failures": [
-      "test/release/sprint_113_ga_artifact_packaging_test.dart x2 - pins signed v1.2.0-rc.1 artifacts in gitignored build/: dartjni.dll absent (jni only transitive in pubspec.lock) and exe sha256 0bbeb0ab.. != recorded 73101e78..",
-      "test/release/sprint_113_build_reproducibility_provenance_test.dart x1 - same signed-artifact root cause",
-      "test/release/sprint_113_update_channel_delivery_validation_test.dart x1 - same signed-artifact root cause"
-    ],
-    "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
-    "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
-    "rechecked_on": "2026-10-02",
-    "recheck_note": "Re-verified at 117.39 exit: focused 19/19, regression 111/111 + 173/173, analyzer 3 files clean, format idempotent, diff-check 0, windows debug exit 0. stability_gate stays PASS.",
-    "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
-    "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart.",
-    "slice_117_27": {
-      "commit": "f39f6cd",
-      "defects_fixed": [
-        "notice kept claiming \"Remote actions are disabled until you reconnect and refresh\" after a successful reconnect (clause was unconditional)",
-        "AccountCenterLocalSetting/AccountCenterLocalStorageDetails accepted blank identities and negative totalBytes and reported them available, inverting the file own absent-stays-null rule"
-      ],
-      "drill_defects_corrected_before_claiming": [
-        "Duration(minutes: 5) meant 5 minutes AGO, not a future timestamp, so the futureTimestamped expectation could never hold",
-        "assertion used \"!isUsable == false\", comparing a bool against an inverted bool"
-      ],
-      "necessity": "git cat-file blob HEAD:<path> (no reset/restore) reproduced the identical two violations; reverting each fix block alone reproduced exactly its own violation",
-      "manifest": "docs/evidence/sprint-117-27-manifest-20261001.json sha256 1ffdf398c235946c5e939f0a14aec6c7b418ef3b76d0cb3ff4737e679d3c52cf, 5621 byte, byte-identical over two regenerations, json.loads VALID, 12 checks 6 areas 0 violation 0 open",
-      "gates": "focused 2/2; account domain 769/769 + 116.44 offline 18/18 + slice 2/2 = 789/789; analyzer 3 files clean; format 0 changed idempotent; diff-check 0",
-      "build": "windows --debug exit 0 (47s, kernel fresh 101433368 byte). Slice symbols 0 on the fresh kernel while positive controls are non-zero; poison in the slice file still built exit 0, poison in a reachable file failed exit 1 with account_cloud_center_screen.dart(1914,3) error G077942FA — so the slice file is not reachable from main.dart and the build proves no regression on reachable code only."
-    },
-    "slice_117_28": {
-      "commits": [
-        "f4f7a56",
-        "0d147fa"
-      ],
-      "defects_fixed": [
-        "rateLimited() rendered a 30-second provider window as 'Try again after 0 minutes', telling the user to retry while the provider was still refusing",
-        "partial() accepted availableItemCount 0 and reported hasData=true with a retryable recovery, the same surface shape used when data really arrived"
-      ],
-      "drill_defects_corrected_before_claiming": [
-        "first RED probe did not compile: invented AccountCenterHealthStateMachine / AccountConnectionEvent.connectSucceeded (harness defect, not production)",
-        "initial expired/revoked test asserted a self-made map instead of the shipped state machine, so it was replaced with a real 115.10 measurement",
-        "the gate was first written with 'error' twice in requiredStates, which would double-count one state; fixed and guarded with non_canonical_required_states plus an anti-duplication assertion"
-      ],
-      "necessity": "each fix removed alone reproduces exactly one failure (partial_data, rate_limited)",
-      "gate": "9 required states measured, 9 checks, 0 violation, 0 open item, 0 structural failure",
-      "focused": "slice 19/19, contract+slice 25/25, account domain 769/769 (baseline 769, delta 0), 116.44 offline + 117.27 slice 20/20",
-      "manifest": "docs/evidence/sprint-117-28-manifest-20261001.json sha256 0548d0f98741b01a12c9371adf8ab47cf017abd2bca4988afc926c236b724892, 4285 bytes, byte-identical across two runs, json.loads VALID",
-      "build": "windows --debug exit 0 in 25.0s; positive-control poison in a reachable file exited 1 (account_cloud_center_screen.dart(3892,39) error G44692887), so the build proves no regression only — account/domain is not reachable from main.dart, same pattern as 117.12-117.27"
-    },
-    "slice_117_30": {
-      "commit": "ca0456f",
-      "defects_fixed": [
-        "costIsExact never checked the currency count, so a live complete reported two-currency report returned true and uiState claimed CONNECTED by testing costTotals.every(subtotal != null) instead of the exactness contract",
-        "source was never visible: providerApi, localLog and userDeclared rows rendered byte-identical costText and textSummary, and a user-declared row kept costIsExact=true",
-        "period reconciliation was blind: a record billed to 2026-09 but measured 2026-10-20 was summed into the September bar and total with costIsExact=true and no disclosure in summary, unknownFilterValues, emptyReason or suggestedAction",
-        "an application credit balance measured 2020-01-01 printed as the plain number 5 while provider rows in the same report were aged against the clock"
-      ],
-      "harness_defects_corrected_before_claiming": [
-        "costLabel first returned originLabel unconditionally, breaking the pre-existing 115.40 pin (Expected 'Estimated' Actual 'Reported'); the origin is now checked first and the estimate flag second",
-        "the first necessity run used LF markers against a CRLF file and matched nothing; rewritten with DOTALL regex line stripping",
-        "the first poison attempt used an unreferenced throwing function, which tree-shaking removes and which therefore proves nothing; discarded and rerun with a real type error"
-      ],
-      "necessity": "5 fix blocks removed one at a time, 5x rc=1 with exactly one failing test each, no cross-contamination, restored byte-identical from in-memory bytes (sha256 725be741d84300a9 verified) then green rc=0",
-      "slice_test": "13/13 PASS exit 0",
-      "account_domain_regression": "769/769 PASS exit 0, baseline 769 delta 0",
-      "focused_regression": "52/52 PASS (ai_usage_report + ai_usage_credits_cost_view + right_rail_summary)",
-      "analyzer": "3 files, No issues found!",
-      "format": "pass1 changed 2 files, pass2 0 changed, exit 0 idempotent",
-      "diff_check": "exit 0",
-      "manifest": "docs/evidence/sprint-117-30-manifest-20261001.json sha256 2497da9465206cb9a5cb3c769b65f6ef 7880 bytes, byte-identical across two reads, json.loads VALID",
-      "windows_build": "debug exit 0 23s and release exit 0 76.2s on a forced-fresh kernel, recorded as NOT slice evidence: a positive-control type error in lib/main.dart fails the build (exit 1, error G44692867) while the same error in the slice file exits 0, so lib/features/account/domain/ is not reachable from main.dart",
-      "poison_residue": "none; lib/main.dart verified CLEAN against HEAD via git status after restore"
-    },
-    "slice_117_39": {
-      "commit": "7dcd0b0",
-      "defects_fixed": [
-        "_redactSecrets used replaceFirstMapped, so only the FIRST match of each pattern was redacted; a second credential of the same class reached the crash artifact in full",
-        "the sink kept its own copy of the provider-token patterns and the copy had drifted from the canonical SecretScanner: it required a DASH separator so the real GitHub formats (ghp_, github_pat_) and Slack xoxb- never matched, and it had no AKIA family at all",
-        "root cause of the drift: the duplicated pattern list; the sink now delegates shape detection to the canonical SecretScanner so the two surfaces cannot diverge again"
-      ],
-      "harness_defects_corrected_before_claiming": [
-        "capture() shared one directory and used .single, so the aggregate test failed with 'Bad state: Too many elements' — a harness failure indistinguishable from a real leak; each capture now uses its own subdirectory",
-        "the first gate draft called toJson() on the resolution class before it existed; added rather than worked around"
-      ],
-      "third_defect_found_by_existing_test": "after fixing defects 1 and 2 the scanner-agreement test still failed; a family probe isolated AKIA as leaking in full, which is what exposed the duplicated-pattern-list root cause",
-      "necessity": "block A replaceFirst-only rc=1 with 4 failing tests; block B drifted local patterns rc=1 with 6 failing tests; both without compile errors; RECON_SHA_MATCH=True; positive control 19/19 exit 0",
-      "manifest": "docs/evidence/sprint-117-39-manifest-20261002.json sha256 44ca26d5be77a227d42e04e593ab81959ca47339d39b2c8bc4a9be7e49955053, 3531 bytes, byte-identical over two regenerations with a delete in between, json.loads VALID, 15 probes 15/15 true; sha taken from the COMMITTED artifact (git show 7dcd0b0) and equals the disk value",
-      "gates": "focused 19/19; regression 111/111 (test/app/bootstrap + test/core/security) and 173/173 (117.35-117.38 + bootstrap); analyzer 3 files No issues found; format 0 changed idempotent; diff-check 0",
-      "build": "windows --debug exit 0 (28.1s)",
-      "claim_boundary": "no live GA blocker filed and no release claimed; the beta cohort has not started; both defects measured on test-owned state; 7 of the 9 canonical domains (accessibility, auth, billing, data, privacy, quota, sync) remain unresolved and are NOT closed by this slice",
-      "manifest_incident_avoided": "the regression run rewrote docs/evidence/sprint-117-35-manifest-20261002.json with fresh probe timings (the exact 2026-10-02 SHA-policy trap); the canonical 117.35 manifest was restored from git show HEAD:<path> rather than git restore, sha back to 496fee569187c214e621bfecf9412150b7daaedb1083b7fd14e8ee2ffc8a859f, and it was not committed"
-    }
+    "note": "117.41 final connector registry reconciliation: 7 canonical fields measured on shipped seams, fail-closed exposure allow-list. 19/19 focused, 172/172 with contract regression, 1018/1018 account domain, 1002/1002 across the 39 sprint_117 release files, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 18.1s. Commit 540134d."
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -138,7 +42,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-02",
-  "updated_by": "cron b0c2c7d744d9 (117.38 corrective: FLAG_OFF + DISABLE_CONNECTOR measured through shipped seams)",
+  "updated_by": "cron b0c2c7d744d9 (117.41: fail-closed connector registry reconciliation, 3 defects proven necessary)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -694,7 +598,7 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.33",
+  "current_step": "117.41",
   "current_step_status": "VERIFIED-LOCAL",
   "last_run_summary": "117.33 Privacy Assessment VERIFIED-LOCAL. 8 sumbu kanonik (consent, minimization, destinations, content_exclusion, retention, deletion, disconnect, telemetry_controls) diukur terhadap kode yang benar-benar di-ship. 2 defect fail-open ditemukan lalu diperbaiki: WorkflowPrivacyPolicy.strict mengirim allowlist kosong di belakang guard isNotEmpty sehingga kebijakan paling ketat melakukan ZERO minimization (creative content & credential lolos) -> allowlist eksplisit 9 data kind; ArchiveSecretPolicy._secretFolders tidak memuat .git sehingga kredensial di remote URL VCS plaintext ikut ter-ekspor -> .git masuk daftar folder rahasia. Cacat harness necessityketahuan dan diperbaiki sebelum diklaim: revert pertama memotong brace sehingga berkas gagal kompilasi (rc=1) = BUKAN bukti necessity; drill ditulis ulang jadi perilaku (allowlist jadi <String>{}), lalu minimize rc=1 dengan 3 test gagal dan content_exclusion rc=1 dengan 1 test gagal, 2 berkas dipulihkan byte-identical via SHA-256 (residu 0). Sumbu deletion DILAPORKAN TIDAK TERPENUHI (hanya unlink, tanpa delete irreversible), bukan diwaive; project.sqlite tidak dikecualikan dan kontrak ekspor belum rekonsiliasi. Re-verifikasi independen run ini pada HEAD c4ef323: slice 27/27 exit 0, regresi 450 pass +1 skip exit 0 di 4 target, analyzer 4 file No issues found! exit 0, format pass1 0 changed + pass2 idempoten, git diff --check exit 0. Slice commit c4ef323; commit ledger/state/manifest dicatat pada HEAD berikutnya. next_step=117.34 Billing & Webhook Integrity.",
   "last_commit": "c4ef3230ac218296e1a8c318102e673e2189f3bd",
@@ -1909,7 +1813,7 @@
     "snapshot": "C:/Users/nepht/AppData/Local/vs-run11652-snap",
     "evidence": "docs/evidence/sprint-116-52-{red,focused,reg-a,reg-b,analyze,format,build}-20260929.{log,meta}"
   },
-  "next_step_status": "PARTIAL-LOCAL-BLOCKED-OPERATOR-DECISION",
+  "next_step_status": "NOT_STARTED",
   "sprint_116_closure": {
     "closed_at": "2026-09-29",
     "steps_verified": 52,
@@ -3014,10 +2918,59 @@
     "note": "slot allocated at operator stream transition; no work performed yet"
   },
   "sprint_117_step_11741": {
-    "status": "NOT_STARTED",
+    "status": "VERIFIED-LOCAL",
+    "commit": "540134d",
     "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "manifest": "docs/evidence/sprint-117-41-manifest-20261002.json",
+    "manifest_sha256": "2356bf4428603d3c83d94a3f8a1a6fb6e1352523772f503cfd93ac16de639458",
+    "manifest_sha256_source": "hashed from committed artifact via `git show 540134d:<path>` (policy klausul 1), not from working tree",
+    "verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
+    "required_fields_measured": [
+      "provider_id",
+      "connector_version",
+      "status",
+      "evidence",
+      "limitations",
+      "visibility",
+      "recheck_date"
+    ],
+    "providers_measured": 32,
+    "checks_run": 32,
+    "failures": 0,
+    "exposed_provider_count": 0,
+    "open_items": 0,
+    "probes": 9,
+    "defects_fixed": [
+      "117.41-01 aiAvailabilityMismatches was a hardcoded empty literal; report now delegates to the shipped AccountCenterAiProviderRegistry.validateAvailabilityAgainst seam and hasFailures counts those mismatches",
+      "117.41-02 an unmappable visibility produced an empty lock status that passed a `!= BLOCKED` deny-list and read as exposed; now UNMAPPED_VISIBILITY and named in visibility_unknown",
+      "117.41-03 exposedSubset was a deny-list, so a row whose own status contradicted its recorded visibility was published; now an allow-list of exposableStatuses (CERTIFIED, LIMITED) so blocked, expired and unmapped all withhold by construction"
+    ],
+    "necessity_blocks": [
+      "revert _lockStatus default to '' -> exit 1 (18 pass / 1 fail)",
+      "revert exposed allow-list to `!= BLOCKED` -> exit 1 (3 fail)",
+      "revert AI seam to hardcoded empty -> exit 1 (2 fail)",
+      "restore all three -> exit 0 (19/19)"
+    ],
+    "gates": {
+      "focused_test": "19/19 exit 0",
+      "focused_plus_contract_regression": "172/172 exit 0",
+      "account_domain_full": "1018/1018 exit 0",
+      "sprint_117_release_full_39_files": "1002/1002 exit 0",
+      "analyze": "No issues found! exit 0 (4 files)",
+      "format": "pass1 2 changed, recheck 0 changed exit 0",
+      "diff_check": "exit 0",
+      "build_windows_debug": "exit 0, 18.1s"
+    },
+    "sha_policy_incident": {
+      "status": "RECURRED-3RD-TIME-EMPIRICALLY-PROVEN",
+      "detail": "the full sprint_117 release shard rewrote two foreign manifests while running: sprint-117-35 (496fee56... -> 47d548eb...) and sprint-117-36 (a1100533... -> c065ba08...). Both restored from `git show HEAD:<path>` per klausul 3; disk == git show == the 117.40 ledger values; json.loads VALID; neither included in this commit. Root cause (cross-slice manifest writes) still unfixed, reported at 117.37 and 117.40.",
+      "false_positives_discarded": [
+        "sprint-117-31 / sprint-117-33 showed a sha mismatch but are not git-modified: core.autocrlf changes line endings in the working tree without changing content",
+        "sprint-117-41 itself was not yet in HEAD, so `git show` returned the empty string (e3b0c44... = sha of zero bytes), which is not a drift"
+      ]
+    },
+    "claim_boundary": "No live beta, no participant, no release is claimed. Every status is local certification state measured on test-owned fixtures and shipped manifests. External gates DEFERRED-EXTERNAL: hosted CI, real GPU/raster, live provider health/quota/cost, beta cohort, publication.",
+    "ledger": "docs/sprints/sprint-117-beta-validation.md"
   },
   "sprint_117_step_11742": {
     "status": "NOT_STARTED",
@@ -3219,6 +3172,13 @@
       "commit": "6463e50",
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
       "evidence": "docs/evidence/sprint-117-38-manifest-20261002.json"
+    },
+    "117.41": {
+      "status": "VERIFIED-LOCAL",
+      "commit": "540134d",
+      "ledger": "docs/sprints/sprint-117-beta-validation.md",
+      "evidence": "docs/evidence/sprint-117-41-manifest-20261002.json",
+      "evidence_sha256": "2356bf4428603d3c83d94a3f8a1a6fb6e1352523772f503cfd93ac16de639458"
     }
   },
   "sprint_117_38_issue_deduplication_triage": {
@@ -3240,7 +3200,7 @@
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
   },
-  "last_verified_commit": "99b0da4",
+  "last_verified_commit": "540134d",
   "suites_measured": [
     "connector",
     "workflow",

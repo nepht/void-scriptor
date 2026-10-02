@@ -32,8 +32,8 @@
   "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-07 fixed — the provenance verdict was never READ, only inferred (`== 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`), so an absent/null/typo verdict was coerced into a measured NOT_BIT_IDENTICAL claim and the gate printed it as `pass`. Verdict is now parsed as a closed vocabulary and anything else is reported `unmet`. 45/45 focused (was 40/40), analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 22.7s, provenance regression 17 pass / 3 FAIL (the same three pre-existing failures, root 117.43-02, unchanged by this slice). Commit fb12fde. Step remains PARTIAL-LOCAL: 117.43-02 (committed GA manifest names unresolvable build-tree paths; all six signed checksums drift) is still an open item awaiting an operator decision, so the guard pointer stays on 117.43.",
-    "verified_commit": "fb12fdea10d0b64d3b79a5941f884cf97a72ce32",
+    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-08 fixed - the PER-ARTIFACT partition (differing_artifacts/identical_artifacts) was read by nothing in lib/ or test/, and ArtifactComparison had no field to hold it, so the sharpest claim the shipped manifest makes was never measured. Proven before the fix: a manifest naming a.exe differing and b.dll identical while the recorded digests prove the exact reverse reported status=pass printing NOT_BIT_IDENTICAL - every individual claim false, only the aggregate true. Each named artifact is now measured against its own digest and the two lists must classify the whole recorded inventory; absence stays non-claiming per 117.43-07. The shipped manifest still passes because its partition is genuinely honest (4 of 6 binaries really differ, the two upstream DLLs really are byte-identical), and a second test inverts that partition on the real document and must fail. Also repaired: run 5 fixed 117.43-07 but never appended it to this state's canonical defects_fixed list, and left commit/updated_at stale at run 4. Gates: focused 54/54 exit 0 (was 45/45), analyzer clean, format idempotent after apply, diff --check clean, windows --debug build exit 0 in 19.3s, provenance regression 17 pass / 3 FAIL (the same three pre-existing failures, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still an open item awaiting an operator decision, so the guard pointer remains on 117.43.",
+    "verified_commit": "d29f61d",
     "focused_tests": "45/45",
     "regression": "sprint_113 provenance+packaging: 17 pass / 3 FAIL (pre-existing, root 117.43-02)",
     "analyzer": "No issues found!",
@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T06:05:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-07 slice)",
+  "updated_at": "2026-10-03T06:35:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-08 slice)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -199,10 +199,10 @@
   },
   "last_worker_run": {
     "job": "b0c2c7d744d9",
-    "run_at": "2026-10-03T06:05:00+07:00",
+    "run_at": "2026-10-03T06:35:00+07:00",
     "step": "117.43",
-    "slice": "defect 117.43-07 (provenance verdict parsed, never inferred)",
-    "commit": "fb12fdea10d0b64d3b79a5941f884cf97a72ce32",
+    "slice": "defect 117.43-08 (per-artifact partition parsed and measured, never read)",
+    "commit": "d29f61d",
     "evidence_sha256_committed": "6165ec55793ed8fdd2925f3b04cf5f19ab37c2bd7b2299d7c95429c076506cd1",
     "evidence_note": "canonical sha is the committed blob via `git show fb12fde:<path>`; the on-disk file differs only by CRLF->LF normalisation under the `text: auto` git attribute (normalized disk == blob, git diff HEAD empty)",
     "status": "PARTIAL-LOCAL",
@@ -3023,7 +3023,7 @@
   "sprint_117_step_11743": {
     "status": "PARTIAL-LOCAL",
     "verified_on": "2026-10-03",
-    "commit": "0ce8c5f",
+    "commit": "d29f61d",
     "canonical_step": "117.43",
     "title": "GA Artifact & Reproducibility",
     "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
@@ -3037,7 +3037,9 @@
       "117.43-03 shipped in commit 186c05a but undocumented until 2026-10-03: measureChecksums walked only one direction - a signed artifact with no checksum line was reported as uncovered, but a checksum LINE naming an unreadable artifact was never counted, so an inventory could name artifacts the tree does not contain and still report clean agreement. Now counted as phantom and fails closed.",
       "117.43-04 shipped in commit 186c05a but undocumented until 2026-10-03: readChecksumIndex documented that it returns the map 'plus every line that was malformed, so a silently dropped line cannot shrink the covered set without being counted', but returned the map alone and continued past malformed input, so a truncated or uppercase digest vanished from the inventory with no counted failure. Now returns ChecksumIndex(index, malformed) and malformed lines fail the check.",
       "117.43-05 found and fixed in this slice (2026-10-03): readChecksumIndex filled its map with `index[path] = digest`, so a path recorded TWICE with DIFFERENT digests kept whichever line came last and the contradicting claim was counted nowhere - an inventory that disagreed with itself reported agreement on the surviving line. ChecksumIndex now carries `conflicting` (repeated paths whose digests disagree) as a measured result rather than an internal detail, and measureChecksums counts it as its own violation (conflicting=<n> in observed, conflicting: <path> in note). Same fail-open shape as 117.43-04 one step lower: there the line vanished from the inventory, here it overwrote its own evidence. Identical repeats stay benign and are tested explicitly. Fix does not change any committed checksum value and does not touch build/.",
-      "117.43-06 ArtifactComparison.isWellFormed verified the bitIdentical branch (117.43-01) but never verified the notBitIdentical branch: a claim that the artifacts DIFFER, recorded with byte-identical digests on both rebuilds, was reported isWellFormed == true, BuildProvenanceEvidence.evaluate returned pass, and the 117.43 gate reported the provenance output as pass. Exact mirror of 117.43-01 in the opposite direction: there an unverified false identity claim, here an unverified false difference claim. Fix: notBitIdentical now requires at least one recorded digest that actually differs, otherwise isWellFormed == false (minimal fail-closed guard before the pre-existing limits documentation check). Commit 0ce8c5f."
+      "117.43-06 ArtifactComparison.isWellFormed verified the bitIdentical branch (117.43-01) but never verified the notBitIdentical branch: a claim that the artifacts DIFFER, recorded with byte-identical digests on both rebuilds, was reported isWellFormed == true, BuildProvenanceEvidence.evaluate returned pass, and the 117.43 gate reported the provenance output as pass. Exact mirror of 117.43-01 in the opposite direction: there an unverified false identity claim, here an unverified false difference claim. Fix: notBitIdentical now requires at least one recorded digest that actually differs, otherwise isWellFormed == false (minimal fail-closed guard before the pre-existing limits documentation check). Commit 0ce8c5f.",
+      "117.43-07 recorded 2026-10-03 run 5 but never appended to this list (state bookkeeping gap found and repaired in run 6; the fix itself was committed in fb12fde): _evaluateShippedProvenance INFERRED the provenance verdict instead of reading it (`comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`), so an absent, null or misspelled verdict was silently coerced into a measured notBitIdentical claim. The gate printed provenance as pass for a manifest that stated no verdict at all. Fixed with a closed vocabulary: any value outside the two canonical strings returns null, leaving measureProvenance unmet instead of fabricating a claim.",
+      "117.43-08 the per-artifact partition was never read by anything in lib/ or test/ and ArtifactComparison had no field to hold it, so the shipped manifest's far sharper claim (\"these four binaries differ, these two upstream DLLs are identical\") was never measured. Proven before the fix: a manifest naming a.exe differing and b.dll identical while the recorded digests prove the exact reverse reported status=pass printing NOT_BIT_IDENTICAL - every individual claim false, only the aggregate accidentally true, because the 117.43-06 “at least one difference” rule was still satisfied. Each named artifact is now measured against its own digest and the two lists must classify the whole recorded inventory; undecodable field types and half-declared partitions fail closed, while absence of both fields stays non-claiming per 117.43-07. Commit d29f61d."
     ],
     "defects_measured_not_fixed": [
       "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance. Independently re-measured 2026-10-03 (not copied from the previous run): docs/release/v1.2.0-rc.1-checksums.txt has 493 entries, 0 malformed -> 485 MATCH / 7 DRIFT / 1 MISSING. Drift = the 6 signed artifacts plus data/app.so; missing = build/windows/x64/runner/Release/native_assets.json. Figures are identical to the 2026-10-02 run and stable after 'flutter build windows --debug'. Confirmed reading: the 117.43 GA gate measures only the 6 signed artifacts from docs/planning/v1.2/sprint_113_ga_artifact_packaging.json, so the full 493-row checksum index is never measured by the gate - a real blind spot, not gate drift.",
@@ -3139,7 +3141,27 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T05:40:00+07:00"
+    "updated_at": "2026-10-03T06:35:00+07:00",
+    "blind_spot_117_43_08": {
+      "measured_on": "2026-10-03",
+      "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
+      "empirical_before_fix": "probe zz_probe_11743_08_test.dart (deleted after the findings moved into the official tests): PROBE-B is the falsification - a manifest declaring differing_artifacts:['a.exe'] and identical_artifacts:['b.dll'] while the recorded digests prove the exact reverse still returned status=pass and printed 'artifact_comparison: NOT_BIT_IDENTICAL (2 artifact)'. PROBE-F confirmed the domain object had no partition field at all. PROBE-A/C also came back unmet (aggregate, not partition); PROBE-D the shipped manifest stayed pass; PROBE-E the honest control stayed pass.",
+      "shipped_manifest_still_passes": "Yes, and correctly so: measured independently this run, the declared partition equals the actual digest partition exactly (4 of 6 binaries really differ - void_scriptor.exe, dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll; flutter_windows.dll and sqlite3.dll really are byte-identical). The fix does not change that status; its purpose is that a second test now inverts the real document's partition with all digests untouched and MUST fail, proving the gate measures the partition and not merely the aggregate.",
+      "absence_is_not_a_defect": "A manifest naming no artifact at all makes no per-artifact claim (consistent with 117.43-07), so both fields absent stays non-claiming; a present field is measured and a lone field (only one of the two present) is the partial account this defect refuses."
+    },
+    "gates_reverified_run6_2026_10_03": {
+      "focused_117_43": "54/54 exit 0 (up from 45/45: 117.43-08 adds 9 cases, 6 fail-closed plus 3 claim-honesty keepers). `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart`",
+      "red_witness": "`flutter test ... --plain-name \"117.43-08\"` exit 1 with exactly 6 named failures (5 fail-closed plus 1 direction proof), no compile error, before the fix was applied.",
+      "necessity_reproven_this_run": "lib/ restored to the pre-fix snapshot (sha256 01c1f367) with the new tests left in place -> exit 1, exactly 6 tests named 117.43-08 fail, no compile error; restored byte-identical to the fixed version (sha256 9f47dbe0) before committing.",
+      "analyze": "No issues found! exit 0 on the 3 slice files.",
+      "format": "exit 1 on the first check (2 files reformatted) -> format applied -> 0 changed, idempotent, exit 0.",
+      "diff_check": "git diff --check exit 0.",
+      "build": "`flutter build windows --debug` exit 0 in 19.3s -> Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe. Debug scope only; no release tree was built or re-signed.",
+      "regression": "sprint_113_build_reproducibility_provenance_test.dart + sprint_113_ga_artifact_packaging_test.dart exit 1 with 17 pass / 3 FAIL - the SAME three failures as all four prior runs (113.38 checksums match the signed artifacts byte for byte; 113.38 signed artifacts exist and signing evidence verifies locally; 113.39 signed release artifact from 113.38 remains intact). Root 117.43-02, NOT a regression: commit d29f61d touches only the partition parser and its tests, never build/ or the checksums file.",
+      "working_tree": "dirty 93 -> 95 during the slice and back to 93 after commit; the delta was exactly my 2 slice files. generate_release_train_test.dart and sprint_117_wide_desktop_visual_validation_test.dart were already dirty at preflight and were not touched (sibling WIP).",
+      "cross_slice_regeneration": "docs/ and .hermes/ clean vs HEAD after suite + build - no cross-slice regeneration (incidents 5/6 not repeated).",
+      "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
+    }
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -3272,7 +3294,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "0ce8c5f",
+  "last_slice_commit": "d29f61d",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",

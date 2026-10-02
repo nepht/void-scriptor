@@ -19,11 +19,22 @@
 //     shipped seam. They are named as open items, never converted to passes
 //     and never deleted.
 //
+// Two canonical decisions — FLAG_OFF and DISABLE_CONNECTOR — are not verdicts
+// on their own: they name an ACTION taken against shipped state. An issue that
+// records one is a claim that the product actually turned a capability off, or
+// actually dropped a connector. So the gate requires a measured action result
+// from a real seam:
+//   * no result for the issue            -> `unexpressible_decision`
+//   * a result that did not apply        -> `action_not_applied`
+//   * a result naming a different decision -> `action_decision_mismatch`
+//   * an applied result with no observation -> `vacuous_action`
+// A caller that wants the verdict without performing the action gets a failure
+// naming the issue, which is the fail-closed outcome.
+//
 // Nothing here asserts that a GA blocker was found, that a participant filed
 // an issue, or that a triage decision was applied in a live release. The
 // cohort has not started, so the gate validates the decision contract and
-// the merge seam, and names the three decisions the shipped code cannot
-// express at all as open items.
+// the merge seam against measured actions.
 
 /// Whether a check's declared contract is satisfied by this run's evidence.
 enum Sprint117TriageStatus {
@@ -32,6 +43,45 @@ enum Sprint117TriageStatus {
 
   /// The contract demand has no shipped source yet; reported as an open item.
   unmet,
+}
+
+/// Canonical decisions that name an ACTION against shipped state rather than a
+/// verdict about an issue.
+///
+/// Recording one of these on an issue asserts that the product really turned a
+/// capability off, or really dropped a connector. A verdict therefore needs a
+/// measured [Sprint117TriageResolution] from the seam that performed it.
+abstract final class Sprint117TriageActions {
+  /// The decisions that cannot be asserted without an action result.
+  static const List<String> decisionsRequiringAction = <String>[
+    'FLAG_OFF',
+    'DISABLE_CONNECTOR',
+  ];
+
+  /// True when [decision] may only be asserted by performing an action.
+  static bool requiresAction(String decision) =>
+      decisionsRequiringAction.contains(decision.trim());
+}
+
+/// What the seam observed after carrying out one triage action.
+///
+/// This is deliberately not a verdict: `applied` says the state changed, while
+/// [observed] carries the evidence string that proves it to a reader later.
+final class Sprint117TriageResolution {
+  Sprint117TriageResolution({
+    required this.decision,
+    required this.applied,
+    required this.observed,
+  });
+
+  /// The canonical decision this action carried out.
+  final String decision;
+
+  /// Whether the shipped state actually changed.
+  final bool applied;
+
+  /// Measured evidence string; blank makes the action vacuous.
+  final String observed;
 }
 
 /// One measured statement about one canonical decision.
@@ -170,14 +220,14 @@ abstract final class Sprint117IssueTriage {
       'ISSUE_DEDUPLICATION_AND_TRIAGE_VALIDATED_LOCAL';
   static const String failVerdict = 'ISSUE_DEDUPLICATION_AND_TRIAGE_FAILED';
 
-  /// Canonical issues with no `check` cannot be expressed by the shipped
-  /// triage, so a declared decision on an issue is reported, never invented.
-  static const List<String> decisionsWithNoShippedExpression = <String>[
-    'FLAG_OFF',
-    'DISABLE_CONNECTOR',
-  ];
-
   /// The decisions the shipped triage log (113.30) actually accepts.
+  ///
+  /// This is step 113.30's vocabulary, not 117.38's: the six canonical
+  /// decisions of THIS step are [canonicalDecisions]. Two of them are absent
+  /// here because 113.30 classifies issues against the release-blocker
+  /// definition and never performed a flag-off or a connector-disable. That
+  /// absence is not proof that the actions cannot be taken — [Sprint117TriageActions]
+  /// names the seams that perform them.
   static const List<String> shippedTriageDecisions = <String>[
     'FIX_BEFORE_GA',
     'DEFER_NON_BLOCKER',
@@ -224,16 +274,11 @@ abstract final class Sprint117IssueTriage {
   static bool _hasText(List<String> values) =>
       values.any((value) => value.trim().isNotEmpty);
 
-  /// True when the issue names a decision the shipped triage cannot accept.
-  ///
-  /// A decision recorded on a triaged issue that the code cannot express is
-  /// a claim the product does not implement, not a recorded decision.
-  static bool isUnexpressibleDecision(String decision) =>
-      decisionsWithNoShippedExpression.contains(decision.trim());
-
   static Sprint117TriageResult evaluate({
     required List<Sprint117TriagedIssue> issues,
     required List<Sprint117TriageCheck> checks,
+    Map<String, Sprint117TriageResolution> actionResults =
+        const <String, Sprint117TriageResolution>{},
   }) {
     final failures = <String>[];
 
@@ -264,8 +309,22 @@ abstract final class Sprint117IssueTriage {
         if (!canonical.contains(decision)) {
           failures.add('unknown_decision:${_readable(id)}:$decision');
         }
-        if (isUnexpressibleDecision(decision)) {
-          failures.add('unexpressible_decision:${_readable(id)}:$decision');
+        final resolution = actionResults[id];
+        final hasActionResult =
+            resolution != null && resolution.decision.trim() == decision;
+        if (Sprint117TriageActions.requiresAction(decision)) {
+          // The issue claims an action, so it must be measured. A result the
+          // caller supplied is judged on its own claims rather than swallowed
+          // by the generic "no result" rule.
+          if (resolution == null) {
+            failures.add('unexpressible_decision:${_readable(id)}:$decision');
+          } else if (!hasActionResult) {
+            failures.add('action_decision_mismatch:${_readable(id)}:$decision');
+          } else if (!resolution.applied) {
+            failures.add('action_not_applied:${_readable(id)}:$decision');
+          } else if (resolution.observed.trim().isEmpty) {
+            failures.add('vacuous_action:${_readable(id)}:$decision');
+          }
         }
         decisionsSeen.add(decision);
       }

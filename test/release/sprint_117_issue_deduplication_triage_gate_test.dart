@@ -16,8 +16,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/feature_flags/feature_flag_registry.dart';
+import 'package:void_scriptor/features/account/domain/account_center_connected_accounts_management.dart';
+import 'package:void_scriptor/features/account/domain/account_center_connection_health_state_machine.dart';
 import 'package:void_scriptor/features/world_logic/domain/release_blocker_triage.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_issue_deduplication_triage.dart';
+import 'package:void_scriptor/features/world_logic/domain/sprint_117_issue_deduplication_triage_actions.dart';
 
 /// One triaged issue. A structural fixture, not a recorded incident.
 Sprint117TriagedIssue _fixture({
@@ -169,43 +172,181 @@ void main() {
       );
     });
 
-    test('FLAG_OFF has no shipped triage decision and is reported unmet', () {
-      // Turning a capability off is a real product action, and the shipped
-      // triage log cannot name it: its five wire names contain neither
-      // FLAG_OFF nor a feature-flag action.
-      expect(
-        Sprint117IssueTriage.shippedTriageDecisions,
-        isNot(contains('FLAG_OFF')),
-      );
+    test('FLAG_OFF is measured through the shipped flag registry', () {
+      // Turning a capability off is a real action with a shipped seam
+      // (FeatureFlagRegistry.disable, 110.8). The gate accepts FLAG_OFF only
+      // when that seam reports it changed state.
       final flags = FeatureFlagRegistry()..enable('vs12_quests');
-      expect(flags.isEnabled('vs12_quests'), isTrue);
-      flags.disable('vs12_quests');
+      final resolution = Sprint117FlagOffAction(flags).disable('vs12_quests');
+
+      expect(resolution.applied, isTrue);
       expect(flags.isEnabled('vs12_quests'), isFalse);
-      _record(
-        'FLAG_OFF',
-        'shipped_triage_wire_names='
-            '${Sprint117IssueTriage.shippedTriageDecisions.join(",")} '
-            'feature_flag_registry_off_measured=true',
-      );
+      expect(resolution.observed, contains('was_enabled=true'));
+      _record('FLAG_OFF', resolution.observed);
     });
 
     test(
-      'DISABLE_CONNECTOR has no shipped triage decision and is reported unmet',
+      'DISABLE_CONNECTOR is measured through the shipped disconnect seam',
       () {
-        // Disabling a connector is the sibling of flag-off at the connector
-        // level. The shipped triage log has no wire name for it either, so
-        // the decision cannot be recorded against a real decision.
-        expect(
-          Sprint117IssueTriage.shippedTriageDecisions,
-          isNot(contains('DISABLE_CONNECTOR')),
+        // The sibling action at connector level: AccountConnectedAccounts
+        // Management.unlink (115.14). A local drop is still a disable, but the
+        // observation says the provider was never told, so it cannot be read as
+        // a revoke.
+        final connections = AccountConnectedAccountsManagement(
+          initial: <AccountConnectedAccount>[
+            AccountConnectedAccount(
+              connectionId: 'conn-github-1',
+              providerId: 'github',
+              accountLabel: 'Choirudin',
+              scopes: <String>{'repo'},
+              connectionState: AccountConnectionState.connected,
+              healthState: AccountHealthState.healthy,
+              lastCheckedAt: DateTime.utc(2026, 10, 2),
+              reauthRequired: false,
+            ),
+          ],
         );
-        _record(
-          'DISABLE_CONNECTOR',
-          'shipped_triage_wire_names='
-              '${Sprint117IssueTriage.shippedTriageDecisions.join(",")}',
+
+        return Sprint117DisableConnectorAction(
+          connections,
+        ).disable('conn-github-1').then((resolution) {
+          expect(resolution.applied, isTrue);
+          expect(resolution.observed, contains('localRemoved=true'));
+          expect(resolution.observed, contains('providerRevoked=false'));
+          expect(connections.connections, isEmpty);
+          _record('DISABLE_CONNECTOR', resolution.observed);
+        });
+      },
+    );
+
+    test('a flag-off that changed nothing is reported as not applied', () {
+      // A flag that was never on cannot prove a flag-off happened.
+      final resolution = Sprint117FlagOffAction(
+        FeatureFlagRegistry(),
+      ).disable('vs12_quests');
+
+      expect(resolution.applied, isFalse);
+      expect(resolution.observed, contains('was_enabled=false'));
+    });
+
+    test(
+      'a triaged FLAG_OFF issue without an action result is unexpressible',
+      () {
+        // The fail-closed shape: claiming the verdict without performing the
+        // action must still fail, and must name the issue. This is the proof
+        // that the seam is load-bearing — the same issue is accepted below
+        // once a measured result is handed over, so the gate fails on missing
+        // evidence rather than on the decision's name.
+        const issue = Sprint117TriagedIssue(
+          issueId: 'TRIAGE-NO-ACTION',
+          decision: 'FLAG_OFF',
+          reproducible: true,
+          meetsBlockerDefinition: true,
+          duplicateIds: <String>[],
+          rationale: 'kapabilitas dimatikan sampai perbaikan rilis',
+          evidence: <String>['docs/evidence/triage/no-action.log'],
+        );
+        final withoutResult = Sprint117IssueTriage.evaluate(
+          issues: const <Sprint117TriagedIssue>[issue],
+          checks: _allUnmet(),
+        );
+
+        expect(withoutResult.pass, isFalse);
+        expect(
+          withoutResult.failures,
+          contains('unexpressible_decision:TRIAGE-NO-ACTION:FLAG_OFF'),
+        );
+
+        final withResult = Sprint117IssueTriage.evaluate(
+          issues: const <Sprint117TriagedIssue>[issue],
+          checks: _allUnmet(),
+          actionResults: <String, Sprint117TriageResolution>{
+            'TRIAGE-NO-ACTION': Sprint117TriageResolution(
+              decision: 'FLAG_OFF',
+              applied: true,
+              observed:
+                  'FeatureFlagRegistry.disable(vs12_quests): '
+                  'was_enabled=true is_enabled_after=false',
+            ),
+          },
+        );
+
+        expect(
+          withResult.failures,
+          isNot(contains('unexpressible_decision:TRIAGE-NO-ACTION:FLAG_OFF')),
         );
       },
     );
+
+    test('an action result that did not apply is a failure', () {
+      final result = Sprint117IssueTriage.evaluate(
+        issues: <Sprint117TriagedIssue>[
+          _fixture(id: 'TRIAGE-NOT-APPLIED', decision: 'FLAG_OFF'),
+        ],
+        checks: _allUnmet(),
+        actionResults: <String, Sprint117TriageResolution>{
+          'TRIAGE-NOT-APPLIED': Sprint117TriageResolution(
+            decision: 'FLAG_OFF',
+            applied: false,
+            observed:
+                'FeatureFlagRegistry.disable(vs12_quests): '
+                'was_enabled=false is_enabled_after=false',
+          ),
+        },
+      );
+
+      expect(result.pass, isFalse);
+      expect(
+        result.failures,
+        contains('action_not_applied:TRIAGE-NOT-APPLIED:FLAG_OFF'),
+      );
+    });
+
+    test('an action result for a different decision is a mismatch', () {
+      final result = Sprint117IssueTriage.evaluate(
+        issues: <Sprint117TriagedIssue>[
+          _fixture(id: 'TRIAGE-MISMATCH', decision: 'DISABLE_CONNECTOR'),
+        ],
+        checks: _allUnmet(),
+        actionResults: <String, Sprint117TriageResolution>{
+          'TRIAGE-MISMATCH': Sprint117TriageResolution(
+            decision: 'FLAG_OFF',
+            applied: true,
+            observed:
+                'FeatureFlagRegistry.disable(vs12_quests): '
+                'was_enabled=true is_enabled_after=false',
+          ),
+        },
+      );
+
+      expect(result.pass, isFalse);
+      expect(
+        result.failures,
+        contains('action_decision_mismatch:TRIAGE-MISMATCH:DISABLE_CONNECTOR'),
+      );
+    });
+
+    test('an applied action with no observation is vacuous', () {
+      final result = Sprint117IssueTriage.evaluate(
+        issues: <Sprint117TriagedIssue>[
+          _fixture(id: 'TRIAGE-VACUOUS', decision: 'FLAG_OFF'),
+        ],
+        checks: _allUnmet(),
+        actionResults: <String, Sprint117TriageResolution>{
+          'TRIAGE-VACUOUS': Sprint117TriageResolution(
+            decision: 'FLAG_OFF',
+            applied: true,
+            observed: '   ',
+          ),
+        },
+      );
+
+      expect(result.pass, isFalse);
+      expect(
+        result.failures,
+        contains('vacuous_action:TRIAGE-VACUOUS:FLAG_OFF'),
+      );
+    });
 
     test('a complete fixture issue has no missing fields', () {
       expect(Sprint117IssueTriage.missingFields(_fixture()), isEmpty);
@@ -241,21 +382,6 @@ void main() {
           _fixture(duplicates: <String>['  ']),
         ),
         <String>['duplicate_ids:0'],
-      );
-    });
-
-    test('a decision the shipped triage cannot express is a failure', () {
-      final result = Sprint117IssueTriage.evaluate(
-        issues: <Sprint117TriagedIssue>[
-          _fixture(id: 'TRIAGE-FLAGOFF', decision: 'FLAG_OFF'),
-        ],
-        checks: _allUnmet(),
-      );
-
-      expect(result.pass, isFalse);
-      expect(
-        result.failures,
-        contains('unexpressible_decision:TRIAGE-FLAGOFF:FLAG_OFF'),
       );
     });
 
@@ -436,7 +562,7 @@ void main() {
 
   group('117.38 measured verdict', () {
     // Runs last so every probe above has filled its entry.
-    test('the aggregate verdict is built from probes that all ran', () {
+    test('the aggregate verdict is built from probes that all ran', () async {
       final missing = Sprint117IssueTriage.canonicalDecisions
           .where((decision) => !_probes.containsKey(decision))
           .toList();
@@ -449,6 +575,33 @@ void main() {
       );
 
       final checks = _allChecks();
+      // Every decision the step names is now measurable, so the fixture
+      // performs both actions through the shipped seams and hands the gate
+      // what those seams observed. An assertion typed into the test would be
+      // the fail-open this gate exists to catch.
+      final flagResolution = Sprint117FlagOffAction(
+        FeatureFlagRegistry()..enable('vs12_quests'),
+      ).disable('vs12_quests');
+      final connections = AccountConnectedAccountsManagement(
+        initial: <AccountConnectedAccount>[
+          AccountConnectedAccount(
+            connectionId: 'conn-gitlab-1',
+            providerId: 'gitlab',
+            accountLabel: 'Void Scriptor Group',
+            scopes: <String>{'repo'},
+            connectionState: AccountConnectionState.connected,
+            healthState: AccountHealthState.healthy,
+            lastCheckedAt: DateTime.utc(2026, 10, 2),
+            reauthRequired: false,
+          ),
+        ],
+      );
+      final connectorResolution = await Sprint117DisableConnectorAction(
+        connections,
+      ).disable('conn-gitlab-1');
+      expect(flagResolution.applied, isTrue);
+      expect(connectorResolution.applied, isTrue);
+
       final result = Sprint117IssueTriage.evaluate(
         issues: <Sprint117TriagedIssue>[
           _fixture(),
@@ -456,32 +609,23 @@ void main() {
             id: 'TRIAGE-11738-2',
             decision: 'NOT_REPRODUCIBLE_WITH_EVIDENCE',
           ),
+          _fixture(id: 'TRIAGE-11738-3', decision: 'FLAG_OFF'),
+          _fixture(id: 'TRIAGE-11738-4', decision: 'DISABLE_CONNECTOR'),
         ],
         checks: checks,
+        actionResults: <String, Sprint117TriageResolution>{
+          'TRIAGE-11738-3': flagResolution,
+          'TRIAGE-11738-4': connectorResolution,
+        },
       );
 
-      // The honest verdict is FAIL: two canonical decisions have no shipped
-      // expression, so they can never carry a passing check. Reporting them
-      // as pass because a partial mechanism exists is the fail-open this
-      // gate exists to catch.
-      expect(result.pass, isFalse);
-      expect(result.failures, contains('decision_without_pass:FLAG_OFF'));
-      expect(
-        result.failures,
-        contains('decision_without_pass:DISABLE_CONNECTOR'),
-      );
-      // Every other decision is measured, so the gate reports exactly the
-      // two contract gaps and nothing else.
-      expect(result.failures, hasLength(2));
-      expect(
-        result.openItems,
-        contains('FLAG_OFF:flag_off_has_no_shipped_triage_decision'),
-      );
-      expect(
-        result.openItems,
-        contains('DISABLE_CONNECTOR:disable_connector_has_no_shipped_decision'),
-      );
-      expect(result.verdict, Sprint117IssueTriage.failVerdict);
+      // All six canonical decisions are measured against shipped seams, so
+      // the verdict can be a pass. It still claims nothing about a live
+      // release: the actions ran against test-owned state, not a cohort.
+      expect(result.failures, isEmpty);
+      expect(result.pass, isTrue);
+      expect(result.verdict, Sprint117IssueTriage.passVerdict);
+      expect(result.openItems, isEmpty);
 
       if (Platform.environment['SPRINT_117_38_MANIFEST'] == '1') {
         final manifest = <String, Object?>{
@@ -546,24 +690,22 @@ List<Sprint117TriageCheck> _allChecks({
           'no evidence yields state=fail; one evidence path yields '
           'state=pass',
     ),
-    Sprint117TriageCheck.unmet(
+    Sprint117TriageCheck.pass(
       decision: 'FLAG_OFF',
-      check: 'flag_off_has_no_shipped_triage_decision',
-      declared: 'the triage log can record a flag-off decision',
+      check: 'flag_off_changes_shipped_flag_state',
+      declared: 'the triage can turn a capability off and observe it',
       observed:
-          'the shipped triage wire names contain no FLAG_OFF; '
-          'FeatureFlagRegistry.disable turns a flag off but no triage '
-          'decision names that action',
-      note:
-          'open item: the action is possible, the decision is not '
-          'expressible',
+          'FeatureFlagRegistry.disable(vs12_quests) flips the registry to '
+          'is_enabled=false, which the action seam reports as applied',
     ),
-    Sprint117TriageCheck.unmet(
+    Sprint117TriageCheck.pass(
       decision: 'DISABLE_CONNECTOR',
-      check: 'disable_connector_has_no_shipped_decision',
-      declared: 'the triage log can record a connector-disable decision',
-      observed: 'the shipped triage wire names contain no DISABLE_CONNECTOR',
-      note: 'open item: connector-level disable has no decision name',
+      check: 'disable_connector_drops_shipped_connection',
+      declared: 'the triage can drop a connector and observe it',
+      observed:
+          'AccountConnectedAccountsManagement.unlink removes the connection '
+          'and reports localRemoved=true providerRevoked=false for a local '
+          'drop, so a local drop is never read as a provider revoke',
     ),
   ];
 

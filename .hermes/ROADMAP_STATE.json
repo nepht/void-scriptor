@@ -28,13 +28,13 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.39",
-  "next_step": "117.40",
+  "last_verified_step": "117.40",
+  "next_step": "117.41",
   "stability_gate": {
     "status": "PASS",
-    "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
-    "evaluated_on": "2026-09-29",
-    "commit": "1a0d94d",
+    "note": "117.40 full regression and gate rerun: all 10 contract-declared required_suites measured end to end, 574 test cases, 0 failures, across 4 deterministic shards at exit 0. HEAD was self-inconsistent at run start (3 suites failing) and was repaired inside the slice.",
+    "evaluated_on": "2026-10-02",
+    "commit": "99b0da4",
     "analyzer": "exit 0, No issues found! (was exit 1 with 3 curly_braces_in_flow_control_structures lints in 116.27 and 116.7)",
     "focused_tests": "8/8 PASS exit 0 (sprint_116_ai_usage_cost_reconciliation, sprint_116_brand_asset_icon_certification)",
     "format": "dart format --set-exit-if-changed 2 files 0 changed exit 0",
@@ -3239,5 +3239,20 @@
     "correction": "Premis run sebelumnya salah: kosakata yang diukur milik step 113.30 (TriageDecision 5 nama), bukan 117.38; dan kedua aksi punya seam yang sudah di-ship (FeatureFlagRegistry.disable 110.8, AccountConnectedAccountsManagement.unlink 115.14). Bukti ketiadaan lama hanya grep 3 nama yang dikarang. Aturan hard-coded decisionsWithNoShippedExpression diganti tuntutan Sprint117TriageResolution terukur.",
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
-  }
+  },
+  "last_verified_commit": "99b0da4",
+  "suites_measured": [
+    "connector",
+    "workflow",
+    "migration",
+    "security",
+    "privacy",
+    "billing",
+    "accessibility",
+    "visual",
+    "performance",
+    "recovery"
+  ],
+  "suites_unresolved": [],
+  "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent."
 }

@@ -29,10 +29,13 @@
 /// 5. provenance is measured through `BuildProvenanceEvidence.evaluate`, and a
 ///    reproducibility claim is only ever accepted when the recorded digests
 ///    actually support it: `bitIdentical` needs every digest equal,
-///    `notBitIdentical` needs at least one digest that differs, and the verdict
-///    string itself must be one of the two canonical values (defects
-///    117.43-01, 117.43-06, and 117.43-07 — three directions of the same trust
-///    boundary).
+///    `notBitIdentical` needs at least one digest that differs, the verdict
+///    string itself must be one of the two canonical values, and when the
+///    comparison names WHICH artifacts landed on each side of the line
+///    (`differing_artifacts` / `identical_artifacts`) each named artifact is
+///    checked against its own digest and the two lists must classify the whole
+///    recorded inventory (defects 117.43-01, 117.43-06, 117.43-07, and
+///    117.43-08 — four directions of the same trust boundary).
 ///
 /// Defect 117.43-01 (fail-open, fixed here): `ArtifactComparison.isWellFormed`
 /// compared only the two rebuilds' artifact NAME SETS and never their hash
@@ -118,6 +121,24 @@ import '../domain/build_reproducibility_provenance.dart';
 
 /// Status of one measured check on one GA artifact output.
 enum Sprint117GaArtifactStatus { pass, violation, unmet }
+
+/// The per-artifact partition an `artifact_comparison` claims.
+///
+/// Both lists are null together, meaning the comparison names no artifact and
+/// therefore makes no per-artifact claim. Otherwise both are present and every
+/// recorded artifact must appear on exactly one side (defect 117.43-08).
+class _ArtifactPartition {
+  const _ArtifactPartition({required this.differing, required this.identical});
+
+  /// Artifacts the comparison claims differ between the two rebuilds.
+  final List<String>? differing;
+
+  /// Artifacts the comparison claims are byte-identical across the rebuilds.
+  final List<String>? identical;
+
+  /// Whether the comparison names any artifact at all.
+  bool get declares => differing != null && identical != null;
+}
 
 /// Derives the canonical manifest vocabulary for 117.43 from shipped seams.
 ///
@@ -787,6 +808,31 @@ abstract final class Sprint117GaArtifactGate {
     };
     if (verdict == null) return null;
 
+    // Sprint 117.43-08 (fail-open, fixed): the PER-ARTIFACT partition was never
+    // read. 117.43-01/-06 verified the aggregate claim and 117.43-07 verified
+    // the verdict string, but the strongest question any of them asked was "do
+    // these two rebuilds agree AT ALL". The manifest we ship answers a sharper
+    // question and names every artifact on one side of the line or the other —
+    // `differing_artifacts` and `identical_artifacts` — and NOTHING read either
+    // field, so no amount of domain checking could. Proven before the fix: a
+    // manifest naming `a.exe` as differing and `b.dll` as identical, while the
+    // digests prove exactly the reverse, reported `pass` with
+    // `NOT_BIT_IDENTICAL (2 artifact)`. Every named claim was false and only
+    // the aggregate happened to hold. Measure each name against its own digest
+    // instead of trusting the one-bit summary. Absence is not a defect: a
+    // manifest that names no artifact makes no per-artifact claim (117.43-07),
+    // so a present field is checked and an absent one is simply not claimed.
+    final partition = _readPartition(comparison);
+    if (partition == null) return null;
+    if (partition.declares &&
+        !_partitionMatchesDigests(
+          partition,
+          a.artifactHashes,
+          b.artifactHashes,
+        )) {
+      return null;
+    }
+
     final shipped = BuildProvenanceEvidence(
       buildInputs: strings('build_inputs'),
       toolchainVersions: strings('toolchain_versions'),
@@ -803,6 +849,70 @@ abstract final class Sprint117GaArtifactGate {
     );
     final result = BuildProvenanceEvidence.evaluate(shipped);
     return (result.state.name, result.notes.join('; '));
+  }
+
+  /// The per-artifact partition a comparison claims, or null when a declared
+  /// field cannot be decoded (which makes the evidence unevaluable).
+  ///
+  /// [declares] is false when NEITHER field is present: the comparison makes no
+  /// per-artifact claim, so there is nothing to verify. When either field is
+  /// present, both are read, because one list without the other cannot state a
+  /// partition — a lone `differing_artifacts` is exactly the partial account
+  /// 117.43-08 refuses.
+  static _ArtifactPartition? _readPartition(Map<String, Object?> comparison) {
+    final hasDiffering = comparison.containsKey('differing_artifacts');
+    final hasIdentical = comparison.containsKey('identical_artifacts');
+    if (!hasDiffering && !hasIdentical) {
+      return const _ArtifactPartition(differing: null, identical: null);
+    }
+    if (!hasDiffering || !hasIdentical) return null;
+
+    final differing = _namesFrom(comparison['differing_artifacts']);
+    final identical = _namesFrom(comparison['identical_artifacts']);
+    if (differing == null || identical == null) return null;
+    return _ArtifactPartition(differing: differing, identical: identical);
+  }
+
+  /// Decodes a claimed artifact-name list. Returns null when the value is
+  /// present but not a list of non-blank strings — an undecodable claim must
+  /// fail closed rather than be silently dropped or cast past.
+  static List<String>? _namesFrom(Object? value) {
+    if (value is! List<dynamic>) return null;
+    final names = <String>[];
+    for (final entry in value) {
+      if (entry is! String || entry.trim().isEmpty) return null;
+      names.add(entry);
+    }
+    return names;
+  }
+
+  /// Whether every named artifact sits on the side the manifest claims, and the
+  /// two lists account for the whole recorded inventory.
+  ///
+  /// Three ways a claim fails here, all fail-closed:
+  ///   * a name no rebuild hashed — nothing supports it;
+  ///   * a name on both sides — an artifact cannot differ and be identical;
+  ///   * a recorded artifact in neither list — the comparison publishes a
+  ///     partial account as if it were the complete one.
+  static bool _partitionMatchesDigests(
+    _ArtifactPartition partition,
+    Map<String, String> hashesA,
+    Map<String, String> hashesB,
+  ) {
+    final differing = partition.differing!;
+    final identical = partition.identical!;
+    final claimed = <String>{...differing, ...identical};
+    if (claimed.length != differing.length + identical.length) return false;
+
+    final inventory = hashesA.keys.toSet();
+    if (inventory.length != hashesA.length) return false;
+    if (!claimed.containsAll(inventory)) return false;
+
+    for (final entry in hashesA.entries) {
+      final recordedDifference = hashesB[entry.key] != entry.value;
+      if (recordedDifference != differing.contains(entry.key)) return false;
+    }
+    return true;
   }
 
   static RebuildResult? _rebuildFrom(Map<String, Object?> json) {

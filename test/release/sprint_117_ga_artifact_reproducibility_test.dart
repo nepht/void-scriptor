@@ -1147,4 +1147,267 @@ void main() {
       expect(check.observed, contains('NOT_BIT_IDENTICAL'));
     });
   });
+
+  // RED-first for defect 117.43-08: the PER-ARTIFACT partition was never read.
+  // 117.43-01 verified the aggregate IDENTITY claim and 117.43-06 verified the
+  // aggregate DIFFERENCE claim, 117.43-07 verified the verdict is readable.
+  // All three are aggregate: the strongest question any of them asked was "do
+  // these two rebuilds agree AT ALL". The manifest we ship answers a far
+  // sharper question and names every artifact on one side of the line or the
+  // other — `differing_artifacts` (4 binaries) and `identical_artifacts`
+  // (flutter_windows.dll, sqlite3.dll). Nothing in lib/ or test/ ever read
+  // either field, and `ArtifactComparison` has no property that could hold
+  // them, so no amount of domain-level checking could ever see the partition.
+  //
+  // Consequence, proven before the fix: a manifest naming `a.exe` as
+  // differing and `b.dll` as identical, while the recorded digests prove
+  // exactly the reverse, reported `status == pass` with
+  // `artifact_comparison: NOT_BIT_IDENTICAL (2 artifact)`. Every individual
+  // claim it made was false and the aggregate it happened to satisfy was true.
+  // That is the same trust boundary as 117.43-01/-06/-07 — a reproducibility
+  // claim accepted without being measured — but strictly finer: those closed
+  // the one-bit summary, this closes the per-artifact detail the manifest
+  // actually publishes as its evidence.
+  group('117.43-08 a per-artifact partition claim must be measured', () {
+    String digest(String seed) => seed * 64;
+
+    /// The shipped evidence shape. [secondB] is the digest rebuild_b recorded
+    /// for b.dll, so a test can declare a partition and then pair it with
+    /// digests that either support it or contradict it. The inventory is
+    /// always {a.exe, b.dll}: a.exe identical in both, b.dll honest when
+    /// [secondB] differs from rebuild_a.
+    Map<String, Object?> manifestWithPartition({
+      required List<String> differingClaim,
+      required List<String> identicalClaim,
+      String secondB = 'c',
+      bool omitPartition = false,
+    }) {
+      return <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': <String>['a'],
+          'toolchain_versions': <String>['a'],
+          'dependency_lock': <String>['a'],
+          'rebuild_results': <Map<String, Object?>>[
+            <String, Object?>{
+              'label': 'rebuild_a',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': digest('b'),
+              },
+              'exit_code': 0,
+            },
+            <String, Object?>{
+              'label': 'rebuild_b',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': digest(secondB),
+              },
+              'exit_code': 0,
+            },
+          ],
+          'artifact_comparison': <String, Object?>{
+            'method': 'SHA-256 over the recorded artifacts',
+            'verdict': 'NOT_BIT_IDENTICAL',
+            if (!omitPartition) 'differing_artifacts': differingClaim,
+            if (!omitPartition) 'identical_artifacts': identicalClaim,
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['a'],
+        },
+      };
+    }
+
+    /// The comparison object inside a manifest built above, so a test can
+    /// corrupt a field's TYPE without rebuilding the whole document.
+    Map<String, Object?> comparisonOf(Map<String, Object?> manifest) =>
+        (manifest['required_evidence']
+                as Map<String, Object?>)['artifact_comparison']
+            as Map<String, Object?>;
+
+    test('a partition naming every artifact on the wrong side is refused', () {
+      // Real data: a.exe identical, b.dll differs. The manifest asserts the
+      // reverse. Both named claims are false, and the aggregate verdict stays
+      // true because SOME difference exists — which is exactly why the
+      // aggregate rules of 117.43-01/-06 let it through.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithPartition(
+          differingClaim: <String>['a.exe'],
+          identicalClaim: <String>['b.dll'],
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'each named artifact must be checked against its own digest; an '
+            'aggregate "some difference exists" cannot support a per-artifact '
+            'partition that is inverted end to end',
+      );
+    });
+
+    test(
+      'a partition naming an artifact neither rebuild recorded is refused',
+      () {
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithPartition(
+            differingClaim: <String>['ghost.exe'],
+            identicalClaim: <String>['a.exe', 'b.dll'],
+          ),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.unmet,
+          reason:
+              'a claim about an artifact no rebuild hashed is unsupported; names '
+              'must resolve against the recorded inventory',
+        );
+      },
+    );
+
+    test(
+      'a partition that leaves a recorded artifact unclassified is refused',
+      () {
+        // b.dll really did differ, but the manifest never says so. A partition
+        // that silently drops an artifact is a partition that cannot be read as
+        // a complete account of what the comparison found.
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithPartition(
+            differingClaim: <String>[],
+            identicalClaim: <String>['a.exe'],
+          ),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.unmet,
+          reason:
+              'the two lists must classify the whole recorded inventory, or the '
+              'comparison publishes a partial account as if it were the account',
+        );
+      },
+    );
+
+    test('a partition that puts one artifact on both sides is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithPartition(
+          differingClaim: <String>['b.dll'],
+          identicalClaim: <String>['a.exe', 'b.dll'],
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason: 'an artifact cannot differ and be identical in the same claim',
+      );
+    });
+
+    test('a partition field of the wrong type is refused, not skipped', () {
+      final manifest = manifestWithPartition(
+        differingClaim: <String>['b.dll'],
+        identicalClaim: <String>['a.exe'],
+      );
+      comparisonOf(manifest)['differing_artifacts'] = 'b.dll';
+
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest,
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'an undecodable claim fails closed; casting a String to a list of '
+            'names silently, or dropping it, would let the same evidence pass',
+      );
+    });
+
+    test('an honest partition still passes', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithPartition(
+          differingClaim: <String>['b.dll'],
+          identicalClaim: <String>['a.exe'],
+        ),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+
+    test('a manifest that states no partition at all still passes', () {
+      // Absence is not a defect: a manifest that names no artifact makes no
+      // per-artifact claim, and per 117.43-07 an unstated claim must never be
+      // manufactured. This also guards the 117.43-06/-07 fixtures, which carry
+      // no partition fields.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithPartition(
+          differingClaim: const <String>[],
+          identicalClaim: const <String>[],
+          omitPartition: true,
+        ),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+    });
+
+    test('the shipped manifest passes because its own partition is honest', () {
+      final shipped = Sprint117GaArtifactGate.readManifest(
+        Sprint117GaPackagingContract.provenanceManifestPath,
+      );
+
+      expect(shipped, isNotNull);
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: shipped!,
+      );
+
+      // The shipped partition is TRUE: 4 of 6 binaries really do differ and
+      // the two upstream DLLs really are byte-identical (measured, not
+      // assumed, before this slice). So the provenance output stays `pass`.
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+
+    test('the shipped pass is directed — inverting its partition fails it', () {
+      // The honest half of the claim above: take the REAL shipped document and
+      // swap its two lists, leaving every recorded digest untouched. If the
+      // gate is really measuring the partition, this must stop passing; if it
+      // is only measuring the aggregate, it will still pass and the shipped
+      // `pass` was resting on nothing finer than "some artifact differed".
+      final shipped = Sprint117GaArtifactGate.readManifest(
+        Sprint117GaPackagingContract.provenanceManifestPath,
+      );
+      expect(shipped, isNotNull);
+
+      final comparison =
+          (shipped!['required_evidence']
+                  as Map<String, Object?>)['artifact_comparison']
+              as Map<String, Object?>;
+      final differing = (comparison['differing_artifacts'] as List<dynamic>)
+          .cast<String>();
+      final identical = (comparison['identical_artifacts'] as List<dynamic>)
+          .cast<String>();
+
+      final inverted = jsonDecode(jsonEncode(shipped)) as Map<String, Object?>;
+      final invertedComparison =
+          (inverted['required_evidence']
+                  as Map<String, Object?>)['artifact_comparison']
+              as Map<String, Object?>;
+      invertedComparison['differing_artifacts'] = identical;
+      invertedComparison['identical_artifacts'] = differing;
+
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: inverted,
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a manifest whose per-artifact partition is inverted must not keep '
+            'passing on the strength of its aggregate verdict alone',
+      );
+    });
+  });
 }

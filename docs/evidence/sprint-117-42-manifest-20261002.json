@@ -1,0 +1,47 @@
+{
+  "canonical_step": "117.42",
+  "document_role": "EVIDENCE",
+  "verdict": "DOCUMENTATION_LIMITATIONS_COMPLETE_LOCAL",
+  "pass": true,
+  "required_outputs": [
+    "setup_guides",
+    "permission_guides",
+    "quota_notes",
+    "usage_cost_notes",
+    "privacy_notes",
+    "disconnect_guide",
+    "recovery_guide",
+    "limitations"
+  ],
+  "output_reference_counts": {
+    "setup_guides": 5,
+    "permission_guides": 2,
+    "quota_notes": 7,
+    "usage_cost_notes": 3,
+    "privacy_notes": 4,
+    "disconnect_guide": 3,
+    "recovery_guide": 4,
+    "limitations": 4
+  },
+  "provider_count": 32,
+  "distinct_derived_limitation_sets": 4,
+  "checks": 8,
+  "failures": [],
+  "open_items": [
+    "permission_scope_undocumented:developer:github,gitlab,bitbucket,azure_devops — ProviderPermission has no developer/repository member, so developer connectors ship an identity permission set verbatim"
+  ],
+  "probes": {
+    "all_declared_documents_exist": true,
+    "every_provider_derives_limitations": true,
+    "hand_typed_constant_rejected": true,
+    "derivation_is_entry_specific": true,
+    "billing_reports_not_verified": true
+  },
+  "defects_fixed": [
+    "117.42-01: provider limitations were a hand-typed test constant and ProviderConnectorEntry ships no limitations field, so any caller could publish any limitation set; derivation now binds limitations to the shipped manifest entry and the gate compares declared against derived"
+  ],
+  "defects_measured_not_fixed": [
+    "117.42-02: ProviderPermission has no developer/repository member, so developer connectors ship an identity permission set verbatim; widening the shared enum is a manifest-contract change outside this slice and is reported as an open item"
+  ],
+  "claim_boundary": "No live beta, no participant, and no release is claimed. Every status here is local documentation state measured on test-owned fixtures and on committed documents. Live provider health, quota, cost, hosted CI, and publication remain DEFERRED-EXTERNAL."
+}

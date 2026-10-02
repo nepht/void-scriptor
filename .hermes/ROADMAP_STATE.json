@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.35",
-  "next_step": "117.36",
+  "last_verified_step": "117.36",
+  "next_step": "117.37",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -119,7 +119,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-02T02:05:00Z",
-  "updated_by": "hermes: sprint 117.35 slice (interactive, Choi-directed)",
+  "updated_by": "hermes: sprint 117.36 slice (interactive, Choi-directed)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -2836,10 +2836,48 @@
     "external_gate": "DEFERRED-EXTERNAL: real GPU frame timing, live provider latency, real process RSS, hosted CI."
   },
   "sprint_117_step_11736": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.37",
+    "commit": "14d2e8f",
+    "manifest": "docs/evidence/sprint-117-36-manifest-20261002.json",
+    "manifest_sha256": "c065ba08e6e86815d890f7a091125c5c3f25034d2cd1deb86145dd641abc1215",
+    "manifest_bytes": 10006,
+    "areas": [
+      "timeout",
+      "throttling",
+      "retry_after",
+      "circuit_breaker",
+      "cancellation",
+      "outage",
+      "queue_recovery",
+      "kill_switch"
+    ],
+    "initial_test_failures_were_premises_not_defects": [
+      "the fake provider answered validateTarget with true for every target, so no target was ever unservable and the router could not be observed refusing; the fake now serves PromptTarget.story only and the scenario asks for PromptTarget.audio",
+      "BackgroundJobQueue.resume() only clears the threshold, it does not call _scheduleAvailable(), so a fixed 10ms wait after resume cannot prove the task ran; the assertion now runs after await queue.drain(), which is also how the existing background_job_pause_test.dart drives the same seam"
+    ],
+    "measured_probes": {
+      "timeout": "non-positive budget refused (zero=true negative=true); exceeded budget raised AiProviderTimeoutException; under-budget call returned normally",
+      "throttling": "invalid limits refused (empty id, zero requests, zero window); allow sequence true,true,false then true after 11s; unknown provider never allowed",
+      "retry_after": "free=0 blocked=30 later=20 expired=0 seconds; unknown provider null=true; rendered sub-minute window \"30 seconds.\"; zero retry window refused=true",
+      "circuit_breaker": "retry budget max=2 exhausted with StateError; zero budget refused; revoked terminal with 0 outbound transitions; failed primary called once then healthy_secondary served the request; unservable target refused",
+      "cancellation": "delegate cancel calls=1 for req-cancel-1; cancelled queued job executed 0 times with status cancelled",
+      "outage": "outage -> UNAVAILABLE/OUTAGE; rate-limited -> CONNECTED with errorCode health; secret-bearing visible error refused; failing probe -> unavailable with 0 models; empty model list -> degraded",
+      "queue_recovery": "paused low job held until resume, critical job ran while paused, failing task ended failed while its sibling still ran",
+      "kill_switch": "enabled set emptied on engage, active=true, double engage idempotent, explicit re-enable clears, disengage leaves all-off, unknown flag refused"
+    },
+    "unmet_contract_items": [
+      "circuit_breaker:open_half_open_cooldown_component - no OPEN/HALF_OPEN breaker with a cooldown timer ships in this build, so no local run can produce that measurement; reported as an explicit open item while the shipped half (finite retry budget, revoked-as-terminal, router fallback) is measured and passes on its own check."
+    ],
+    "gate": {
+      "slice_tests": "38/38 exit 0",
+      "regression": "101/101 exit 0 across every seam this slice exercises",
+      "analyzer": "No issues found! exit 0 (2 new files)",
+      "format": "0 changed, idempotent exit 0",
+      "diff_check": "exit 0",
+      "verdict": "PROVIDER_RESILIENCE_VALIDATED_LOCAL"
+    },
+    "external_gate": "DEFERRED-EXTERNAL: live provider latency and jitter, a real breaker cooldown, hosted CI."
   },
   "sprint_117_step_11737": {
     "status": "NOT_STARTED",

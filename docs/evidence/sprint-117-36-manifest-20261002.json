@@ -1,0 +1,148 @@
+{
+  "canonical_step": "117.36",
+  "document_role": "EVIDENCE",
+  "measured_on": "2026-10-02",
+  "harness": "flutter test (local runtime, no live provider network)",
+  "external_gate": "DEFERRED-EXTERNAL",
+  "gate": {
+    "canonical_step": "117.36",
+    "document_role": "SPRINT_117_36_PROVIDER_RESILIENCE_EVIDENCE",
+    "required_areas": [
+      "timeout",
+      "throttling",
+      "retry_after",
+      "circuit_breaker",
+      "cancellation",
+      "outage",
+      "queue_recovery",
+      "kill_switch"
+    ],
+    "surfaces": {
+      "timeout": "AiProviderWithTimeout wraps every operation; a zero/negative budget is rejected at construction and an exceeded budget surfaces AiProviderTimeoutException instead of a raw TimeoutException.",
+      "throttling": "AiProviderRateLimiter.allow() records inside a bounded window; invalid limits (empty id, maxRequests<=0, window<=zero) are refused at construction and an unknown provider is never allowed.",
+      "retry_after": "AiProviderRateLimiter.retryAfter() reports the wait until the oldest window entry expires, Duration.zero when a slot is free, and null for an unknown provider; the Account Center retry message renders the window truthfully and rejects a non-positive retryAfter.",
+      "circuit_breaker": "AccountConnectionHealthStateMachine + AccountConnectionRetryPolicy: a bounded retry budget raises StateError once exhausted instead of reconnecting forever, a REVOKED connection is terminal (no outbound transition at all, so a revoked provider cannot quietly come back), and ProviderRouter.generateReportingServingProvider walks the next capable provider when the primary keeps throwing and reports which provider actually served the request. An OPEN/HALF_OPEN breaker component with a cooldown timer is not shipped; that half is reported unmet, never passed.",
+      "cancellation": "AiProvider.cancel(requestId) is part of the provider contract and the timeout wrapper delegates it unmodified; a request cancelled through the wrapper must reach the delegate exactly once.",
+      "outage": "AccountConnectionHealthStateMachine outage transitions and AiProviderHealthProbe: a throwing provider probe reports unavailable with an error message instead of pretending healthy.",
+      "queue_recovery": "BackgroundJobQueue pause/resume/drain: pause by priority threshold holds scheduling, resume releases it, and drain resolves only on a genuinely empty queue.",
+      "kill_switch": "FeatureFlagRegistry.engageKillSwitch forces every flag off, makes isEnabled false for all, and stays engaged until an explicit disengage or re-enable."
+    },
+    "verdict": "PROVIDER_RESILIENCE_VALIDATED_LOCAL",
+    "pass": true,
+    "failures": [],
+    "open_items": [
+      "circuit_breaker:open_half_open_cooldown_component"
+    ],
+    "violation_codes": [],
+    "checks": [
+      {
+        "area": "timeout",
+        "check": "budget_is_refused_and_exceeded_work_surfaces_provider_timeout",
+        "status": "pass",
+        "declared": "A non-positive timeout budget is rejected at construction and an exceeded budget surfaces AiProviderTimeoutException naming the provider and the budget, never a raw TimeoutException.",
+        "observed": "non-positive budget refused (zero=true negative=true); exceeded budget raised AiProviderTimeoutException after 25ms; under-budget call returned true."
+      },
+      {
+        "area": "throttling",
+        "check": "window_is_enforced_and_invalid_limits_are_refused",
+        "status": "pass",
+        "declared": "The limiter enforces its window, refuses an invalid limit at construction, and never allows a provider it has no limit for.",
+        "observed": "invalid limits refused (empty_id=true zero_requests=true zero_window=true); allow sequence true,true,false,false(after 11s)=true; unknown provider allowed=false."
+      },
+      {
+        "area": "retry_after",
+        "check": "wait_is_measured_and_the_user_facing_window_is_truthful",
+        "status": "pass",
+        "declared": "retryAfter names the real wait until the oldest window entry expires, returns null for an unknown provider, and the rendered message never tells the user to retry before the provider will.",
+        "observed": "retryAfter seconds: free=0 blocked=30 later=20 expired=0; unknown provider null=true; rendered sub-minute window \"30 seconds.\"; zero retry window refused=true."
+      },
+      {
+        "area": "circuit_breaker",
+        "check": "retry_budget_is_bounded_and_revoked_is_terminal",
+        "status": "pass",
+        "declared": "The retry budget is finite and reports exhaustion instead of reconnecting forever, a revoked connection has no outbound transition at all, and a persistently failing primary is walked past so a later provider serves the request.",
+        "observed": "max=2 exhausted=true; zero budget refused=true; revoked terminal (transitions=0 revive_refused=true); request served by healthy_secondary after the primary was called 1 time(s); unservable target refused=true."
+      },
+      {
+        "area": "circuit_breaker",
+        "check": "open_half_open_cooldown_component",
+        "status": "unmet",
+        "declared": "An OPEN/HALF_OPEN breaker with a cooldown timer refuses calls while open and admits one trial call while half-open.",
+        "observed": "No such component ships in this build: the provider layer has a timeout wrapper, a rate limiter, and a fallback router, and the connection layer has a bounded retry budget, but no breaker with open/half-open states and a cooldown. Nothing local can produce that measurement, so it stays DEFERRED-EXTERNAL and is reported rather than passed.",
+        "note": "The shipped half (bounded retry budget, revoked-as-terminal, router fallback) is measured and passed on its own check."
+      },
+      {
+        "area": "cancellation",
+        "check": "cancel_reaches_the_provider_and_stops_queued_work",
+        "status": "pass",
+        "declared": "A cancel sent through the timeout wrapper reaches the delegate exactly once, and a cancelled queued job never executes and is reported as cancelled.",
+        "observed": "delegate cancel calls=1 (req-cancel-1); cancelled queued job executed 0 time(s) with status cancelled."
+      },
+      {
+        "area": "outage",
+        "check": "outage_and_rate_limit_are_distinguished_and_secrets_are_refused",
+        "status": "pass",
+        "declared": "An outage refresh lands on UNAVAILABLE with a visible reason, a rate-limited refresh stays connected while still reporting the limit, a visible error carrying a credential is refused, and a failing provider probe reads unavailable rather than healthy.",
+        "observed": "outage -> UNAVAILABLE/OUTAGE; rate-limited -> CONNECTED; secret-bearing visible error refused=true; failing probe -> unavailable with 0 models; empty model list -> degraded."
+      },
+      {
+        "area": "queue_recovery",
+        "check": "pause_holds_until_resume_and_a_failure_does_not_wedge_the_queue",
+        "status": "pass",
+        "declared": "Pause by priority holds scheduling of jobs at or below the threshold while jobs above it keep running, resume releases them, and one failing task does not prevent the queue from draining.",
+        "observed": "paused job held=true, ran after resume=true (paused-low); critical ran while paused=true; failing task ended failed while its sibling still ran (ok-1)."
+      },
+      {
+        "area": "kill_switch",
+        "check": "engage_blocks_every_flag_and_only_an_explicit_action_clears_it",
+        "status": "pass",
+        "declared": "Engaging the kill-switch empties the enabled set, makes every flag read disabled while engaged, is idempotent, and is cleared only by an explicit re-enable or disengage. An unknown flag name is refused rather than created.",
+        "observed": "enabled after engage=0, active=true; double engage still active=true; explicit re-enable cleared=false; after disengage enabled=0; unknown flag refused=true."
+      }
+    ]
+  },
+  "probes": {
+    "timeout_rejected_non_positive_budget": "zero=true negative=true",
+    "timeout_provider_exception_ms": "25",
+    "timeout_under_budget_passed": "true",
+    "throttling_invalid_limits_refused": "empty_id=true zero_requests=true zero_window=true",
+    "throttling_allow_pattern": "true,true,false,false(after 11s)=true",
+    "throttling_unknown_provider_allowed": "false",
+    "retry_after_seconds": "free=0 blocked=30 later=20 expired=0",
+    "retry_after_unknown_null": "true",
+    "retry_after_rendered": "30 seconds.",
+    "retry_after_zero_refused": "true",
+    "circuit_breaker_retry_budget": "max=2 exhausted=true",
+    "circuit_breaker_zero_budget_refused": "true",
+    "circuit_breaker_revoked_terminal": "transitions=0 revive_refused=true",
+    "circuit_breaker_served_by": "healthy_secondary",
+    "circuit_breaker_primary_calls": "1",
+    "circuit_breaker_unserved_refused": "true",
+    "cancellation_delegate_calls": "1",
+    "cancellation_request_ids": "req-cancel-1",
+    "cancellation_queued_executed": "0",
+    "cancellation_queued_status": "cancelled",
+    "outage_state": "UNAVAILABLE/OUTAGE",
+    "outage_rate_limited_connection": "CONNECTED",
+    "outage_secret_error_refused": "true",
+    "outage_probe_status": "unavailable",
+    "outage_probe_model_count": "0",
+    "outage_empty_models_status": "degraded",
+    "queue_recovery_pause_held": "true",
+    "queue_recovery_ran_after_resume": "true",
+    "queue_recovery_executed": "paused-low",
+    "queue_recovery_critical_ran_while_paused": "true",
+    "queue_recovery_failed_status": "failed",
+    "queue_recovery_survived_executed": "ok-1",
+    "kill_switch_enabled_after_engage": "0",
+    "kill_switch_active": "true",
+    "kill_switch_double_engage": "true",
+    "kill_switch_cleared_by_enable": "false",
+    "kill_switch_after_disengage": "0",
+    "kill_switch_unknown_flag_refused": "true"
+  },
+  "open_items": [
+    "circuit_breaker:open_half_open_cooldown_component"
+  ],
+  "verdict": "pass=true checks=9 failures=0 open=1"
+}

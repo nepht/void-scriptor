@@ -149,13 +149,15 @@ void main() {
       expect(
         actual.take(2),
         _universeLabels,
-        reason: 'dua dropdown universe harus menjadi stop fokus pertama, '
+        reason:
+            'dua dropdown universe harus menjadi stop fokus pertama, '
             'dapat $actual',
       );
       expect(
         order[0].kind,
         'dropdown',
-        reason: 'stop universe harus terklasifikasi dropdown, '
+        reason:
+            'stop universe harus terklasifikasi dropdown, '
             'dapat ${order[0].kind}',
       );
     });
@@ -170,27 +172,37 @@ void main() {
         expect(
           at,
           greaterThanOrEqualTo(cursor),
-          reason: 'mode "$label" harus muncul pada atau setelah posisi $cursor '
+          reason:
+              'mode "$label" harus muncul pada atau setelah posisi $cursor '
               'dari traversal $actual',
         );
         cursor = at + 1;
       }
 
       // Baris mode dibaca kiri ke kanan: left naik monoton pada top yang sama.
-      final modes = order
-          .where((s) => _modeLabels.contains(s.label))
-          .toList();
-      expect(modes.length, 4, reason: 'harus ada 4 chip mode, dapat '
-          '${modes.map((s) => s.label).toList()}');
+      final modes = order.where((s) => _modeLabels.contains(s.label)).toList();
+      expect(
+        modes.length,
+        4,
+        reason:
+            'harus ada 4 chip mode, dapat '
+            '${modes.map((s) => s.label).toList()}',
+      );
       final lefts = modes.map((s) => s.rect.left.round()).toList();
       final tops = modes.map((s) => s.rect.top.round()).toSet();
-      expect(tops.length, 1, reason: 'keempat mode harus satu baris, '
-          'dapat top $tops');
+      expect(
+        tops.length,
+        1,
+        reason:
+            'keempat mode harus satu baris, '
+            'dapat top $tops',
+      );
       for (var i = 1; i < lefts.length; i++) {
         expect(
           lefts[i],
           greaterThan(lefts[i - 1]),
-          reason: 'mode ke-${i + 1} (${modes[i].label}) harus di kanan '
+          reason:
+              'mode ke-${i + 1} (${modes[i].label}) harus di kanan '
               'mode sebelumnya (${modes[i - 1].label}), dapat $lefts',
         );
       }
@@ -208,7 +220,8 @@ void main() {
         expect(
           at,
           greaterThanOrEqualTo(cursor),
-          reason: 'aset "$label" harus muncul pada atau setelah posisi $cursor '
+          reason:
+              'aset "$label" harus muncul pada atau setelah posisi $cursor '
               'dari traversal $actual',
         );
         cursor = at + 1;
@@ -218,14 +231,20 @@ void main() {
       final assets = order
           .where((s) => _assetLabels.contains(s.label))
           .toList();
-      expect(assets.length, 4, reason: 'harus ada 4 chip aset, dapat '
-          '${assets.map((s) => s.label).toList()}');
+      expect(
+        assets.length,
+        4,
+        reason:
+            'harus ada 4 chip aset, dapat '
+            '${assets.map((s) => s.label).toList()}',
+      );
       final tops = assets.map((s) => s.rect.top.round()).toList();
       for (var i = 1; i < tops.length; i++) {
         expect(
           tops[i],
           greaterThan(tops[i - 1]),
-          reason: 'aset ke-${i + 1} (${assets[i].label}) harus di bawah '
+          reason:
+              'aset ke-${i + 1} (${assets[i].label}) harus di bawah '
               'aset sebelumnya (${assets[i - 1].label}), dapat $tops',
         );
       }
@@ -252,23 +271,44 @@ void main() {
       final lastMode = actual.lastIndexOf(_modeLabels.last);
       final firstAsset = actual.indexOf(_assetLabels.first);
 
-      expect(lastUniverse, greaterThanOrEqualTo(0), reason: 'harus ada dua '
-          'dropdown universe, dapat $actual');
-      expect(firstMode, greaterThan(lastUniverse),
-          reason: 'mode harus dibaca setelah kedua dropdown universe');
-      expect(firstAsset, greaterThan(lastMode),
-          reason: 'daftar aset harus dibaca setelah semua chip mode');
+      expect(
+        lastUniverse,
+        greaterThanOrEqualTo(0),
+        reason:
+            'harus ada dua '
+            'dropdown universe, dapat $actual',
+      );
+      expect(
+        firstMode,
+        greaterThan(lastUniverse),
+        reason: 'mode harus dibaca setelah kedua dropdown universe',
+      );
+      expect(
+        firstAsset,
+        greaterThan(lastMode),
+        reason: 'daftar aset harus dibaca setelah semua chip mode',
+      );
 
       // Seluruh traversal tertutup dalam 10 stop dan tiap stop punya ukuran
       // render nyata (bukan target fokus hantu).
-      expect(order.length, 10,
-          reason: 'focus cycle harus tertutup tepat pada 10 stop, '
-              'dapat ${order.length}: $actual');
+      expect(
+        order.length,
+        10,
+        reason:
+            'focus cycle harus tertutup tepat pada 10 stop, '
+            'dapat ${order.length}: $actual',
+      );
       for (final s in order) {
-        expect(s.rect.width, greaterThan(0),
-            reason: 'stop ${s.label} tidak punya ukuran render');
-        expect(s.rect.height, greaterThan(0),
-            reason: 'stop ${s.label} tidak punya tinggi render');
+        expect(
+          s.rect.width,
+          greaterThan(0),
+          reason: 'stop ${s.label} tidak punya ukuran render',
+        );
+        expect(
+          s.rect.height,
+          greaterThan(0),
+          reason: 'stop ${s.label} tidak punya tinggi render',
+        );
       }
     });
   });

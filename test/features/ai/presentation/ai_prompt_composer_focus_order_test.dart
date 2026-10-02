@@ -193,7 +193,8 @@ void main() {
         expect(
           fields.length,
           1,
-          reason: 'harus ada tepat satu field editor, dapat $fields dari $actual',
+          reason:
+              'harus ada tepat satu field editor, dapat $fields dari $actual',
         );
         // Field boleh datang setelah toggle pertama (baris header yang sama)
         // tapi tidak boleh mendahului toggle pertama.
@@ -224,7 +225,8 @@ void main() {
         expect(
           s.rect.width,
           greaterThan(0),
-          reason: 'stop ${s.label} tidak punya ukuran - bukan target fokus nyata',
+          reason:
+              'stop ${s.label} tidak punya ukuran - bukan target fokus nyata',
         );
       }
     });

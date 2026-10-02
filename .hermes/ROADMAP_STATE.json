@@ -32,7 +32,12 @@
   "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.43 GA Artifact & Reproducibility: ArtifactComparison.isWellFormed now compares recorded hash values, so a false bitIdentical claim fails closed (117.43-01). 28/28 focused, 7/7 113.39 provenance, 840/840 contract regression, 1055/1055 sprint_117 release shard, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 23.5s. Commit ea44531. Step is PARTIAL-LOCAL: 117.43-02 (committed GA manifest names unresolvable build-tree paths and all six checksums drifted) is a named open item awaiting an operator decision, so the guard pointer stays on 117.43."
+    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-07 fixed — the provenance verdict was never READ, only inferred (`== 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`), so an absent/null/typo verdict was coerced into a measured NOT_BIT_IDENTICAL claim and the gate printed it as `pass`. Verdict is now parsed as a closed vocabulary and anything else is reported `unmet`. 45/45 focused (was 40/40), analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 22.7s, provenance regression 17 pass / 3 FAIL (the same three pre-existing failures, root 117.43-02, unchanged by this slice). Commit fb12fde. Step remains PARTIAL-LOCAL: 117.43-02 (committed GA manifest names unresolvable build-tree paths; all six signed checksums drift) is still an open item awaiting an operator decision, so the guard pointer stays on 117.43.",
+    "verified_commit": "fb12fdea10d0b64d3b79a5941f884cf97a72ce32",
+    "focused_tests": "45/45",
+    "regression": "sprint_113 provenance+packaging: 17 pass / 3 FAIL (pre-existing, root 117.43-02)",
+    "analyzer": "No issues found!",
+    "build": "flutter build windows --debug exit 0 in 22.7s"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -41,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T05:40:00+07:00",
-  "updated_by": "cron-core-worker b0c2c7d744d9 slice 117.43-06",
+  "updated_at": "2026-10-03T06:05:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-07 slice)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -192,7 +197,17 @@
     "evidence": "RED dashboard_create_character_no_session_test Actual '/studio' -> GREEN; fokus 1 PASS; test/features/dashboard 13 PASS; shell+routing 69 PASS; analyze No issues; build windows debug 64,5s; guard PASS",
     "next_unscanned_regions": "features/studio (13 file) atau features/platform (20 file) — cek routing/kegunaan produksi dulu; keputusan Choi tetap lebih tinggi bila konflik"
   },
-  "last_worker_run": "2026-09-21T17:15:00Z",
+  "last_worker_run": {
+    "job": "b0c2c7d744d9",
+    "run_at": "2026-10-03T06:05:00+07:00",
+    "step": "117.43",
+    "slice": "defect 117.43-07 (provenance verdict parsed, never inferred)",
+    "commit": "fb12fdea10d0b64d3b79a5941f884cf97a72ce32",
+    "evidence_sha256_committed": "6165ec55793ed8fdd2925f3b04cf5f19ab37c2bd7b2299d7c95429c076506cd1",
+    "evidence_note": "canonical sha is the committed blob via `git show fb12fde:<path>`; the on-disk file differs only by CRLF->LF normalisation under the `text: auto` git attribute (normalized disk == blob, git diff HEAD empty)",
+    "status": "PARTIAL-LOCAL",
+    "pushed": false
+  },
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",

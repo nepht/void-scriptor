@@ -913,12 +913,26 @@ void main() {
         );
 
         // `unmet` harus tampil sebagai open item, bukan lenyap diam-diam.
+        // 117.23 open items `avatar:ring_size` dan `avatar:compact_size` ditutup
+        // pada slice ini: kedua token kini benar-benar digambar di layar
+        // referensi (ring 96px mengelilingi avatar, compact 40px di baris sign-in
+        // email), jadi keduanya Measured-`pass`, bukan `unmet`. Yang tersisa
+        // hanyalah `progress:production_data_supplier` - token progress yang
+        // belum punya call site produksi menyuplai data nyata.
+        //
+        // Both avatar checks are asserted `pass` above by measurement; this
+        // asserts the negative so a future regression that un-draws either one
+        // shows up here as a restored open item rather than a silent re-add.
+        for (final closed in const <String>[
+          'avatar:ring_size',
+          'avatar:compact_size',
+        ]) {
+          expect(result.openItems, isNot(contains(closed)));
+        }
+
         expect(
           result.openItems,
-          containsAll(const <String>[
-            'avatar:ring_size',
-            'progress:production_data_supplier',
-          ]),
+          containsAll(const <String>['progress:production_data_supplier']),
         );
 
         final writeManifest =

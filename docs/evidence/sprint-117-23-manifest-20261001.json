@@ -18,8 +18,6 @@
   "pass": true,
   "failures": [],
   "open_items": [
-    "avatar:ring_size",
-    "avatar:compact_size",
     "progress:production_data_supplier"
   ],
   "violation_codes": [],
@@ -139,32 +137,30 @@
     {
       "area": "avatar",
       "check": "ring_size",
-      "status": "unmet",
+      "status": "pass",
       "declared": "96.0",
-      "observed": "no 96.0px concentric ancestor (ancestor widths: 113.2,113.2,113.2,283.0,283.0,283.0)",
-      "note": "token profile_avatar.ring_size_px dideklarasikan tetapi layar referensi tidak menggambar cincin"
+      "observed": "96.0"
     },
     {
       "area": "avatar",
       "check": "compact_size",
-      "status": "unmet",
+      "status": "pass",
       "declared": "40.0",
-      "observed": "0 avatars at 40.0px; profile avatar rendered once at 80.0px",
-      "note": "token profile_avatar.compact_size_px tidak punya konteks render di layar referensi"
+      "observed": "1"
     },
     {
       "area": "icons",
       "check": "token_set_membership",
       "status": "pass",
       "declared": "[20.0, 24.0, 36.0, 28.0, 8.0]",
-      "observed": "41 icons, all sizes in token set"
+      "observed": "40 icons, all sizes in token set"
     },
     {
       "area": "icons",
       "check": "explicit_token_pinning",
       "status": "pass",
       "declared": "every rendered Icon pins an explicit token size",
-      "observed": "41 icons, all explicit"
+      "observed": "40 icons, all explicit"
     },
     {
       "area": "icons",

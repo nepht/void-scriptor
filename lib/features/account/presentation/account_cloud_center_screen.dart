@@ -23,6 +23,7 @@ import '../domain/account_center_provider_connector_manifest.dart';
 import '../domain/account_center_responsive_grid.dart';
 import '../domain/account_center_wide_desktop_frame.dart';
 import '../domain/account_center_provider_icon_registry.dart';
+import 'account_center_avatar_ring.dart';
 import 'storage_usage_card.dart';
 
 /// Peran tipografi 115.5 dari product spec (bobot VoidTypography dipertahankan).
@@ -1055,9 +1056,15 @@ class _AuthenticationProfileCard extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
       Center(
-        child: _ProfileAvatar(
-          key: const ValueKey('account-profile-avatar'),
-          avatar: profile.avatar,
+        // 117.23 `avatar:ring_size`: the ring token was declared and measured by
+        // the drill but never drawn, so it was unreachable capacity. The ring
+        // wraps the avatar, so the two centres coincide by construction and the
+        // 96px frame has something real for the drill to measure.
+        child: AccountCenterAvatarRing(
+          child: _ProfileAvatar(
+            key: const ValueKey('account-profile-avatar'),
+            avatar: profile.avatar,
+          ),
         ),
       ),
       SizedBox(height: AccountCenterDesignTokens.spacing.sm),
@@ -1347,11 +1354,23 @@ class _SignInMethodRow extends StatelessWidget {
     final statusColor = connected
         ? context.palette.success
         : context.palette.textMuted;
+    final accountIdentity = account?.trim() ?? '';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
-          Icon(icon, size: AccountCenterDesignTokens.iconSizes.action),
+          // 117.23 `avatar:compact_size`: token 40px ini tidak punya konteks
+          // render sama sekali sebelumnya. Baris sign-in adalah konteks orang
+          // yang nyata — akun email yang sudah terhubung — jadi avatar compact
+          // dipakai di sini, bukan ditempel ke panel lain merely supaya token
+          // terukur. Row email saja yang punya identitas; provider lain
+          // memakai ikonnya seperti sebelumnya.
+          accountIdentity.isEmpty
+              ? Icon(icon, size: AccountCenterDesignTokens.iconSizes.action)
+              : AccountCenterCompactAvatar(
+                  initials: accountIdentity.substring(0, 1),
+                  semanticLabel: '$label account $accountIdentity',
+                ),
           SizedBox(width: AccountCenterDesignTokens.spacing.sm),
           Expanded(
             child: Column(

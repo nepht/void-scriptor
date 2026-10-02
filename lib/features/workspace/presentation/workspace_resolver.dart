@@ -1136,7 +1136,7 @@ Future<WorkspaceProjection?> _linkCharacterToNovel(
       links: session.novelCharacterLinks,
       projections: session.workspaceProjections,
     ).create(novelWorkspaceId: novelWorkspaceId, characterAssetId: characterId);
-    return session.workspaceProjectionReader.forNovel(novelWorkspaceId);
+    return await session.workspaceProjectionReader.forNovel(novelWorkspaceId);
   } catch (_) {
     if (!context.mounted) return null;
     ScaffoldMessenger.of(context).showSnackBar(

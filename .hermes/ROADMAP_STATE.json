@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.36",
-  "next_step": "117.37",
+  "last_verified_step": "117.37",
+  "next_step": "117.38",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -2880,10 +2880,48 @@
     "external_gate": "DEFERRED-EXTERNAL: live provider latency and jitter, a real breaker cooldown, hosted CI."
   },
   "sprint_117_step_11737": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.38",
+    "commit": "3f2d207",
+    "areas": [
+      "feedback_id",
+      "consent",
+      "provider",
+      "workflow",
+      "outcome",
+      "impact",
+      "evidence",
+      "limitations"
+    ],
+    "manifest": "docs/evidence/sprint-117-37-manifest-20261002.json",
+    "manifest_sha256": "09e4d7ae6744b35ce1de7dd79f65b07fe5da977c6a968724e89dd57de2110587",
+    "manifest_bytes": 7728,
+    "gate": {
+      "focus_slice": "26/26 exit 0",
+      "regression": "200/200 exit 0 in 5 targets (test/features/ai + 117.37 + 117.36 + 113.28 + 114.6)",
+      "analyzer": "No issues found! exit 0 on 5 slice files",
+      "format": "0 changed, idempotent on the second pass",
+      "diff_check": "exit 0",
+      "windows_build": "flutter build windows --debug exit 0, 38.5s",
+      "necessity": "3 blocks, each rc=1 on the exact test, no compile error; positive controls green before and after; final_sha_matches_anchor=true"
+    },
+    "defects_fixed": [
+      "D1 setReview rewrote the stored row with no transition check, so a forbidden pending->pending write landed as a new decision and the review history could be rewritten at will",
+      "D2 insertOnConflictUpdate rewrote createdAt on every write, losing the first-seen evidence time",
+      "D3 an update that omitted feedback stored SQL NULL over the recorded feedback text, silently erasing evidence"
+    ],
+    "harness_corrections": [
+      "InsertMode.insertOrIgnore returned a stale rowid so the guarded update path was never reached; replaced with an explicit read-first branch",
+      "createdAt test used a 5 ms delay while drift stores unix seconds; raised to 1100 ms with the reason recorded in the test",
+      "a vacuous pass satisfied its field until isVacuous excluded it, producing both vacuous and field_without_pass"
+    ],
+    "unmet_contract_items": [
+      "no real beta feedback: the cohort has zero participants, so the gate validates the log contract against a structural fixture and claims no live participant",
+      "no aggregated on-disk feedback log exists; toJson is the only serialisation surface",
+      "ai_output_reviews has no provider column and no feedback row exists to join, so the review-to-provider link is not proven by shipped code"
+    ],
+    "external_gate": "DEFERRED-EXTERNAL",
+    "out_of_scope_finding": "test/release/sprint_117_provider_resilience_validation_test.dart:120 writeEvidenceFile() rewrites the 117.36 evidence manifest with the current run timing, so running that suite always dirties that manifest. Reverted to committed content via a targeted patch in this run; not committed; reported for a later slice."
   },
   "sprint_117_step_11738": {
     "status": "NOT_STARTED",

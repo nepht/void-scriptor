@@ -2840,7 +2840,7 @@
     "next_step": "117.37",
     "commit": "14d2e8f",
     "manifest": "docs/evidence/sprint-117-36-manifest-20261002.json",
-    "manifest_sha256": "c065ba08e6e86815d890f7a091125c5c3f25034d2cd1deb86145dd641abc1215",
+    "manifest_sha256": "a1100533f69c2eb73a58df1d60ca9ab9991751c033d35e1b93d6bff1db4cb30b",
     "manifest_bytes": 10006,
     "areas": [
       "timeout",

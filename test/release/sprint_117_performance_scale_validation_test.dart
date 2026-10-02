@@ -320,7 +320,7 @@ void main() {
             declared: 'axis carries one measured fact',
             observed: 'measured',
           ),
-        Sprint117PerfCheck.pass_(
+        const Sprint117PerfCheck.pass_(
           area: 'gpu_thrash',
           check: 'presence',
           declared: 'invented axis',
@@ -453,7 +453,7 @@ void main() {
     });
 
     test('wording stays truthful across the whole account sweep', () {
-      final accountCount = AccountCenterPerformanceResilience.manyAccountCount;
+      const accountCount = AccountCenterPerformanceResilience.manyAccountCount;
       final sweep = Stopwatch()..start();
       for (var account = 0; account < accountCount; account++) {
         for (final availability in <String>[
@@ -1150,7 +1150,7 @@ void main() {
             '${read('local_scan_budget_ms')}ms budget; category totals sum to '
             'the report total and a missing root yields 0 files / 0 bytes.',
       ),
-      Sprint117PerfCheck.pass_(
+      const Sprint117PerfCheck.pass_(
         area: 'slow_api',
         check: 'external_measurement_declared_and_local_half_honest',
         declared:
@@ -1221,6 +1221,7 @@ void main() {
     writeEvidenceFile();
     // ignore: avoid_print
     print('11735_GATE ${result.summary}');
+    // ignore: avoid_print
     print('11735_PROBES ${jsonEncode(probes)}');
   });
 }

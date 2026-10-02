@@ -2817,11 +2817,11 @@
       "slow_api:live_provider_latency_measured - no live provider connector ships in this build, so no local run can produce a real latency; the axis stays DEFERRED-EXTERNAL and is reported as an explicit open item rather than a fabricated pass."
     ],
     "measured_probes": {
-      "render_chrome_warm_frame_ms": "353.212 (budget initialFrameBudgetMs=400, viewport 1536x1024, 7 provider rows, no raster pipeline)",
-      "render_chrome_cold_pump_ms": "1072.918 recorded only: pays JIT and Skia warm-up, not compared against the frame budget",
-      "many_accounts": "48 accounts x 7 availabilities swept in 0.254ms against refreshBudgetMs=250",
-      "refresh": "1000 iterations in 2.781ms",
-      "local_scan": "3 real files / 154 bytes indexed in 22.624ms against scanBudgetMs=2000",
+      "render_chrome_warm_frame_ms": "356.777 (budget initialFrameBudgetMs=400, viewport 1536x1024, 7 provider rows, no raster pipeline)",
+      "render_chrome_cold_pump_ms": "1081.808 recorded only: pays JIT and Skia warm-up, not compared against the frame budget",
+      "many_accounts": "48 accounts x 7 availabilities swept in 0.225ms against refreshBudgetMs=250",
+      "refresh": "1000 iterations in 2.895ms",
+      "local_scan": "3 real files / 154 bytes indexed in 11.732ms against scanBudgetMs=2000",
       "contention": "peak concurrency 2/2; priority order critical,low; resource limit order free,needs-db",
       "memory": "search calls after dispose 0; mutex peak inside 1; queue stream done after dispose true"
     },

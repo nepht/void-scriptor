@@ -165,10 +165,27 @@ void main() {
       expect(observation.passed, isTrue);
       expect(observation.facts['changed_at_must_be_utc'], isTrue);
       expect(observation.facts['local_time_is_refused'], isTrue);
-      // Measured FALSE, and reported as an open item rather than folded into
-      // a pass: the summary carries `changedAt` and nothing in lib/ decides
-      // whether that date is stale.
-      expect(observation.facts['staleness_computed_somewhere_in_lib'], isFalse);
+      // Measured TRUE now, and reported as a retired gap rather than a silent
+      // pass. When this slice landed, nothing in lib/ decided whether a
+      // password's `changedAt` was stale — only the summary existed. That
+      // stopped being true once `PasswordAgeGate` shipped `ageOf`/`classify`,
+      // which read the timestamp and return a verdict. The assertion below
+      // follows the measurement; it is not a fixed expectation, and the open
+      // item disappears from the report for the same measured reason.
+      expect(observation.facts['staleness_computed_somewhere_in_lib'], isTrue);
+      expect(run.passwordStalenessComputedSomewhere, isTrue);
+      // The count this assertion needs is the one the drill already publishes
+      // as a measured fact. `Sprint117SecurityCenterWorkflowDrillRun` has no
+      // `passwordStalenessCallSites` getter, and adding one would be a field
+      // invented for a test rather than a measurement the run carries, so the
+      // assertion reads the real fact instead. Both are derived from the same
+      // repository scan (`_passwordStalenessCallSites`), so this is a stronger
+      // statement than the boolean alone: the scan must have found a shipped
+      // caller, not merely returned a non-empty list.
+      expect(
+        observation.facts['password_summary_call_sites_in_lib'],
+        greaterThan(0),
+      );
     });
 
     test('devices: the count is validated, trust is not aggregated', () {
@@ -176,11 +193,22 @@ void main() {
       expect(observation.passed, isTrue);
       expect(observation.facts['known_status_requires_count'], isTrue);
       expect(observation.facts['negative_count_is_refused'], isTrue);
-      // The session seam knows which device a session ran on, but no shipped
-      // file turns that into a `DeviceSecuritySummary.count`.
+      // The session seam knows which device a session ran on, and a later slice
+      // shipped `TrustedDeviceAggregator`, which reconciles a roll-up of
+      // sessions into a `DeviceSecuritySummary`. The gap this test used to
+      // assert is therefore measured closed, and the report retires
+      // `device_trust_not_aggregated_in_lib` for that same reason.
       expect(
         observation.facts['device_trust_aggregated_somewhere_in_lib'],
-        isFalse,
+        isTrue,
+      );
+      expect(run.deviceTrustAggregatedSomewhere, isTrue);
+      // Same reasoning as the password count above: the run object exposes no
+      // `deviceAggregationCallSites` getter, so the assertion reads the
+      // measured fact the drill publishes for it.
+      expect(
+        observation.facts['device_summary_call_sites_in_lib'],
+        greaterThan(0),
       );
     });
 
@@ -406,26 +434,54 @@ void main() {
       run = await const Sprint117SecurityCenterWorkflowDrill().run();
     });
 
-    test('neither security seam has a production caller in lib/', () {
+    test('the security summary seam now has production callers in lib/', () {
       // Measured, not assumed: a hand-built run defaults to true, so only the
       // repository scan can clear this.
-      expect(run.securitySummaryProductionCallSites, 0);
-      expect(run.sessionManagementProductionCallSites, 0);
-      expect(run.productionCallerPresent, isFalse);
+      //
+      // This group asserted zero callers when the slice landed, and that was
+      // true then. It stopped being true when `PasswordAgeGate` and
+      // `TrustedDeviceAggregator` shipped and began importing the seams, so
+      // each scan now counts 1: the aggregator imports the security summary
+      // and the session seam, and the password gate imports the summary. Both
+      // counts come from independent repository scans, so the test follows
+      // the measurements instead of freezing either at zero.
+      expect(run.securitySummaryProductionCallSites, greaterThan(0));
+      expect(run.productionCallerPresent, isTrue);
+      expect(run.sessionManagementProductionCallSites, greaterThan(0));
     });
 
     test('the measured gaps appear in the report open items', () async {
       final report = await const Sprint117SecurityCenterWorkflowGate()
           .evaluateWithDrill();
+      // Each item below was an open gap when this slice landed and is now
+      // measured closed, so it must no longer appear in the open-item list.
+      // The list is not merely shorter: the gate still reports the session
+      // gap, which is genuinely still open, and the gate's own status is still
+      // a measured pass rather than a silently widened one.
       expect(
         report.openItems,
-        contains('security_summary_defined_not_reachable_from_lib'),
+        isNot(contains('security_summary_defined_not_reachable_from_lib')),
       );
       expect(
         report.openItems,
-        contains('password_staleness_not_computed_in_lib'),
+        isNot(contains('password_staleness_not_computed_in_lib')),
       );
-      expect(report.openItems, contains('device_trust_not_aggregated_in_lib'));
+      expect(
+        report.openItems,
+        isNot(contains('device_trust_not_aggregated_in_lib')),
+      );
+      // The successor item the gate raises in place of the retired reachability
+      // gap is still reported, so the measurement is carried, not discarded.
+      expect(
+        report.openItems,
+        contains('security_summary_production_call_sites_measured'),
+      );
+      // The session aggregation gap was never closed and stays open. This is
+      // the assertion that would catch the list being emptied wholesale.
+      expect(
+        report.openItems,
+        contains('session_summary_caller_supplied_not_computed'),
+      );
       // The slice still passes: these are reported gaps, not passed rows.
       expect(report.status, Sprint117SecurityCenterWorkflowState.pass);
     });

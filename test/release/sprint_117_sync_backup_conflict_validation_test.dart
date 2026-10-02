@@ -184,7 +184,8 @@ void main() {
       // shipped another CloudSyncService implementation, even though the delta
       // absence it guards was still true. A hardcoded count here was a claim
       // about the repository's future, not about this contract.
-      final syncWriters = delta.facts['shipped_cloud_sync_service_implementations'];
+      final syncWriters =
+          delta.facts['shipped_cloud_sync_service_implementations'];
       expect(syncWriters, isA<int>());
       expect(syncWriters as int, greaterThanOrEqualTo(1));
       expect(

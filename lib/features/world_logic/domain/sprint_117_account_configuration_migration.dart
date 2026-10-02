@@ -1416,17 +1416,20 @@ bool _referencedOutsideOwnFile(String typeName) {
     // What this probe must answer is "could a linked identity be persisted and
     // read back", and only executable code can do that.
     var inCode = false;
-    for (final line in const LineSplitter().convert(entity.readAsStringSync())) {
+    for (final line in const LineSplitter().convert(
+      entity.readAsStringSync(),
+    )) {
       final trimmed = line.trimLeft();
-      if (trimmed.startsWith('///') || trimmed.startsWith('//') || trimmed.startsWith('*')) {
+      if (trimmed.startsWith('///') ||
+          trimmed.startsWith('//') ||
+          trimmed.startsWith('*')) {
         continue;
       }
       // Strip string literals: a prose label that names a type is not a use.
-      final code = line.replaceAll(RegExp(r"'[^']*'"), "''")
+      final code = line
+          .replaceAll(RegExp(r"'[^']*'"), "''")
           .replaceAll(RegExp(r'"[^"]*"'), '""');
-      if (RegExp(
-        r'\b' + RegExp.escape(typeName) + r'\b',
-      ).hasMatch(code)) {
+      if (RegExp(r'\b' + RegExp.escape(typeName) + r'\b').hasMatch(code)) {
         inCode = true;
         break;
       }

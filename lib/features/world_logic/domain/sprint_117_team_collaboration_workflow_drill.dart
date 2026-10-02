@@ -114,7 +114,9 @@ class Sprint117TeamCollaborationWorkflowDrill {
         // A doc comment names the state machine; only code enacts it. Without
         // this, a file that merely documents the four statuses would satisfy
         // the scan and retire an open item that is still true.
-        if (code.startsWith('///') || code.startsWith('//') || code.startsWith('*')) {
+        if (code.startsWith('///') ||
+            code.startsWith('//') ||
+            code.startsWith('*')) {
           continue;
         }
         // A lifecycle acts on a status: it reads or writes one.
@@ -145,9 +147,7 @@ class Sprint117TeamCollaborationWorkflowDrill {
   /// when it both names the type and actually consults a role, so the
   /// measurement matches what the open item claims.
   static int _permissionHealthComputationCallSites() {
-    final roleMatrix = RegExp(
-      r'\b(?:StudioRole|Permission)\b|role\.can\(',
-    );
+    final roleMatrix = RegExp(r'\b(?:StudioRole|Permission)\b|role\.can\(');
     final found = <String>[];
     for (final relative in _libDartFiles()) {
       if (relative.endsWith('account_center_team_collaboration_summary.dart')) {
@@ -161,7 +161,9 @@ class Sprint117TeamCollaborationWorkflowDrill {
       for (var i = 0; i < lines.length; i += 1) {
         final code = lines[i].trim();
         // A doc comment describes the mechanism; it does not implement it.
-        if (code.startsWith('///') || code.startsWith('//') || code.startsWith('*')) {
+        if (code.startsWith('///') ||
+            code.startsWith('//') ||
+            code.startsWith('*')) {
           continue;
         }
         if (code.contains('TeamPermissionHealth')) namesHealth = true;

@@ -45,7 +45,7 @@ Future<List<_Stop>> _tabOrder(WidgetTester tester) async {
   addTearDown(tester.view.reset);
 
   await tester.pumpWidget(
-    ProviderScope(child: const MaterialApp(home: AccountCloudCenterScreen())),
+    const ProviderScope(child: MaterialApp(home: AccountCloudCenterScreen())),
   );
   await tester.pump();
 

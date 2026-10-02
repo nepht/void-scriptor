@@ -8,7 +8,7 @@ import 'package:void_scriptor/features/account/domain/account_center_security_su
 /// perfectly valid six-year-old timestamp beside a `healthy` status and no code
 /// would object.
 void main() {
-  final gateAt = (DateTime now) => PasswordSecurityGate(now: now);
+  PasswordSecurityGate gateAt(DateTime now) => PasswordSecurityGate(now: now);
 
   group('PasswordSecurityGate reads the timestamp nothing else read', () {
     test('a recent password is healthy', () {

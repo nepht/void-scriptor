@@ -178,12 +178,12 @@ void main() {
     ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: Center(
               child: MediaQuery(
-                data: const MediaQueryData(textScaler: TextScaler.linear(2.0)),
-                child: const AccountCenterCompactAvatar(
+                data: MediaQueryData(textScaler: TextScaler.linear(2.0)),
+                child: AccountCenterCompactAvatar(
                   initials: 'CS',
                   semanticLabel: 'Email account',
                 ),

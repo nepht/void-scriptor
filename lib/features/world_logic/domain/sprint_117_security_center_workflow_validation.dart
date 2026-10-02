@@ -744,8 +744,9 @@ class Sprint117SecurityCenterWorkflowGate {
       if (!anchor.devicesAcceptanceDeclared) {
         missing.add('trusted_devices_acceptance');
       }
-      if (!anchor.sessionsAcceptanceDeclared)
+      if (!anchor.sessionsAcceptanceDeclared) {
         missing.add('sessions_acceptance');
+      }
       if (!anchor.secureStoreAcceptanceDeclared) {
         missing.add('secure_store_health_acceptance');
       }

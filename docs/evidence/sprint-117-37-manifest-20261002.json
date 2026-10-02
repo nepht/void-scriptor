@@ -1,0 +1,124 @@
+{
+  "canonical_step": "117.37",
+  "title": "Beta Feedback Evidence Log",
+  "document_role": "EVIDENCE",
+  "recorded_at": "2026-10-02",
+  "head_before": "b30ad54",
+  "gate": {
+    "implementation": "lib/features/world_logic/domain/sprint_117_beta_feedback_evidence_log.dart",
+    "slice_tests": "test/release/sprint_117_beta_feedback_evidence_log_test.dart",
+    "regression_tests": "test/features/ai/application/output_review_repository_test.dart",
+    "required_fields": [
+      "feedback_id",
+      "consent",
+      "provider",
+      "workflow",
+      "outcome",
+      "impact",
+      "evidence",
+      "limitations"
+    ],
+    "structural_failure_codes": [
+      "no_entries",
+      "missing_field:<entry>:<field>",
+      "blank_list_element:<entry>:<field>:<index>",
+      "duplicate_feedback_id:<id>",
+      "unknown_field:<field>",
+      "duplicate_check:<field>:<check>",
+      "vacuous:<field>:<check>",
+      "missing_field_check:<field>",
+      "field_without_pass:<field>",
+      "non_canonical_required_fields"
+    ],
+    "status_semantics": {
+      "pass": "the shipped seam measured exactly what the check declares",
+      "unmet": "a contract demand with no shipped source yet, reported as a named open item and never converted to a pass",
+      "fail": "a structural failure or a violation of the fail-closed rules"
+    }
+  },
+  "defects_fixed": [
+    {
+      "id": "D1",
+      "location": "lib/features/ai/application/output_review_repository.dart",
+      "class": "fail_open",
+      "summary": "setReview overwrote the stored row unconditionally, so any caller could rewrite a recorded review: a forbidden state transition (pending -> pending) was written as if it were a new decision, and the audit trail of what the reviewer actually decided could be rewritten at will.",
+      "fix": "read-first insert/update with an OutputReviewTransitionError thrown when the stored state cannot legally reach the requested state; the forbidden write leaves the row untouched."
+    },
+    {
+      "id": "D2",
+      "location": "lib/features/ai/application/output_review_repository.dart",
+      "class": "evidence_loss",
+      "summary": "insertOnConflictUpdate rewrote createdAt on every write, so the first-seen evidence time of a review was lost on the next write.",
+      "fix": "createdAt is written once on insert and is never part of the update companion; OutputReview now exposes createdAt and updatedAt."
+    },
+    {
+      "id": "D3",
+      "location": "lib/features/ai/application/output_review_repository.dart",
+      "class": "evidence_loss",
+      "summary": "an update that omitted the feedback argument stored SQL NULL over the previously recorded feedback, silently erasing the user's feedback text.",
+      "fix": "feedback is absent on update when the argument is omitted, so recorded feedback survives a later write."
+    }
+  ],
+  "harness_corrections": [
+    "The first implementation used InsertMode.insertOrIgnore and treated the returned rowid as an insert indicator; drift returns a stale rowid when the insert is ignored, so the guarded update path was never reached and the pre-existing test 'records regenerate-with-feedback by overwriting status' failed. Replaced with an explicit read-first branch.",
+    "The createdAt preservation test initially used a 5 ms delay; drift stores DateTime as unix seconds, so the two writes landed in the same second and updatedAt was not after createdAt. Delay raised to 1100 ms with the reason recorded in the test.",
+    "The fail-closed rule was tightened after a test proved that a vacuous pass (blank declared or observed) satisfied its field; isVacuous now excludes such a check from counting as a pass, producing both the vacuous and field_without_pass failures."
+  ],
+  "necessity": {
+    "method": "anchor the shipped file, apply one defect block, run the official suite, restore, verify sha",
+    "anchor_sha256": "see repository sha of output_review_repository.dart at commit time",
+    "positive_control_before": {"rc": 0, "summary": "All tests passed!", "compile_error": false},
+    "blocks": [
+      {
+        "block": "A_no_transition_guard",
+        "rc": 1,
+        "compile_error": false,
+        "failing_test": "rejects a transition the domain state machine forbids"
+      },
+      {
+        "block": "B_overwrite_created_at",
+        "rc": 1,
+        "compile_error": false,
+        "failing_test": "second write preserves createdAt as the first-seen evidence time"
+      },
+      {
+        "block": "C_erase_feedback_on_null",
+        "rc": 1,
+        "compile_error": false,
+        "failing_test": "a write without feedback does not erase recorded feedback"
+      }
+    ],
+    "positive_control_after": {"rc": 0, "summary": "All tests passed!", "compile_error": false},
+    "final_sha_matches_anchor": true
+  },
+  "gate_results": [
+    {"gate": "slice tests", "command": "flutter test --no-pub test/release/sprint_117_beta_feedback_evidence_log_test.dart test/features/ai/application/output_review_repository_test.dart -j 1", "exit": 0, "result": "26/26 All tests passed!"},
+    {"gate": "focused regression", "command": "flutter test --no-pub test/features/ai/ test/release/sprint_117_beta_feedback_evidence_log_test.dart test/release/sprint_117_provider_resilience_validation_test.dart test/release/sprint_113_feedback_collection_evidence_log_test.dart test/release/sprint_114_feedback_adoption_evidence_intake_test.dart -j 1", "exit": 0, "result": "200/200 All tests passed!"},
+    {"gate": "analyzer", "command": "dart analyze <5 slice files>", "exit": 0, "result": "No issues found!"},
+    {"gate": "format", "command": "dart format <5 slice files>", "exit": 0, "result": "0 changed, idempotent on the second run"},
+    {"gate": "git diff --check", "command": "git diff --check", "exit": 0, "result": "clean"},
+    {"gate": "windows debug build", "command": "flutter build windows --debug", "exit": 0, "result": "Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe in 38,5s"}
+  ],
+  "unmet_contract_items": [
+    {
+      "item": "real beta feedback",
+      "detail": "no participant has entered the beta cohort (117.34 verified zero participants), so no real feedback exists to log. The gate validates the log contract against a structural fixture and reports no live participant; it does not claim feedback was recorded."
+    },
+    {
+      "item": "exported feedback log document",
+      "detail": "no aggregated on-disk feedback log exists; the gate's toJson export is the only serialisation surface and is covered by the json contract test."
+    },
+    {
+      "item": "provider identity bound to a feedback entry",
+      "detail": "ai_generations.provider and ai_generation_jobs.provider_id carry provider identity, but ai_output_reviews has no provider column and no feedback row exists to join, so the join between a recorded review and its provider is not proven by shipped code."
+    }
+  ],
+  "out_of_scope_observation": {
+    "path": "test/release/sprint_117_provider_resilience_validation_test.dart",
+    "finding": "writeEvidenceFile() rewrites docs/evidence/sprint-117-36-manifest-20261002.json with the timing measured by the current run, so running that suite dirties the 117.36 evidence manifest in the working tree.",
+    "impact": "any later regression that includes the 117.36 suite will always show that manifest as modified. This run reverted the two changed values to their committed content via a targeted patch (git restore was not used) and did not commit the file.",
+    "action": "reported, not fixed; changing the 117.36 evidence-writing behaviour is outside the 117.37 acceptance scope."
+  },
+  "verdict": "BETA_FEEDBACK_LOG_CONTRACT_VALIDATED_LOCAL",
+  "external_gate": "DEFERRED-EXTERNAL"
+}

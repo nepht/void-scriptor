@@ -779,6 +779,84 @@ Urutan `_universeOrder` dibalik di dalam test lalu dijalankan ulang. Hasil **3 d
 
 ---
 
+## 15. Fase 10 — Focus Order di Create Universe Wizard (2.4.3)
+
+Layar kelima yang diaudit untuk kriteria 2.4.3, dan yang pertama berupa wizard bertahap. Audit ini menguji kontrak fokus **per langkah**, bukan hanya sekali pasang di layar.
+
+### 15.1 Kenapa layar ini dipilih
+
+`create_universe_wizard_screen.dart` (418 baris) adalah kandidat deterministik paling kaya di antara 87 layar yang belum diaudit:
+
+| Syarat | Nilai |
+| --- | --- |
+| Constructor | `const CreateUniverseWizardScreen({super.key})` — nol parameter wajib |
+| Data | `_steps` (3 entri) dan `_universeTypes` (8 entri), keduanya `static const List<String>` |
+| async/Future/Stream | 0 |
+| TabController/Navigator/PageView | 0 |
+| Elemen interaktif | 13 |
+
+Karena seluruh data berasal dari konstanta statis dan tidak ada navigasi tambahan, traversal Tab mewakili tampilan nyata dan dapat direproduksi persis.
+
+### 15.2 Data traversal terukur per langkah
+
+Traversal memakai `sendKeyEvent(LogicalKeyboardKey.tab)` pada viewport 1536x1024, devicePixelRatio 1.0. Koordinat dalam piksel logika.
+
+**Langkah 0 (Name) — 4 stop lalu kembali ke atas:**
+
+| # | Widget | t | l | w | h |
+| --- | --- | --- | --- | --- | --- |
+| 0 | IconButton close (AppBar) | 8 | 8 | 40 | 40 |
+| 1 | TextField "Nama Universe" | 184 | 361 | 1118 | 20 |
+| 2 | TextButton "Cancel" | 960 | 1301 | 103 | 40 |
+| 3 | FilledButton "Next" | 960 | 1416 | 100 | 40 |
+
+**Langkah 1 (Type) — 11 stop:** delapan `ChoiceChip` dalam satu baris, lalu footer, lalu kembali ke close.
+
+| # | Label | t | l | w | h |
+| --- | --- | --- | --- | --- | --- |
+| 0 | Canon | 174 | 345 | 100 | 37 |
+| 1 | Alternate | 174 | 457 | 171 | 37 |
+| 2 | What If | 174 | 639 | 126 | 37 |
+| 3 | Spin-Off | 174 | 777 | 139 | 37 |
+| 4 | AU | 174 | 928 | 60 | 37 |
+| 5 | Crossover | 174 | 1000 | 152 | 37 |
+| 6 | Parallel | 174 | 1164 | 139 | 37 |
+| 7 | Dream | 174 | 1315 | 100 | 37 |
+| 8 | Cancel | 960 | 1301 | 103 | 40 |
+| 9 | Next | 960 | 1416 | 100 | 40 |
+
+**Langkah 2 (Confirm) — 3 stop:** `Cancel`, `Create`, lalu kembali ke close. Tombol utama berubah label dari "Next" menjadi "Create" karena `_stepIndex == _steps.length - 1`, sementara posisi footer tetap sama.
+
+### 15.3 Dua tinggi baris yang mengontrakkan urutan
+
+- **Langkah 0** punya tiga tinggi baris berbeda (AppBar 8, konten 184, footer 960). Urutan fokus mengikuti urutan baca: atas ke bawah.
+- **Langkah 1** punya dua tinggi baris (chip 174, footer 960), dengan delapan chip berbagi satu tinggi baris dan diurutkan kiri ke kanan.
+- **Langkah 2** hanya satu tinggi baris selain AppBar, karena langkah konfirmasi tidak punya field.
+
+Kontrak 2.4.3 yang dikontrakkan bersifat relatif: field dan chip selalu mendahului footer, footer selalu Cancel di kiri dan tombol utama di kanan, dan traversal selalu kembali ke `close` di AppBar setelah putaran terakhir.
+
+### 15.4 Test sempat RED — di harness, bukan produksi
+
+Run pertama gagal di test 2 dan 3. Penyebabnya bukan widget produksi: **fokus bertahan saat berpindah langkah**, sehingga traversal pada langkah kedua dan ketiga dimulai dari `close` (label `?`) alih-alih dari chip atau footer. Assertion berbasis indeks absolut ikut bergeser.
+
+Perbaikan ada di helper `_stops`, bukan di produksi: setelah traversal selesai, daftar dirotasi agar dimulai dari stop dengan `top` terkecil. `close` di AppBar adalah satu-satunya stop di baris paling atas pada setiap langkah, sehingga indeks assertion menjadi deterministik tanpa mengubah urutan relatif antar stop.
+
+### 15.5 Negative control
+
+Urutan delapan `expectedTypes` dibalik di dalam test lalu dijalankan ulang. Hasil **4 dari 5 PASS**, dengan test "langkah Type: delapan chip kiri ke kanan sesuai _universeTypes" yang runtuh. Assertion urutan chip terbukti punya kekuatan.
+
+### 15.6 Gate
+
+| Gate | Hasil |
+| --- | --- |
+| `create_universe_wizard_focus_order_test.dart` | 5 dari 5 PASS |
+| Negative control (urutan chip dibalik) | 4 dari 5 PASS, 1 FAIL |
+| `dart analyze test/features/multiverse/` | No issues found |
+| CJK/Cyrillic scan | none |
+| `test/features/multiverse/` (14 berkas test) | 47 PASS, 0 FAIL |
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

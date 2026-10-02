@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.34",
-  "next_step": "117.35",
+  "last_verified_step": "117.35",
+  "next_step": "117.36",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -119,7 +119,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-02T02:05:00Z",
-  "updated_by": "cron b0c2c7d744d9 core worker run 117.33 (record phase; gates re-verified independently)",
+  "updated_by": "hermes: sprint 117.35 slice (interactive, Choi-directed)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -2783,10 +2783,57 @@
     "external_gates": "DEFERRED-EXTERNAL: live payment provider, real refund/dispute verdicts, webhook with real HMAC secrets, PCI certification, dunning, hosted CI, signing, publication"
   },
   "sprint_117_step_11735": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "next_step": "117.36",
+    "commit": "221aeb1",
+    "manifest": "docs/evidence/sprint-117-35-manifest-20261002.json",
+    "manifest_sha256": "496fee569187c214e621bfecf9412150b7daaedb1083b7fd14e8ee2ffc8a859f",
+    "manifest_bytes": 7297,
+    "areas": [
+      "render",
+      "many_accounts",
+      "refresh",
+      "charts",
+      "local_scan",
+      "slow_api",
+      "memory",
+      "contention"
+    ],
+    "defects_fixed": [
+      "AsyncMutex.run() installed the gate and then called section() synchronously before the release hook was attached, so a synchronous throw escaped run() with _tail still pointing at a Completer nobody would complete: every later caller (registry load/upsert/remove, atomic writes) waited forever and the mutex stayed locked for the life of the isolate. The gate is now released on the throwing path before Error.throwWithStackTrace, keeping the observable sync throw for the first caller.",
+      "BackgroundJobQueue.drain() answered a second concurrent caller with an already-complete future (if (_draining) return;) instead of joining the same loop, so a caller could close a database, lock or session while work was still running. A shared _drainLoop with an identical-checked whenComplete now makes concurrent callers join the same loop.",
+      "DebouncedSearchController.query() never checked _disposed, so a query after dispose still ran the search closure and discarded the result, keeping whatever it captured (repository, isolate handle, open file) alive for a lifetime nobody could use. A disposed controller now settles the caller with an empty generation and never invokes search."
+    ],
+    "necessity_witness": {
+      "method": "isolated git worktree at HEAD b8d5a78 (pre-fix) with the same gate and test files copied in",
+      "red_tests": [
+        "contention: a section that throws SYNCHRONOUSLY must not wedge the mutex (isLocked=true)",
+        "memory: a disposed search controller must not run another search (1 call, expected 0)",
+        "contention: drain() must not report finished while work is still running (second drain completed early)"
+      ],
+      "live_result": "3 GREEN at commit 221aeb1"
+    },
+    "unmet_contract_items": [
+      "slow_api:live_provider_latency_measured - no live provider connector ships in this build, so no local run can produce a real latency; the axis stays DEFERRED-EXTERNAL and is reported as an explicit open item rather than a fabricated pass."
+    ],
+    "measured_probes": {
+      "render_chrome_warm_frame_ms": "353.212 (budget initialFrameBudgetMs=400, viewport 1536x1024, 7 provider rows, no raster pipeline)",
+      "render_chrome_cold_pump_ms": "1072.918 recorded only: pays JIT and Skia warm-up, not compared against the frame budget",
+      "many_accounts": "48 accounts x 7 availabilities swept in 0.254ms against refreshBudgetMs=250",
+      "refresh": "1000 iterations in 2.781ms",
+      "local_scan": "3 real files / 154 bytes indexed in 22.624ms against scanBudgetMs=2000",
+      "contention": "peak concurrency 2/2; priority order critical,low; resource limit order free,needs-db",
+      "memory": "search calls after dispose 0; mutex peak inside 1; queue stream done after dispose true"
+    },
+    "gate": {
+      "slice_tests": "35/35 exit 0",
+      "regression": "59/59 exit 0 (slice + async_mutex_test + background_job_queue_test + background_job_pause_test + background_job_terminal_state_test + large_data_test)",
+      "analyzer": "No issues found! exit 0 (5 files)",
+      "format": "0 changed, idempotent exit 0",
+      "diff_check": "exit 0",
+      "verdict": "PERFORMANCE_SCALE_VALIDATED_LOCAL"
+    },
+    "external_gate": "DEFERRED-EXTERNAL: real GPU frame timing, live provider latency, real process RSS, hosted CI."
   },
   "sprint_117_step_11736": {
     "status": "NOT_STARTED",

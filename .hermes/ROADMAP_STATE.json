@@ -41,8 +41,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-02",
-  "updated_by": "cron_core_worker_sprint_117_43",
+  "updated_at": "2026-10-03T05:40:00+07:00",
+  "updated_by": "cron-core-worker b0c2c7d744d9 slice 117.43-06",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3008,7 +3008,7 @@
   "sprint_117_step_11743": {
     "status": "PARTIAL-LOCAL",
     "verified_on": "2026-10-03",
-    "commit": "ea44531",
+    "commit": "0ce8c5f",
     "canonical_step": "117.43",
     "title": "GA Artifact & Reproducibility",
     "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
@@ -3021,7 +3021,8 @@
       "117.43-01 ArtifactComparison.isWellFormed compared only artifact NAME SETS and never hash VALUES, so a bitIdentical claim contradicted by differing SHA-256 digests was accepted and the shipped 113.39 gate returned pass on a false identity claim; proven before the fix (aaa.../bbb... reported isWellFormed == true). Fix compares recorded values.",
       "117.43-03 shipped in commit 186c05a but undocumented until 2026-10-03: measureChecksums walked only one direction - a signed artifact with no checksum line was reported as uncovered, but a checksum LINE naming an unreadable artifact was never counted, so an inventory could name artifacts the tree does not contain and still report clean agreement. Now counted as phantom and fails closed.",
       "117.43-04 shipped in commit 186c05a but undocumented until 2026-10-03: readChecksumIndex documented that it returns the map 'plus every line that was malformed, so a silently dropped line cannot shrink the covered set without being counted', but returned the map alone and continued past malformed input, so a truncated or uppercase digest vanished from the inventory with no counted failure. Now returns ChecksumIndex(index, malformed) and malformed lines fail the check.",
-      "117.43-05 found and fixed in this slice (2026-10-03): readChecksumIndex filled its map with `index[path] = digest`, so a path recorded TWICE with DIFFERENT digests kept whichever line came last and the contradicting claim was counted nowhere - an inventory that disagreed with itself reported agreement on the surviving line. ChecksumIndex now carries `conflicting` (repeated paths whose digests disagree) as a measured result rather than an internal detail, and measureChecksums counts it as its own violation (conflicting=<n> in observed, conflicting: <path> in note). Same fail-open shape as 117.43-04 one step lower: there the line vanished from the inventory, here it overwrote its own evidence. Identical repeats stay benign and are tested explicitly. Fix does not change any committed checksum value and does not touch build/."
+      "117.43-05 found and fixed in this slice (2026-10-03): readChecksumIndex filled its map with `index[path] = digest`, so a path recorded TWICE with DIFFERENT digests kept whichever line came last and the contradicting claim was counted nowhere - an inventory that disagreed with itself reported agreement on the surviving line. ChecksumIndex now carries `conflicting` (repeated paths whose digests disagree) as a measured result rather than an internal detail, and measureChecksums counts it as its own violation (conflicting=<n> in observed, conflicting: <path> in note). Same fail-open shape as 117.43-04 one step lower: there the line vanished from the inventory, here it overwrote its own evidence. Identical repeats stay benign and are tested explicitly. Fix does not change any committed checksum value and does not touch build/.",
+      "117.43-06 ArtifactComparison.isWellFormed verified the bitIdentical branch (117.43-01) but never verified the notBitIdentical branch: a claim that the artifacts DIFFER, recorded with byte-identical digests on both rebuilds, was reported isWellFormed == true, BuildProvenanceEvidence.evaluate returned pass, and the 117.43 gate reported the provenance output as pass. Exact mirror of 117.43-01 in the opposite direction: there an unverified false identity claim, here an unverified false difference claim. Fix: notBitIdentical now requires at least one recorded digest that actually differs, otherwise isWellFormed == false (minimal fail-closed guard before the pre-existing limits documentation check). Commit 0ce8c5f."
     ],
     "defects_measured_not_fixed": [
       "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance. Independently re-measured 2026-10-03 (not copied from the previous run): docs/release/v1.2.0-rc.1-checksums.txt has 493 entries, 0 malformed -> 485 MATCH / 7 DRIFT / 1 MISSING. Drift = the 6 signed artifacts plus data/app.so; missing = build/windows/x64/runner/Release/native_assets.json. Figures are identical to the 2026-10-02 run and stable after 'flutter build windows --debug'. Confirmed reading: the 117.43 GA gate measures only the 6 signed artifacts from docs/planning/v1.2/sprint_113_ga_artifact_packaging.json, so the full 493-row checksum index is never measured by the gate - a real blind spot, not gate drift.",
@@ -3044,12 +3045,12 @@
     "providers_measured": 32,
     "connectable_providers": 0,
     "gates": {
-      "focused": "28/28 exit 0",
+      "focused": "40/40 exit 0",
       "provenance_113_39": "7/7 exit 0",
       "contract_regression": "840/840 exit 0 (test/features/account/domain)",
       "sprint_117_release_shard": "1055/1055 exit 0 across 41 files",
-      "analyze": "No issues found! exit 0 on 4 files",
-      "format": "pass1 2 changed, recheck 0 changed exit 0",
+      "analyze": "No issues found! exit 0 (3 slice files)",
+      "format": "0 changed, exit 0",
       "diff_check": "exit 0",
       "build_windows_debug": "exit 0 in 23.5s",
       "necessity": "3 blocks, each failing only its named tests, no compile errors",
@@ -3067,7 +3068,8 @@
         "manifest_117_43_unchanged": true,
         "manifest_117_43_sha256": "b2a7787c6c5d8adb465512781449a2757b310eecf979b076edb504895fcb6c0c",
         "docs_dirs_clean_vs_head": "docs/evidence, docs/release, docs/planning all clean after the suite run"
-      }
+      },
+      "windows_build": "flutter build windows --debug exit 0 in 19.1 s"
     },
     "cross_slice_manifest_incident": "5th occurrence: full sprint_117 release shard rewrote sprint-117-35 (496fee56... -> f7800128...) and sprint-117-36 (a1100533... -> c065ba08...). Both restored from git show HEAD:<path> per clause 3; disk == HEAD == ledger values 496fee569187c214... and a1100533f69c2eb7...; json VALID; neither committed. Root cause still unfixed.",
     "close_blocker": "operator decision required for 117.43-02: either re-sign the 1.2.0-rc.1 release candidate and refresh checksums, or declare checksum drift an accepted GA limitation and narrow the 117.43 contract. The roadmap guard only resolves steps whose ledger status contains VERIFIED or COMPLETED, and the gate honestly reports INCOMPLETE, so cron may not close this step.",
@@ -3103,15 +3105,26 @@
       "note": "The GA gate covers 6 signed artifacts only; the 493-row index is outside gate coverage. Independent recomputation used hashlib over the working tree, never rewriting the committed checksum file."
     },
     "gates_reverified_2026_10_03": {
-      "focused_117_43": "36/36 exit 0 (up from 35/35: 117.43-05 adds 1 case). `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart`",
-      "sprint_113_provenance": "6 pass / 1 FAIL - pre-existing, same root cause as 117.43-02 (live build/ tree is not the signed 1.2.0-rc.1 release tree): expected 73101e78..., actual c7a33055... | re-run 2026-10-03 slice 117.43-05: still the same single pre-existing failure, same root cause as 117.43-02",
-      "sprint_113_ga_packaging": "11 pass / 2 FAIL - both pre-existing and same root cause: 'signed artifacts exist and signing evidence verifies locally' (sign_manifest_path unresolvable on a clean checkout) and 'checksums match the signed artifacts byte for byte' (expected c7a33055... live tree vs recorded 73101e78...) | re-run 2026-10-03 slice 117.43-05: combined provenance+packaging = 17 pass / 3 FAIL, identical three tests as the prior run (113.39 signed release artifact from 113.38 remains intact; 113.38 checksums match the signed artifacts byte for byte; 113.38 signed artifacts exist and signing evidence verifies locally). NOT a regression from f5e87d0: that commit touches only the checksum PARSER and its test, never build/ or the checksums file.",
-      "analyze": "dart analyze on the 2 slice files: No issues found! exit 0 (re-run 2026-10-03)",
-      "format": "dart format --set-exit-if-changed on the 2 slice files: 0 changed exit 0 (re-run 2026-10-03)",
-      "diff_check": "git diff --check exit 0 (re-run 2026-10-03)",
-      "build_windows_debug": "flutter build windows --debug exit 0, 23.4s, Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe (re-run 2026-10-03)"
+      "focused_117_43": "40/40 exit 0 (up from 36/36: 117.43-06 adds 4 cases, 2 fail-closed plus 2 claim-honesty keepers). `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart`",
+      "analyze": "No issues found! exit 0 on the 3 slice files (7 unnecessary_string_interpolations from an inline ${'a' * 64} in the new tests were replaced with a local digest(seed) helper before the slice was committed)",
+      "format": "dart format --set-exit-if-changed -> 0 changed, exit 0",
+      "diff_check": "git diff --check exit 0",
+      "windows_build": "flutter build windows --debug exit 0 in 19.1 s -> Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe",
+      "necessity": "removed the `final differing = ...; if (!differing) return false;` guard -> `flutter test --plain-name \"117.43-06\"` exit 1 with EXACTLY 2 named 117.43-06 failures, no compile error; file restored byte-identical to the pre-probe snapshot (sha256 22223fdb...) before commit",
+      "regression_113_x": "sprint_113_build_reproducibility_provenance_test.dart + sprint_113_ga_artifact_packaging_test.dart exit 1 with 17 pass / 3 FAIL - the SAME 3 failures as the two previous runs (113.39 signed release artifact remains intact; 113.38 checksums match the signed artifacts byte for byte; 113.38 signed artifacts exist and signing evidence verifies locally). Root cause 117.43-02, NOT a regression of this slice: commit 0ce8c5f touches only the provenance verdict logic and its test, never build/ or the checksum file.",
+      "claim_honesty_check": "The provenance this repo SHIPS still passes, and that is correct: sprint_113_build_reproducibility_provenance.json records verdict NOT_BIT_IDENTICAL with 4 of 6 signed artifacts genuinely differing (void_scriptor.exe, dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll; flutter_windows.dll and sqlite3.dll are identical). The fix does not change that status - one test now pins that the pass is earned by a real recorded difference, so a later edit that erased the difference cannot silently leave provenance passing on an unevidenced claim."
     },
-    "reconciled_on": "2026-10-03"
+    "reconciled_on": "2026-10-03",
+    "blind_spot_117_43_06": {
+      "measured_on": "2026-10-03",
+      "direction": "mirror of 117.43-01, opposite direction",
+      "empirical_before_fix": "probe zz_probe_11743_06_test.dart (deleted after the findings moved into the official test) reported PROBE-B isWellFormed=true and PROBE-B state=pass for two rebuilds whose digests were identical, and PROBE-C status=Sprint117GaArtifactStatus.pass on an evidence shape identical to the one we ship",
+      "index_remeasured": "6 signed artifacts -> MATCH=0 / DRIFT=6 (recorded 73101e78... vs actual c7a33055... for void_scriptor.exe); full 493-row index -> 485 MATCH / 7 DRIFT / 1 MISSING, identical to the previous runs and stable after flutter build windows --debug",
+      "note": "This closes a trust-boundary path that is NOT currently exercised by the shipped data, exactly like 117.43-05: the shipped provenance manifest does record a real difference, so the gate verdict is unchanged. The open drift numbers stay 117.43-02's and are not moved by this fix.",
+      "commit": "0ce8c5f"
+    },
+    "gates_reverified_on": "2026-10-03",
+    "updated_at": "2026-10-03T05:40:00+07:00"
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -3244,7 +3257,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "ea44531",
+  "last_slice_commit": "0ce8c5f",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",

@@ -32,7 +32,7 @@
   "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.42 documentation and known limitations: provider limitations bound to the shipped connector manifest via Sprint117ProviderLimitationCatalogue.derive; all 8 canonical outputs checked against the filesystem. 22/22 focused, 113/113 with the contract regression (117.41 registry + 117.6 support + 117.8 rollback seams), 1024/1024 across the 40 sprint_117 release files, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 18.8s. Commit 4b5bd31."
+    "note": "117.43 GA Artifact & Reproducibility: ArtifactComparison.isWellFormed now compares recorded hash values, so a false bitIdentical claim fails closed (117.43-01). 28/28 focused, 7/7 113.39 provenance, 840/840 contract regression, 1055/1055 sprint_117 release shard, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 23.5s. Commit ea44531. Step is PARTIAL-LOCAL: 117.43-02 (committed GA manifest names unresolvable build-tree paths and all six checksums drifted) is a named open item awaiting an operator decision, so the guard pointer stays on 117.43."
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -42,7 +42,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-02",
-  "updated_by": "cron_core_worker_sprint_117_42",
+  "updated_by": "cron_core_worker_sprint_117_43",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3006,10 +3006,56 @@
     "next_step": "117.43"
   },
   "sprint_117_step_11743": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "PARTIAL-LOCAL",
+    "verified_on": "2026-10-02",
+    "commit": "ea44531",
+    "canonical_step": "117.43",
+    "title": "GA Artifact & Reproducibility",
+    "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
+    "step_closed": false,
+    "manifest_path": "docs/evidence/sprint-117-43-manifest-20261002.json",
+    "manifest_sha256": "b2a7787c6c5d8adb465512781449a2757b310eecf979b076edb504895fcb6c0c",
+    "manifest_bytes": 7592,
+    "manifest_sha_source": "committed artifact via git show ea44531:<path> (policy 2026-10-02 clause 1); disk sha256sum == git show, json.loads VALID",
+    "defects_fixed": [
+      "117.43-01 ArtifactComparison.isWellFormed compared only artifact NAME SETS and never hash VALUES, so a bitIdentical claim contradicted by differing SHA-256 digests was accepted and the shipped 113.39 gate returned pass on a false identity claim; proven before the fix (aaa.../bbb... reported isWellFormed == true). Fix compares recorded values."
+    ],
+    "defects_measured_not_fixed": [
+      "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance"
+    ],
+    "fixture_defect_fixed": [
+      "113.39 malformed-comparison fixture declared bitIdentical while recording two different digests - it was itself a false identity claim and is why the fail-open path stayed green; now records honest notBitIdentical with a documented limit, plus a new case pins the false claim as missing evidence"
+    ],
+    "harness_finding": [
+      "output_without_pass had two shadowing branches (covered.isEmpty always fell through to !passing), so blocking only the first changed nothing observable and the necessity probe was unprovable; merged into one condition, after which the block fails exactly 2 named tests"
+    ],
+    "outputs_measured": 8,
+    "checks_run": 8,
+    "failures": [
+      "violation:checksums:artifact_checksum_agreement",
+      "output_without_pass:checksums",
+      "checksums:artifact_checksum_agreement"
+    ],
+    "open_items": 1,
+    "providers_measured": 32,
+    "connectable_providers": 0,
+    "gates": {
+      "focused": "28/28 exit 0",
+      "provenance_113_39": "7/7 exit 0",
+      "contract_regression": "840/840 exit 0 (test/features/account/domain)",
+      "sprint_117_release_shard": "1055/1055 exit 0 across 41 files",
+      "analyze": "No issues found! exit 0 on 4 files",
+      "format": "pass1 2 changed, recheck 0 changed exit 0",
+      "diff_check": "exit 0",
+      "build_windows_debug": "exit 0 in 23.5s",
+      "necessity": "3 blocks, each failing only its named tests, no compile errors",
+      "pre_existing_baseline": "at HEAD with both slice files reverted: 17 pass / 3 fail; with fix: 48 pass / 1 fail - the fix removes 2 pre-existing failures and introduces none"
+    },
+    "cross_slice_manifest_incident": "5th occurrence: full sprint_117 release shard rewrote sprint-117-35 (496fee56... -> f7800128...) and sprint-117-36 (a1100533... -> c065ba08...). Both restored from git show HEAD:<path> per clause 3; disk == HEAD == ledger values 496fee569187c214... and a1100533f69c2eb7...; json VALID; neither committed. Root cause still unfixed.",
+    "close_blocker": "operator decision required for 117.43-02: either re-sign the 1.2.0-rc.1 release candidate and refresh checksums, or declare checksum drift an accepted GA limitation and narrow the 117.43 contract. The roadmap guard only resolves steps whose ledger status contains VERIFIED or COMPLETED, and the gate honestly reports INCOMPLETE, so cron may not close this step.",
+    "claim_boundary": "No live beta, no participant, no published release. All measurement over committed documents, shipped registries, and the local build tree. 0 of 32 connectors are connectable.",
+    "external_gate": "DEFERRED-EXTERNAL: hosted CI, public CA signing, second builder, beta cohort, publication",
+    "next_step": "117.43"
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -3142,7 +3188,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "4b5bd31",
+  "last_slice_commit": "ea44531",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3227,7 +3273,7 @@
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
   },
-  "last_verified_commit": "4b5bd31",
+  "last_verified_commit": "ea44531",
   "suites_measured": [
     "connector",
     "workflow",

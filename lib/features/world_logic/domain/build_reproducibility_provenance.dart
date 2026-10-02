@@ -98,10 +98,19 @@ class ArtifactComparison {
     final keysB = rebuildB!.artifactHashes.keys.toSet();
     final sameKeys = keysA.length == keysB.length && keysA.containsAll(keysB);
     if (!sameKeys) return false;
-    if (verdict == RebuildVerdict.notBitIdentical) {
-      if (limits == null || limits!.isEmpty) return false;
-      if (limits!.any((limit) => limit.trim().isEmpty)) return false;
+    // Sprint 117.43-01 (fail-open, fixed): the verdict is an assertion about
+    // hash EQUALITY, so comparing only the artifact name sets accepted a
+    // `bitIdentical` claim whose two rebuilds recorded different digests, and
+    // the reproducibility gate passed on a false identity claim. Compare the
+    // recorded values, so a false claim fails closed.
+    if (verdict == RebuildVerdict.bitIdentical) {
+      for (final entry in rebuildA!.artifactHashes.entries) {
+        if (rebuildB!.artifactHashes[entry.key] != entry.value) return false;
+      }
+      return true;
     }
+    if (limits == null || limits!.isEmpty) return false;
+    if (limits!.any((limit) => limit.trim().isEmpty)) return false;
     return true;
   }
 }

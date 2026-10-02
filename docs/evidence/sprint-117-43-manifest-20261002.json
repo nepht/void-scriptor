@@ -1,0 +1,208 @@
+{
+  "canonical_step": "117.43",
+  "document_role": "EVIDENCE",
+  "generated_on": "2026-10-02",
+  "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
+  "pass": false,
+  "required_outputs": [
+    "signed_artifacts",
+    "connector_manifest",
+    "icon_manifest",
+    "dependency_manifest",
+    "schema_manifest",
+    "flag_manifest",
+    "checksums",
+    "provenance"
+  ],
+  "output_count": 8,
+  "check_count": 8,
+  "provider_count": 32,
+  "providers_measured": [
+    "adobe",
+    "anthropic",
+    "apple",
+    "azure_devops",
+    "bitbucket",
+    "blender_cloud",
+    "canva",
+    "discord",
+    "dropbox",
+    "email",
+    "facebook",
+    "figma",
+    "flux",
+    "gemini",
+    "github",
+    "gitlab",
+    "google",
+    "google_drive",
+    "kofi",
+    "local_ai",
+    "local_storage",
+    "mega",
+    "microsoft",
+    "midtrans",
+    "onedrive",
+    "openai",
+    "openrouter",
+    "paypal",
+    "saweria",
+    "sketchfab",
+    "stripe",
+    "x"
+  ],
+  "packaging_subset_outputs": [
+    "signed_artifacts",
+    "checksums",
+    "dependency_manifest",
+    "schema_manifest",
+    "flag_manifest"
+  ],
+  "outputs_outside_this_step": [
+    "version_manifest",
+    "licenses"
+  ],
+  "outputs_absent_from_packaging": [
+    "connector_manifest",
+    "icon_manifest",
+    "provenance"
+  ],
+  "signed_artifact_count": 6,
+  "failures": [
+    "violation:checksums:artifact_checksum_agreement",
+    "output_without_pass:checksums",
+    "checksums:artifact_checksum_agreement"
+  ],
+  "open_items": [
+    "117.43-02: the committed 113.38 GA packaging manifest names build-tree paths a clean checkout cannot resolve, and every recorded checksum has drifted from the live build/ tree. Re-signing a release candidate is a release action outside this step acceptance, so it is carried as a named open item and never converted to a pass."
+  ],
+  "unresolvable_manifest_paths": [
+    "build/release-metadata/artifact-manifest.json",
+    "build/release-metadata/windows-signed-rc-manifest.json"
+  ],
+  "defects_fixed": [
+    "117.43-01 ArtifactComparison.isWellFormed compared only the two rebuilds artifact NAME SETS and never their hash VALUES, so a bitIdentical claim contradicted by differing SHA-256 digests was accepted and the shipped reproducibility gate returned pass on a false identity claim. Now the recorded values are compared, so a false claim fails closed."
+  ],
+  "defects_measured_not_fixed": [
+    "117.43-02"
+  ],
+  "claim_boundary": "No live beta, no participant, no published release. Every measurement is over committed documents, shipped registries, and the local build tree.",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "checks": [
+    {
+      "output_id": "signed_artifacts",
+      "check": "signed_artifact_coverage",
+      "status": "pass",
+      "declared": "6 artifact",
+      "observed": "6 artifact match packaging manifest"
+    },
+    {
+      "output_id": "connector_manifest",
+      "check": "manifest_resolves_to_shipped_registry",
+      "status": "pass",
+      "declared": "connector_manifest manifest",
+      "observed": "connector and icon registries cover 32 providers identically"
+    },
+    {
+      "output_id": "icon_manifest",
+      "check": "manifest_resolves_to_shipped_registry",
+      "status": "pass",
+      "declared": "icon_manifest manifest",
+      "observed": "connector and icon registries cover 32 providers identically"
+    },
+    {
+      "output_id": "dependency_manifest",
+      "check": "manifest_resolves_to_shipped_registry",
+      "status": "pass",
+      "declared": "dependency_manifest manifest",
+      "observed": "connector and icon registries cover 32 providers identically"
+    },
+    {
+      "output_id": "schema_manifest",
+      "check": "schema_derived_from_constants",
+      "status": "pass",
+      "declared": "2 schema identifier",
+      "observed": "database:62, project_format:16"
+    },
+    {
+      "output_id": "flag_manifest",
+      "check": "flags_derived_from_registry",
+      "status": "pass",
+      "declared": "14 flag identifier",
+      "observed": "14 derived from kVs12FeatureFlags + kill-switch seam"
+    },
+    {
+      "output_id": "checksums",
+      "check": "artifact_checksum_agreement",
+      "status": "violation",
+      "declared": "6 artifact",
+      "observed": "uncovered=0 drifting=6",
+      "note": "drifting: build/windows/x64/runner/Release/dartjni.dll, build/windows/x64/runner/Release/file_selector_windows_plugin.dll, build/windows/x64/runner/Release/flutter_secure_storage_windows_plugin.dll, build/windows/x64/runner/Release/flutter_windows.dll, build/windows/x64/runner/Release/sqlite3.dll, build/windows/x64/runner/Release/void_scriptor.exe"
+    },
+    {
+      "output_id": "provenance",
+      "check": "provenance_evaluation",
+      "status": "pass",
+      "declared": "build provenance evaluated",
+      "observed": "build_inputs: 5 item; toolchain_versions: 7 item; rebuild_results: 2 item; artifact_comparison: NOT_BIT_IDENTICAL (6 artifact); provenance_record: 6 item; limit: Build lokal MSVC/Flutter tidak memakai flag deterministik /Brepro: TimeDateStamp PE dan data build dapat berbeda antar siklus clean-rebuild, sehingga 4 dari 6 biner (void_scriptor.exe, dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll) tidak bit-identical.; limit: Biner upstream yang tidak dikompilasi ulang identik di kedua rebuild (flutter_windows.dll dan sqlite3.dll SHA-256 sama), bukti toolchain dan pipeline input stabil.; limit: Perbandingan dilakukan pada biner UNSIGNED; artefak signed 113.38 dimonitor terpisah dan checksum committed-nya tetap cocok setelah restore (test 113.39 'signed release artifact remains intact').; limit: Kedua rebuild berjalan pada source tree dan mesin yang sama; reproducibility lintas mesin, lintas SDK, dan integritas rantai pasok toolchain tidak diklaim oleh langkah ini."
+    }
+  ],
+  "outputs": [
+    {
+      "output_id": "signed_artifacts",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "GaArtifactPackaging.requiredOutputNames"
+    },
+    {
+      "output_id": "connector_manifest",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "ProviderConnectorManifest.standard"
+    },
+    {
+      "output_id": "icon_manifest",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "ProviderIconRegistry.standard"
+    },
+    {
+      "output_id": "dependency_manifest",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "pubspec.lock + sbom.cdx.json"
+    },
+    {
+      "output_id": "schema_manifest",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "ProjectDatabase.currentSchemaVersion + VoidProjectFormat.currentSchema"
+    },
+    {
+      "output_id": "flag_manifest",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "kVs12FeatureFlags + FeatureFlagRegistry.engageKillSwitch"
+    },
+    {
+      "output_id": "checksums",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "seam_label": "docs/release/v1.2.0-rc.1-checksums.txt"
+    },
+    {
+      "output_id": "provenance",
+      "manifest_paths": [
+        "docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json"
+      ],
+      "seam_label": "BuildProvenanceEvidence.evaluate"
+    }
+  ]
+}

@@ -70,14 +70,49 @@ void main() {
         rebuildB: _rebuild('rebuild_b', <String, String>{
           'void_scriptor.exe': b,
         }),
-        verdict: RebuildVerdict.bitIdentical,
-        limits: <String>[],
+        // Sprint 117.43-01: this fixture used to record `bitIdentical` while
+        // recording two DIFFERENT digests. That is a false identity claim,
+        // which the seam now refuses, so the fixture hid a fail-open verdict.
+        // Different digests are honestly `notBitIdentical` with a documented
+        // limit, which is what this fixture now records; the non-zero exit
+        // code on rebuild_b stays the defect this case is actually about.
+        verdict: RebuildVerdict.notBitIdentical,
+        limits: <String>['fixture: digests deliberately differ'],
       ),
       provenanceRecord: <String>['source_revision $a'],
     );
     expect(
       BuildProvenanceEvidence.missingEvidence(badExit),
       unorderedEquals(<String>['rebuild_results']),
+    );
+
+    // The regression that shipped the false identity claim: a comparison
+    // asserting bitIdentical while its two rebuilds record different digests
+    // must be reported as missing evidence, not accepted.
+    final falseIdentity = BuildProvenanceEvidence(
+      buildInputs: <String>['pubspec.yaml sha256 $a'],
+      toolchainVersions: <String>['Flutter 3.x'],
+      dependencyLock: <String>['pubspec.lock sha256 $a'],
+      rebuildResults: <RebuildResult>[
+        _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': a}),
+        _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': b}),
+      ],
+      artifactComparison: ArtifactComparison(
+        method: 'sha256',
+        rebuildA: _rebuild('rebuild_a', <String, String>{
+          'void_scriptor.exe': a,
+        }),
+        rebuildB: _rebuild('rebuild_b', <String, String>{
+          'void_scriptor.exe': b,
+        }),
+        verdict: RebuildVerdict.bitIdentical,
+        limits: <String>[],
+      ),
+      provenanceRecord: <String>['source_revision $a'],
+    );
+    expect(
+      BuildProvenanceEvidence.missingEvidence(falseIdentity),
+      contains('artifact_comparison'),
     );
 
     final diffNoLimits = BuildProvenanceEvidence(

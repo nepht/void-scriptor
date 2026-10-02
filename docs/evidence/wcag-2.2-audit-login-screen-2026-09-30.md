@@ -541,6 +541,101 @@ Harness `_tabOrder` + `_firstText` + klasifikasi baris bisa disalin, tapi tiap
 layar punya widget interaktif berbeda (dropdown, switch, slider, tab strip
 yang berbeda) yang perlu diklasifikasi ulang.
 
+
+---
+
+## 12. Fase 7 — Focus Order di AI Prompt Composer (2.4.3)
+
+Layar kedua yang diuji dengan traversal Tab nyata. Basis pemilihan bukan
+`story_workspace_screen.dart` yang paling banyak interaktif (45 handler),
+melainkan `ai_prompt_composer_screen.dart`, karena dua alasan yang keduanya
+dibuktikan, bukan diperkirakan:
+
+- **Deterministik.** `AiPromptComposerScreen({super.key, this.contextData})`
+  punya nol parameter wajib. Layar story butuh repository, `loadCast`,
+  `activeSection`, atau projection futures; tanpa itu traversal hanya menghasilkan
+  2-3 stop dan tidak mewakili apa yang dilihat pengguna.
+- **Sebenarnya dipakai.** `story_workspace_screen.dart` punya 89 baris
+  `_buildDedicatedSection`, tapi branch `'Outline'` merender nyaris kosong —
+  panel projection absen (projection null) dan satu-satunya tombol pun
+  bersyarat `onSectionRequested != null`. Probe traversal di sana menghasilkan
+  **1 stop** (Navigator), bukan urutan yang bisa diaudit.
+
+### Data terukur (probe 2026-10-03, viewport 1536x1024, devicePixelRatio 1.0)
+
+```
+0  ink    t=8    l=1492 w=40    -> tombol aksi pojok kanan atas Scaffold
+1  Character         t=140 l=20  w=240   ┐ baris header
+2  field             t=144 l=332 w=1152  ┘ (kiri ke kanan, tinggi sama)
+3  Identity Locks    t=188 l=20  w=56
+4  Wardrobe          t=244 l=20  w=240
+5  Weapon            t=292 l=20  w=240
+6  Environment       t=340 l=20  w=240
+7  Timeline          t=388 l=20  w=240
+8  <LOOP ke #0>
+```
+
+Delapan stop, traversal tertutup rapi. Ini sesuai `build()` di
+`ai_prompt_composer_screen.dart:88-101` (`SizedBox(width: 280, child: panel)` di baris 100): `Row` berisi `panel` (lebar 280, kiri)
+dan `editor` ( Expanded, kanan); `panel` adalah `_ContextPanel` yang menumpuk
+enam `_toggle` secara vertikal (`ai_prompt_composer_screen.dart:141,157,173,189,205,221`).
+
+### Kontrak yang diuji
+
+1. **Enam toggle muncul dan berurutan** sesuai urutan vertikal panel CONTEXT.
+2. **Rail kiri dibaca dari atas ke bawah** — `top` naik monoton
+   (140→188→244→292→340→388) dan keenamnya berbagi `left` yang sama.
+3. **Field editor tidak mendahului toggle pertama.**
+4. **Focus cycle tertutup** dengan stop terbatas dan setiap stop punya ukuran
+   render nyata (bukan target fokus hantu).
+
+### RED nyata selama menulis test (tidak dikarang)
+
+Assertion pertama memakai `actual.sublist(indexes.first, indexes.first + 6) ==
+_panelToggles`, yaitu menuntut enam toggle **bersebelahan**. Probe sudah
+memperingatkan ini: `Character` (t=140 l=20 w=240) dan `field` (t=144 l=332
+w=1152) berbagi baris visual yang sama — tinggi 48 vs 24, `top` berbeda 4px,
+`left` berbeda 312px, yaitu satu baris header yang dibaca kiri ke kanan.
+Test gagal persis di sana:
+
+```
+Expected: ['Character', 'Identity Locks', 'Wardrobe', 'Weapon', 'Environment', 'Timeline']
+  Actual: ['Character', 'field', 'Identity Locks', 'Wardrobe', 'Weapon', 'Environment']
+```
+
+Field menyela. Dua kemungkinan: widget yang salah, atau assertion yang salah
+terbuka. Buktinya menunjukkan widget yang benar — panel kiri memang 280px dan
+field berada di kolom kanan, keduanya memang satu baris. Jadi assertion yang
+diperbaiki, bukan produksi. Kontrak 2.4.3 adalah urutan **relatif**, bukan
+label bersebelahan: field boleh menyela, yang dikontrak adalah tidak ada toggle
+yang keluar dari urutan vertikalnya.
+
+### Negative control
+
+Membalik `_panelToggles` (Timeline lebih dulu) → **3 dari 4 test FAIL**,
+lolos hanya test "focus cycle tertutup" yang memang tidak bergantung pada
+urutan. Jadi urutan toggle benar-benar diuji, bukan lolos hampa.
+
+### Temuan sampingan: fitur belum selesai (BUKAN defect a11y)
+
+`AiContextOptions` punya **delapan** field bool
+(`lib/features/ai/application/prompt_composer.dart:5-24`), tapi hanya **enam** yang punya kontrol di UI.
+`includeMode` dan `includeContinuity` tidak pernah di-toggle; keduanya hanya
+dibawa sebagai `old.includeMode` / `old.includeContinuity` di setiap callback.
+Keduanya **aktif dipakai**: `prompt_composer.dart:91` menyertakan mode karakter,
+`prompt_composer.dart:128` menyertakan continuity environment — dengan default
+`true`.
+
+Jadi user tidak bisa memengaruhi dua opsi yang benar-benar mengubah isi prompt
+kecuali dengan mengedit kode. Sesuai aturan klasifikasi: ini **fitur yang belum
+selesai**, bukan pelanggaran WCAG, dan tidak disentuh di fase ini.
+
+### Status
+
+4/4 PASS · analyze bersih · negative control 3/4 FAIL. Tidak ada kode produksi
+diubah; hanya satu file test baru. Layar story ditunda, bukan diews, dan
+DEFERRED dengan alasannya (butuh fixture database untuk merepresentasikan
+kondisi nyata).
 ---
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 

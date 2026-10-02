@@ -5,11 +5,20 @@ import 'package:flutter/foundation.dart';
 
 import '../../core/persistence/project_open_service.dart'
     show SensitiveTermsSink;
+import '../../core/security/application/secret_scanner.dart';
 
 /// Secret-scrubbing patterns (101.17 diagnostic_redaction). Anything that
 /// looks like a credential must never reach disk, even inside an error
-/// message or stack trace. Order: bearer headers, labeled assignments,
-/// then provider-shaped token prefixes.
+/// message or stack trace.
+///
+/// These two are CONTEXTUAL — they only match a credential that is introduced
+/// by a label or a scheme word, so they stay local to this file:
+///
+/// 117.39: both were `replaceFirstMapped`, so only the FIRST match of each
+/// pattern was ever redacted. A message carrying two credentials of the same
+/// class — the normal shape of a real upstream error — had its second
+/// credential written to disk in full. A redaction guard that stops after the
+/// first hit protects nothing after it. Both now replace every occurrence.
 final RegExp _bearerHeaderPattern = RegExp(
   r'\bbearer\s+\S+',
   caseSensitive: false,
@@ -19,20 +28,30 @@ final RegExp _labeledSecretPattern = RegExp(
   r'\s*[:=]\s*\S+',
   caseSensitive: false,
 );
-final RegExp _providerShapedTokenPattern = RegExp(
-  r'\b(?:sk|pk|ghp|gho|github_pat|xox)[-][A-Za-z0-9_-]{8,}',
-  caseSensitive: false,
-);
 
 /// Replaces secret-looking material with [REDACTED].
+///
+/// Every occurrence of every pattern is replaced, not just the first: a
+/// second credential in the same message is still a credential.
+///
+/// SHAPE-based credentials are NOT re-listed here. This file used to carry its
+/// own copy of the provider-token patterns, and the copy drifted away from the
+/// canonical [SecretScanner]: it demanded a DASH separator, so the real GitHub
+/// formats (`ghp_`, `github_pat_` — underscore) and Slack tokens (`xoxb-…`)
+/// never matched, and it had no `AKIA` family at all. A credential named by our
+/// own archive guard was therefore not even a candidate for redaction in the
+/// crash sink. The canonical scanner is now the single source of truth, so this
+/// surface can never drift from it again.
 String _redactSecrets(String text) {
   var out = text;
-  out = out.replaceFirstMapped(_bearerHeaderPattern, (_) => '[REDACTED]');
-  out = out.replaceFirstMapped(_labeledSecretPattern, (_) => '[REDACTED]');
-  out = out.replaceFirstMapped(
-    _providerShapedTokenPattern,
-    (_) => '[REDACTED]',
-  );
+  out = out.replaceAll(_bearerHeaderPattern, '[REDACTED]');
+  out = out.replaceAll(_labeledSecretPattern, '[REDACTED]');
+  for (final credential in const SecretScanner().scan(out)) {
+    if (credential.isEmpty) continue;
+    // Escape: real credentials routinely contain regex metacharacters
+    // (base64/JWT bodies do), so the match must be treated literally.
+    out = out.replaceAll(RegExp(RegExp.escape(credential)), '[REDACTED]');
+  }
   return out;
 }
 

@@ -1,0 +1,94 @@
+{
+  "canonical_step": "117.39",
+  "document_role": "EVIDENCE",
+  "title": "GA Blocker Resolution",
+  "verdict": "GA_BLOCKER_RESOLUTION_VALIDATED_LOCAL",
+  "pass": true,
+  "required_outputs": [
+    "root_cause",
+    "fix",
+    "tests",
+    "review",
+    "risk_update",
+    "release_note"
+  ],
+  "canonical_domains": [
+    "data",
+    "security",
+    "privacy",
+    "billing",
+    "auth",
+    "sync",
+    "quota",
+    "accessibility",
+    "crash"
+  ],
+  "domains_measured": [
+    "crash",
+    "security"
+  ],
+  "domains_unresolved": [
+    "accessibility",
+    "auth",
+    "billing",
+    "data",
+    "privacy",
+    "quota",
+    "sync"
+  ],
+  "failures": [],
+  "open_items": [],
+  "probes": {
+    "repeat_of_class_credentials": {
+      "second_bearer": true,
+      "second_labeled": true,
+      "second_provider_shaped": true,
+      "second_aws_access_key": true,
+      "crowded_message": true
+    },
+    "canonical_token_families": {
+      "github_classic": true,
+      "github_fine_grained_pat": true,
+      "slack": true,
+      "openai_style": true,
+      "aws_access_key": true
+    },
+    "families_recognised_by_canonical_scanner": {
+      "github_classic": true,
+      "github_fine_grained_pat": true,
+      "slack": true,
+      "openai_style": true,
+      "aws_access_key": true
+    }
+  },
+  "blockers": [
+    {
+      "blocker_id": "ga-blocker-1",
+      "domain": "security",
+      "resolved": true,
+      "outputs": {
+        "root_cause": "_redactSecrets used replaceFirstMapped, so only the first match of each pattern was redacted; a second credential of the same class was written to the crash artifact in full.",
+        "fix": "replaceAll for both contextual patterns.",
+        "tests": "redacts_every_credential_not_just_the_first",
+        "review": "5 measured repeats; 5 redacted.",
+        "risk_update": "Any crash message carrying two same-class credentials retained the second one on disk until the next app data purge.",
+        "release_note": "Crash artifacts no longer retain a second same-class credential."
+      }
+    },
+    {
+      "blocker_id": "ga-blocker-2",
+      "domain": "crash",
+      "resolved": true,
+      "outputs": {
+        "root_cause": "The sink kept its own copy of the provider-token patterns and that copy had drifted from the canonical SecretScanner: it required a DASH separator, so the real GitHub formats (ghp_, github_pat_) and Slack xoxb- never matched, and it had no AKIA family at all.",
+        "fix": "The sink now delegates shape detection to the canonical SecretScanner instead of holding a private list.",
+        "tests": "matches_the_real_provider_token_formats",
+        "review": "5 families measured; all recognised by the canonical scanner and all redacted in the crash artifact.",
+        "risk_update": "Credentials named by our own archive guard were never candidates for crash-artifact redaction; that class of leak is now closed at the source of truth.",
+        "release_note": "Crash sink now covers every credential family the archive guard already recognises, and can no longer drift from it."
+      }
+    }
+  ],
+  "claim_boundary": "No GA blocker was filed by a participant and no live release is claimed. The beta cohort has not started. Both defects were measured against the shipped crash sink on state owned by the test, not against a live cohort. Domains outside domains_measured remain unresolved and are NOT closed by this run.",
+  "external_gates": "DEFERRED-EXTERNAL: live beta cohort, real credential exposure, hosted CI, signing, publication."
+}

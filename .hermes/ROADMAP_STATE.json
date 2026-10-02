@@ -28,11 +28,11 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.41",
-  "next_step": "117.42",
+  "last_verified_step": "117.42",
+  "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.41 final connector registry reconciliation: 7 canonical fields measured on shipped seams, fail-closed exposure allow-list. 19/19 focused, 172/172 with contract regression, 1018/1018 account domain, 1002/1002 across the 39 sprint_117 release files, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 18.1s. Commit 540134d."
+    "note": "117.42 documentation and known limitations: provider limitations bound to the shipped connector manifest via Sprint117ProviderLimitationCatalogue.derive; all 8 canonical outputs checked against the filesystem. 22/22 focused, 113/113 with the contract regression (117.41 registry + 117.6 support + 117.8 rollback seams), 1024/1024 across the 40 sprint_117 release files, analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 18.8s. Commit 4b5bd31."
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -42,7 +42,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-02",
-  "updated_by": "cron b0c2c7d744d9 (117.41: fail-closed connector registry reconciliation, 3 defects proven necessary)",
+  "updated_by": "cron_core_worker_sprint_117_42",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -712,7 +712,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.33",
+  "last_resolved_step": "117.42",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -2973,10 +2973,37 @@
     "ledger": "docs/sprints/sprint-117-beta-validation.md"
   },
   "sprint_117_step_11742": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "VERIFIED-LOCAL",
+    "verified_on": "2026-10-02",
+    "commit": "4b5bd31",
+    "canonical_step": "117.42",
+    "verdict": "DOCUMENTATION_LIMITATIONS_COMPLETE_LOCAL",
+    "defects_fixed": [
+      "117.42-01"
+    ],
+    "defects_measured_not_fixed": [
+      "117.42-02"
+    ],
+    "manifest_path": "docs/evidence/sprint-117-42-manifest-20261002.json",
+    "manifest_sha256": "2c752600e799771dd00d6721e1c9fd578a16d2608de10e7a4681ba6d87d0aa15",
+    "manifest_bytes": 2001,
+    "manifest_sha_source": "committed artifact via git show 4b5bd31:<path> (policy clause 1)",
+    "gates": {
+      "focused": "22/22 exit 0",
+      "contract_regression": "113/113 exit 0",
+      "sprint_117_release_shard": "1024/1024 exit 0 across 40 files",
+      "analyze": "No issues found! exit 0",
+      "format": "pass1 2 changed, recheck 0 changed exit 0",
+      "diff_check": "exit 0",
+      "build_windows_debug": "exit 0 in 18.8s"
+    },
+    "providers_measured": 32,
+    "outputs_measured": 8,
+    "failures": 0,
+    "open_items": 1,
+    "claim_boundary": "No live beta, no participant, no live release. All measurement over committed documents and test-owned fixture state.",
+    "cross_slice_manifest_incident": "Full sprint_117 release shard rewrote sprint-117-35 and sprint-117-36 manifests again (fourth occurrence). Both restored from git show HEAD:<path>; disk == HEAD == ledger values 496fee56... and a1100533...; json VALID; neither committed.",
+    "next_step": "117.43"
   },
   "sprint_117_step_11743": {
     "status": "NOT_STARTED",
@@ -3115,7 +3142,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "6463e5066bb626b41ffb74cdd5eeb60eca50b44a",
+  "last_slice_commit": "4b5bd31",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3200,7 +3227,7 @@
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
   },
-  "last_verified_commit": "540134d",
+  "last_verified_commit": "4b5bd31",
   "suites_measured": [
     "connector",
     "workflow",

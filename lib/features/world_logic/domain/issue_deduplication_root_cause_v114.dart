@@ -80,16 +80,32 @@ class IssueRegister {
     final duplicates = <String>{...canonical.duplicates};
     final reproduction = <String>{...canonical.reproduction};
     final versions = <String>{...canonical.affectedVersions};
+    // Resolve every target before mutating anything: removing one target at a
+    // time means a missing target throws after the earlier ones were already
+    // deleted, silently dropping a registered issue from the log.
+    final targets = <IssueRecord>[];
     for (final id in duplicateIds) {
-      final duplicate = _issues.remove(id);
+      if (id == canonicalId) {
+        throw ArgumentError.value(
+          id,
+          'duplicateIds',
+          'an issue cannot be folded into itself',
+        );
+      }
+      final duplicate = _issues[id];
       if (duplicate == null) {
         throw ArgumentError('duplicate issue is not registered: $id');
       }
-      duplicates.add(id);
+      targets.add(duplicate);
+    }
+
+    for (final duplicate in targets) {
+      _issues.remove(duplicate.issueId);
+      duplicates.add(duplicate.issueId);
       duplicates.addAll(duplicate.duplicates);
       reproduction.addAll(duplicate.reproduction);
       versions.addAll(duplicate.affectedVersions);
-      _foldedIds.add(id);
+      _foldedIds.add(duplicate.issueId);
     }
     final merged = IssueRecord(
       issueId: canonical.issueId,

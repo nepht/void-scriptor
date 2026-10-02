@@ -153,9 +153,16 @@ class ReleaseBlockerTriage {
           'meets the blocker definition',
         );
       }
-      if (entry.decision == TriageDecision.notReproducibleWithEvidence &&
-          entry.evidence.isEmpty) {
-        problems.add('NOT_REPRODUCIBLE_WITH_EVIDENCE requires evidence');
+      if (entry.decision == TriageDecision.notReproducibleWithEvidence) {
+        if (entry.reproducible) {
+          problems.add(
+            'NOT_REPRODUCIBLE_WITH_EVIDENCE contradicts a record that '
+            'reports the issue as reproducible',
+          );
+        }
+        if (entry.evidence.isEmpty) {
+          problems.add('NOT_REPRODUCIBLE_WITH_EVIDENCE requires evidence');
+        }
       }
 
       if (problems.isEmpty) {

@@ -67,10 +67,19 @@ class IssueReport {
   /// Returns a copy with [duplicates], [reproduction], and
   /// [affectedVersions] folded together (receiver first, extra items
   /// appended without duplicates).
+  ///
+  /// [other]'s `issue_id` is recorded as a duplicate so the caller can see
+  /// which report was folded. Combining two reports without naming the
+  /// folded one leaves the registry holding both live reports and records a
+  /// deduplication that never happened.
   IssueReport mergeWith(IssueReport other) {
     return IssueReport(
       issueId: issueId,
-      duplicates: <String>{...duplicates, ...other.duplicates}.toList(),
+      duplicates: <String>{
+        ...duplicates,
+        ...other.duplicates,
+        other.issueId,
+      }.toList(),
       reproduction: <String>{...reproduction, ...other.reproduction}.toList(),
       component: component,
       rootCause: rootCause,
@@ -146,19 +155,36 @@ class IssueRegistry {
       );
     }
 
-    var merged = canonical;
+    // Resolve every target before touching the registry. Removing one target at a
+    // time means a missing target throws after the earlier ones were already
+    // deleted, silently dropping a registered report together with its
+    // reproduction steps and versions while the decision stays green.
+    final targets = <IssueReport>[];
     for (final id in duplicateIds) {
-      final target = _reports.remove(id);
+      if (id == canonicalId) {
+        throw ArgumentError.value(
+          id,
+          'duplicateIds',
+          'a report cannot be folded into itself',
+        );
+      }
+      final target = _reports[id];
       if (target == null) {
         throw ArgumentError.value(id, 'duplicateIds', 'not a live report');
       }
-      _duplicateTargets.add(id);
+      targets.add(target);
+    }
+
+    var merged = canonical;
+    for (final target in targets) {
+      _reports.remove(target.issueId);
+      _duplicateTargets.add(target.issueId);
       merged = IssueReport(
         issueId: merged.issueId,
         duplicates: <String>{
           ...merged.duplicates,
           ...target.duplicates,
-          id,
+          target.issueId,
         }.toList(),
         reproduction: <String>{
           ...merged.reproduction,

@@ -1,0 +1,81 @@
+{
+  "canonical_step": "117.38",
+  "document_role": "EVIDENCE",
+  "verdict": "ISSUE_DEDUPLICATION_AND_TRIAGE_FAILED",
+  "pass": false,
+  "canonical_decisions": [
+    "FIX_BEFORE_GA",
+    "FLAG_OFF",
+    "DISABLE_CONNECTOR",
+    "DEFER",
+    "ROLLBACK",
+    "NOT_REPRODUCIBLE_WITH_EVIDENCE"
+  ],
+  "fixture_issues": 2,
+  "decisions_seen": [
+    "FIX_BEFORE_GA",
+    "NOT_REPRODUCIBLE_WITH_EVIDENCE"
+  ],
+  "failures": [
+    "decision_without_pass:FLAG_OFF",
+    "decision_without_pass:DISABLE_CONNECTOR"
+  ],
+  "open_items": [
+    "FLAG_OFF:flag_off_has_no_shipped_triage_decision",
+    "DISABLE_CONNECTOR:disable_connector_has_no_shipped_decision"
+  ],
+  "checks": [
+    {
+      "decision": "FIX_BEFORE_GA",
+      "check": "fix_before_ga_is_accepted",
+      "status": "pass",
+      "declared": "the shipped triage accepts FIX_BEFORE_GA",
+      "observed": "shipped triage log state=pass for a FIX_BEFORE_GA entry"
+    },
+    {
+      "decision": "DEFER",
+      "check": "defer_reaches_the_shipped_seam",
+      "status": "pass",
+      "declared": "the shipped triage expresses deferral",
+      "observed": "shipped triage names it DEFER_NON_BLOCKER and accepts it"
+    },
+    {
+      "decision": "ROLLBACK",
+      "check": "rollback_gates_the_release",
+      "status": "pass",
+      "declared": "the shipped triage gates the release on rollback",
+      "observed": "ROLLBACK_RC entry yields state=pass and releaseBlocked=true"
+    },
+    {
+      "decision": "NOT_REPRODUCIBLE_WITH_EVIDENCE",
+      "check": "not_reproducible_requires_evidence",
+      "status": "pass",
+      "declared": "the decision is refused without evidence",
+      "observed": "no evidence yields state=fail; one evidence path yields state=pass"
+    },
+    {
+      "decision": "FLAG_OFF",
+      "check": "flag_off_has_no_shipped_triage_decision",
+      "status": "unmet",
+      "declared": "the triage log can record a flag-off decision",
+      "observed": "the shipped triage wire names contain no FLAG_OFF; FeatureFlagRegistry.disable turns a flag off but no triage decision names that action",
+      "note": "open item: the action is possible, the decision is not expressible"
+    },
+    {
+      "decision": "DISABLE_CONNECTOR",
+      "check": "disable_connector_has_no_shipped_decision",
+      "status": "unmet",
+      "declared": "the triage log can record a connector-disable decision",
+      "observed": "the shipped triage wire names contain no DISABLE_CONNECTOR",
+      "note": "open item: connector-level disable has no decision name"
+    }
+  ],
+  "probes": {
+    "FIX_BEFORE_GA": "state=pass releaseBlocked=false entryCount=1",
+    "DEFER": "canonical=DEFER shipped=DEFER_NON_BLOCKER state=pass",
+    "ROLLBACK": "shipped=ROLLBACK_RC state=pass releaseBlocked=true",
+    "NOT_REPRODUCIBLE_WITH_EVIDENCE": "no_evidence=FAIL with_evidence=pass",
+    "FLAG_OFF": "shipped_triage_wire_names=FIX_BEFORE_GA,DEFER_NON_BLOCKER,STOP_SHIP,ROLLBACK_RC,NOT_REPRODUCIBLE_WITH_EVIDENCE feature_flag_registry_off_measured=true",
+    "DISABLE_CONNECTOR": "shipped_triage_wire_names=FIX_BEFORE_GA,DEFER_NON_BLOCKER,STOP_SHIP,ROLLBACK_RC,NOT_REPRODUCIBLE_WITH_EVIDENCE"
+  }
+}

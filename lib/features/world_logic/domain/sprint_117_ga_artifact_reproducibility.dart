@@ -288,6 +288,21 @@ final class Sprint117GaArtifactCheck {
   };
 }
 
+/// A parsed checksum inventory: the path-to-digest map plus every line that
+/// could not be parsed.
+///
+/// The malformed list is part of the result rather than an internal detail
+/// because a dropped line silently shrinks what the inventory claims to cover.
+final class ChecksumIndex {
+  const ChecksumIndex({required this.index, required this.malformed});
+
+  /// Recorded digest keyed by artifact path.
+  final Map<String, String> index;
+
+  /// Lines that carried content but did not parse as `sha256 <hex> <path>`.
+  final List<String> malformed;
+}
+
 /// Aggregate verdict of the 117.43 GA artifact gate.
 final class Sprint117GaArtifactResult {
   const Sprint117GaArtifactResult({
@@ -350,17 +365,24 @@ abstract final class Sprint117GaArtifactGate {
   /// Maps checksum lines to their artifact path, keyed by path.
   ///
   /// Returns the parsed map plus every line that was malformed, so a silently
-  /// dropped line cannot shrink the covered set without being counted.
-  static Map<String, String> readChecksumIndex(List<String> lines) {
+  /// dropped line cannot shrink the covered set without being counted. That
+  /// promise was not kept before defect 117.43-04: the function returned the
+  /// map alone and `continue`d past malformed input, so a truncated or
+  /// upper-case digest vanished from the inventory with nothing counting it.
+  static ChecksumIndex readChecksumIndex(List<String> lines) {
     final index = <String, String>{};
+    final malformed = <String>[];
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
       final match = RegExp(r'^([0-9a-f]{64})\s+(\S+)$').firstMatch(trimmed);
-      if (match == null) continue;
+      if (match == null) {
+        malformed.add(trimmed);
+        continue;
+      }
       index[match.group(2)!] = match.group(1)!;
     }
-    return index;
+    return ChecksumIndex(index: index, malformed: malformed);
   }
 
   /// Evaluates the GA artifact gate.
@@ -519,9 +541,11 @@ abstract final class Sprint117GaArtifactGate {
         note: 'no checksum inventory to verify against',
       );
     }
-    final index = readChecksumIndex(checksumFile.readAsLinesSync());
+    final parsed = readChecksumIndex(checksumFile.readAsLinesSync());
+    final index = parsed.index;
     final uncovered = <String>[];
     final drifting = <String>[];
+    final phantom = <String>[];
     for (final path in signedArtifacts) {
       final file = File(path);
       if (!file.existsSync()) {
@@ -538,16 +562,33 @@ abstract final class Sprint117GaArtifactGate {
         drifting.add(path);
       }
     }
+    // The other half of the stated rule: a checksum LINE naming a path with
+    // no readable artifact is a claim about nothing. This direction was never
+    // walked before defect 117.43-03, so an inventory could name artifacts
+    // the tree does not contain and still report a clean agreement.
+    final declaredSet = signedArtifacts.map((p) => p.trim()).toSet();
+    for (final path in index.keys) {
+      if (declaredSet.contains(path.trim())) continue;
+      if (!File(path).existsSync()) phantom.add(path);
+    }
     final declared = '${signedArtifacts.length} artifact';
-    if (uncovered.isNotEmpty || drifting.isNotEmpty) {
+    if (uncovered.isNotEmpty ||
+        drifting.isNotEmpty ||
+        phantom.isNotEmpty ||
+        parsed.malformed.isNotEmpty) {
       return Sprint117GaArtifactCheck.violation(
         outputId: 'checksums',
         check: 'artifact_checksum_agreement',
         declared: declared,
-        observed: 'uncovered=${uncovered.length} drifting=${drifting.length}',
+        observed:
+            'uncovered=${uncovered.length} drifting=${drifting.length} '
+            'phantom=${phantom.length} malformed=${parsed.malformed.length}',
         note: [
           if (uncovered.isNotEmpty) 'uncovered: ${uncovered.join(', ')}',
           if (drifting.isNotEmpty) 'drifting: ${drifting.join(', ')}',
+          if (phantom.isNotEmpty) 'phantom: ${phantom.join(', ')}',
+          if (parsed.malformed.isNotEmpty)
+            'malformed: ${parsed.malformed.join(', ')}',
         ].join(' | '),
       );
     }

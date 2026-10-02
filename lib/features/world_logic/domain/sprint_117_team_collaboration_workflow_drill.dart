@@ -107,13 +107,26 @@ class Sprint117TeamCollaborationWorkflowDrill {
       final file = File(relative);
       if (!file.existsSync()) continue;
       final lines = file.readAsLinesSync();
+      var actsOnStatus = false;
+      var movesToMember = false;
       for (var i = 0; i < lines.length; i += 1) {
-        // A lifecycle acts on a status: it reads a non-pending invitation, or
-        // builds one, and hands it to something that can add a member.
-        if (lines[i].contains('TeamInvitationStatus')) {
-          found.add('$relative:${i + 1}');
-          break;
+        final code = lines[i].trim();
+        // A doc comment names the state machine; only code enacts it. Without
+        // this, a file that merely documents the four statuses would satisfy
+        // the scan and retire an open item that is still true.
+        if (code.startsWith('///') || code.startsWith('//') || code.startsWith('*')) {
+          continue;
         }
+        // A lifecycle acts on a status: it reads or writes one.
+        if (code.contains('TeamInvitationStatus')) actsOnStatus = true;
+        // And it hands an invitation to something that can seat a member:
+        // naming a status without ever producing a member is a label.
+        if (RegExp(r'\baddMember\s*\(|\b_members\s*\[').hasMatch(code)) {
+          movesToMember = true;
+        }
+      }
+      if (actsOnStatus && movesToMember) {
+        found.add(relative);
       }
     }
     return found.length;
@@ -124,7 +137,17 @@ class Sprint117TeamCollaborationWorkflowDrill {
   ///
   /// Measured rather than assumed, for the same reason as the invitation
   /// lifecycle: a stored value that nothing computes is a caller assertion.
+  ///
+  /// Matching the bare type name was fail-open: a file that only mentions
+  /// `TeamPermissionHealth` in a doc comment, or that returns it from a rule
+  /// of its own that never consults the role matrix, satisfied the scan and
+  /// silently retired an open item that was still true. A file counts only
+  /// when it both names the type and actually consults a role, so the
+  /// measurement matches what the open item claims.
   static int _permissionHealthComputationCallSites() {
+    final roleMatrix = RegExp(
+      r'\b(?:StudioRole|Permission)\b|role\.can\(',
+    );
     final found = <String>[];
     for (final relative in _libDartFiles()) {
       if (relative.endsWith('account_center_team_collaboration_summary.dart')) {
@@ -133,11 +156,19 @@ class Sprint117TeamCollaborationWorkflowDrill {
       final file = File(relative);
       if (!file.existsSync()) continue;
       final lines = file.readAsLinesSync();
+      var namesHealth = false;
+      var consultsMatrix = false;
       for (var i = 0; i < lines.length; i += 1) {
-        if (lines[i].contains('TeamPermissionHealth')) {
-          found.add('$relative:${i + 1}');
-          break;
+        final code = lines[i].trim();
+        // A doc comment describes the mechanism; it does not implement it.
+        if (code.startsWith('///') || code.startsWith('//') || code.startsWith('*')) {
+          continue;
         }
+        if (code.contains('TeamPermissionHealth')) namesHealth = true;
+        if (roleMatrix.hasMatch(code)) consultsMatrix = true;
+      }
+      if (namesHealth && consultsMatrix) {
+        found.add(relative);
       }
     }
     return found.length;
@@ -221,6 +252,9 @@ class Sprint117TeamCollaborationWorkflowDrill {
       invitationLifecycleEnforcedSomewhere:
           _invitationLifecycleEnforcedSomewhere,
       permissionHealthComputedSomewhere: _permissionHealthComputedSomewhere,
+      invitationLifecycleCallSites: _invitationLifecycleCallSites(),
+      permissionHealthComputationCallSites:
+          _permissionHealthComputationCallSites(),
     );
   }
 

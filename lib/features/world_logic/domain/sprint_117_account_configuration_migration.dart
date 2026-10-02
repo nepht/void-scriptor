@@ -1405,11 +1405,33 @@ bool _referencedOutsideOwnFile(String typeName) {
     // distinct shipped type that carries no persistence, and a substring match
     // would let an unrelated call of it be read as proof that an identity
     // store exists.
-    if (RegExp(
-      r'\b' + RegExp.escape(typeName) + r'\b',
-    ).hasMatch(entity.readAsStringSync())) {
-      return true;
+    //
+    // A doc comment is not a reference either. 117.31 mentioned
+    // `LinkedIdentity` inside a prose fact label, which satisfied this scan
+    // and turned "no store ships" into "a store ships" — the gate inverted
+    // its own honest verdict from a documentation string. Code lines only.
+    //
+    // A string literal counts too: 117.31's mention is a fact *label* naming
+    // the seam that produces the value, not code that stores or restores it.
+    // What this probe must answer is "could a linked identity be persisted and
+    // read back", and only executable code can do that.
+    var inCode = false;
+    for (final line in const LineSplitter().convert(entity.readAsStringSync())) {
+      final trimmed = line.trimLeft();
+      if (trimmed.startsWith('///') || trimmed.startsWith('//') || trimmed.startsWith('*')) {
+        continue;
+      }
+      // Strip string literals: a prose label that names a type is not a use.
+      final code = line.replaceAll(RegExp(r"'[^']*'"), "''")
+          .replaceAll(RegExp(r'"[^"]*"'), '""');
+      if (RegExp(
+        r'\b' + RegExp.escape(typeName) + r'\b',
+      ).hasMatch(code)) {
+        inCode = true;
+        break;
+      }
     }
+    if (inCode) return true;
   }
   return false;
 }

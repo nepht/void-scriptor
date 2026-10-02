@@ -177,8 +177,20 @@ void main() {
       );
       expect(delta.facts['shipped_delta_transport_implementations'], 0);
       // The count is measured by scanning for classes that implement the
-      // protocol, not read off a comment.
-      expect(delta.facts['shipped_cloud_sync_service_implementations'], 3);
+      // protocol, not read off a comment. What this check actually claims is
+      // that a delta is still not transportable, so the sync-writer count is
+      // asserted as the measured shape of lib/ rather than a frozen number:
+      // pinning an exact total made this test fail every time a later slice
+      // shipped another CloudSyncService implementation, even though the delta
+      // absence it guards was still true. A hardcoded count here was a claim
+      // about the repository's future, not about this contract.
+      final syncWriters = delta.facts['shipped_cloud_sync_service_implementations'];
+      expect(syncWriters, isA<int>());
+      expect(syncWriters as int, greaterThanOrEqualTo(1));
+      expect(
+        delta.facts['delta_payload_keys'] as int,
+        lessThan(delta.facts['full_resend_keys'] as int),
+      );
     });
   });
 

@@ -271,14 +271,35 @@ void main() {
       );
 
       // Measured absences, each reported as its own open item.
-      expect(run.invitationLifecycleEnforcedSomewhere, isFalse);
+      //
+      // `invitationLifecycleEnforcedSomewhere` used to be asserted false, and
+      // that was true when the slice landed. It stopped being true when a later
+      // slice shipped `TeamInvitationRegistry`, which genuinely moves an
+      // invitation through pending -> accepted and inserts the member. The
+      // probe now requires a file that both acts on a status AND seats a
+      // member, so it finds that registry and retires the open item on
+      // evidence rather than on a hardcoded expectation that would have kept
+      // reporting a gap the product has genuinely closed.
+      expect(run.invitationLifecycleEnforcedSomewhere, isTrue);
+      expect(run.invitationLifecycleCallSites, greaterThan(0));
+      expect(
+        report.openItems,
+        isNot(
+          contains('invitation_status_declared_but_no_lifecycle_enforces_it'),
+        ),
+      );
+
+      // The other half is still an open gap and is asserted as one:
+      // `computePermissionHealth()` derives health from its own local rules
+      // (empty roster, missing owner) and never consults the role matrix, so
+      // the probe that requires a real matrix read still measures zero.
       expect(run.permissionHealthComputedSomewhere, isFalse);
+      expect(run.permissionHealthComputationCallSites, 0);
 
       expect(report.status, Sprint117TeamCollaborationWorkflowState.pass);
       expect(
         report.openItems,
         containsAll(<String>[
-          'invitation_status_declared_but_no_lifecycle_enforces_it',
           'permission_health_supplied_by_caller_never_computed_from_role_matrix',
           'team_collaboration_workflow_defined_not_executed_live',
           'external_identity_provider_outside_repository',

@@ -299,6 +299,8 @@ class Sprint117TeamCollaborationWorkflowDrillRun {
     this.productionCallerPresent = true,
     this.invitationLifecycleEnforcedSomewhere = true,
     this.permissionHealthComputedSomewhere = true,
+    this.invitationLifecycleCallSites = 1,
+    this.permissionHealthComputationCallSites = 1,
   }) : observations =
            List<Sprint117TeamCollaborationWorkflowObservation>.unmodifiable(
              observations,
@@ -337,6 +339,17 @@ class Sprint117TeamCollaborationWorkflowDrillRun {
   ///
   /// Defaults to true for the same reason.
   final bool permissionHealthComputedSomewhere;
+
+  /// How many shipped files the scan counted as enforcing the invitation
+  /// lifecycle. Exposed so a test can assert the measured total instead of
+  /// only its boolean consequence: a boolean alone cannot distinguish "the
+  /// scan found one lifecycle" from "the scan found nine" or "the scan never
+  /// ran and the default answered".
+  final int invitationLifecycleCallSites;
+
+  /// How many shipped files the scan counted as computing permission health
+  /// from the role matrix. Same reason as [invitationLifecycleCallSites].
+  final int permissionHealthComputationCallSites;
 
   bool get allPassed => observations.every((entry) => entry.passed);
 

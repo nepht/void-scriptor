@@ -546,7 +546,7 @@ void main() {
       expect(artifacts, isNotEmpty);
       final index = Sprint117GaArtifactGate.readChecksumIndex(
         File(_kChecksums).readAsLinesSync(),
-      );
+      ).index;
       expect(index, isNotEmpty);
       for (final path in artifacts) {
         expect(
@@ -561,7 +561,7 @@ void main() {
       final artifacts = _recordedSignedArtifacts();
       final index = Sprint117GaArtifactGate.readChecksumIndex(
         File(_kChecksums).readAsLinesSync(),
-      );
+      ).index;
       final drifting = <String>[];
       for (final path in artifacts) {
         final file = File(path);
@@ -597,14 +597,14 @@ void main() {
     });
 
     test('malformed checksum lines do not inflate the covered set', () {
-      final index = Sprint117GaArtifactGate.readChecksumIndex(<String>[
+      final parsed = Sprint117GaArtifactGate.readChecksumIndex(<String>[
         '# comment',
         '',
         '${'a' * 64} build/a.exe',
         'not-a-checksum-line',
         '${'b' * 64}   build/b.exe   ',
       ]);
-      expect(index.keys, <String>['build/a.exe', 'build/b.exe']);
+      expect(parsed.index.keys, <String>['build/a.exe', 'build/b.exe']);
     });
   });
 
@@ -700,5 +700,114 @@ void main() {
         );
       },
     );
+  });
+
+  // RED-first for defect 117.43-03: `measureChecksums` iterated only the
+  // declared artifact list. A checksum LINE naming a path that is not a
+  // readable artifact — the second half of the seam's own stated rule, "a
+  // checksum line with no readable artifact is a claim about nothing" — was
+  // never walked, so an inventory naming a phantom artifact reported `pass`
+  // while claiming coverage the tree does not have.
+  group('117.43-03 a checksum line over a phantom artifact is a violation', () {
+    late Directory tempDir;
+
+    setUp(
+      () => tempDir = Directory.systemTemp.createTempSync('void_117_43_03'),
+    );
+    tearDown(() {
+      if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
+    });
+
+    String writeFile(String name, Object content) {
+      final file = File('${tempDir.path}${Platform.pathSeparator}$name')
+        ..createSync(recursive: true);
+      if (content is String) {
+        file.writeAsStringSync(content);
+      } else {
+        file.writeAsBytesSync(content as List<int>);
+      }
+      return file.path;
+    }
+
+    test(
+      'an inventory naming one real and one absent artifact is a violation',
+      () {
+        final real = writeFile('real.bin', <int>[1, 2, 3]);
+        final absent = '${tempDir.path}${Platform.pathSeparator}phantom.bin';
+        final checksumFile = writeFile(
+          'checksums.txt',
+          <String>[
+            '${sha256.convert(<int>[1, 2, 3]).toString()}  $real',
+            '${'b' * 64}  $absent',
+          ].join('\n'),
+        );
+
+        final check = Sprint117GaArtifactGate.measureChecksums(
+          signedArtifacts: <String>[real],
+          checksumFile: File(checksumFile),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.violation,
+          reason: 'a checksum line naming an unreadable artifact is unverified',
+        );
+        expect(check.note, contains('phantom.bin'));
+      },
+    );
+
+    test('a clean inventory still passes with no phantom entries', () {
+      final real = writeFile('real.bin', <int>[1, 2, 3]);
+      final checksumFile = writeFile(
+        'checksums.txt',
+        <String>[
+          '${sha256.convert(<int>[1, 2, 3]).toString()}  $real',
+        ].join('\n'),
+      );
+
+      final check = Sprint117GaArtifactGate.measureChecksums(
+        signedArtifacts: <String>[real],
+        checksumFile: File(checksumFile),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+    });
+  });
+
+  // RED-first for defect 117.43-04: `readChecksumIndex` documents that it
+  // returns the parsed map "plus every line that was malformed, so a silently
+  // dropped line cannot shrink the covered set without being counted". It
+  // returned the map alone and `continue`d past malformed input, so a
+  // truncated or uppercase digest disappeared from the inventory without any
+  // counted failure.
+  group('117.43-04 a malformed checksum line is counted, not dropped', () {
+    test('readChecksumIndex reports the malformed lines alongside the map', () {
+      final good = 'a' * 64;
+      final parsed = Sprint117GaArtifactGate.readChecksumIndex(<String>[
+        '# a comment',
+        '',
+        '$good  docs/release/app.bin',
+        'not-a-digest  docs/release/other.bin',
+        "${'C' * 64}  docs/release/upper.bin",
+      ]);
+
+      expect(parsed.index.keys, <String>['docs/release/app.bin']);
+      expect(
+        parsed.malformed,
+        hasLength(2),
+        reason: 'a dropped line shrinks the covered set without being counted',
+      );
+      expect(parsed.malformed.join('\n'), contains('not-a-digest'));
+      expect(parsed.malformed.join('\n'), contains('upper.bin'));
+    });
+
+    test('a well-formed inventory reports no malformed lines', () {
+      final parsed = Sprint117GaArtifactGate.readChecksumIndex(<String>[
+        '${'a' * 64}  docs/release/app.bin',
+      ]);
+
+      expect(parsed.index.keys, <String>['docs/release/app.bin']);
+      expect(parsed.malformed, isEmpty);
+    });
   });
 }

@@ -170,7 +170,12 @@ class Sprint117SyncBackupConflictDrill {
         changed.contains('scene:1') &&
         deltaPayload < fullResend &&
         deltaTransports == 0 &&
-        syncWriters == 3;
+        // At least one sync writer must exist for the scan above to have
+        // measured anything: a count of zero would make "no delta protocol"
+        // true for the wrong reason — nothing to compare against. The exact
+        // total is deliberately NOT pinned, because it is a property of how
+        // many transports lib/ happens to ship, not of this contract.
+        syncWriters > 0;
 
     return Sprint117SyncBackupConflictObservation(
       checkId: 'delta',
@@ -624,7 +629,13 @@ class Sprint117SyncBackupConflictDrill {
         largestKeyBytes == 4096 &&
         chunkers == 0 &&
         streamedUploads == 0 &&
-        syncServices == 3;
+        // The transport claim here is "no chunking, no streaming, one whole
+        // map". How many CloudSyncService classes exist is a property of the
+        // repository's current contents, not of that claim, so it is checked
+        // for existence rather than pinned to a total. A zero here would make
+        // the absence of chunking true for the wrong reason: there would be
+        // no transport at all to observe.
+        syncServices > 0;
 
     return Sprint117SyncBackupConflictObservation(
       checkId: 'large_assets',

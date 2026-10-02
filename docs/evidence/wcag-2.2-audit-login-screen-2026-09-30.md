@@ -718,6 +718,67 @@ Test lama `portability_wizard_screen_test.dart` hanya 22 baris smoke test tanpa 
 
 ---
 
+## 14. Fase 9 — Focus Order di Universe Switcher (2.4.3)
+
+Layar keempat yang diaudit untuk kriteria 2.4.3, setelah Account Cloud Center (Bagian 11), AI Prompt Composer (Bagian 12), dan Portability Wizard (Bagian 13).
+
+### 14.1 Kenapa layar ini dipilih
+
+Kandidat `universe_switcher_screen.dart` dipilih dari seluruh `lib/**/*_screen.dart` dengan filter yang sama seperti fase sebelumnya (constructor nol parameter wajib, tanpa future/async/stream, tanpa TabController/Navigator yang menambah stop di luar layar):
+
+| Kandidat | async/Future | static list | interaktif | Putusan |
+| --- | --- | --- | --- | --- |
+| `universe_switcher_screen.dart` | 0 | 1 | 3 | Dipilih |
+| `reference_library_screen.dart` | 8 | 0 | 5 | Dilewati (data async) |
+| `project_list_screen.dart` | 8 | 0 | 5 | Dilewati (data async + Navigator) |
+| `welcome_screen.dart` | 0 | 0 | 3 | Cadangan (terlalu sedikit stop) |
+| `update_screen.dart` | 0 | 0 | 2 | Dilewati (2 stop saja) |
+| `public_project_page_screen.dart` | 0 | 0 | 3 | Dilewati (data eksternal) |
+
+`universe_switcher_screen.dart` memenuhi seluruh syarat: `_universes` adalah `static const List<String>` 4 entri yang dirender secara sinkron, sehingga traversal Tab mewakili tampilan nyata dan bisa direproduksi.
+
+### 14.2 Data traversal terukur
+
+Probe memakai traversal Tab nyata (`sendKeyEvent(LogicalKeyboardKey.tab)`) pada viewport 1536x1024 dengan devicePixelRatio 1.0. Lima stop, tertutup rapi:
+
+| # | Label | t | l | w | h | Wilayah |
+| --- | --- | --- | --- | --- | --- | --- |
+| 0 | Canon Prime | 16 | 1288 | 232 | 24 | dropdown universe di topbar |
+| 1 | Canon Prime | 124 | 37 | 246 | 44 | universe tile, aktif |
+| 2 | What If: Echoes | 168 | 37 | 246 | 64 | universe tile |
+| 3 | Parallel Nexus | 232 | 37 | 246 | 44 | universe tile |
+| 4 | Spin-Off: Embers | 276 | 37 | 246 | 64 | universe tile |
+
+Dua wilayah terurut dari atas ke bawah: dropdown topbar (AppBar) sebagai stop pertama, lalu empat universe tile dalam kolom vertikal (`left` konstan 37, `top` naik monoton). Urutan tile mengikuti persis deklarasi `_universes` (statis, baris 18–22).
+
+Stop 0 dan stop 1 keduanya berlabel "Canon Prime" — tidak cukup untuk membedakan lewat teks. Diskriminasi memakai `rect.top` (16 vs 124) dan kelas stop (`dropdown` vs `ink`).
+
+### 14.3 Test sempat RED — di harness, bukan produksi
+
+Dua kali RED dengan sebab di harness, dan sekali compile error di probe:
+
+1. **Probe compile error**: `BuildContext` tidak bisa langsung dipakai sebagai `Element` (Flutter 3.44). Fix: cast `ctx as Element`.
+2. **Label `┃` dan `═` di stop 1–4**: glyph codepoint dari `Icon` internal (`Icons.radio_button_checked` dsb) masuk lebih dulu ke walker label sebelum `Text(name)`. Fix: walker melewati subtree `Icon`.
+3. **`e.parent` tidak ada** di `Element` Flutter 3.44. Fix: `visitAncestorElements`.
+
+Seluruh perbaikan ada di test harness. Widget produksi tidak diubah.
+
+### 14.4 Negative control
+
+Urutan `_universeOrder` dibalik di dalam test lalu dijalankan ulang. Hasil **3 dari 4 PASS**, dengan test yang runtuh tepat di "empat tile terurut sesuai deklarasi _universes" — assertion urutan terbukti menguji urutan.
+
+### 14.5 Gate
+
+| Gate | Hasil |
+| --- | --- |
+| `universe_switcher_focus_order_test.dart` | 4 dari 4 PASS |
+| Negative control (urutan dibalik) | 3 dari 4 PASS, 1 FAIL |
+| `dart analyze test/features/multiverse/` | No issues found |
+| CJK/Cyrillic scan | none |
+| `test/features/multiverse/` (13 berkas test) | 42 PASS, 0 FAIL |
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

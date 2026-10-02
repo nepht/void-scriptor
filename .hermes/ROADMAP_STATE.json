@@ -3007,7 +3007,7 @@
   },
   "sprint_117_step_11743": {
     "status": "PARTIAL-LOCAL",
-    "verified_on": "2026-10-02",
+    "verified_on": "2026-10-03",
     "commit": "ea44531",
     "canonical_step": "117.43",
     "title": "GA Artifact & Reproducibility",
@@ -3018,10 +3018,12 @@
     "manifest_bytes": 7592,
     "manifest_sha_source": "committed artifact via git show ea44531:<path> (policy 2026-10-02 clause 1); disk sha256sum == git show, json.loads VALID",
     "defects_fixed": [
-      "117.43-01 ArtifactComparison.isWellFormed compared only artifact NAME SETS and never hash VALUES, so a bitIdentical claim contradicted by differing SHA-256 digests was accepted and the shipped 113.39 gate returned pass on a false identity claim; proven before the fix (aaa.../bbb... reported isWellFormed == true). Fix compares recorded values."
+      "117.43-01 ArtifactComparison.isWellFormed compared only artifact NAME SETS and never hash VALUES, so a bitIdentical claim contradicted by differing SHA-256 digests was accepted and the shipped 113.39 gate returned pass on a false identity claim; proven before the fix (aaa.../bbb... reported isWellFormed == true). Fix compares recorded values.",
+      "117.43-03 shipped in commit 186c05a but undocumented until 2026-10-03: measureChecksums walked only one direction - a signed artifact with no checksum line was reported as uncovered, but a checksum LINE naming an unreadable artifact was never counted, so an inventory could name artifacts the tree does not contain and still report clean agreement. Now counted as phantom and fails closed.",
+      "117.43-04 shipped in commit 186c05a but undocumented until 2026-10-03: readChecksumIndex documented that it returns the map 'plus every line that was malformed, so a silently dropped line cannot shrink the covered set without being counted', but returned the map alone and continued past malformed input, so a truncated or uppercase digest vanished from the inventory with no counted failure. Now returns ChecksumIndex(index, malformed) and malformed lines fail the check."
     ],
     "defects_measured_not_fixed": [
-      "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance"
+      "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance. Independently re-measured 2026-10-03 (not copied from the previous run): docs/release/v1.2.0-rc.1-checksums.txt has 493 entries, 0 malformed -> 485 MATCH / 7 DRIFT / 1 MISSING. Drift = the 6 signed artifacts plus data/app.so; missing = build/windows/x64/runner/Release/native_assets.json. Figures are identical to the 2026-10-02 run and stable after 'flutter build windows --debug'. Confirmed reading: the 117.43 GA gate measures only the 6 signed artifacts from docs/planning/v1.2/sprint_113_ga_artifact_packaging.json, so the full 493-row checksum index is never measured by the gate - a real blind spot, not gate drift."
     ],
     "fixture_defect_fixed": [
       "113.39 malformed-comparison fixture declared bitIdentical while recording two different digests - it was itself a false identity claim and is why the fail-open path stayed green; now records honest notBitIdentical with a documented limit, plus a new case pins the false claim as missing evidence"
@@ -3055,7 +3057,44 @@
     "close_blocker": "operator decision required for 117.43-02: either re-sign the 1.2.0-rc.1 release candidate and refresh checksums, or declare checksum drift an accepted GA limitation and narrow the 117.43 contract. The roadmap guard only resolves steps whose ledger status contains VERIFIED or COMPLETED, and the gate honestly reports INCOMPLETE, so cron may not close this step.",
     "claim_boundary": "No live beta, no participant, no published release. All measurement over committed documents, shipped registries, and the local build tree. 0 of 32 connectors are connectable.",
     "external_gate": "DEFERRED-EXTERNAL: hosted CI, public CA signing, second builder, beta cohort, publication",
-    "next_step": "117.43"
+    "next_step": "117.43",
+    "undocumented_shipped_fixes_reconciled": {
+      "commit": "186c05a",
+      "commit_message": "chore: update checksum for void_scriptor.exe (release build) and other pending changes",
+      "commit_date": "2026-10-02T22:44:45+07:00",
+      "already_on_remote": "186c05a is an ancestor of HEAD b8de16a and reachable from origin/master",
+      "defects": [
+        "117.43-03",
+        "117.43-04"
+      ],
+      "necessity_reproven_2026_10_03": {
+        "117.43-03": "disabling phantom detection -> exit 1, exactly 1 named test '117.43-03 ...an inventory naming one real and one absent artifact is a violation', no compile error",
+        "117.43-04": "restoring readChecksumIndex to fail-open (continue without malformed.add) -> exit 1, exactly 1 named test '117.43-04 ...readChecksumIndex reports the malformed lines alongside the map', no compile error",
+        "restore": "both files restored byte-identical to pre-probe snapshot (domain sha256 be08be33eae3d7aa9d8a5b2baee45c4b3f27e7f25ae4329223a8085ea17c74f3, 30392 bytes); git status clean vs HEAD after restore",
+        "residual_dirty_after_restore": 0
+      },
+      "commit_message_inaccuracy": "186c05a's message claims it updated the void_scriptor.exe checksum, but git show --stat 186c05a does not include docs/release/v1.2.0-rc.1-checksums.txt at all. That file's last commit is still 2869854 (113.38), so the 117.43-02 drift was never repaired by that commit."
+    },
+    "gate_blind_spot_measured": {
+      "measured_on": "2026-10-03",
+      "checksum_index_entries": 493,
+      "malformed_lines": 0,
+      "match": 485,
+      "drift": 7,
+      "missing": 1,
+      "gate_signed_artifacts_measured": 6,
+      "note": "The GA gate covers 6 signed artifacts only; the 493-row index is outside gate coverage. Independent recomputation used hashlib over the working tree, never rewriting the committed checksum file."
+    },
+    "gates_reverified_2026_10_03": {
+      "focused_117_43": "35/35 exit 0 (up from 28/28: 117.43-03 adds 2 cases, 117.43-04 adds 2)",
+      "sprint_113_provenance": "6 pass / 1 FAIL - pre-existing, same root cause as 117.43-02 (live build/ tree is not the signed 1.2.0-rc.1 release tree): expected 73101e78..., actual c7a33055...",
+      "sprint_113_ga_packaging": "11 pass / 2 FAIL - both pre-existing and same root cause: 'signed artifacts exist and signing evidence verifies locally' (sign_manifest_path unresolvable on a clean checkout) and 'checksums match the signed artifacts byte for byte' (expected c7a33055... live tree vs recorded 73101e78...)",
+      "analyze": "No issues found! exit 0 (4 scoped files)",
+      "format": "2 files, 0 changed, exit 0",
+      "diff_check": "exit 0",
+      "build_windows_debug": "exit 0 in 97.8s, Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe"
+    },
+    "reconciled_on": "2026-10-03"
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",

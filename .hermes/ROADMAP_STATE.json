@@ -118,8 +118,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-02T02:05:00Z",
-  "updated_by": "hermes: sprint 117.36 slice (interactive, Choi-directed)",
+  "updated_at": "2026-10-02T04:12:00Z",
+  "updated_by": "hermes: cron b0c2c7d744d9 sprint 117.38 slice",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -1890,7 +1890,7 @@
     "snapshot": "C:/Users/nepht/AppData/Local/vs-run11652-snap",
     "evidence": "docs/evidence/sprint-116-52-{red,focused,reg-a,reg-b,analyze,format,build}-20260929.{log,meta}"
   },
-  "next_step_status": "NOT_STARTED",
+  "next_step_status": "PARTIAL-LOCAL-BLOCKED-OPERATOR-DECISION",
   "sprint_116_closure": {
     "closed_at": "2026-09-29",
     "steps_verified": 52,
@@ -2924,10 +2924,63 @@
     "out_of_scope_finding": "test/release/sprint_117_provider_resilience_validation_test.dart:120 writeEvidenceFile() rewrites the 117.36 evidence manifest with the current run timing, so running that suite always dirties that manifest. Reverted to committed content via a targeted patch in this run; not committed; reported for a later slice."
   },
   "sprint_117_step_11738": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "PARTIAL-LOCAL",
+    "next_step": "117.38",
+    "commit": "6463e50",
+    "title": "Issue Deduplication & Triage",
+    "canonical_decisions": [
+      "FIX_BEFORE_GA",
+      "FLAG_OFF",
+      "DISABLE_CONNECTOR",
+      "DEFER",
+      "ROLLBACK",
+      "NOT_REPRODUCIBLE_WITH_EVIDENCE"
+    ],
+    "shipped_seam_decisions": [
+      "FIX_BEFORE_GA",
+      "DEFER_NON_BLOCKER",
+      "STOP_SHIP",
+      "ROLLBACK_RC",
+      "NOT_REPRODUCIBLE_WITH_EVIDENCE"
+    ],
+    "manifest": "docs/evidence/sprint-117-38-manifest-20261002.json",
+    "manifest_sha256": "9871d529d11e8f6d8e523cf2c75e3fac291739f53be357b040abfc29fffb119b",
+    "manifest_bytes": 3138,
+    "manifest_sha_source": "git show 6463e50:<path>; disk sha256sum equals it (policy 2026-10-02 rule 1/4)",
+    "gate_verdict": "ISSUE_DEDUPLICATION_AND_TRIAGE_FAILED",
+    "gate_failures": [
+      "decision_without_pass:FLAG_OFF",
+      "decision_without_pass:DISABLE_CONNECTOR"
+    ],
+    "gate": {
+      "focus_slice": "54/54 exit 0 (117.38 gate + 117.38 regression + 113.29 + 114.26 + 113.30)",
+      "regression": "196/196 exit 0 in 4 targets (test/features/ai + 117.37 + 117.36 + 113.43)",
+      "analyzer": "No issues found! exit 0 on 6 slice files",
+      "format": "0 changed, idempotent on the second pass",
+      "diff_check": "exit 0",
+      "windows_build": "flutter build windows --debug exit 0, 17.5s",
+      "necessity": "3 blocks, each rc=1 on the exact test, no compile error; positive control 54/54 green after"
+    },
+    "defects_fixed": [
+      "D1 NOT_REPRODUCIBLE_WITH_EVIDENCE could contradict its own record: TriageEntry.reproducible existed but no consistency rule read it, so an issue recorded as reproducible could be closed as not reproducible and triage still reported pass",
+      "D2 a report could be folded into itself: mergeDuplicates removed the canonical as its own duplicate, so the canonical named itself in duplicates and the decision stayed green",
+      "D3 a fold that could not complete silently deleted a registered report: targets were removed inside the loop, so a missing target threw after the earlier ones were already gone, losing reproduction steps and versions while the decision stayed pass with no limitations; same defect in the v114 register",
+      "D4 mergeWith combined two reports without naming the folded one, so the registry held both live reports while recording a deduplication"
+    ],
+    "unmet_contract_items": [
+      "FLAG_OFF has no wire name in the shipped triage log and DISABLE_CONNECTOR has no shipped seam that can disable a connector (no mutating availability API, ProviderConnectorRegistry does not exist), so both decisions can never carry a passing check; reported as named open items, never folded into a pass",
+      "no real GA issues: the cohort has zero participants since 117.34, so the gate validates the decision CONTRACT against a structural fixture and claims zero live blockers",
+      "STOP_SHIP exists in the shipped log but not in the 6 canonical decisions; DEFER->DEFER_NON_BLOCKER and ROLLBACK->ROLLBACK_RC were measured from probes, not assumed"
+    ],
+    "operator_todo": "either add FLAG_OFF/DISABLE_CONNECTOR wire names to the shipped triage log, or narrow the 117.38 contract; cron must not invent either",
+    "harness_corrections": [
+      "the first test draft failed to compile (IssueDecision imported from two files); that is not necessity, so compile_error is recorded explicitly per block and the import was aliased v114",
+      "a test I wrote over-claimed: it called folding an already-folded target a defect, but re-add makes the target live again so the second fold is legitimate; the test was withdrawn and replaced by the partial-fold probe",
+      "the block C anchor in the first harness only removed `final targets`, leaving targets.add dangling, so the recorded rc=1 was merely a compile error; the harness was upgraded to reverse the whole block"
+    ],
+    "external_gates": "DEFERRED-EXTERNAL",
+    "step_closed": false,
+    "close_blocker": "operator decision required: add FLAG_OFF/DISABLE_CONNECTOR wire names to the shipped triage log, or narrow the 117.38 contract; cron may not invent either, and the guard only advances on VERIFIED/COMPLETED so this step stays the recovery candidate"
   },
   "sprint_117_step_11739": {
     "status": "NOT_STARTED",
@@ -3090,7 +3143,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "c978a7a216897e1eef7b9375903b83f52c61a84b",
+  "last_slice_commit": "6463e5066bb626b41ffb74cdd5eeb60eca50b44a",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3141,6 +3194,12 @@
       "commit": "c978a7a",
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
       "evidence": "docs/evidence/sprint-117-34-manifest-20261002.json"
+    },
+    "117.38": {
+      "status": "PARTIAL-LOCAL",
+      "commit": "6463e50",
+      "ledger": "docs/sprints/sprint-117-beta-validation.md",
+      "evidence": "docs/evidence/sprint-117-38-manifest-20261002.json"
     }
   }
 }

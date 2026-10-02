@@ -289,18 +289,28 @@ final class Sprint117GaArtifactCheck {
 }
 
 /// A parsed checksum inventory: the path-to-digest map plus every line that
-/// could not be parsed.
+/// could not be parsed and every path the file contradicts itself about.
 ///
 /// The malformed list is part of the result rather than an internal detail
 /// because a dropped line silently shrinks what the inventory claims to cover.
+/// The conflicting list is part of it for the same reason one step further
+/// down: a repeated path with two different digests cannot be resolved by
+/// keeping whichever line came last.
 final class ChecksumIndex {
-  const ChecksumIndex({required this.index, required this.malformed});
+  const ChecksumIndex({
+    required this.index,
+    required this.malformed,
+    this.conflicting = const <String>[],
+  });
 
   /// Recorded digest keyed by artifact path.
   final Map<String, String> index;
 
   /// Lines that carried content but did not parse as `sha256 <hex> <path>`.
   final List<String> malformed;
+
+  /// Paths recorded more than once with digests that disagree.
+  final List<String> conflicting;
 }
 
 /// Aggregate verdict of the 117.43 GA artifact gate.
@@ -369,9 +379,16 @@ abstract final class Sprint117GaArtifactGate {
   /// promise was not kept before defect 117.43-04: the function returned the
   /// map alone and `continue`d past malformed input, so a truncated or
   /// upper-case digest vanished from the inventory with nothing counting it.
+  ///
+  /// A path repeated with a DIFFERENT digest is likewise counted rather than
+  /// resolved, which is defect 117.43-05: `index[path] = digest` kept the last
+  /// line, so an inventory that recorded both a stale and a current digest for
+  /// one artifact reported agreement on whichever survived. Identical repeats
+  /// stay benign — the same claim twice is not a contradiction.
   static ChecksumIndex readChecksumIndex(List<String> lines) {
     final index = <String, String>{};
     final malformed = <String>[];
+    final conflicting = <String>{};
     for (final line in lines) {
       final trimmed = line.trim();
       if (trimmed.isEmpty || trimmed.startsWith('#')) continue;
@@ -380,9 +397,19 @@ abstract final class Sprint117GaArtifactGate {
         malformed.add(trimmed);
         continue;
       }
-      index[match.group(2)!] = match.group(1)!;
+      final path = match.group(2)!;
+      final digest = match.group(1)!;
+      final previous = index[path];
+      if (previous != null && previous != digest) {
+        conflicting.add(path);
+      }
+      index[path] = digest;
     }
-    return ChecksumIndex(index: index, malformed: malformed);
+    return ChecksumIndex(
+      index: index,
+      malformed: malformed,
+      conflicting: conflicting.toList()..sort(),
+    );
   }
 
   /// Evaluates the GA artifact gate.
@@ -575,6 +602,7 @@ abstract final class Sprint117GaArtifactGate {
     if (uncovered.isNotEmpty ||
         drifting.isNotEmpty ||
         phantom.isNotEmpty ||
+        parsed.conflicting.isNotEmpty ||
         parsed.malformed.isNotEmpty) {
       return Sprint117GaArtifactCheck.violation(
         outputId: 'checksums',
@@ -582,11 +610,14 @@ abstract final class Sprint117GaArtifactGate {
         declared: declared,
         observed:
             'uncovered=${uncovered.length} drifting=${drifting.length} '
-            'phantom=${phantom.length} malformed=${parsed.malformed.length}',
+            'phantom=${phantom.length} conflicting=${parsed.conflicting.length} '
+            'malformed=${parsed.malformed.length}',
         note: [
           if (uncovered.isNotEmpty) 'uncovered: ${uncovered.join(', ')}',
           if (drifting.isNotEmpty) 'drifting: ${drifting.join(', ')}',
           if (phantom.isNotEmpty) 'phantom: ${phantom.join(', ')}',
+          if (parsed.conflicting.isNotEmpty)
+            'conflicting: ${parsed.conflicting.join(', ')}',
           if (parsed.malformed.isNotEmpty)
             'malformed: ${parsed.malformed.join(', ')}',
         ].join(' | '),

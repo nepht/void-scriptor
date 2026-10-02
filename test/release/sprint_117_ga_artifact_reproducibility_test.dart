@@ -810,4 +810,62 @@ void main() {
       expect(parsed.malformed, isEmpty);
     });
   });
+
+  // RED-first for defect 117.43-05: `readChecksumIndex` filled its map with
+  // `index[path] = digest`, so a path recorded TWICE with DIFFERENT digests kept
+  // whichever line came last and the contradicting claim was counted nowhere.
+  // An inventory that disagrees with itself therefore reported agreement on the
+  // surviving line — the same fail-open shape as 117.43-04, one step further
+  // down: there the line vanished, here it overwrote its own evidence.
+  group('117.43-05 a self-contradicting checksum inventory is a violation', () {
+    late Directory tempDir;
+
+    setUp(
+      () => tempDir = Directory.systemTemp.createTempSync('void_117_43_05'),
+    );
+    tearDown(() {
+      if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
+    });
+
+    String writeFile(String name, Object content) {
+      final file = File('${tempDir.path}${Platform.pathSeparator}$name')
+        ..createSync(recursive: true);
+      if (content is String) {
+        file.writeAsStringSync(content);
+      } else {
+        file.writeAsBytesSync(content as List<int>);
+      }
+      return file.path;
+    }
+
+    test(
+      'a path recorded twice with different digests is counted, not resolved '
+      'by last write',
+      () {
+        final bytes = <int>[1, 2, 3];
+        final real = writeFile('real.bin', bytes);
+        final checksumFile = writeFile(
+          'checksums.txt',
+          <String>[
+            // The wrong digest first, the correct digest last: last-write-wins
+            // made this inventory agree, so the stale claim was invisible.
+            "${'b' * 64}  $real",
+            '${sha256.convert(bytes).toString()}  $real',
+          ].join('\n'),
+        );
+
+        final check = Sprint117GaArtifactGate.measureChecksums(
+          signedArtifacts: <String>[real],
+          checksumFile: File(checksumFile),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.violation,
+          reason: 'an inventory that contradicts itself cannot agree',
+        );
+        expect(check.note, contains('conflicting:'));
+      },
+    );
+  });
 }

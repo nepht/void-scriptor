@@ -1002,4 +1002,149 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-07: the verdict was never READ, only inferred.
+  // 117.43-01 closed a false identity claim and 117.43-06 closed a false
+  // difference claim, both by comparing the recorded digests against the
+  // verdict. Both fixes work on the assumption that the verdict says what the
+  // manifest states. The parser breaks that assumption: `verdict:` was built as
+  // `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`,
+  // so EVERY other value — an absent key, an explicit null, or a typo such as
+  // 'BIT_IDENTITY' — was silently coerced into a measured `notBitIdentical`
+  // claim. The gate then reported `provenance` as `pass` and PRINTED
+  // `artifact_comparison: NOT_BIT_IDENTICAL (2 artifact)` for a manifest that
+  // stated no verdict at all, inventing a claim the document never made.
+  //
+  // This is the same trust boundary the gate's own docstring already promises
+  // not to cross, one step earlier than 117.43-01/06: those defects let an
+  // unsupported claim through; this one manufactures one. A verdict is the one
+  // field in this evidence group that cannot be derived from the digests,
+  // because the digests support both labels — it is the author's statement
+  // about what the comparison MEANT, and an unreadable one is not a statement.
+  group('117.43-07 an unreadable verdict is never assumed to be a claim', () {
+    String digest(String seed) => seed * 64;
+
+    /// The shipped evidence shape. [identicalRebuilds] decides whether the two
+    /// rebuilds really disagree, so each canonical verdict can be paired with
+    /// digests that actually SUPPORT it and the measurement stays honest.
+    Map<String, Object?> manifestWithVerdict(
+      String? verdict, {
+      bool omit = false,
+      bool identicalRebuilds = false,
+    }) {
+      return <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': <String>['a'],
+          'toolchain_versions': <String>['a'],
+          'dependency_lock': <String>['a'],
+          'rebuild_results': <Map<String, Object?>>[
+            <String, Object?>{
+              'label': 'rebuild_a',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': digest('b'),
+              },
+              'exit_code': 0,
+            },
+            <String, Object?>{
+              'label': 'rebuild_b',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': identicalRebuilds ? digest('b') : digest('c'),
+              },
+              'exit_code': 0,
+            },
+          ],
+          'artifact_comparison': <String, Object?>{
+            'method': 'SHA-256 over the recorded artifacts',
+            if (!omit) 'verdict': verdict,
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['a'],
+        },
+      };
+    }
+
+    test('an absent verdict key is not read as a difference claim', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithVerdict(null, omit: true),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a manifest that records no verdict records no claim; coercing the '
+            'missing field into NOT_BIT_IDENTICAL invents one',
+      );
+      expect(
+        check.observed,
+        isNot(contains('NOT_BIT_IDENTICAL')),
+        reason: 'the gate must not print a verdict the manifest never stated',
+      );
+    });
+
+    test('a null verdict is not read as a difference claim', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithVerdict(null),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.unmet);
+      expect(check.observed, isNot(contains('NOT_BIT_IDENTICAL')));
+    });
+
+    test(
+      'a verdict outside the canonical vocabulary is refused, not coerced',
+      () {
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithVerdict('BIT_IDENTITY'),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.unmet,
+          reason:
+              'a typo in the verdict field must fail closed; falling back to '
+              'notBitIdentical reports a claim the manifest does not make',
+        );
+        expect(check.observed, isNot(contains('NOT_BIT_IDENTICAL')));
+      },
+    );
+
+    test('the canonical vocabularies still pass unchanged', () {
+      // Control: the fix must not reject the two values the manifest schema
+      // actually allows, including the honest NOT_BIT_IDENTICAL we ship.
+      for (final verdict in <String>['BIT_IDENTICAL', 'NOT_BIT_IDENTICAL']) {
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithVerdict(
+            verdict,
+            // BIT_IDENTICAL is only honest when the digests agree; pairing it
+            // with a real difference would be the 117.43-01 defect, not a pass.
+            identicalRebuilds: verdict == 'BIT_IDENTICAL',
+          ),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.pass,
+          reason: 'the canonical verdict $verdict must still be accepted',
+        );
+        expect(check.observed, contains(verdict));
+      }
+    });
+
+    test('the shipped manifest passes on its own stated verdict', () {
+      final manifest = Sprint117GaArtifactGate.readManifest(
+        Sprint117GaPackagingContract.provenanceManifestPath,
+      );
+
+      expect(manifest, isNotNull);
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest!,
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+  });
 }

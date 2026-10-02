@@ -28,9 +28,11 @@
 ///    is covered by a checksum line;
 /// 5. provenance is measured through `BuildProvenanceEvidence.evaluate`, and a
 ///    reproducibility claim is only ever accepted when the recorded digests
-///    actually support it: `bitIdentical` needs every digest equal, and
-///    `notBitIdentical` needs at least one digest that differs (defects
-///    117.43-01 and 117.43-06, the two mirrors of the same trust boundary).
+///    actually support it: `bitIdentical` needs every digest equal,
+///    `notBitIdentical` needs at least one digest that differs, and the verdict
+///    string itself must be one of the two canonical values (defects
+///    117.43-01, 117.43-06, and 117.43-07 — three directions of the same trust
+///    boundary).
 ///
 /// Defect 117.43-01 (fail-open, fixed here): `ArtifactComparison.isWellFormed`
 /// compared only the two rebuilds' artifact NAME SETS and never their hash
@@ -45,7 +47,26 @@
 /// verify the verdict against the recorded values, so a false identity claim
 /// fails closed.
 ///
-/// Defect 117.43-02 (measured and reported, NOT fixed): the 113.38 GA manifest
+/// Defect 117.43-07 (fail-open, fixed here): the verdict was never READ, only
+/// INFERRED. `_evaluateShippedProvenance` built it as
+/// `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`,
+/// so every other value — an absent key, an explicit null, or a typo such as
+/// `BIT_IDENTITY` — was silently coerced into a measured difference claim. The
+/// gate then reported `provenance` as `pass` while printing
+/// `artifact_comparison: NOT_BIT_IDENTICAL (2 artifact)` for a manifest that
+/// stated no verdict at all: it manufactured a claim the document never made.
+/// 117.43-01 and 117.43-06 both let an unsupported claim THROUGH; this one
+/// fabricated one, one step earlier, in the same evidence group. Root cause:
+/// the only field in this group that cannot be derived from the digests, because
+/// the digests support both labels, was defaulted instead of read. The fix
+/// parses the verdict as a closed vocabulary and reports `unmet` when it is
+/// absent, null, or outside `BIT_IDENTICAL` / `NOT_BIT_IDENTICAL`. Proven
+/// empirically before the fix: three distinct unreadable verdicts all returned
+/// `status=pass` with `NOT_BIT_IDENTICAL` in the observed text.
+/// The manifest we SHIP records `NOT_BIT_IDENTICAL` and still passes, because it
+/// states a canonical verdict that its digests support.
+///
+/// /// Defect 117.43-02 (measured and reported, NOT fixed): the 113.38 GA manifest
 /// is a COMMITTED document describing a build output tree that no longer
 /// exists. `checksums` names `build/release-metadata/artifact-manifest.json`
 /// and `signing_evidence.sign_manifest_path` names
@@ -750,6 +771,22 @@ abstract final class Sprint117GaArtifactGate {
     final b = _rebuildFrom(rebuildList[1]);
     if (a == null || b == null) return null;
 
+    // Sprint 117.43-07 (fail-open, fixed): the verdict was INFERRED, never read.
+    // `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`
+    // made every other value — an absent key, an explicit null, or a typo —
+    // silently become a measured difference claim. The gate then reported
+    // `provenance` as `pass` and printed `NOT_BIT_IDENTICAL` for a manifest that
+    // stated no verdict at all, manufacturing a claim the document never made.
+    // Parse it as a CLOSED vocabulary: only the two canonical strings produce an
+    // enum, and anything else makes the evidence unevaluable so the caller
+    // reports `unmet` rather than inventing a claim. Defaulting is the defect.
+    final verdict = switch (comparison['verdict']) {
+      'BIT_IDENTICAL' => RebuildVerdict.bitIdentical,
+      'NOT_BIT_IDENTICAL' => RebuildVerdict.notBitIdentical,
+      _ => null,
+    };
+    if (verdict == null) return null;
+
     final shipped = BuildProvenanceEvidence(
       buildInputs: strings('build_inputs'),
       toolchainVersions: strings('toolchain_versions'),
@@ -759,9 +796,7 @@ abstract final class Sprint117GaArtifactGate {
         method: comparison['method'] as String?,
         rebuildA: rebuild(a),
         rebuildB: rebuild(b),
-        verdict: comparison['verdict'] == 'BIT_IDENTICAL'
-            ? RebuildVerdict.bitIdentical
-            : RebuildVerdict.notBitIdentical,
+        verdict: verdict,
         limits: ((comparison['limits'] as List<dynamic>?)?.cast<String>()),
       ),
       provenanceRecord: strings('provenance_record'),

@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.37",
-  "next_step": "117.38",
+  "last_verified_step": "117.38",
+  "next_step": "117.39",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -118,8 +118,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-02T04:12:00Z",
-  "updated_by": "hermes: cron b0c2c7d744d9 sprint 117.38 slice",
+  "updated_at": "2026-10-02",
+  "updated_by": "cron b0c2c7d744d9 (117.38 corrective: FLAG_OFF + DISABLE_CONNECTOR measured through shipped seams)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3201,5 +3201,24 @@
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
       "evidence": "docs/evidence/sprint-117-38-manifest-20261002.json"
     }
+  },
+  "sprint_117_38_issue_deduplication_triage": {
+    "run": "2026-10-02 cron b0c2c7d744d9",
+    "status": "VERIFIED-LOCAL",
+    "verdict": "ISSUE_DEDUPLICATION_AND_TRIAGE_VALIDATED_LOCAL",
+    "commit": "46018de",
+    "evidence": "docs/evidence/sprint-117-38-manifest-20261002.json",
+    "evidence_sha256": "1b5fda72368cc7ad56eb8b4df187fdcba70411787938ecb78de5546ab311c284",
+    "evidence_bytes": 2881,
+    "focused_tests": "36/36 PASS exit 0",
+    "regression": "102/102 PASS exit 0 (7 targets: test/core/feature_flags/, 113.29, 114.26, 113.30, 117.37, 113.43, slice 117.38)",
+    "analyzer": "4 files, No issues found! exit 0",
+    "format": "4 files, 0 changed on recheck exit 0",
+    "diff_check": "git diff --check exit 0",
+    "windows_build": "flutter build windows --debug exit 0, 25.0s",
+    "necessity": "5 blocks rc=1 each on the exact named test, no_compile_errors=True; positive control 36/36 exit 0",
+    "correction": "Premis run sebelumnya salah: kosakata yang diukur milik step 113.30 (TriageDecision 5 nama), bukan 117.38; dan kedua aksi punya seam yang sudah di-ship (FeatureFlagRegistry.disable 110.8, AccountConnectedAccountsManagement.unlink 115.14). Bukti ketiadaan lama hanya grep 3 nama yang dikarang. Aturan hard-coded decisionsWithNoShippedExpression diganti tuntutan Sprint117TriageResolution terukur.",
+    "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
+    "external_gate": "DEFERRED-EXTERNAL"
   }
 }

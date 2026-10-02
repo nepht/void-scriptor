@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.38",
-  "next_step": "117.39",
+  "last_verified_step": "117.39",
+  "next_step": "117.40",
   "stability_gate": {
     "status": "PASS",
     "note": "Re-evaluated at 117.1 entry: analyzer gate was the only failing required gate and is now green (full flutter analyze exit 0 'No issues found!').",
@@ -47,8 +47,8 @@
     ],
     "preexisting_failure_verdict": "PREEXISTING_ENVIRONMENTAL: 4 release tests bind checksums to a signed GA artifact set that only exists in gitignored build/; any rebuild drifts them. Not caused by slice 1a0d94d and not a Core regression.",
     "release_shard": "test/release/ 1568 PASS / 4 FAIL exit 1 (4 pre-existing signed-artifact failures; was 8 failures before the release build supplied void_scriptor.exe)",
-    "rechecked_on": "2026-10-01",
-    "recheck_note": "Re-verified at 117.30 exit: slice 13/13, account domain 769/769, focused regression 52/52, analyzer 3 files 'No issues found!', format pass2 0 changed idempotent, git diff --check 0. Windows debug and release builds exit 0 but are NOT slice evidence; the positive control proves the poison can bite while the slice file itself is not reachable from main.dart, so the build shows no regression on the reachable program only. stability_gate stays PASS.",
+    "rechecked_on": "2026-10-02",
+    "recheck_note": "Re-verified at 117.39 exit: focused 19/19, regression 111/111 + 173/173, analyzer 3 files clean, format idempotent, diff-check 0, windows debug exit 0. stability_gate stays PASS.",
     "note_11715": "Slice 117.15 green: focused 28/28, slice 233/233, shard 117 572/572, account domain 735/735, analyzer 6 files No issues found!, format 0 changed, diff-check 0, 3/3 pins MATCH. Windows build exit 0 but NOT slice evidence: the positive-control poison also built exit 0, so the build did not recompile Dart; on a forced-fresh kernel the slice symbols are 0 while controls are non-zero.",
     "note_11716": "Slice 117.16 green: focused 41/41, account/domain regression 769/769, sprint_117 shard 603/603, analyzer 6 files clean, format 0 changed, diff-check 0, 2/2 external pins MATCH. One flaky observation recorded: a 4-file shard run exited 1 with 117.15 tests 'did not complete', then two consecutive runs of the identical files exited 0 (123/123) with no code change, so harness flake not slice regression. Windows debug build exit 0 46.2s but NOT slice evidence: 'strings' is absent from PATH so earlier symbol counts were false zeros; measured with Python on the same app.dill the controls are non-zero (StorageUsageCard 24, AiProviderRegistry 7, OpenAiProvider 22) while every slice symbol is 0, so account/domain is not reachable from main.dart.",
     "slice_117_27": {
@@ -109,6 +109,25 @@
       "manifest": "docs/evidence/sprint-117-30-manifest-20261001.json sha256 2497da9465206cb9a5cb3c769b65f6ef 7880 bytes, byte-identical across two reads, json.loads VALID",
       "windows_build": "debug exit 0 23s and release exit 0 76.2s on a forced-fresh kernel, recorded as NOT slice evidence: a positive-control type error in lib/main.dart fails the build (exit 1, error G44692867) while the same error in the slice file exits 0, so lib/features/account/domain/ is not reachable from main.dart",
       "poison_residue": "none; lib/main.dart verified CLEAN against HEAD via git status after restore"
+    },
+    "slice_117_39": {
+      "commit": "7dcd0b0",
+      "defects_fixed": [
+        "_redactSecrets used replaceFirstMapped, so only the FIRST match of each pattern was redacted; a second credential of the same class reached the crash artifact in full",
+        "the sink kept its own copy of the provider-token patterns and the copy had drifted from the canonical SecretScanner: it required a DASH separator so the real GitHub formats (ghp_, github_pat_) and Slack xoxb- never matched, and it had no AKIA family at all",
+        "root cause of the drift: the duplicated pattern list; the sink now delegates shape detection to the canonical SecretScanner so the two surfaces cannot diverge again"
+      ],
+      "harness_defects_corrected_before_claiming": [
+        "capture() shared one directory and used .single, so the aggregate test failed with 'Bad state: Too many elements' — a harness failure indistinguishable from a real leak; each capture now uses its own subdirectory",
+        "the first gate draft called toJson() on the resolution class before it existed; added rather than worked around"
+      ],
+      "third_defect_found_by_existing_test": "after fixing defects 1 and 2 the scanner-agreement test still failed; a family probe isolated AKIA as leaking in full, which is what exposed the duplicated-pattern-list root cause",
+      "necessity": "block A replaceFirst-only rc=1 with 4 failing tests; block B drifted local patterns rc=1 with 6 failing tests; both without compile errors; RECON_SHA_MATCH=True; positive control 19/19 exit 0",
+      "manifest": "docs/evidence/sprint-117-39-manifest-20261002.json sha256 44ca26d5be77a227d42e04e593ab81959ca47339d39b2c8bc4a9be7e49955053, 3531 bytes, byte-identical over two regenerations with a delete in between, json.loads VALID, 15 probes 15/15 true; sha taken from the COMMITTED artifact (git show 7dcd0b0) and equals the disk value",
+      "gates": "focused 19/19; regression 111/111 (test/app/bootstrap + test/core/security) and 173/173 (117.35-117.38 + bootstrap); analyzer 3 files No issues found; format 0 changed idempotent; diff-check 0",
+      "build": "windows --debug exit 0 (28.1s)",
+      "claim_boundary": "no live GA blocker filed and no release claimed; the beta cohort has not started; both defects measured on test-owned state; 7 of the 9 canonical domains (accessibility, auth, billing, data, privacy, quota, sync) remain unresolved and are NOT closed by this slice",
+      "manifest_incident_avoided": "the regression run rewrote docs/evidence/sprint-117-35-manifest-20261002.json with fresh probe timings (the exact 2026-10-02 SHA-policy trap); the canonical 117.35 manifest was restored from git show HEAD:<path> rather than git restore, sha back to 496fee569187c214e621bfecf9412150b7daaedb1083b7fd14e8ee2ffc8a859f, and it was not committed"
     }
   },
   "selection_rules": [

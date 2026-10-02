@@ -59,6 +59,12 @@ final class LocalStorageSummary {
   int get totalBytes =>
       _bytesByCategory.values.fold(0, (sum, value) => sum + value);
 
+  /// The categories this summary holds an entry for, including ones measured at
+  /// zero. Derived from the same map the bytes live in, so it cannot disagree
+  /// with them.
+  Set<LocalStorageCategory> get observedCategoryKeys =>
+      Set.unmodifiable(_bytesByCategory.keys);
+
   int bytesFor(LocalStorageCategory category) =>
       _bytesByCategory[category] ?? 0;
 

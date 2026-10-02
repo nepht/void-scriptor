@@ -11,7 +11,14 @@ import 'account_center_provider_connector_manifest.dart';
 
 enum CreativeAssetPermission { owned, licensed, publicDomain }
 
-enum CreativeTransferScope { importOnly, exportOnly, importExport }
+/// Which directions a creative connection may move assets in.
+///
+/// [none] exists because the original three members could not express a
+/// connection that is authorized but moves no assets: `importOnly` still
+/// imports, `exportOnly` still exports. Without it, "connected, but nothing
+/// transfers" had to be spelled by a fake direction or left implicit, and any
+/// enforcement that trusted the scope would then have to guess.
+enum CreativeTransferScope { none, importOnly, exportOnly, importExport }
 
 final class CreativeToolConnector {
   const CreativeToolConnector(this.manifestEntry);

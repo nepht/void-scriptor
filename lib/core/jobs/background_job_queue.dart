@@ -32,7 +32,7 @@ class BackgroundJobQueue {
   final Map<String, Future<void>> _active = {};
   final StreamController<BackgroundJob> _updates =
       StreamController<BackgroundJob>.broadcast(sync: true);
-  bool _draining = false;
+  Future<void>? _drainLoop;
   BackgroundJobPriority? _pauseThreshold;
 
   Stream<BackgroundJob> get updates => _updates.stream;
@@ -100,20 +100,33 @@ class BackgroundJobQueue {
     return false;
   }
 
-  Future<void> drain() async {
-    if (_draining) return;
-    _draining = true;
-    try {
-      while (_active.isNotEmpty || _hasRunnablePending()) {
-        _scheduleAvailable();
-        if (_active.isNotEmpty) {
-          await Future.any(_active.values);
-        } else if (_hasRunnablePending()) {
-          await Future<void>.delayed(Duration.zero);
-        }
+  /// Drains every pending and active task, returning only once the queue is
+  /// genuinely empty.
+  ///
+  /// A concurrent caller joins the SAME loop instead of receiving an
+  /// already-complete future. Returning early would let a caller believe the
+  /// queue is drained while tasks are still queued or running, so it could
+  /// close a database, a lock, or a session underneath live work. The loop
+  /// itself is still re-entrant safe: it re-reads `_pending`/`_active` every
+  /// iteration, so work enqueued by a task during the drain is still picked up.
+  Future<void> drain() {
+    final running = _drainLoop;
+    if (running != null) return running;
+    final loop = _drainUntilEmpty();
+    _drainLoop = loop;
+    return loop.whenComplete(() {
+      if (identical(_drainLoop, loop)) _drainLoop = null;
+    });
+  }
+
+  Future<void> _drainUntilEmpty() async {
+    while (_active.isNotEmpty || _hasRunnablePending()) {
+      _scheduleAvailable();
+      if (_active.isNotEmpty) {
+        await Future.any(_active.values);
+      } else if (_hasRunnablePending()) {
+        await Future<void>.delayed(Duration.zero);
       }
-    } finally {
-      _draining = false;
     }
   }
 

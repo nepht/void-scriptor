@@ -63,7 +63,18 @@ class DebouncedSearchController<T> {
   int _generation = 0;
   bool _disposed = false;
 
+  /// Runs the debounced search and completes with the results of the newest
+  /// generation.
+  ///
+  /// After [dispose] the controller is out of service: no new timer is armed
+  /// and [search] is not invoked at all. A disposed controller that still ran
+  /// the closure would keep a disposed resource alive through whatever the
+  /// closure captured (repository, isolate handle, open file), then throw the
+  /// result away — work nobody can use, paid for with someone's leaked
+  /// lifetime. The caller is settled with an empty generation instead, which
+  /// is the same shape the pre-dispose pending caller already receives.
   Future<List<T>> query(String value) {
+    if (_disposed) return Future<List<T>>.value(<T>[]);
     final generation = ++_generation;
     _timer?.cancel();
     final previous = _pending;

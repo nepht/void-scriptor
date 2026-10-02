@@ -23,9 +23,22 @@ class AsyncMutex {
     final previous = _tail;
     final gate = Completer<void>();
     _tail = gate.future;
-    final Future<T> result = previous == null
-        ? section()
-        : previous.then((_) => section());
+    final Future<T> result;
+    try {
+      // core-hunt-20261002: the first caller's section() runs synchronously
+      // here, BEFORE the release hook below is attached. A section that threw
+      // synchronously therefore escaped `run` with `_tail` still pointing at a
+      // gate nobody would ever complete, so every later caller waited forever
+      // and the mutex stayed locked for the life of the isolate. A gate is
+      // released on the throwing path exactly as it is on the async one.
+      result = previous == null ? section() : previous.then((_) => section());
+    } catch (error, stackTrace) {
+      // Keep the observable behaviour callers already rely on — the first
+      // caller's synchronous throw still leaves `run` synchronously — but
+      // release the gate first so the queue is not wedged behind it.
+      _release(gate);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
     unawaited(
       result.then(
         (_) => _release(gate),

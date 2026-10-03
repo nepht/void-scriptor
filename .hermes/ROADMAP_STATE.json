@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T08:05:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-09 slice)",
+  "updated_at": "2026-10-03T09:20:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-13 slice)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -616,7 +616,7 @@
   "current_step": "117.41",
   "current_step_status": "VERIFIED-LOCAL",
   "last_run_summary": "2026-10-03 08:05 WIB run 8: defect 117.43-10 closed - the rebuild METHOD claim was never measured (command/log had zero readers in lib/). Both ends fixed, 75/75 focus, analyze/format/diff-check/build green, commit ea27041 (3 explicit paths). Status unchanged PARTIAL-LOCAL; 117.43-02 still awaits operator decision.",
-  "last_commit": "c4ef3230ac218296e1a8c318102e673e2189f3bd",
+  "last_commit": "4283ebd",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -3145,7 +3145,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T08:40:00+07:00",
+    "updated_at": "2026-10-03T09:20:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3166,22 +3166,17 @@
       "cross_slice_regeneration": "docs/ and .hermes/ clean vs HEAD after suite + build - no cross-slice regeneration (incidents 5/6 not repeated).",
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
-    "defects_fixed_count": 11,
-    "slice_commit": "fd103ed",
+    "defects_fixed_count": 12,
+    "slice_commit": "4283ebd",
     "last_slice_files": [
       {
         "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
-        "sha256_lf_canonical": "d2e01459d7f520e5",
-        "crlf_in_disk": 0
-      },
-      {
-        "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
-        "sha256_lf_canonical": "9e552ec2b8f57a03",
+        "sha256_lf_canonical": "9b282cf7",
         "crlf_in_disk": 0
       },
       {
         "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "sha256_lf_canonical": "e46af1e0e9b30f14",
+        "sha256_lf_canonical": "32643665",
         "crlf_in_disk": 0
       }
     ],
@@ -3197,6 +3192,35 @@
       "working_tree": "93 -> 96 during slice -> 93 after commit; delta is exactly the 3 slice files",
       "probes": "4 temporary probes (11, 11b, 11c, 11d) deleted after every finding moved; remaining=0",
       "manifest_untouched": "docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json unchanged, 0 bytes altered"
+    },
+    "gates_reverified_run10_2026_10_03": {
+      "focused_suite": "95/95 exit 0 (was 87; +8)",
+      "red_boundary": "gate reverted to HEAD alone -> exactly 7 named 117.43-13 failures with TypeError, 87 shipped tests stayed green, no compile error",
+      "dart_analyze": "3 files, No issues found!, exit 0, re-run AFTER dart format",
+      "dart_format": "2 changed, then 0 changed idempotent",
+      "git_diff_check": "exit 0",
+      "windows_build": "flutter build windows --debug exit 0, 18.1s",
+      "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1, ONE failure, signature byte-identical to the 117.43-02 root cause (expected 73101e78..., actual c7a33055...) - not a regression",
+      "sha_three_way": "both slice files MATCH disk == committed (9b282cf7 / 32643665) after EOL normalisation",
+      "working_tree": "93 -> 95 during slice -> 93 after commit; delta is exactly the 2 slice files",
+      "probes": "1 temporary probe (117.43-13) deleted after every finding moved to the official suite; remaining=0",
+      "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json unchanged, 0 bytes altered",
+      "defect": "117.43-13 - twelve decode seams one level below the four evidence groups still reached their value through 'as T' / 'cast<T>()', which asserts a shape instead of checking it. 13 malformed shapes reached a TypeError and returned no check at all to the caller. Seams: rebuild_results list and per-element record, comparison method, comparison limits, per-element artifact digest, exit_code, the signed_artifacts group in measureSignedArtifacts, and log reachability. Because _rebuildFrom decodes BOTH rebuild records, one bad digest destroyed the whole provenance verdict. Absent fields stay null per 117.43-07.",
+      "discarded_probe_case": "a non-string map KEY is unreachable from jsonDecode (JSON keys are always strings), so that shape was dropped instead of being asserted as behaviour"
+    },
+    "defect_117_43_13": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-13",
+      "hunt": "unmeasured-claim / fail-open decode, ninth of the family",
+      "family_closed_so_far": 9,
+      "symptom": "a malformed manifest threw a TypeError clean out of the gate, so the caller received no verdict, no note, and no failed output",
+      "why_worse_than_a_wrong_answer": "the crash is silent about the very output the gate was asked to measure",
+      "seams_closed": 7,
+      "shapes_refused": 13,
+      "non_claim_rule_preserved": "an absent field stays null; only a present-but-unreadable value makes the evidence unevaluable",
+      "verified_on": "2026-10-03",
+      "commit": "4283ebd",
+      "pushed": false
     }
   },
   "sprint_117_step_11744": {
@@ -3330,7 +3354,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "d29f61d",
+  "last_slice_commit": "4283ebd",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3415,7 +3439,7 @@
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
   },
-  "last_verified_commit": "ea44531",
+  "last_verified_commit": "4283ebd",
   "suites_measured": [
     "connector",
     "workflow",

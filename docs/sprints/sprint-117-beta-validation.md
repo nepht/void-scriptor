@@ -89,3 +89,29 @@ Sprint 118 — VOID SCRIPTOR Account & Cloud Center Stability & Provider Expansi
 **WORKING TREE:** dirty 93 → 96 saat slice → **93** sesudah commit; selisih tepat 3 file slice. Keempat probe (`11`, `11b`, `11c`, `11d`) dihapus setelah semua temuan dipindahkan; `probes_remaining=0`. **SHA 3-SISI FINAL:** ketiganya MATCH (`d2e01459…` / `9e552ec2…` / `e46af1e0…`, disk == ter-commit, normalisasi EOL lebih dulu sesuai pitfall 117.43-10). **COMMIT:** `fd103ed` (3 path eksplisit). **PUSH:** tidak dilakukan.
 
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. **TODO-OPERATOR TETAP ADA:** putuskan `117.43-02` — (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA yang diterima dan persempit acceptance 117.43. Cron tidak mengarang pilihan.
+
+### Slice 117.43-13 (2026-10-03, run SEPILUH) - dua belas seam decode yang meng-assert bentuk, bukan memeriksanya
+
+**HUNT KESEMBILAN: unmeasured-claim / fail-open decode.** Dua belas baca satu level di bawah empat grup yang ditutup 117.43-12. Semuanya mencapai nilainya lewat `as T` atau `cast<T>()` - yang meng-*assert* bentuk, bukan memeriksanya.
+
+**DEFECT (satu, tiga belas bentuk salah):** manifest yang menaruh angka di tempat string, atau string telanjang di tempat list, tidak melaporkan `unmet`. Ia melempar `TypeError` bersih keluar dari gate, dan pemanggil menerima **tidak ada check sama sekali** - bukan verdict, bukan note, bukan output gagal. Gate yang crash pada evidence salah bentuk BUKAN fail-closed, dan crash lebih buruk daripada jawaban salah karena ia sunyi tentang output yang justru diminta untuk diukur.
+
+**PROBE:** 13 bentuk salah -> semua `status=NO-STATUS thrown=TypeError`. Satu kasus (kunci map non-string) DIBUANG: tidak dapat dicapai dari `jsonDecode` (kunci JSON selalu string), jadi tidak diuji sebagai perilaku nyata.
+
+**Seam yang ditutup:** `rebuild_results` (bentuk list dan bentuk record per-elemen), `method`, `limits`, digest per-elemen, `exit_code`, grup `signed_artifacts` di `measureSignedArtifacts`, dan reachability `log`. Karena `_rebuildFrom` mendekode **kedua** record rebuild, satu digest cacat lama menghapus seluruh verdict provenance, bukan cuma satu rebuild.
+
+**NON-CLAIM:** field absen tetap null (aturan 117.43-07); nilai ada-tapi-tak-terbaca membuat evidence unevaluable, yang dilaporkan pemanggil sebagai `unmet`.
+
+**RED (bukti batas):** revert HANYA file gate ke HEAD -> exit 1 dengan **TEPAT 7** test bernama gagal, 87 test shipped tetap hijau, tanpa compile error.
+
+**GERBANG:** fokus **95/95 exit 0** (naik dari 87, +8). `dart analyze` 3 file `No issues found!` exit 0 DIULANG SETELAH `dart format` (2 file berubah, pass kedua 0 changed). `git diff --check` exit 0. `flutter build windows --debug` exit 0, 18,1 dtk.
+
+**REGRESI:** `sprint_113_build_reproducibility_provenance_test.dart` exit 1 - SATU fail, signature PERSIS SAMA (expected `73101e78...`, actual `c7a33055...`), akar TODO-OPERATOR 117.43-02, BUKAN regresi slice ini.
+
+**SHA 3-SISI:** `9b282cf7...` (gate) dan `32643665...` (test) - disk == ter-commit == MATCH. Normalisasi EOL lebih dulu sesuai pitfall 117.43-10.
+
+**COMMIT:** `4283ebd` (2 path eksplisit). **PUSH:** tidak dilakukan.
+
+**WORKING TREE:** dirty 93 -> 95 selama slice -> 93 setelah commit; selisih tepat 2 file slice (helper `_durationOrNull` dan `_stringList` sudah ada di file provenance, jadi file itu tidak berubah). Manifest 117.43 TIDAK diubah, 0 byte.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. **TODO-OPERATOR TETAP ADA:** putuskan `117.43-02` - (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA yang diterima dan persempit acceptance 117.43. Cron tidak mengarang pilihan.

@@ -2808,6 +2808,102 @@ Test lama `game_creation_dashboard_screen_test.dart` hanya menguji overflow pada
 
 **Status section:** `VERIFIED` untuk fokus 2.4.3 (order, label, geometri, area non-zero, aktivasi keyboard, negative control). Defect overflow branch `wide` dicatat terpisah sebagai `PARTIAL`.
 
+## 55. Fase 55 — Focus Order di Content Capability Matrix Screen (2.4.3)
+
+**Layar audited:** `lib/features/content_capabilities/presentation/content_capability_matrix_screen.dart` (`ContentCapabilityMatrixScreen`, 462 baris).
+**Kontrak:** `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` (8 test).
+**Metode:** probe sementara pada viewport 1536x1024 dan 390x844, dpr 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)` berulang. Label diambil dari `Text` non-`Icon` pertama di subtree node fokus; kolom pencarian tidak punya `Text` di subtree fokusnya sehingga diberi label eksplisit `field:search` lewat jenis ancestor-nya.
+
+Layar dipilih karena sifatnya murni presentasi: seluruh state berasal dari katalog statis `ContentCapabilityCatalog` dan state lokal `TextEditingController`, tanpa database, tanpa network, tanpa DI. Tidak ada fixture yang perlu disiapkan, sehingga cocok untuk run audit terjadwal.
+
+### Klasifikasi kontrol interaktif
+
+| Kontrol | Widget | Baris kode | Keterangan |
+|---|---|---|---|
+| Kolom pencarian | `TextField` | 115-116 | `ValueKey('content-capability-search')` |
+| Chip `Semua` | `FilterChip` | 190-191 | `ValueKey('maturity-all')` |
+| Chip 5 maturity | `FilterChip` | 197-198 | `ValueKey('maturity-${maturity.name}')`, digabung dalam `Wrap` |
+| Kartu modul | `ExpansionTile` | 217-218 | `ValueKey('content-module-${module.id}')`, 17 buah |
+| Pemulihan filter | `TextButton` | 435 | Hanya dirender pada keadaan kosong |
+
+Kartu modul memuat tombol `Chip`/`Switch` di dalam `ExpansionTile` yang collapsed. Node-node itu **tidak** masuk traversal saat tile tertutup, sehingga tidak ikut terukur.
+
+### Hasil pengukuran — 1536x1024, keadaan daftar penuh
+
+Siklus 24 node, traversal masuk pertama kali pada `field:search`:
+
+```
+STOP  0 field:search      L=246.0  T= 76.0  W=399.2 H=24.0
+STOP  1 Semua             L=665.2  T=205.0  W=124.5 H=38.0
+STOP  2 Full 0            L=797.7  T=205.0  W=118.6 H=38.0
+STOP  3 Partial 9         L=924.3  T=205.0  W=160.9 H=38.0
+STOP  4 Domain Only 6     L=1093.2 T=205.0  W=217.3 H=38.0
+STOP  5 UI Only 1         L=665.2  T=261.0  W=160.9 H=38.0
+STOP  6 Planned 1         L=834.1  T=261.0  W=160.9 H=38.0
+STOP  7 Novel & Scene     L=179.0  T=358.0  W=1178.0 H=72.0
+STOP  8 Character         L=179.0  T=446.0  W=1178.0 H=72.0
+STOP  9 World & Locations L=179.0  T=534.0  W=1178.0 H=72.0
+STOP 10 Project Bible & Lore    L=179.0 T=622.0 W=1178.0 H=72.0
+STOP 11 Timeline & Events        L=179.0 T=710.0 W=1178.0 H=72.0
+STOP 12 Assets & References     L=179.0 T=798.0 W=1178.0 H=72.0
+STOP 13 Cinema & Shots          L=179.0 T=886.0 W=1178.0 H=72.0
+STOP 14 Audio, Music & SFX      L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 15 AI Generation Outputs   L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 16 Dialogue                L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 17 Plot, Subplot & Quest   L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 18 Pacing & POV            L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 19 Herbology & Alchemy     L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 20 Economy & Travel        L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 21 Culture, Language & Idioms L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 22 Creature, Vehicle & Prop Cards L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 23 Reader Annotations      L=179.0 T=952.0 W=1178.0 H=72.0
+STOP 24 field:search            (siklus tertutup)
+```
+
+Stop 14 sampai 23 semua melaporkan `T=952.0 H=72.0` yang identik. Ini **bukan** card yang menumpuk: hanya delapan kartu pertama yang benar-benar ter-layout di dalam viewport 1024 px, sedangkan sisanya berada di luar area terlihat sehingga `Rect`-nya dijepit cache sliver. Kontrak karena itu hanya memakai `Rect` delapan kartu pertama sebagai bukti urutan vertikal, dan tidak mengklaim posisi piksel kartu di luar viewport.
+
+### Hasil pengukuran — keadaan kosong
+
+Setelah `enterText('zzzqqqxxx')`, kartu modul hilang (`ExpansionTile` tidak ada) dan tombol pemulihan masuk:
+
+```
+Siklus 8 node: Semua, Full 0, Partial 9, Domain Only 6, UI Only 1, Planned 1, Reset filter, field:search
+```
+
+### Temuan metodologis: traversal bersifat siklik, bukan linear
+
+Kontrak run sebelumnya mengasumsikan traversal selalu mulai dari `field:search`. Probe membuktikan asumsi itu salah, dan run ini memperbaikinya:
+
+- Setelah `pumpWidget` fokus belum ada, jadi Tab pertama masuk dari awal traversal (`field:search`).
+- Setelah `enterText` fokus **tertahan** di dalam `TextField` (`EditableText` mengambilnya), sehingga Tab pertama melompat ke node berikutnya: chip filter.
+- Setelah `tap` tombol pemulihan, node fokus yang dituju hilang dari pohon, sehingga FocusManager mengembalikan fokus ke akar scope dan traversal berikutnya masuk dari awal lagi.
+
+Kontrak karena itu membandingkan traversal terhadap **rotasi** dari satu siklus tunggal yang sudah diputar ke anchor eksplisit per test (`_expectFullCycle(stops, cycle, anchor)`), ditambah bukti penutupan siklus lewat node ke-`cycle.length+1`. Helper geometri memfilter satu siklus penuh saja lewat `_oneCycle`, supaya indeks tidak bergeser saat traversal berulang.
+
+### Yang dikunci kontrak (8 test)
+
+1. Viewport lebar menyisir siklus 24 node lalu kembali ke anchor; setiap stop punya area non-zero.
+2. Jumlah node kartu fokus sama dengan `ContentCapabilityCatalog.modules.length` dan urutannya persis mengikuti katalog, bukan geometri render.
+3. Chip filter dibaca kiri ke kanan pada baris pertama lalu turun ke baris kedua pada 1536 px.
+4. Kartu modul satu kolom penuh: satu lebar, satu margin kiri, dibaca atas ke bawah, dan kartu pertama mulai setelah baris chip terakhir.
+5. Viewport 390x844: siklus 24 node tetap utuh, `tester.takeException()` null, tidak ada kontrol hilang, dan tidak ada node yang melewati viewport.
+6. Pada 390 px chip membungkus ke empat baris `[Semua, Full]`, `[Partial]`, `[Domain Only]`, `[UI Only, Planned]`; kartu tetap satu kolom.
+7. Keadaan kosong menyisakan siklus 8 node dengan tombol pemulihan yang punya area fokus non-zero, dan tidak ada `ExpansionTile`.
+8. Setelah tombol pemulihan ditekan, traversal kembali ke siklus 24 node penuh tanpa meninggalkan node fokus yatim.
+
+### Verifikasi
+
+- `dart format` pada file kontrak: `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/content_capabilities/`: `No issues found!`.
+- `flutter test test/features/content_capabilities/`: `All tests passed!` (14 test, termasuk 6 test lama milik feature yang sama).
+- Negative control: urutan dua label chip ditukar sementara di siklus lebar. Hasil `+5 -3: Some tests failed.` dengan `EXIT=1`, tiga test gagal (`viewport lebar menyisir tepat 24 node lalu mengulang`, `viewport sempit tetap menyisir 24 node tanpa kontrol hilang`, `tombol pemulihan filter mengembalikan daftar modul`). Backup dipulihkan dari `%LOCALAPPDATA%\Temp\ccms_focus_backup.dart` dan file backup dihapus.
+- Scan CJK/Cyrillic pada test dan report: `none`.
+- Probe `test/features/content_capabilities/_probe_focus_test.dart` dihapus setelah kontrak dibuat.
+
+### Status
+
+**VERIFIED** untuk focus order `ContentCapabilityMatrixScreen` di 1536x1024 dan 390x844 pada codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; koreksi yang dibuat hanya pada ekspektasi kontrak yang salah asumsi terhadap titik mulai traversal. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

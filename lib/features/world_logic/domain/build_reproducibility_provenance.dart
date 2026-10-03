@@ -59,10 +59,44 @@ class RebuildResult {
     if (label.trim().isEmpty || artifactHashes.isEmpty) return false;
     if (exitCode == null || exitCode != 0) return false;
     final hashPattern = RegExp(r'^[0-9a-f]{64}$');
-    return artifactHashes.entries.every(
+    if (!artifactHashes.entries.every(
       (entry) =>
           entry.key.trim().isNotEmpty && hashPattern.hasMatch(entry.value),
-    );
+    )) {
+      return false;
+    }
+    // Sprint 117.43-09 (fail-open, fixed): a rebuild window that ends before
+    // it starts, or that cannot be read as a time at all, is not a record of a
+    // rebuild — but nothing here ever looked at the two timestamps, so such a
+    // record was accepted and the 117.43 gate reported `provenance` as `pass`.
+    // The provenance claim of a reproducibility check is that TWO CLEAN
+    // REBUILDS were compared, and these two strings are the only evidence in
+    // the document that a rebuild happened during a real interval. Read them
+    // when they are recorded; absence is not a defect, because a record that
+    // states no window makes no window claim (same rule as 117.43-07).
+    return hasWellFormedWindow;
+  }
+
+  /// Whether the recorded rebuild window is absent or internally consistent.
+  ///
+  /// Absent — BOTH ends missing or blank — is accepted as a non-claim. Half
+  /// recorded is NOT absence: a record that states when a rebuild started and
+  /// then stops is a claim with a hole in it, so it fails closed. Treating one
+  /// end as if the other had never been written would let a truncated window
+  /// through the same way an entirely absent one does. Present means both ends
+  /// must parse as ISO-8601 and the finish must be strictly after the start, so
+  /// a zero-length or reversed window fails closed too.
+  bool get hasWellFormedWindow {
+    final start = startedAt?.trim();
+    final finish = finishedAt?.trim();
+    final hasStart = start != null && start.isNotEmpty;
+    final hasFinish = finish != null && finish.isNotEmpty;
+    if (!hasStart && !hasFinish) return true;
+    if (!hasStart || !hasFinish) return false;
+    final parsedStart = DateTime.tryParse(start);
+    final parsedFinish = DateTime.tryParse(finish);
+    if (parsedStart == null || parsedFinish == null) return false;
+    return parsedFinish.isAfter(parsedStart);
   }
 }
 

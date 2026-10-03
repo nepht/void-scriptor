@@ -35,7 +35,11 @@
 ///    (`differing_artifacts` / `identical_artifacts`) each named artifact is
 ///    checked against its own digest and the two lists must classify the whole
 ///    recorded inventory (defects 117.43-01, 117.43-06, 117.43-07, and
-///    117.43-08 — four directions of the same trust boundary).
+///    117.43-08 — four directions of the same trust boundary);
+/// 6. the rebuild WINDOWS support the independence the comparison claims: each
+///    rebuild runs forwards, its recorded duration agrees with the window it
+///    summarises, and `rebuild_b` does not start until `rebuild_a` has
+///    finished (defect 117.43-09).
 ///
 /// Defect 117.43-01 (fail-open, fixed here): `ArtifactComparison.isWellFormed`
 /// compared only the two rebuilds' artifact NAME SETS and never their hash
@@ -356,6 +360,31 @@ final class ChecksumIndex {
   /// Paths recorded more than once with digests that disagree.
   final List<String> conflicting;
 }
+
+/// The rebuild window one `rebuild_results` record states.
+///
+/// [durationSeconds] is carried so the gate can compare a stated duration
+/// against the window it summarises. All three fields are null together when
+/// the record states no window at all.
+final class _RebuildWindow {
+  const _RebuildWindow({
+    required this.startedAt,
+    required this.finishedAt,
+    this.durationSeconds,
+  });
+
+  final String? startedAt;
+  final String? finishedAt;
+  final int? durationSeconds;
+}
+
+/// Sentinel distinguishing "field absent or explicitly null" from "field
+/// present but of a type that cannot be decoded".
+///
+/// `null` alone cannot carry that distinction, because both cases decode to
+/// null. This is the same reason 117.43-08 refuses a mistyped partition field
+/// rather than casting past it.
+const Object _kUndecodable = Object();
 
 /// Aggregate verdict of the 117.43 GA artifact gate.
 final class Sprint117GaArtifactResult {
@@ -792,6 +821,24 @@ abstract final class Sprint117GaArtifactGate {
     final b = _rebuildFrom(rebuildList[1]);
     if (a == null || b == null) return null;
 
+    // Sprint 117.43-09 (fail-open, fixed): the two rebuild WINDOWS were never
+    // read, and neither the domain object nor the gate had anywhere to hold
+    // them, so the manifest's independence claim — the `method` string says the
+    // digests come from two independent clean rebuild cycles — was never
+    // measured. Proven before the fix: a manifest whose rebuild_b starts while
+    // rebuild_a is still running, one whose rebuild FINISHES BEFORE IT STARTS,
+    // one whose recorded duration contradicts its own timestamps, and one whose
+    // timestamp cannot be parsed at all all returned `pass` with text
+    // indistinguishable from the honest case. Four impossible histories, one
+    // answer. The domain now reads the window it is given (see
+    // `RebuildResult.hasWellFormedWindow`) and this seam additionally requires
+    // the two windows not to overlap, because overlapping clean rebuilds share
+    // one `build/` directory and their digests say nothing about
+    // reproducibility. Absence stays non-claiming per 117.43-07.
+    if (!_windowsAreIndependent(a, b, rebuildList[0], rebuildList[1])) {
+      return null;
+    }
+
     // Sprint 117.43-07 (fail-open, fixed): the verdict was INFERRED, never read.
     // `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`
     // made every other value — an absent key, an explicit null, or a typo —
@@ -919,13 +966,129 @@ abstract final class Sprint117GaArtifactGate {
     final label = json['label'];
     final hashes = json['artifact_hashes'];
     if (label is! String || hashes is! Map<String, Object?>) return null;
+    final window = _decodeWindow(json);
+    if (window == null) return null;
     return RebuildResult(
       label: label,
       artifactHashes: hashes.map(
         (key, value) => MapEntry(key, value as String),
       ),
       exitCode: json['exit_code'] as int?,
+      startedAt: window.startedAt,
+      finishedAt: window.finishedAt,
     );
+  }
+
+  /// The rebuild window one record states, or null when a present field cannot
+  /// be decoded (which makes the whole manifest unevaluable).
+  ///
+  /// Sprint 117.43-09 (fail-open, fixed): `_rebuildFrom` read `label`, hashes,
+  /// and `exit_code` and dropped `started_at`, `finished_at`, and
+  /// `duration_seconds` on the floor, so the timestamps the manifest records
+  /// never reached [RebuildResult] at all. Adding a window check in the domain
+  /// would then have been theatre — every record would have arrived with a null
+  /// window and been waved through as a non-claim. Read them here, and decode a
+  /// present field strictly: a number where a string belongs is refused rather
+  /// than cast, for the same reason 117.43-08 refuses a mistyped partition.
+  static _RebuildWindow? _decodeWindow(Map<String, Object?> json) {
+    final hasStarted = json.containsKey('started_at');
+    final hasFinished = json.containsKey('finished_at');
+    final hasDuration = json.containsKey('duration_seconds');
+    if (!hasStarted && !hasFinished && !hasDuration) {
+      return const _RebuildWindow(startedAt: null, finishedAt: null);
+    }
+    final startedAt = _stringOrNull(json['started_at'], hasStarted);
+    final finishedAt = _stringOrNull(json['finished_at'], hasFinished);
+    final duration = _durationOrNull(json['duration_seconds'], hasDuration);
+    if (startedAt == _kUndecodable ||
+        finishedAt == _kUndecodable ||
+        duration == _kUndecodable) {
+      return null;
+    }
+    return _RebuildWindow(
+      startedAt: startedAt as String?,
+      finishedAt: finishedAt as String?,
+      durationSeconds: duration as int?,
+    );
+  }
+
+  static Object? _stringOrNull(Object? value, bool present) {
+    if (!present || value == null) return null;
+    return value is String ? value : _kUndecodable;
+  }
+
+  static Object? _durationOrNull(Object? value, bool present) {
+    if (!present || value == null) return null;
+    if (value is int) return value;
+    if (value is double && value == value.roundToDouble()) return value.toInt();
+    return _kUndecodable;
+  }
+
+  /// Whether the two recorded rebuild windows support the independence the
+  /// comparison claims: `rebuild_a` must have finished before `rebuild_b`
+  /// started, and each rebuild's own window must run forwards.
+  ///
+  /// The comparison method in the shipped manifest reads "after two INDEPENDENT
+  /// `flutter clean` + build cycles on the same tree". Two builds that overlap
+  /// in time are two concurrent builds fighting over the same `build/`
+  /// directory, so the artifact hashes they record cannot be attributed to a
+  /// clean rebuild at all — the independence the verdict rests on is not there.
+  /// Neither the 117.43 aggregate rules nor the 117.43-08 partition rules ask
+  /// this question, and no domain field could: before this slice the windows
+  /// were never read at all.
+  static bool _windowsAreIndependent(
+    RebuildResult a,
+    RebuildResult b,
+    Map<String, Object?> first,
+    Map<String, Object?> second,
+  ) {
+    // The independence question only exists when BOTH rebuilds state a window.
+    // A record with no window states no claim (117.43-07), and
+    // `hasWellFormedWindow` is deliberately true for the absent case, so it
+    // cannot stand in for "a window is present" here.
+    if (!_hasWindow(a) || !_hasWindow(b)) return true;
+    if (!a.hasWellFormedWindow || !b.hasWellFormedWindow) return false;
+    // Both ends of BOTH windows are recorded (a half-recorded window already
+    // failed closed inside `hasWellFormedWindow`), so the strings are present.
+    final startA = DateTime.tryParse(a.startedAt!.trim());
+    final finishA = DateTime.tryParse(a.finishedAt!.trim());
+    final startB = DateTime.tryParse(b.startedAt!.trim());
+    final finishB = DateTime.tryParse(b.finishedAt!.trim());
+    if (startA == null ||
+        finishA == null ||
+        startB == null ||
+        finishB == null) {
+      return false;
+    }
+    // Each recorded duration must agree with the window it summarises.
+    if (!_durationAgrees(first['duration_seconds'], startA, finishA)) {
+      return false;
+    }
+    if (!_durationAgrees(second['duration_seconds'], startB, finishB)) {
+      return false;
+    }
+    return !startB.isBefore(finishA);
+  }
+
+  /// Whether a record states a complete window (both ends present).
+  static bool _hasWindow(RebuildResult rebuild) {
+    final start = rebuild.startedAt?.trim();
+    final finish = rebuild.finishedAt?.trim();
+    return start != null &&
+        finish != null &&
+        start.isNotEmpty &&
+        finish.isNotEmpty;
+  }
+
+  /// Whether a recorded `duration_seconds` matches the window it describes.
+  ///
+  /// A `null` duration states no duration claim, so it is not checked; a stated
+  /// one must equal the window it summarises, because a duration that
+  /// contradicts its own timestamps is a record that disagrees with itself.
+  static bool _durationAgrees(Object? value, DateTime start, DateTime finish) {
+    if (value == null) return true;
+    if (value is! int) return false;
+    return value == finish.difference(start).inSeconds;
   }
 
   /// Reads a JSON manifest, returning null when absent or undecodable.

@@ -1410,4 +1410,314 @@ void main() {
       );
     });
   });
+
+  group('117.43-09 a rebuild window claim must be measured', () {
+    String digest(String seed) => seed * 64;
+
+    /// A manifest whose two rebuilds carry real windows and an honest
+    /// per-artifact partition, so only the WINDOW can decide the result.
+    Map<String, Object?> manifestWithWindow({
+      String firstStarted = '2026-09-23T13:27:45+07:00',
+      String firstFinished = '2026-09-23T13:29:47+07:00',
+      int? firstDuration = 122,
+      String secondStarted = '2026-09-23T13:30:17+07:00',
+      String secondFinished = '2026-09-23T13:32:12+07:00',
+      int? secondDuration = 115,
+      bool includeWindow = true,
+      bool includeDuration = true,
+    }) {
+      Map<String, Object?> rebuild(
+        String label,
+        String hashB,
+        String? started,
+        String? finished,
+        int? duration,
+      ) => <String, Object?>{
+        'label': label,
+        'artifact_hashes': <String, String>{
+          'a.exe': digest('a'),
+          'b.dll': hashB,
+        },
+        'exit_code': 0,
+        if (includeWindow && started != null) 'started_at': started,
+        if (includeWindow && finished != null) 'finished_at': finished,
+        if (includeDuration && duration != null) 'duration_seconds': duration,
+      };
+
+      return <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': <String>['a'],
+          'toolchain_versions': <String>['a'],
+          'dependency_lock': <String>['a'],
+          'rebuild_results': <Map<String, Object?>>[
+            rebuild(
+              'rebuild_a',
+              digest('b'),
+              firstStarted,
+              firstFinished,
+              firstDuration,
+            ),
+            rebuild(
+              'rebuild_b',
+              digest('c'),
+              secondStarted,
+              secondFinished,
+              secondDuration,
+            ),
+          ],
+          'artifact_comparison': <String, Object?>{
+            'method': 'SHA-256 after two independent clean rebuild cycles',
+            'verdict': 'NOT_BIT_IDENTICAL',
+            'differing_artifacts': <String>['b.dll'],
+            'identical_artifacts': <String>['a.exe'],
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['a'],
+        },
+      };
+    }
+
+    test('two rebuilds whose windows overlap are refused', () {
+      // The digests differ, the partition is honest, the verdict is canonical —
+      // every rule of 117.43-01/-06/-07/-08 is satisfied. The only thing wrong
+      // is the history: rebuild_b starts while rebuild_a is still running, so
+      // the two "independent clean rebuild cycles" the `method` claims are one
+      // overlapping pair contending for the same `build/` directory. Nothing
+      // read the windows before this slice, so it reported `pass`.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(
+          secondStarted: '2026-09-23T13:28:00+07:00',
+          secondFinished: '2026-09-23T13:32:12+07:00',
+          secondDuration: 252,
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'overlapping rebuild windows cannot be two independent clean '
+            'rebuilds, so the digests they record are not evidence of '
+            'reproducibility no matter how well the aggregate verdict reads',
+      );
+    });
+
+    test('a rebuild that finished before it started is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(
+          secondStarted: '2026-09-23T13:32:12+07:00',
+          secondFinished: '2026-09-23T13:30:17+07:00',
+          secondDuration: -115,
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason: 'a window that runs backwards is not a record of a rebuild',
+      );
+    });
+
+    test('a zero-length rebuild window is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(
+          secondFinished: '2026-09-23T13:30:17+07:00',
+          secondDuration: 0,
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a rebuild that starts and ends at the same instant ran no build at '
+            'all, which is not the clean rebuild the comparison depends on',
+      );
+    });
+
+    test('a recorded duration that contradicts its own window is refused', () {
+      // 13:30:17 -> 13:32:12 is 115 seconds; the manifest says 5. One record
+      // disagreeing with itself is enough to refuse the claim it supports.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(firstDuration: 5),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'duration_seconds must agree with the window it summarises, or the '
+            'record contradicts itself and supports nothing',
+      );
+    });
+
+    test('a timestamp that cannot be parsed is refused, not skipped', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(firstStarted: 'yesterday-ish'),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'an unreadable window fails closed; silently treating it as absent '
+            'would reopen the exact hole this closes',
+      );
+    });
+
+    test('a window field of the wrong type is refused, not cast', () {
+      final manifest = manifestWithWindow();
+      ((manifest['required_evidence']
+                    as Map<String, Object?>)['rebuild_results']
+                as List<dynamic>)[0]
+            as Map<String, Object?>
+        ..['started_at'] = 1758010265
+        ..['duration_seconds'] = '122';
+
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest,
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a number where a timestamp belongs, or a string where a count '
+            'belongs, must fail closed rather than be cast past',
+      );
+    });
+
+    test('honest non-overlapping windows still pass', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+
+    test('a manifest that records no window at all still passes', () {
+      // Absence is not a defect: a record that states no window makes no window
+      // claim, per 117.43-07. This also guards the 117.43-06/-07 fixtures,
+      // which carry no timestamps.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithWindow(
+          includeWindow: false,
+          includeDuration: false,
+        ),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+    });
+
+    test('the shipped manifest passes because its windows are honest', () {
+      final shipped = Sprint117GaArtifactGate.readManifest(
+        Sprint117GaPackagingContract.provenanceManifestPath,
+      );
+
+      expect(shipped, isNotNull);
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: shipped!,
+      );
+
+      // Measured independently before this slice, not assumed: rebuild_a ran
+      // 13:27:45 -> 13:29:47 (122s, matching its recorded duration), rebuild_b
+      // ran 13:30:17 -> 13:32:12 (115s, also matching), and the two windows are
+      // 30 seconds apart. So the independence claim is real and the provenance
+      // output stays `pass`.
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+
+    test('the shipped pass is directed — overlapping its windows fails it', () {
+      // The honest half of the claim above: take the REAL shipped document and
+      // move rebuild_b's start back inside rebuild_a's window, leaving every
+      // recorded digest, verdict, and partition untouched. If the gate really
+      // measures the windows this must stop passing; if it only measures the
+      // digests it will still pass, and the shipped `pass` was resting on
+      // nothing finer than "some artifact differed".
+      final shipped = Sprint117GaArtifactGate.readManifest(
+        Sprint117GaPackagingContract.provenanceManifestPath,
+      );
+      expect(shipped, isNotNull);
+
+      final overlapping =
+          jsonDecode(jsonEncode(shipped)) as Map<String, Object?>;
+      final rebuilds =
+          (overlapping['required_evidence']
+                  as Map<String, Object?>)['rebuild_results']
+              as List<dynamic>;
+      final first = rebuilds[0] as Map<String, Object?>;
+      final second = rebuilds[1] as Map<String, Object?>;
+      second['started_at'] = first['started_at'];
+      second['duration_seconds'] = DateTime.parse(
+        second['finished_at'] as String,
+      ).difference(DateTime.parse(first['started_at'] as String)).inSeconds;
+
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: overlapping,
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a manifest whose two rebuild windows overlap must not keep passing '
+            'on the strength of its digest comparison alone',
+      );
+    });
+  });
+
+  group('117.43-09 the domain refuses a window it cannot read', () {
+    final hashes = <String, String>{'a.exe': 'a' * 64};
+
+    test('a reversed window is not well formed', () {
+      final rebuild = RebuildResult(
+        label: 'rebuild_a',
+        artifactHashes: hashes,
+        exitCode: 0,
+        startedAt: '2026-09-23T13:29:47+07:00',
+        finishedAt: '2026-09-23T13:27:45+07:00',
+      );
+
+      expect(rebuild.hasWellFormedWindow, isFalse);
+      expect(rebuild.isWellFormed, isFalse);
+    });
+
+    test('a half-recorded window is not well formed', () {
+      final rebuild = RebuildResult(
+        label: 'rebuild_a',
+        artifactHashes: hashes,
+        exitCode: 0,
+        startedAt: '2026-09-23T13:27:45+07:00',
+      );
+
+      expect(rebuild.hasWellFormedWindow, isFalse);
+      expect(rebuild.isWellFormed, isFalse);
+    });
+
+    test('an absent window is not a claim and stays well formed', () {
+      final rebuild = RebuildResult(
+        label: 'rebuild_a',
+        artifactHashes: hashes,
+        exitCode: 0,
+      );
+
+      expect(rebuild.hasWellFormedWindow, isTrue);
+      expect(rebuild.isWellFormed, isTrue);
+    });
+
+    test('a forwards window is well formed', () {
+      final rebuild = RebuildResult(
+        label: 'rebuild_a',
+        artifactHashes: hashes,
+        exitCode: 0,
+        startedAt: '2026-09-23T13:27:45+07:00',
+        finishedAt: '2026-09-23T13:29:47+07:00',
+      );
+
+      expect(rebuild.hasWellFormedWindow, isTrue);
+      expect(rebuild.isWellFormed, isTrue);
+    });
+  });
 }

@@ -2126,6 +2126,83 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Storage Locations Screen di konfigurasi probe ini (registry file temp + viewport desktop). Cakupan audit focus-order layar: **35 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 34 sebelum commit fase ini, + kontrak baru ini = 35. (Koreksi hitungan: status fase 44 mencatat 35 dari 89, tetapi `git ls-tree -r 992fb49` = 34 kontrak tracked setelah commit fase 44, jadi angka fase 45 yang benar adalah 35.) Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung.
 
+## 46. Fase 46 — Focus Order di AI Provider Workspace Screen (2.4.3)
+
+**Layar**: `lib/features/ai/presentation/ai_provider_workspace_screen.dart` (AI Providers, kelas `AiProviderWorkspaceScreen`)
+**Kontrak**: `test/features/ai/presentation/ai_provider_workspace_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam subtree fokus, dan bila tidak ada jatuh ke `ValueKey<String>` terdekat pada rantai leluhur. `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 24 Tab). Layar berdiri tanpa database/network: `credentialStore` di-override ke `MemoryCredentialStore` sehingga `flutter_secure_storage` tidak menyentuh platform channel, dan `http.Client` hanya dibuat saat aksi `Test connection` ditekan (tidak pernah pada probe).
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Kartu (`ListTile` pembungkus) | Rect (left, top, w, h) |
+|---|---|---|---|---|
+| 0 | `Configure` | `OutlinedButton` Configure | OpenAI | 1313.1, 92.0, 174.9, 40.0 |
+| 1 | `Configure` | `OutlinedButton` Configure | Gemini | 1313.1, 188.0, 174.9, 40.0 |
+| 2 | `Configure` | `OutlinedButton` Configure | Ollama | 1313.1, 284.0, 174.9, 40.0 |
+| 3 | `Configure` | `OutlinedButton` Configure | ComfyUI | 1313.1, 380.0, 174.9, 40.0 |
+| 4 | `Configure` (ulang stop 0, `CYCLE complete at i=4`) | — | OpenAI | 1313.1, 92.0, 174.9, 40.0 |
+
+Jumlah stop = **4**. `find.byType(OutlinedButton)` = 4. `tester.takeException()` = `null`.
+
+Pembentukan urutan Tab:
+
+- `AppBar` layar ini hanya berisi judul `AI PROVIDERS` (tanpa tombol kembali di konfigurasi `MaterialApp(home: ...)`), jadi tidak ada stop sebelum kartu pertama.
+- Empat `ListTile` provider tidak punya `onTap` sehingga bukan stop; tiap kartu menyumbang tepat satu stop pada `OutlinedButton` `Configure` di trailing-nya.
+- Tombol `Test connection` dirender `null` (disabled, tidak ikut traversal) selama provider belum dikonfigurasi — kontrak state default punya 4 stop, bukan 5.
+- `Switch` tiap kartu sengaja display-only (`onChanged: null`, alpha scope) sehingga memang bukan target fokus; ini perilaku yang diharapkan, bukan defect.
+- Keempat tombol berbagi teks `Configure`, jadi identitas stop dikunci lewat judul `ListTile` yang rect-nya memuat pusat area fokus (`_providerAt`), bukan lewat teks tombol.
+- Geometri: keempat stop berbagi `left` 1313.1 (satu kolom tombol di sisi kanan) dan `top` naik 92 → 188 → 284 → 380 (jarak kartu 96 px, atas-ke-bawah). Setelah stop terakhir, Tab kembali ke rect stop 0 — siklus utuh.
+
+### Kontrak yang dikunci
+
+- `expect(find.byType(OutlinedButton), findsNWidgets(4))` dan `stops` `hasLength(4)` — jumlah stop disetel dengan jumlah kartu provider yang punya tombol Configure aktif.
+- Urutan provider `['OpenAI', 'Gemini', 'Ollama', 'ComfyUI']` — urutan Tab nyata dari probe, diambil dari judul kartu pembungkus tiap stop.
+- Semua stop berlabel `Configure` pada state default, dan area fokus non-nol (`width > 0 && height > 0`).
+- Kartu menumpuk atas-ke-bawah (`top[i] > top[i-1]`) dan keempat tombol berbagi satu kolom (`left` sama dalam toleransi 0.5 px).
+- State terkonfigurasi (`OpenAiProvider.credentialKey` diisi lewat `MemoryCredentialStore`) menambah tepat satu stop `Test connection` di depan `Configure` pada kartu OpenAI: total 5 stop, `Test connection` di kiri `Configure` dengan pusat baris sama (`|Δcenter.dy| <= 1.0`), tiga kartu sisanya tetap `Gemini`, `Ollama`, `ComfyUI`.
+- Setelah stop terakhir traversal wrap ke rect stop 0 (kartu OpenAI), lalu satu Tab lanjutan mengenai kartu Gemini — siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Tidak ada perubahan kode produksi pada fase ini: probe tidak menemukan defect urutan (semua elemen interaktif ikut traversal, tidak ada stop tersembunyi atau area nol, dan urutan mengikuti layout kartu). File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format --set-exit-if-changed test/features/ai/presentation/ai_provider_workspace_focus_order_test.dart
+=> Formatted 1 file (0 changed) in 0.01 seconds.   (exit 0)
+
+dart analyze test/features/ai/presentation/ai_provider_workspace_focus_order_test.dart
+=> No issues found!   (exit 0)
+
+flutter test test/features/ai/presentation/ai_provider_workspace_focus_order_test.dart
+=> 00:01 +4: All tests passed!   (exit 0)
+
+flutter test test/features/ai/   (gate)
+=> 00:55 +171: All tests passed!   (exit 0)
+```
+
+**Negative control** (wajib): dua entri pertama `_expectedProviders` pada salinan cadangan di `%LOCALAPPDATA%\Temp` ditukar menjadi `['Gemini', 'OpenAI', 'Ollama', 'ComfyUI']`, lalu kontrak dijalankan:
+
+```
+This was caught by the test expectation on the following line:
+  .../ai_provider_workspace_focus_order_test.dart line 115
+The test description was:
+  1. empat stop, urutan provider terkunci, area non-zero
+00:01 +0 -1: ... 1. empat stop, urutan provider terkunci, area non-zero [E]
+00:02 +3 -1: Some tests failed.
+NEGCTL_PIPE_EXIT=1
+```
+
+Salinan cadangan dipulihkan lalu dihapus (`RESTORED_AND_BACKUP_REMOVED`, `BACKUP_GONE`), kontrak diverifikasi ulang lewat gate `+171: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikuti urutan focus order (1 dari 4 test gagal saat urutan dua kartu provider dibalik), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `0` hit. Bagian report ini dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada AI Provider Workspace Screen di konfigurasi probe ini (store memori + viewport desktop). Cakupan audit focus-order layar: **36 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 35 sebelum commit fase ini, + kontrak baru ini = 36. Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung (catatan fase 41/42/43/45 tetap berlaku).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

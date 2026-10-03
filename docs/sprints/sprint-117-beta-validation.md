@@ -293,3 +293,79 @@ ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate
 masih INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** - pilihan (a) re-sign
 kandidat rc.1 lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA
 yang diterima + persempit acceptance 117.43. Cron tidak mengarang pilihan.
+## 117.43-17 - header harus sepakat dengan verdict yang ia nyatakan (2026-10-04)
+
+Defect **ke-12** (duabelas) dari hunt unmeasured-claim / fail-open decode di trust
+boundary yang sama, dan level **terakhir di atas badan dokumen** - header-nya.
+117.43-16 membuka `rebuild_run`; satu tingkat di atasnya ada `status` dan `decision`
+yang menyatakan **kesimpulan yang justru sedang diterbitkan gate ini**
+(`provenance_evaluation: pass`), dan **tidak ada pembaca di `lib/`** untuk keduanya:
+seam `BuildProvenanceEvidence` yang di-ship adalah model bertipe dibangun dari
+`required_evidence` saja, sementara gate membaca `required_evidence`, `rebuild_run`,
+dan `comparison`. Akibatnya gate menerbitkan pass verifikasi di atas dokumen yang
+**header-nya sendiri menolak**, atau memegangnya dalam bentuk yang tak bisa dibaca.
+
+**BATAS YANG DIPIN (tidak mengarang acceptance):** setiap penolakan di bawah
+membandingkan header terhadap evaluasi yang **sudah dilakukan gate ini**, bukan
+terhadap kosakata baru. Kosakata itu milik dokumen yang di-ship sendiri
+(`status: VERIFIED-LOCAL`, `decision: VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS`),
+dijamin oleh test sprint_113 untuk manifest yang persis sama. `version`,
+`canonical_step`, dan `title` **TIDAK** diukur - di luar klaim yang dibaca.
+
+**RED (bukti, bukan asumsi):** hanya file **gate** dikembalikan ke `HEAD` sementara
+test tetap memuat test baru (helper `_headerVerdictRefusal` privat domain, jadi
+tidak ada coupling kompilasi) -> exit 1 dengan **TEPAT 2 test 117.43-17 gagal**,
+sementara **dua kontrol tetap hijau**. Kegagalan itu karena alasan yang benar:
+delapan header mustahil semuanya melaporkan `pass` (`status=UNVERIFIED`,
+`status=REVIEW`, `decision=DRAFT_PROVENANCE`, `status=42`, `status='   '`,
+`status={objek}`, `decision=7`, `decision=''`). Kontrol yang tetap hijau - shipped
+header memang menyatakan verdict yang tepat, dan field absen tetap non-klaim -
+menyembrance test itu gagal karena cacat, bukan karena basisnya salah.
+
+**FIX (satu ujung, pola sama seperti 117.43-13/-16):** `_headerVerdictRefusal`
+menolak field header yang **HADIR tapi tak terbaca** (bukan string, string blank)
+dan yang **menyatakan verdict selain verifikasi lokal**; `status` hanya dengan
+token `VERIFIED-LOCAL`, `decision` hanya dengan segmen awal `VERIFIED_LOCAL`
+(sisanya milik dokumen itu sendiri). Field **absen** dan **null eksplisit** tetap
+non-klaim (117.43-07) - mengarang keharusan akan mengarang acceptance, dan
+justru itu yang membuat pemeriksaan ini menyingkir ke arah sebaliknya.
+
+**KEPUTUSAN HONORITAS KLAIM:** manifest yang di-ship **tetap `pass`** - Header-nya
+memang jujur. Fix **tidak mengubah** status apa pun pada dokumen nyata; yang
+ditambahkan penjaga bahwa header yang menolak harus menggagalkan gate, dan bahwa
+header yang benar **tidak pernah bisa menebus** evidence yang gagal (test kontrol
+membuktikan: `status: VERIFIED-LOCAL` tetap ada sementara `provenance_record`
+dihapus dari `required_evidence`, hasilnya tetap bukan `pass`).
+
+**GREEN:** file penuh **127/127 exit 0** (dari 123, +4 test baru).
+
+**GERBANG:** `dart format` 2 file **0 changed** exit 0, diulang (idempotent);
+`dart analyze` 2 file **No issues found!** exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 **25,6 dtk**
+`Built build\windows\x64\runner\Debug\void_scriptor.exe`.
+
+**SHA (2-sisi, dari artefak TER-COMMIT sesuai klausul 1+2):** gate
+`fdc264d68b3c66869e8e270fd1e390c69bf40a6d538d866199f210164da58834`, test
+`9ae62e6136f4470cb5d8c9c53930749f4dd4ce8bfad17310a1aa45a2242feb63` -
+disk == `git show 2e70b13:<path>`, **0 CRLF di kedua sisi** (tidak ada
+normalisasi yang perlu disamarkan).
+
+**ADOPSI WIP:** slice ini dimulai dari WIP ter abandoned di working tree (mtime
+02:21/02:23, idle 40 menit saat diperiksa, **tidak ada proses dart/flutter/
+msbuild** - bukti idle, bukan sekadar file dirty). Otorisasi adopsi 2026-09-16
+dipakai setelah syarat keenam terpenuhi: file tepat dalam scope `117.43`, tidak
+memperluas acceptance, snapshot recoverabe diambil di luar source tree
+(`cache/scratch/slice-117-43-17-20261004-0305`, gate.before/test.before + sha +
+status + HEAD), SHA sebelummutasi tercatat, dan tidak ada `reset`/`restore` ke
+sibling. WIP itu sendiri **sudah RED-tested oleh run yang crashed** (test ada
+lengkap, gate helper ada); run ini memverifikasi ulang RED secara independen
+sendiri, bukan mempercayai catatan slice.
+
+**COMMIT:** `2e70b13` (2 path eksplisit, 174 insertions, insert-only). **PUSH:** tidak.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak
+ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate
+masih INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah -
+pilihan (a) re-sign kandidat rc.1 lalu refresh checksum, atau (b) nyatakan drift
+sebagai limitasi GA yang diterima + persempit acceptance 117.43. Cron tidak
+mengarang pilihan.

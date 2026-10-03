@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T00:55:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 slice 117.43-16",
+  "updated_at": "2026-10-04T03:10:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 slice 117.43-17",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -199,14 +199,24 @@
   },
   "last_worker_run": {
     "job": "b0c2c7d744d9",
-    "run_at": "2026-10-04T00:55:00+07:00",
+    "run_at": "2026-10-04T03:10:00+07:00",
     "step": "117.43",
-    "slice": "defect 117.43-16 (rebuild_run restates facts no reader decoded)",
-    "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
-    "evidence_sha256_committed": "701c32a24b8cfe2da80aaafe1569eafe8bcbed53bf63e16adf42d079b59fde78",
-    "evidence_note": "canonical shas are the committed blobs via `git show cfcba26:<path>`; gate and test shas recorded in ledger and here, all four sides verified equal",
-    "focused_tests": "123/123 PASS exit 0",
-    "full_suite": "+9654 ~1 -11 EXIT=1 (11 pre-existing, unrelated)"
+    "slice": "defect 117.43-17 (document header verdict never read before the gate published it)",
+    "commit": "2e70b13eb8bf7891822aeb078386382535cf00f2",
+    "adopted_wip": "abandoned WIP mtime 02:21/02:23, idle 40min, no dart/flutter/msbuild process; snapshot cache/scratch/slice-117-43-17-20261004-0305",
+    "evidence_sha256_committed": {
+      "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart": "fdc264d68b3c66869e8e270fd1e390c69bf40a6d538d866199f210164da58834",
+      "test/release/sprint_117_ga_artifact_reproducibility_test.dart": "9ae62e6136f4470cb5d8c9c53930749f4dd4ce8bfad17310a1aa45a2242feb63"
+    },
+    "red": "gate file only at HEAD -> exit 1, exactly 2 new defect tests fail (8 impossible headers all pass), 2 controls green",
+    "green": "127/127 exit 0 (was 123)",
+    "gates": "format 2 files 0 changed idempotent exit 0; analyze No issues found! exit 0; diff --check exit 0; build windows --debug exit 0 in 25.6s",
+    "status": "PARTIAL-LOCAL",
+    "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
+    "next_step": "117.43",
+    "step_closed": false,
+    "blocked_on": "TODO-OPERATOR 117.43-02",
+    "push": "none"
   },
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34.",
   "studio_hunt_2026_09_13_run289": {
@@ -3567,5 +3577,5 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
-  "ahead": 4
+  "ahead": 11
 }

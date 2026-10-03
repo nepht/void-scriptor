@@ -1144,6 +1144,75 @@ Gate:
 Status: **VERIFIED** (test-level, satu arah Tab, viewport 1536x1024). Belum ada bukti native/computer-use pada fase ini.
 
 ---
+## 24. Fase 19 — Focus Order di Public Project Page Screen (2.4.3)
+
+**Layar:** `lib/features/release/presentation/public_project_page_screen.dart` (`PublicProjectPageScreen`)
+**Kontrak:** `test/features/release/presentation/public_project_page_focus_order_test.dart`
+**Tanggal:** 2026-10-03 | **Viewport probe & kontrak:** 1536 x 1024, dpr 1.0 | **Metode:** traversal `LogicalKeyboardKey.tab` berulang, berhenti saat `Rect` fokus berulang.
+
+### Hasil probe (evidence-first)
+
+Probe sementara pumped layar di dalam `ProviderScope` + `MaterialApp` (layar hanya butuh `releaseProvider`, tanpa database atau jaringan), lalu menekan `tab` sampai `Rect` fokus berulang. Output `STOP` mentah:
+
+```
+STOP 0: label="Follow"        rect=Rect.fromLTRB(16.0, 76.0, 509.3, 116.0)
+STOP 1: label="Watch"         rect=Rect.fromLTRB(521.3, 76.0, 1014.7, 116.0)
+STOP 2: label="Play"          rect=Rect.fromLTRB(1026.7, 76.0, 1520.0, 116.0)
+STOP 3: label="About"         rect=Rect.fromLTRB(52.0, 136.0, 154.5, 184.0)
+STOP 4: label="Characters"    rect=Rect.fromLTRB(154.5, 136.0, 327.5, 184.0)
+STOP 5: label="Gallery"       rect=Rect.fromLTRB(327.5, 136.0, 458.2, 184.0)
+STOP 6: label="Episodes"      rect=Rect.fromLTRB(458.2, 136.0, 603.0, 184.0)
+STOP 7: label="Game Updates"  rect=Rect.fromLTRB(603.0, 136.0, 804.2, 184.0)
+STOP 8: label="Credits"       rect=Rect.fromLTRB(804.2, 136.0, 934.9, 184.0)
+STOP 9: REPEAT rect=Rect.fromLTRB(16.0, 76.0, 509.3, 116.0)
+```
+
+Jumlah stop: **9** (3 aksi baris utama + 6 tab). Probe dihapus setelah kontrak ditulis.
+
+### Kontrak yang dikunci
+
+`test/features/release/presentation/public_project_page_focus_order_test.dart` mengunci tiga hal:
+
+1. **Urutan label persis:** `Follow, Watch, Play, About, Characters, Gallery, Episodes, Game Updates, Credits`.
+2. **Properti posisi:** tiga aksi berbagi satu baris fokus (`top` sama, `left` menaik); enam tab berbagi satu baris fokus lain (`top` sama, `left` menaik); strip tab berada di bawah baris aksi dan tidak dimulai sebelum `left` baris aksi.
+3. **Area fokus non-zero:** setiap stop punya `width > 0` dan `height > 0`.
+
+Dua penguat tambahan: mengganti tab ke `Gallery` tidak menambah atau mengubah stop fokus, dan tab terakhir (`Credits`) berada di ujung kanan strip sebelum traversal membungkus kembali ke `Follow`.
+
+### Negative control
+
+Ekspektasi urutan label dimutasi sementara (`Watch` <-> `About` ditukar pada list pertama) lalu `flutter test` dijalankan tanpa pipe:
+
+```
+00:02 +2 -1: Some tests failed.
+Failing tests:
+  ...public_project_page_focus_order_test.dart: ... baris aksi dibaca kiri ke kanan sebelum strip tab
+REAL_EXIT=1
+```
+
+File dipulihkan dari backup `cp` di `%LOCALAPPDATA%\Temp`, backup dihapus, dan re-run pasca-restore hijau (`RESTORE_EXIT=0`, `+3: All tests passed!`). Kontrak terbukti punya daya deteksi, bukan sekadar lulus pasif.
+
+### Gate
+
+| Gate | Perintah | Hasil |
+|---|---|---|
+| Format | `dart format test/features/release/presentation/public_project_page_focus_order_test.dart` | `Formatted 1 file (1 changed)` |
+| Analyzer | `dart analyze test/features/release/presentation/public_project_page_focus_order_test.dart` | `No issues found!` |
+| Kontrak | `flutter test test/features/release/presentation/public_project_page_focus_order_test.dart` | `+3: All tests passed!` (exit 0) |
+| Negative control | mutasi urutan label | `+2 -1: Some tests failed.` (exit 1) |
+| Suite feature | `flutter test test/features/release/` | lihat bagian bawah |
+
+### Status
+
+**VERIFIED** untuk 2.4.3 (Focus Order) pada layar ini: traversal reading order, urutan kiri-ke-kanan per baris, dan area fokus non-zero terkunci kontrak yang terbukti negatif. Tidak ada defect produksi yang ditemukan pada probe, jadi tidak ada kode produksi yang diubah pada fase ini.
+
+### Catatan metodologi
+
+- `_screen()` memakai `ProviderScope` karena layar adalah `ConsumerWidget` yang memanggil `ref.watch(releaseProvider)`; `ReleaseController` hanya menyimpan state in-memory, jadi tidak ada fixture database atau jaringan.
+- Deteksi label memakai traversal `Element` yang mengambil `Text` pertama non-`Icon` di subtree fokus; `Icon` dilewati agar label stabil.
+- Kunci siklus memakai segitiga (`top|left|width`), bukan hanya posisi, supaya dua stop dengan `top|left` sama tapi lebar berbeda tetap dihitung berbeda.
+- Layar ini memakai `TabBar` dengan `DefaultTabController`, sehingga traversal mengikuti urutan deklarasi tab; ini perilaku `FocusTraversalGroup` bawaan Material, bukan defect.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

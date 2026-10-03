@@ -783,7 +783,13 @@ abstract final class Sprint117GaArtifactGate {
         observed: 'manifest carries no required_evidence object',
       );
     }
-    final evaluation = _evaluateShippedProvenance(evidence);
+    final evaluation = _evaluateShippedProvenance(
+      evidence,
+      // Sprint 117.43-16: the restatement lives one level above
+      // `required_evidence`, so it has to be handed down here; inside the
+      // group it did not exist at all.
+      provenanceManifest['rebuild_run'],
+    );
     const declared = 'build provenance evaluated';
     if (evaluation == null) {
       return Sprint117GaArtifactCheck.unmet(
@@ -817,6 +823,7 @@ abstract final class Sprint117GaArtifactGate {
   /// shipped shape. Never restates the evaluation logic.
   static (String, String)? _evaluateShippedProvenance(
     Map<String, Object?> evidence,
+    Object? rebuildRun,
   ) {
     // Sprint 117.43-13 (fail-open, fixed): the list itself was read with
     // `(evidence['rebuild_results'] as List<dynamic>?)?.cast<Map<String,
@@ -962,6 +969,23 @@ abstract final class Sprint117GaArtifactGate {
     for (final rebuild in decodedRebuilds) {
       if (!rebuild.hasWellFormedMethod) return null;
       if (!rebuild.ranSameExperimentAs(a)) return null;
+    }
+
+    // Sprint 117.43-16 (unmeasured-claim, fixed): `rebuild_run` is the second
+    // place this manifest restates the run. The records state two cycles and
+    // their durations; the group states how many cycles there were
+    // (`cycles`) and how long each took (`rebuild_<label>_duration_seconds`),
+    // and nothing in `lib/` decoded a single member of it. The gate therefore
+    // published `provenance_evaluation: pass` for a document whose own
+    // summary claimed 900 seconds where its record claims 122, three cycles
+    // where two rebuilds are recorded, or a duration for a rebuild no record
+    // mentions. 117.43-15 fixed the copy of this restatement inside
+    // `provenance_record`; this is the other copy, one level up and outside
+    // `required_evidence`, which is why that reader could not see it. Every
+    // number compared here is already measured from the records, so refusing
+    // a contradiction invents no acceptance.
+    if (!_rebuildRunAgrees(rebuildRun, rebuildList, decodedRebuilds)) {
+      return null;
     }
 
     // Sprint 117.43-07 (fail-open, fixed): the verdict was INFERRED, never read.
@@ -1370,6 +1394,76 @@ abstract final class Sprint117GaArtifactGate {
     if (value == null) return true;
     if (value is! int) return false;
     return value == finish.difference(start).inSeconds;
+  }
+
+  /// Whether the document-level `rebuild_run` group agrees with the records
+  /// it summarises.
+  ///
+  /// Sprint 117.43-16 (unmeasured-claim, fixed): this group restates the run
+  /// `rebuild_results` records — how many cycles ran, and how long each took —
+  /// and no reader in `lib/` had ever opened it, so a document contradicting
+  /// its own records still received `pass`. It sits outside
+  /// `required_evidence`, which is why 117.43-15's summary-line reader could
+  /// not reach it.
+  ///
+  /// Refused: a group present but not an object; a `cycles` or
+  /// `rebuild_<label>_duration_seconds` value that cannot be read as a whole
+  /// number (present-but-unreadable fails closed, 117.43-13); a cycle count
+  /// differing from the number of recorded rebuilds; a duration differing
+  /// from the duration its own record states; and a duration naming a label
+  /// no record carries.
+  ///
+  /// Non-claiming, pinned by test: an absent group or a `null` member states
+  /// nothing (117.43-07); prose members (`method`,
+  /// `signed_snapshot_restore`) make no number claim; and vocabulary this
+  /// group's shipped grammar does not define makes no claim either — the
+  /// clean step is measured where it is claimed, on the record
+  /// (117.43-10), not re-parsed out of prose one level up.
+  static bool _rebuildRunAgrees(
+    Object? rebuildRun,
+    List<Map<String, Object?>> records,
+    List<RebuildResult> rebuilds,
+  ) {
+    if (rebuildRun == null) return true;
+    if (rebuildRun is! Map<String, Object?>) return false;
+    final run = rebuildRun;
+
+    final cycles = _durationOrNull(run['cycles'], run.containsKey('cycles'));
+    if (identical(cycles, _kUndecodable)) return false;
+    if (cycles != null && cycles != rebuilds.length) return false;
+
+    final summarised = RegExp(r'^(rebuild_.+)_duration_seconds$');
+    for (final member in run.entries) {
+      final label = summarised.firstMatch(member.key)?.group(1);
+      if (label == null) continue;
+      final seconds = _durationOrNull(member.value, true);
+      if (identical(seconds, _kUndecodable)) return false;
+      if (seconds == null) continue;
+      final index = rebuilds.indexWhere((rebuild) => rebuild.label == label);
+      // A duration for a rebuild no record names claims a cycle that never
+      // happened — the same fabrication 117.43-15 refuses in the summary
+      // lines, where a rebuild_z line had the same effect.
+      if (index < 0) return false;
+      final recorded = records[index];
+      final own = _durationOrNull(
+        recorded['duration_seconds'],
+        recorded.containsKey('duration_seconds'),
+      );
+      if (identical(own, _kUndecodable)) return false;
+      if (own != null) {
+        if (own != seconds) return false;
+        continue;
+      }
+      // The record states no duration of its own, so fall back to the window
+      // it does state. With neither, there is nothing to contradict.
+      if (!_hasWindow(rebuilds[index])) continue;
+      final rebuild = rebuilds[index];
+      final start = DateTime.tryParse(rebuild.startedAt!.trim());
+      final finish = DateTime.tryParse(rebuild.finishedAt!.trim());
+      if (start == null || finish == null) return false;
+      if (finish.difference(start).inSeconds != seconds) return false;
+    }
+    return true;
   }
 
   /// Reads a JSON manifest, returning null when absent or undecodable.

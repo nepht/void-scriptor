@@ -2683,10 +2683,15 @@ void main() {
 
     Map<String, Object?> withExtras(List<Map<String, Object?>> extras) {
       final m = shipped();
-      evidenceOf(m)['rebuild_results'] = <Map<String, Object?>>[
-        ...rebuildsOf(shipped()),
-        ...extras,
-      ];
+      final records = <Map<String, Object?>>[...rebuildsOf(m), ...extras];
+      evidenceOf(m)['rebuild_results'] = records;
+      // 117.43-16 measures `rebuild_run.cycles` against the record count, so
+      // a fixture that appends records while leaving the group's own count
+      // stale would be refused for THAT reason instead of the defect under
+      // test, and the count assertion would no longer prove anything. Keeping
+      // the document self-consistent preserves every caller's intent: eight
+      // of these manifests inject a defect, one measures the count.
+      (m['rebuild_run']! as Map<String, Object?>)['cycles'] = records.length;
       return m;
     }
 
@@ -3323,6 +3328,201 @@ void main() {
               .cast<String>();
       expect(lines.where((line) => line.contains(' exit_code ')), hasLength(2));
       expect(digest('a'), hasLength(64));
+    });
+  });
+
+  group('117.43-16 rebuild_run must agree with what it restates', () {
+    // Defect 117.43-16: the document-level `rebuild_run` group restates facts
+    // this gate already measures on the records themselves — how many cycles
+    // ran, and how long each one took — and no reader in `lib/` has ever
+    // decoded it. The gate publishes `provenance_evaluation: pass` for a
+    // document whose own summary claims 900 seconds where its record claims
+    // 122, or three cycles where two rebuilds are recorded. 117.43-15 fixed
+    // the same restatement inside `provenance_record`; this is the second
+    // copy of it, one level up, in a group that never reaches the domain at
+    // all. Every number compared here is already measured from
+    // `rebuild_results`, so refusing a contradiction invents no acceptance.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    List<Map<String, Object?>> recordsOf(Map<String, Object?> manifest) =>
+        ((manifest['required_evidence']!
+                    as Map<String, Object?>)['rebuild_results']!
+                as List<dynamic>)
+            .cast<Map<String, Object?>>();
+
+    Map<String, Object?> runOf(Map<String, Object?> manifest) =>
+        manifest['rebuild_run']! as Map<String, Object?>;
+
+    String statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// Shipped manifest with [patch] merged into its `rebuild_run` group.
+    Map<String, Object?> withRunPatch(Map<String, Object?> patch) {
+      final manifest = shipped();
+      manifest['rebuild_run'] = <String, Object?>{...runOf(manifest), ...patch};
+      return manifest;
+    }
+
+    /// Shipped manifest whose `rebuild_run` group holds [value] verbatim.
+    Map<String, Object?> withRunAs(Object? value) {
+      final manifest = shipped();
+      manifest['rebuild_run'] = value;
+      return manifest;
+    }
+
+    /// Shipped manifest with no `rebuild_run` group at all.
+    Map<String, Object?> withoutRun() {
+      final manifest = shipped();
+      manifest.remove('rebuild_run');
+      return manifest;
+    }
+
+    test('117.43-16 the shipped manifest states a rebuild_run group this gate '
+        'can read', () {
+      // If the fixture did not restate measured numbers, every case below
+      // would prove nothing: a reader that ignored the group would pass them.
+      final manifest = shipped();
+      final run = runOf(manifest);
+      final records = recordsOf(manifest);
+      expect(records, hasLength(2));
+      expect(run['cycles'], records.length);
+      for (final record in records) {
+        final label = record['label']! as String;
+        expect(
+          run['${label}_duration_seconds'],
+          record['duration_seconds'],
+          reason: '$label restates a duration its own record states',
+        );
+        final start = DateTime.parse(record['started_at']! as String);
+        final finish = DateTime.parse(record['finished_at']! as String);
+        expect(
+          run['${label}_duration_seconds'],
+          finish.difference(start).inSeconds,
+          reason: 'the restated number is a duration this gate measures',
+        );
+      }
+      // The prose members describe how the run was carried out and state no
+      // number this grammar can compare (pinned below).
+      expect(run['method'], isA<String>());
+      expect(run['signed_snapshot_restore'], isA<String>());
+      expect(statusOf(manifest), 'pass');
+    });
+
+    test('117.43-16 every one of these passed before this slice', () {
+      final cases = <String, String>{
+        'three cycles for two recorded rebuilds': statusOf(
+          withRunPatch({'cycles': 3}),
+        ),
+        'zero cycles for two recorded rebuilds': statusOf(
+          withRunPatch({'cycles': 0}),
+        ),
+        'a cycle count that cannot be read': statusOf(
+          withRunPatch({'cycles': 'two'}),
+        ),
+        'rebuild_a restated as 900 seconds': statusOf(
+          withRunPatch({'rebuild_a_duration_seconds': 900}),
+        ),
+        'rebuild_b restated as 1 second': statusOf(
+          withRunPatch({'rebuild_b_duration_seconds': 1}),
+        ),
+        'a duration naming a rebuild no record mentions': statusOf(
+          withRunPatch({'rebuild_z_duration_seconds': 300}),
+        ),
+        'a group recorded in a shape that cannot be read': statusOf(
+          withRunAs('2 cycles, both cold'),
+        ),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'every case states a fact about the same run that the records '
+            'state differently, and all ${cases.length} returned pass: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-16 restatements that agree with the records are still '
+        'accepted', () {
+      expect(statusOf(shipped()), 'pass');
+      expect(statusOf(withRunPatch({'cycles': 2})), 'pass');
+      expect(
+        statusOf(withRunPatch({'rebuild_a_duration_seconds': 122})),
+        'pass',
+      );
+      expect(
+        statusOf(withRunPatch({'rebuild_b_duration_seconds': 115})),
+        'pass',
+      );
+    });
+
+    test('117.43-16 a manifest that states no rebuild_run claims nothing', () {
+      expect(
+        statusOf(withoutRun()),
+        'pass',
+        reason:
+            'the group restates the records, it is not a required section: a '
+            'document without it contradicts nothing (117.43-07 absence stays '
+            'non-claim)',
+      );
+    });
+
+    test('117.43-16 prose members and vocabulary this grammar does not define '
+        'make no claim', () {
+      expect(
+        statusOf(withRunPatch({'method': 'cold rebuilds, cache dropped'})),
+        'pass',
+        reason:
+            'the clean step is measured where it is claimed, on the record '
+            '(117.43-10), not re-parsed out of prose one level up',
+      );
+      expect(
+        statusOf(
+          withRunPatch({
+            'signed_snapshot_restore': 'restored afterwards; exe re-verified',
+          }),
+        ),
+        'pass',
+        reason: 'prose about the surrounding procedure states no number',
+      );
+      expect(
+        statusOf(withRunPatch({'cold_rebuilds': 7})),
+        'pass',
+        reason:
+            "a key this group's shipped vocabulary does not use defines no "
+            'claim; refusing it would invent grammar',
+      );
+      expect(statusOf(withRunPatch({'cycles': null})), 'pass');
+      expect(
+        statusOf(withRunPatch({'rebuild_a_duration_seconds': null})),
+        'pass',
+        reason: 'an explicit null states nothing, exactly like an absent key',
+      );
+      final dropped = shipped();
+      runOf(dropped).remove('rebuild_b_duration_seconds');
+      expect(
+        statusOf(dropped),
+        'pass',
+        reason: 'omitting one restatement states nothing to contradict',
+      );
+    });
+
+    test('117.43-16 a restated duration that cannot be read is refused', () {
+      expect(
+        statusOf(withRunPatch({'rebuild_a_duration_seconds': '122 seconds'})),
+        isNot('pass'),
+        reason:
+            'a present value in a shape this gate cannot read is unevaluable, '
+            'not silently skipped (117.43-13)',
+      );
     });
   });
 }

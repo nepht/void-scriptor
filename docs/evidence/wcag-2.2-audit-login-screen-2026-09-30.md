@@ -1060,6 +1060,37 @@ Gate:
 
 ---
 
+## 22. Fase 17 — Focus Order di Create Product Wizard & Product Detail (2.4.3)
+
+Dua layar marketplace yang hanya memiliki aksi di bagian bawah diuji pada viewport 1536x1024.
+
+Create Product Wizard (`create_product_wizard_screen.dart`):
+
+1. `Cancel` — kiri.
+2. `Next` — kanan (berubah menjadi `Finish` pada langkah terakhir, namun posisi dan urutan tetap).
+
+Chip langkah (`Details`, `Pricing`, `Files`, `Review`) bersifat informasional dan tidak menjadi stop fokus. Setelah `Next`, traversal kembali ke `Cancel`.
+
+Product Detail (`product_detail_screen.dart`):
+
+1. `Install` — kiri.
+2. `Buy` — kanan.
+
+Baris info (`Description`, `Version`, `Rating`, `Reviews`) tidak interaktif dan tidak menjadi stop fokus.
+
+Kontrak mengunci dua stop per layar, urutan kiri-ke-kanan pada baris yang sama, dan area fokus non-zero.
+
+Negative control: menukar expected `['Install', 'Buy']` menjadi `['Buy', 'Install']` menghasilkan `NEG_EXIT=1` dan `+1 -1: Some tests failed`, membuktikan assertion urutan memiliki witness RED.
+
+Gate:
+
+- Test focus order dua layar: **2/2 PASS**.
+- `dart analyze`: **No issues found**.
+- Probe sementara dihapus.
+- CJK/Cyrillic scan: **none**.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -935,6 +935,48 @@ Urutan tiga label clip dibalik di dalam test lalu dijalankan ulang. Hasil **4 da
 
 ---
 
+## 17. Fase 12 — Focus Order di Creator Workspace (2.4.3)
+
+`creator_workspace_screen.dart` dipilih sebagai layar berikutnya karena menjadi kandidat teratas setelah Timeline Workspace: sembilan kartu seksi interaktif, tanpa async dan tanpa navigasi di dalam layar.
+
+### 17.1 Data traversal
+
+Probe nyata pada viewport 1536x1024, devicePixelRatio 1.0 menghasilkan **9 stop fokus** dan loop kembali ke `My Projects`:
+
+| # | Stop | Baris | Kolom |
+|---|---|---:|---:|
+| 0 | My Projects | 80.0 | 24.0 |
+| 1 | My Characters | 80.0 | 528.0 |
+| 2 | My Worlds | 80.0 | 1032.0 |
+| 3 | My Assets | 270.29 | 24.0 |
+| 4 | My Stories | 270.29 | 528.0 |
+| 5 | My AI Agents | 270.29 | 1032.0 |
+| 6 | My Workflows | 460.57 | 24.0 |
+| 7 | Portfolio | 460.57 | 528.0 |
+| 8 | Archive | 460.57 | 1032.0 |
+
+Urutannya row-major dan sama persis dengan `CreatorWorkspaceSection.values`. Setiap kartu memakai `InkWell`, memiliki label teks yang dapat dibaca, dan memiliki area fokus non-zero.
+
+### 17.2 Kontrak
+
+Test mengunci sembilan stop, urutan label, tiga kolom kiri-ke-kanan di setiap baris, dan tiga baris atas-ke-bawah. Test juga memverifikasi bahwa semua seksi enum memang tampil. Traversal setelah `Archive` kembali ke `My Projects`.
+
+### 17.3 Negative control
+
+Ekspektasi sengaja diubah agar melewati item pertama enum. Hasil **2 dari 3 PASS, 1 FAIL** pada assertion urutan utama. Setelah kontrol dipulihkan, test kembali hijau.
+
+### 17.4 Gate
+
+| Gate | Hasil |
+|---|---|
+| test fokus Creator Workspace | 3 dari 3 PASS |
+| negative control | 2 dari 3 PASS, assertion urutan FAIL |
+| `test/features/creator/` | 77 PASS, 0 FAIL |
+| `dart analyze` test fokus | No issues found |
+| CJK/Cyrillic scan | none |
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

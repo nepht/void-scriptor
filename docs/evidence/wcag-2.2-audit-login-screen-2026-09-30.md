@@ -857,6 +857,84 @@ Urutan delapan `expectedTypes` dibalik di dalam test lalu dijalankan ulang. Hasi
 
 ---
 
+## 16. Fase 11 — Focus Order di Timeline Workspace (2.4.3)
+
+Layar keenam untuk 2.4.3, dan yang pertama punya **dua mode tampilan** yang saling menggantikan: Edit dan Preview. Kontrak fokus diuji untuk keduanya.
+
+### 16.1 Kenapa layar ini dipilih
+
+`timeline_workspace_screen.dart` (453 baris) punya stop fokus paling banyak di antara layar yang belum diaudit. Unggulannya pada tabel kandidat:
+
+| Layar | Baris | Interaktif | Skor |
+| --- | --- | --- | --- |
+| **timeline_workspace** | 453 | 15 | 11 |
+| create_universe_wizard (Fase 10) | 418 | 8 | 8 |
+| workflow_editor | 130 | 7 | 7 |
+| automation_center | 270 | 6 | 6 |
+| content_capability_matrix | 462 | 5 | 5 |
+| variant_inspector | 363 | 4 | 4 |
+
+Skor memakai `interaktif - 4*async - 3*nav`, supaya future dan navigasi tetap memotong meski nilai Determinismenya tinggi.
+
+Satu-satunya kemunculan async di berkas ini adalah tipe callback `onClipTimingChanged` (`Future<void> Function(...)`) pada baris 18 — bukan logika async di dalam widget. Tanpa navigasi, dan urutan track berasal dari `TimelineTrackType.values` sementara urutan clip dari `startSeconds`.
+
+### 16.2 Temuan probe: area timeline kosong tidak punya stop fokus
+
+Probe pertama memakai `clips` default (kosong) dan menghasilkan hanya 6 stop — seluruhnya di pita header dan toolbar. Lima puluh track row tetap tergambar, tetapi nol di antaranya punya stop fokus.
+
+Setelah `clips` diisi tiga clip, traversal bertambah tiga stop, satu per clip. Ini bukan defect: `TimelineClip` memakai `InkWell(onTap:)`, jadi setiap clip memang punya satu node fokus yang tidak muncul ketika daftarnya kosong.
+
+Kontrak ini ikut dikunci, karena track kosong dan track yang ada adalah dua keadaan fokus yang berbeda.
+
+### 16.3 Data traversal mode Edit (tiga clip) — 9 stop
+
+| # | Kontrol | t | l | w | h |
+| --- | --- | --- | --- | --- | --- |
+| 0 | Play | 6 | 1476 | 40 | 40 |
+| 1 | Zoom out | 64 | 484 | 40 | 40 |
+| 2 | Zoom in | 64 | 660 | 40 | 40 |
+| 3 | Fit Scene | 64 | 704 | 151 | 40 |
+| 4 | Edit | 60 | 867 | 123 | 48 |
+| 5 | Preview | 60 | 990 | 123 | 48 |
+| 6 | clip "Arin Vale" | 158 | 428 | 240 | 28 |
+| 7 | clip "Mira Solenne" | 158 | 748 | 160 | 28 |
+| 8 | clip "Dolly In" | 290 | 348 | 320 | 28 |
+
+Lalu kembali ke 0 (Play).
+
+Dua detail yang membuat kontrak ini tidak bisa disederhanakan:
+
+- **Tinggi pita toolbar tidak seragam.** Zoom out, zoom in, dan Fit Scene berada di `top=64`, sedangkan dua segmen `SegmentedButton` berada di `top=60` meski keduanya di pita yang sama secara visual. Urutan toolbar karena itu dikontrakkan lewat `left`, bukan `top`.
+- **Track terbaca dari `top`, clip terbaca dari `left` di dalam track.** Dua clip character berbagi `top=158` dengan urutan kiri ke kanan (start 1.0 lalu 5.0); clip camera berada di `top=290` meski `startSeconds`-nya 0.0.
+
+### 16.4 Data traversal mode Preview — 1 stop
+
+Menekan "Preview" mengganti seluruh isi panel. Traversal menyisakan satu stop: "Back to Edit" di tengah layar (`t=557.5`, `l=650.4`, `w=235.2`, `h=40`). Tidak ada stop dari mode Edit yang tersisa — pengujiannya memeriksa langsung bahwa "Fit Scene" dan label clip tidak lagi ditemukan.
+
+### 16.5 Tiga jebakan harness
+
+Ketiganya sudah diperbaiki di test dan **bukan defect produksi**:
+
+1. **`IconButton` tidak punya label di subtree fokus.**_play, zoom out, dan zoom in punya `tooltip` terisi, tetapi node fokusnya adalah `InkWell`/`Focus` internal yang tidak memuat teks. Ketiganya tampil dengan label kosong dan didiskriminasi lewat posisi.
+2. **`SegmentedButton` memproyeksikan tiap segmen ke node fokus tersendiri**, sehingga Edit dan Preview dihitung dua stop, bukan satu. Kalau dihitung satu, traversal akan melaporkan loop lebih awal.
+3. **Fokus bertahan saat mode berubah**, sehingga traversal mode Preview dimulai dari node yang sedang difokus. Daftar hasil traversal dirotasi agar mulai dari stop `top` terkecil (Play di header), persis seperti pada Fase 10.
+
+### 16.6 Negative control
+
+Urutan tiga label clip dibalik di dalam test lalu dijalankan ulang. Hasil **4 dari 5 PASS**, dengan test "setiap clip dapat stop fokus, dikelompokkan per track" yang runtuh.
+
+### 16.7 Gate
+
+| Gate | Hasil |
+| --- | --- |
+| `timeline_workspace_focus_order_test.dart` | 5 dari 5 PASS |
+| Negative control (urutan clip dibalik) | 4 dari 5 PASS, 1 FAIL |
+| `dart analyze test/features/timeline/` | No issues found |
+| CJK/Cyrillic scan | none |
+| `test/features/timeline/` | 21 PASS, 0 FAIL |
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

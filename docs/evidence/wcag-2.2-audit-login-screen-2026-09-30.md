@@ -2480,6 +2480,95 @@ Tidak ada perubahan kode produksi pada fase ini; hanya dua file yang di-`git add
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada AI Generation Queue Screen. Jumlah layar teraudit dari 89 kandidat: 40 (sebelum fase ini 39).
 
+## 51. Fase 51 — Focus Order di Tech Tree Workspace (2.4.3)
+
+**Target:** `lib/features/world_logic/presentation/tech_tree_workspace_view.dart` (kelas `TechTreeWorkspaceView`)
+**Kontrak:** `test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart`
+
+### Alasan pemilihan
+
+Layar ini menerima `TechTreeController` yang dibangun dari `TechTreeController.forRegistry(registry:, timeline:)`, jadi fixture-nya murni data in-memory: tidak ada database, tidak ada network, tidak ada plugin platform, dan tidak ada `session.lock`. Surface interaktifnya justru paling beragam dari semua kandidat yang sudah diaudit: dua `ChoiceChip` filter (branch dan culture), satu `Slider` dengan label deskriptif, tiga `InkWell` node graph, dan enam `IconButton` aksi keyboard. Kandidat sebelumnya di direktori yang sama belum ada yang punya kontrak fokus, dan direktori `lib/features/world_logic/` bersih dari perubahan uncommitted.
+
+Kandidat `AutomationCenterScreen` dieliminasi lebih dulu oleh probe: keenam `Switch`-nya memakai `onChanged: null`, sehingga nol stop fokus. Kandidat `CinemaWorkspaceScreen` dan `GameCreationDashboardScreen` hanya punya dua tombol aktif dan membutuhkan mock riverpod, jadi biayanya lebih tinggi untuk cakupan fokus yang lebih sempit.
+
+### Probe sebelum kontrak
+
+Probe sementara `test/features/world_logic/_probe_focus_test.dart` (viewport 1536x1024, devicePixelRatio 1.0, `LogicalKeyboardKey.tab` berulang, berhenti saat geometri berulang) menghasilkan tiga belas stop. Fixture: registry tiga node (Wheel tier 1 -> Bronze Casting tier 2 -> Iron Smelting tier 3), branch `prime`, culture `all`.
+
+| Stop | Label | Rect (left, top, width, height) | Widget |
+|---|---|---|---|
+| 0 | Text:all | 124, 21, 76, 38 | ChoiceChip |
+| 1 | Text:prime | 208, 21, 125, 38 | ChoiceChip |
+| 2 | Text:all | 138, 77, 96, 38 | ChoiceChip |
+| 3 | Slider:tech-tree-filter-tick-slider | 95, 128, 1298, 48 | Slider |
+| 4 | Text:tier 1 \| Text:Wheel | 16, 196, 1504, 38 | InkWell |
+| 5 | Text:tier 2 \| Text:Bronze Casting | 16, 242, 1504, 38 | InkWell |
+| 6 | Text:tier 3 \| Text:Iron Smelting | 16, 288, 1504, 38 | InkWell |
+| 7 | Tooltip:Advance tier | 20, 350, 40, 40 | IconButton |
+| 8 | Tooltip:Retreat tier | 76, 350, 40, 40 | IconButton |
+| 9 | Tooltip:Jump to first discovery | 132, 350, 40, 40 | IconButton |
+| 10 | Tooltip:Jump to last discovery | 188, 350, 40, 40 | IconButton |
+| 11 | Tooltip:Navigate left | 244, 350, 40, 40 | IconButton |
+| 12 | Tooltip:Navigate right | 300, 350, 40, 40 | IconButton |
+
+Tombol "clear" pada baris Tick sengaja tidak menambah stop fokus karena `onPressed: null` (disabled). Ini perilaku Flutter yang benar, bukan control yang hilang, dan Absence-nya terlihat langsung di probe: urutan berhenti tepat di dua belas stop lalu wraps.
+
+Probe dihapus setelah kontrak ditulis (`git status --porcelain test/features/world_logic/_probe_focus_test.dart` kosong); hanya file kontrak yang tersisa.
+
+### Cara label fokus ditentukan
+
+Label diambil dari subtree elemen yang difokuskan (semua `Text.data` dan `Tooltip.message` descendant, digabung dengan prefiks `runtimeType:`). Tanpa fallback ancestor, `IconButton` akan menghasilkan label generik `widget:IconButton` dan enam aksi keyboard tidak bisa dibedakan satu per satu. Stop 3 adalah `Slider` yang subtree-nya tidak memuat `Text` atau `Tooltip`, sehingga resolver memakai `ancestorKey` untuk menamai stop itu secara deterministik sebagai `Slider:tech-tree-filter-tick-slider` alih-alih `widget:Focus` yang bergantung pada urutan materialisasi widget.
+
+### Yang dikunci kontrak
+
+- `expect(stops.length, 13)` — tepat tiga belas stop fokus.
+- `expect(stops.map((s) => s.label).toList(), _expectedLabels)` — urutan label persis seperti tabel di atas, dari filter branch, filter culture, slider tick, tiga node graph, lalu enam aksi keyboard.
+- `expect(stops.map((s) => _geometryOf(s.rect)).toList(), _expectedGeometry)` — setiap stop terkunci ke Rect nyata, bukan hanya ke urutan, sehingga reflow yang mengubah posisi target fokus terdeteksi.
+- Setiap stop punya `width > 0` dan `height > 0`, serta `rect.shortestSide >= 38.0` (ambang `_minFocusShortestSide`, mengikuti tinggi ChoiceChip 38 px) sehingga target fokus terkecil tetap terukur.
+- Traversal bergerak dari atas ke bawah tanpa lompatan: setiap stop berikutnya, kecuali yang berada pada baris yang sama, memiliki `top` lebih besar; pada baris yang sama, koordinat `left` tidak pernah menurun.
+- Test keempat menjalankan 2N tab dan mengunci sifat cincin traversal: satu putaran berisi N stop unik (tiap stop muncul tepat sekali, tidak ada yang dilewati atau diulang), putaran kedua identik dengan putaran pertama (tidak ada jebakan fokus setelah aksi keyboard terakhir), dan urutan melingkar di dalam putaran itu sama dengan kontrak.
+- `expect(tester.takeException(), isNull)` pada setiap fixture sebagai pagar overflow/render exception.
+
+### Catatan metodologi: offset mulai traversal tidak deterministik
+
+Dua kali revisi test keempat diperlukan karena perilaku traversal bawaan Flutter:
+
+1. `FocusManager.instance.primaryFocus` bersifat global di dalam satu file test. Traversal kedua dilanjutkan dari stop terakhir traversal pertama, sehingga helper `_resetFocus()` kini memanggil `primaryFocus?.unfocus()` sebelum setiap pump baru.
+2. Bahkan dari keadaan fokus segar, `FocusManager` dapat melanjutkan traversal dari node yang sebelumnya di-dispose, sehingga tab pertama tidak selalu mendarat di stop 0. Kontrak karena itu menguji sifat cincin traversal (dua putaran identik, urutan melingkar) alih-alih offset mulai absolut. Ini bukan pelonggaran kontrak: urutan relatif dan closure traversal tetap terkunci penuh.
+
+Kesalahan kompilasi pertama pada revisi ini adalah `const n = _expectedLabels.length` yang ditolak analyzer (`const_eval_property_access`) karena `.length` di atas top-level `final` tidak boleh dipakai dalam ekspresi konstanta; diganti `final n = ...`.
+
+### Negative control
+
+Satu mutasi dicadangkan ke `%LOCALAPPDATA%\Temp\tech_tree_focus_negctl.bak` lalu dipulihkan: dua label filter branch ditukar (`Text:all` <-> `Text:prime`). Hasil: `NEGCTL_FLUTTER_EXIT=1`, `00:02 +3 -1: Some tests failed`, dengan pesan `at location [0] is 'Text:all' instead of 'Text:prime'`. Setelah `cp` restore, urutan label kembali ke bentuk semula (`Text:all`, `Text:prime`, ...), verifikasi ulang `EXIT=0` `All tests passed!`, lalu file cadangan dihapus.
+
+Dua percobaan negative control pertama tidak menghasilkan mutasi karena pola literal tidak cocok: berkas kontrak memakai kutip ganda dan line ending LF murni (`dart format` menormalkannya), bukan kutip tunggal maupun CRLF. Kedua percobaan itu justru terekam sebagai `All tests passed` dengan exit 0, yang membuktikan mutasi tidak pernah menyentuh berkas — bukan bukti negative control. Mutasi baru dinyatakan sah hanya setelah `MUTATED` tercetak dan exit 1 terukur.
+
+### Bukti eksekusi
+
+```
+dart format test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart
+-> Formatted 1 file (0 changed) in 0.01 seconds
+dart analyze test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart
+-> No issues found!
+flutter test test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart
+-> 00:02 +4: All tests passed!
+flutter test test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart  (mutasi label branch)
+-> NEGCTL_FLUTTER_EXIT=1, 00:02 +3 -1: Some tests failed
+flutter test test/features/world_logic/presentation/tech_tree_workspace_focus_order_test.dart  (setelah restore)
+-> RESTORE_VERIFY_EXIT=0, 00:01 +4: All tests passed!
+flutter test test/features/world_logic/
+-> SUITE_EXIT=0, 00:53 +2255: All tests passed!
+```
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `none` (0 hit).
+
+Berkas bukti `docs/evidence/wcag-2.2-audit-login-screen-2026-09-30.md` memakai line ending LF murni (2613 LF, 0 CRLF) sehingga sisip section dilakukan dengan line ending yang sama untuk menghindari diff seluruh berkas.
+
+Tidak ada perubahan kode produksi pada fase ini; hanya dua file yang di-`git add` dengan pathspec eksplisit, tanpa `git add -A`, dan tanpa menyentuh file WIP Core Worker maupun probe milik run lain di `test/features/content_capabilities/`.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Tech Tree Workspace. Jumlah layar teraudit dari 89 kandidat: 41 (sebelum fase ini 40).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

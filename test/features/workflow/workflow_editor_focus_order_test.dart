@@ -9,8 +9,8 @@ WorkflowValidationService _service() => WorkflowValidationService(
   commandCapabilities: const {'manual.noop': {}},
 );
 
-Future<List<Rect>> _stops(WidgetTester tester) async {
-  final out = <Rect>[];
+Future<List<({String key, Rect rect})>> _stops(WidgetTester tester) async {
+  final out = <({String key, Rect rect})>[];
   final seen = <String>{};
   for (var i = 0; i < 10; i++) {
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
@@ -22,7 +22,9 @@ Future<List<Rect>> _stops(WidgetTester tester) async {
         ? object.localToGlobal(Offset.zero) & object.size
         : Rect.zero;
     if (!seen.add('${rect.top}|${rect.left}')) break;
-    out.add(rect);
+    final key =
+        context.widget.key?.toString() ?? context.widget.runtimeType.toString();
+    out.add((key: key, rect: rect));
   }
   return out;
 }
@@ -53,8 +55,8 @@ void main() {
       await _pump(tester);
       final stops = await _stops(tester);
       expect(stops.length, 3);
-      expect(stops[0].top, lessThan(stops[1].top));
-      expect(stops[1].top, lessThan(stops[2].top));
+      expect(stops[0].rect.top, lessThan(stops[1].rect.top));
+      expect(stops[1].rect.top, lessThan(stops[2].rect.top));
     });
 
     testWidgets(
@@ -64,7 +66,7 @@ void main() {
         expect(find.byKey(const Key('editor-save')), findsOneWidget);
         final stops = await _stops(tester);
         expect(stops.length, 4);
-        expect(stops[3].top, greaterThan(stops[2].top));
+        expect(stops[3].rect.top, greaterThan(stops[2].rect.top));
       },
     );
   });

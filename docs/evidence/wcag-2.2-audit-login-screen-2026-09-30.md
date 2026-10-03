@@ -2969,6 +2969,56 @@ Klasifikasi final memakai lebar dengan toleransi 0.5 px, ditambah anak `InputChi
 
 **VERIFIED** untuk focus order `MapTimeSliderView` di 1536x1024 dan 390x844 pada codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; koreksi hanya pada ekspektasi kontrak yang salah asumsi terhadap bentuk affordance hapus chip. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun.
 
+## 57. Fase 57 — Focus Order di Dashboard Screen (2.4.3)
+
+### Layar yang dipilih
+
+`DashboardScreen` (`lib/features/dashboard/presentation/dashboard_screen.dart`), dipilih karena pada audit kandidat ia masih punya 7 affordance fokus yang dapat diukur dan fixture-nya bisa di-override tanpa database maupun jaringan. Layar lain yang tersisa (`story_workspace_screen`, `asset_browser_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `scene_workspace_screen`) semuanya bergantung pada `projectSessionProvider` / Drift dan tidak stabil untuk traversal fokus sintetis, sehingga ditandai DEFERRED untuk run berikutnya.
+
+Probe `test/features/platform/presentation/_probe_focus_test.dart` dari run sebelumnya (kandidat `OptionalTourScreen`) ikut dihapus: layar itu hanya punya satu `FilledButton` dan karena `onStartTour` null tombolnya disabled, sehingga tidak memenuhi syarat minimal 2 elemen interaktif.
+
+### Kontrak
+
+`test/features/dashboard/dashboard_screen_focus_order_test.dart` — 5 test. Fixture: `authControllerProvider` di-override ke `AuthSession.guest()` (agar badge local-only tampil dan `RecentProjects` masuk state data), `projectControllerProvider` di-override ke dua proyek fixture agar baris "Other recent projects" benar-benar dirender. GoRouter minimal dipasang supaya callback `context.go`/`context.push` tidak melempar saat widget dibangun.
+
+### Hasil probe (1536x1024, dpr 1.0)
+
+STOP_COUNT 7, traversal berhenti saat label+rect berulang (wrap):
+
+1. `New Novel` — rect 128.0, 226.0, 192.9x40.0
+2. `Open Novel` — rect 330.9, 226.0, 207.0x40.0
+3. `Create Character` — rect 547.9, 226.0, 279.6x40.0
+4. `View all` — rect 811.5, 323.0, 136.8x40.0
+5. `Continue writing` — rect 281.0, 523.0, 291.6x40.0
+6. `Manage local storage` — rect 1085.0, 561.0, 306.0x40.0
+7. `Beta Novel` — rect 145.0, 620.0, 803.3x76.0
+
+Semua stop punya area fokus non-zero.
+
+### Hasil probe (390x844, dpr 1.0)
+
+STOP_COUNT 7 dengan urutan berbeda: `New Novel`, `Open Novel`, `Create Character`, `View all`, `Continue writing`, `Beta Novel`, `Manage local storage`. Perbedaan ini bukan defect: pada lebar sempit layout berubah dari dua kolom (`Row` + `Expanded`) menjadi satu `Column`, sehingga kartu Storage berada setelah daftar proyek, bukan di kolom kanan. Kontrak mengunci dua daftar ekspektasi terpisah.
+
+### Catatan geometri yang dikunci
+
+- **Desktop (1536x1024)**: urutan mengikuti reading-order default Flutter — rect difold menjadi band horizontal lalu diurutkan kiri-ke-kanan di dalam band. `Manage local storage` (top=561) memang dikunjungi sebelum `Beta Novel` (top=620) meski berada di kolom berbeda, jadi kontrak mengunci invariant top-monotik, bukan urutan kolom.
+- **Narrow (390x844)**: `SingleChildScrollView` auto-scroll untuk memunculkan anak yang difokus, sehingga rect stop awal ditulis ulang oleh stop berikutnya (terukur: `Continue writing` melaporkan top=804 sementara `Beta Novel` yang menyusul melaporkan top=755). Karena itu kasus narrow **sengaja** tidak punya asersi geometri — hanya jumlah stop, urutan label, area fokus non-zero, dan `tester.takeException() isNull`. Mengunci geometri di lebar itu akan mengunci artefak scroll, bukan kontrak focus order.
+
+### Bukti eksekusi
+
+- Probe: `flutter test test/features/dashboard/_probe_focus_test.dart` → `All tests passed!` (`EXIT=0`), 2 test probe, stdout `STOP 0..6` + `STOP_COUNT 7` per viewport.
+- Probe dihapus setelah kontrak dibuat.
+- `dart format test/features/dashboard/dashboard_screen_focus_order_test.dart` → `Formatted 1 file (1 changed)`.
+- `dart analyze test/features/dashboard/dashboard_screen_focus_order_test.dart` → `No issues found!` (`EXIT=0`).
+- `flutter test test/features/dashboard/dashboard_screen_focus_order_test.dart` → `All tests passed!` (5 test), `EXIT=0`.
+- Negative control: `Beta Novel` dipindahkan satu posisi ke depan dalam `kExpectedWideOrder` (tukar posisi 5 dan 6). Hasil `+4 -1: Some tests failed.` dengan `EXIT=1`, test `2.4.3 focus order visits the Dashboard action cluster` gagal pada pesan `at location [4] is 'Continue writing' instead of 'Beta Novel'`. Backup `dashboard_screen_focus_order_test.bak.dart` (9.693 B) dipulihkan, dicocokkan byte-wise identik (`cmp` keluar 0), lalu dihapus. Re-run setelah restore: `All tests passed!` (5 test), `EXIT=0`.
+- Gate suite: `flutter test test/features/dashboard/` → `All tests passed!` (+21 test, termasuk 8 file lama: `dashboard_create_character_no_session_test`, `dashboard_local_status_test`, `dashboard_no_fabricated_data_test`, `dashboard_screen_test`, `recent_projects_test`, `statistics_panel_test`, `storage_card_test`), `EXIT=0`.
+- Scan CJK/Cyrillic pada file kontrak: `0` (none).
+
+### Status
+
+**VERIFIED** untuk focus order `DashboardScreen` pada 1536x1024 dan 390x844 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun, dan label diambil dari subtree `Text` pertama sehingga affordance berbasis ikon saja akan tampil sebagai runtime type. Enam layar kandidat lain tetap **DEFERRED** karena fixture-nya butuh Drift/project session.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

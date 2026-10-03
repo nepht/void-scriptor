@@ -1532,6 +1532,18 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - **Negative control:** ekspektasi jumlah stop diubah dari 6 menjadi 5; test gagal dengan exit `1` dan output `Some tests failed`. File kontrak dipulihkan setelah probe negatif.
 - **Status:** VERIFIED untuk bukti focus order layar Register pada konfigurasi probe ini.
 
+## 33. Fase 33 — Focus Order di Create Product Wizard Screen (2.4.3)
+
+- **Layar:** `lib/features/marketplace/presentation/create_product_wizard_screen.dart`
+- **Kontrak:** `test/features/marketplace/create_product_wizard_screen_focus_order_test.dart`
+- **Viewport probe:** 1536x1024, device pixel ratio 1.0.
+- **Hasil terukur:** 2 focus stops; traversal kembali ke stop pertama setelah stop kedua.
+- **Urutan label:** `Cancel` → `Next`.
+- **Geometri:** `Cancel` rect `Rect.fromLTRB(20.0, 175.0, 760.0, 215.0)` dan `Next` rect `Rect.fromLTRB(776.0, 175.0, 1516.0, 215.0)`; seluruh area fokus non-zero.
+- **Kontrak posisi:** `Cancel` berada di kiri `Next`; kedua stop berbagi baris horizontal dengan top yang sama.
+- **Negative control:** ekspektasi label ditukar menjadi `Next` → `Cancel`; test gagal dengan exit `1` dan output `Some tests failed`. File kontrak dipulihkan dari backup.
+- **Status:** VERIFIED untuk bukti focus order layar Create Product Wizard pada konfigurasi probe ini. Cakupan audit focus-order layar: 28 dari 89 target layar.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

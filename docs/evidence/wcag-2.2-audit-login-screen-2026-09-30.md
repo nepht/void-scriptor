@@ -2569,6 +2569,78 @@ Tidak ada perubahan kode produksi pada fase ini; hanya dua file yang di-`git add
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Tech Tree Workspace. Jumlah layar teraudit dari 89 kandidat: 41 (sebelum fase ini 40).
 
+## 52. Fase 52 — Focus Order di Project List Screen (2.4.3)
+
+Tanggal probe: 2026-10-04. Layar alvo `lib/features/projects/presentation/project_list_screen.dart` (256 baris, bersih di `git status`, tanpa `*_focus_order_test.dart` sebelumnya).
+
+Fixture deterministik: satu proyek "Void Universe" pada `ProjectLocalDataSource` in-memory, di-override lewat `projectLocalDataSourceProvider` + `projectRepositoryProvider`. Pola ini sudah terbukti di `test/features/projects/presentation/project_delete_ui_test.dart`, jadi tidak ada database, network, `path_provider`, maupun file picker yang tersentuh. Tanpa fixture ini grid akan merender `ProjectEmptyState` dan kartu proyek tidak pernah fokus (pitfallWCAG: collection kosong bukan bukti region non-fokusable).
+
+### Traversal terukur
+
+Viewport 1536x1024, devicePixelRatio 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)` berulang, dedup berdasarkan geometri. Traversal kembali ke stop 0 setelah stop 2, jadi N = 3 stop unik dan traversal melingkar penuh:
+
+```
+0 New Project       (FilledButton)     Rect(1283, 41, 221, 40)
+1 kartu proyek      (InkWell)         Rect(  32, 117, 480, 310)
+2 Project actions   (PopupMenuButton) Rect( 461, 128,  40,  40)
+3 <kembali ke stop 0>
+```
+
+Catatan mekanika yang terukur:
+
+- Tombol `New Project` adalah stop pertama meski secara visual berada di kanan header; urutan baca (bukan urutan geometri) yang governs traversal, dan ini sesuai WCAG 2.4.3 karena hanya ada satu kontrol di baris header itu.
+- `PopupMenuButton` "Project actions for Void Universe" menyimpan tooltip sebagai **ancestor**, bukan descendant, sehingga label fokusnya harus dibaca lewat `visitAncestorElements`. Probe yang hanya memindai subtree Text akan salah melaporkannya sebagai `widget:...`.
+- Teks `ProjectCard` (nama, deskripsi, "Version 0.1.0") berada di dalam `InkWell` kartu yang sama, jadi ia terbaca sebagai bagian dari stop 1 — bukan tiga stop fokus terpisah. Ini perilaku benar, bukan kontrol yang hilang.
+- `PopupMenuButton` berada di dalam area kartu (x 461..501 di dalam 32..512), dan kontrak mengunci invarian itu secara eksplisit.
+
+### Asersi kontrak
+
+`test/features/projects/presentation/project_list_screen_focus_order_test.dart` mengunci empat hal:
+
+1. jumlah stop, urutan label lengkap, dan daftar geometri (`_expectedLabels` / `_expectedGeometry`);
+2. area fokus non-zero dengan sisi terpendek minimal 40 px (tombol 40 px, PopupMenu 40 px);
+3. monoton baris (tidak naik ke atas) dan kiri-ke-kanan pada baris yang sama, plus `PopupMenuButton` berada di dalam `Rect` kartu;
+4. sifat melingkar: traversal 2N menghasilkan dua putaran identik tanpa stop terlewat atau terulang (mendeteksi jebakan fokus). `FocusManager.instance` bersifat global per file test, jadi traversal kedua butuh `_resetFocus()` sebelum pump.
+
+### Bukti eksekusi
+
+```
+dart format test/features/projects/presentation/project_list_screen_focus_order_test.dart
+-> Formatted 1 file (1 changed)
+
+dart analyze test/features/projects/presentation/project_list_screen_focus_order_test.dart
+-> No issues found!
+
+flutter test test/features/projects/presentation/project_list_screen_focus_order_test.dart
+-> 00:01 +4: All tests passed!   (GREEN_EXIT=0)
+
+flutter test test/features/projects/            # gate feature
+-> 00:34 +34: All tests passed!   (GATE_EXIT=0)
+```
+
+### Negative control (dua mutasi, keduanya tertangkap)
+
+1. Tukar urutan label `New Project` dan kartu proyek → `flutter test` exit **1**, `00:01 +0 -1`, test "focus order mengikuti urutan baca" gagal.
+2. Jumlah stop dinaikkan 3 → 4 dengan geometri tambahan `999,999,10,10` → exit **1**, `00:01 +2 -2`, dua test gagal ("urutan baca" dan "tidak ada jebakan fokus").
+
+Kontrak dikembalikan dari backup `C:\Users\nepht\AppData\Local\Temp\wcag243_negctl_project_list_screen_focus_order_test.dart.bak` (9 326 byte), lalu backup dihapus. Re-run setelah restore: `00:01 +4: All tests passed!`.
+
+### Catatan koreksi counter
+
+Penghitungan nyata pada repo saat fase ini:
+
+- 42 berkas `test/**/*focus_order_test.dart`;
+- **38 layar `_screen.dart` distinct** tercakup, ditambah 1 kontrak atas `tech_tree_workspace_view.dart` (bukan `_screen.dart`, jadi tidak masuk hitungan layar);
+- 6 layar punya **dua** berkas kontrak (duplikasi historis): `forgot_password_screen`, `login_screen`, `register_screen` (ketiganya juga di `test/features/authentication/focus_order_test.dart`), `agent_permission_screen`, `create_product_wizard_screen`, dan `product_detail_screen` (dua marketplace).
+
+Artinya counter serials lama di laporan (41 pada section 51) menghitung **fase**, bukan layar distinct; layar distinct yang benar sebelum fase ini adalah 37, menjadi **38** setelah fase ini. Angka 89 kandidat tetap sesuai brief; delta screen nyata per fase berikutnya sebaiknya memakai pengukuran distinct ini.
+
+Line ending berkas bukti: **LF murni** (2 702 LF, 0 CRLF saat diukur), jadi sisip section ini memakai LF agar tidak menghasilkan diff seluruh berkas.
+
+Tidak ada perubahan kode produksi pada fase ini. Hanya dua berkas yang di-`git add` dengan pathspec eksplisit, tanpa `git add -A`, tanpa menyentuh 96 file dirty milik Core Worker, dan probe `_probe_focus_test.dart` dihapus setelah kontrakfinal dibuat.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Project List Screen. Layar teraudit dari 89 kandidat: **38 distinct** (serial fase: 52; counter fase sebelumnya melaporkan 41).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

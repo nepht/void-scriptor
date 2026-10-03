@@ -1213,6 +1213,81 @@ File dipulihkan dari backup `cp` di `%LOCALAPPDATA%\Temp`, backup dihapus, dan r
 - Kunci siklus memakai segitiga (`top|left|width`), bukan hanya posisi, supaya dua stop dengan `top|left` sama tapi lebar berbeda tetap dihitung berbeda.
 - Layar ini memakai `TabBar` dengan `DefaultTabController`, sehingga traversal mengikuti urutan deklarasi tab; ini perilaku `FocusTraversalGroup` bawaan Material, bukan defect.
 
+## 25. Fase 20 — Focus Order di Reference Library Screen (2.4.3)
+
+**Layar:** `lib/features/references/presentation/reference_library_screen.dart` (`ReferenceLibraryScreen`)
+**Kontrak:** `test/features/references/reference_library_focus_order_test.dart`
+**Tanggal:** 2026-10-03 | **Viewport probe & kontrak:** 1536 x 1024, dpr 1.0 | **Metode:** traversal `LogicalKeyboardKey.tab` berulang, berhenti saat `Rect` fokus berulang.
+
+Layar ini mandiri: data disuntikkan lewat constructor (`references`, `onImport`, `onSetPrimary`, `onRepair`), jadi tidak ada fixture database, network, maupun Riverpod provider. Fixture probe memakai tiga `ReferenceModel` dengan `filePath` yang sengaja tidak ada di disk, sehingga setiap kartu memunculkan tombol `Repair` — ini exercising jalur interaktif terburuk tanpa memalsukan kondisi sehat.
+
+### Hasil probe (evidence-first)
+
+Output `STOP` mentah dari traversal atas:
+
+```
+STOP 0: label="tooltip:Import reference"  rect=Rect.fromLTRB(1492.0, 8.0, 1532.0, 48.0)
+STOP 1: label="field:Search References..." rect=Rect.fromLTRB(598.2, 88.0, 950.2, 112.0)
+STOP 2: label="All types"                  rect=Rect.fromLTRB(978.2, 76.0, 1179.8, 124.0)
+STOP 3: label="Set Primary"                rect=Rect.fromLTRB(443.7, 234.0, 617.3, 290.0)
+STOP 4: label="Set Primary"                rect=Rect.fromLTRB(665.3, 234.0, 839.0, 290.0)
+STOP 5: label="Repair"                     rect=Rect.fromLTRB(222.0, 334.0, 360.6, 374.0)
+STOP 6: label="Repair"                     rect=Rect.fromLTRB(443.7, 334.0, 582.3, 374.0)
+STOP 7: label="Repair"                     rect=Rect.fromLTRB(665.3, 334.0, 803.9, 374.0)
+STOP 8: REPEAT rect=Rect.fromLTRB(1492.0, 8.0, 1532.0, 48.0)
+```
+
+Jumlah stop: **8**. Probe dihapus setelah kontrak ditulis.
+
+Dua stop pertama tidak punya `Text` di subtree fokusnya: `IconButton` di `AppBar` hanya mengekspos `Icon`, dan `TextField` search memusatkan label di `InputDecoration`. Versi probe pertama yang hanya mencari `Text` membacanya sebagai `"?"` untuk keduanya, lalu kunci siklus dengan segitiga (`top|left|width`) membuat dua `Repair` yang lebarnya berbeda tetap terhitung berbeda. Kontrak final memakai urutan resolusi `Tooltip` -> `InputDecoration.labelText`/`hintText` -> `Text` non-`Icon` -> runtime type, dan hasilnya stabil.
+
+### Kontrak yang dikunci
+
+`test/features/references/reference_library_focus_order_test.dart` mengunci tiga hal lewat tiga test:
+
+1. **Urutan label persis, 8 stop:** `tooltip:Import reference`, `field:Search References...`, `All types`, `Set Primary`, `Set Primary`, `Repair`, `Repair`, `Repair`.
+2. **Properti posisi:** aksi `AppBar` dibaca paling awal (`top` paling kecil), lalu baris filter (`Search` dan `All types` sebaris, `left` menaik), lalu grid kartu dibaca baris per baris. Dua `Set Primary` berbagi `top` dengan `left` menaik; tiga `Repair` membentuk baris kedua dengan `left` menaik dan `top` di bawah baris `Set Primary`. Setiap stop punya `width > 0` dan `height > 0`.
+3. **Perilaku traversal ikut kondisi data:** saat search diisi `Kokuen`, traversal menyusut ke lima stop (`All types`, `Set Primary`, `Repair`, lalu kembali ke `tooltip:Import reference` dan `field:Search References...`) karena kartu yang ter-filter keluar dari traversal. Saat search diisi `zzz` dan hasil kosong, hanya tiga kontrol chrome yang tersisa (`All types`, `tooltip:Import reference`, `field:Search References...`) dan `No references found` tetap tampil. Kontrol chrome tidak boleh hilang hanya karena data kosong — itu yang mengunci akses keyboard saat grid kosong.
+
+Catatan: traversal pada dua state terakhir dimulai dari node fokus yang sedang aktif setelah `enterText`, sehingga urutan relatif berbeda dari state awal. Yang dikunci adalah himpunan label dan factility chrome, bukan posisi absolut.
+
+### Negative control
+
+Ekspektasi jumlah stop dimutasi sementara (`_expectedStops` 8 -> 7) lalu `flutter test` dijalankan tanpa pipe:
+
+```
+Expected: an object with length of <7>
+  Actual: [
+#4      main.<anonymous closure>.<anonymous closure> (...reference_library_focus_order_test.dart:136:9)
+00:02 +2 -1: Some tests failed.
+NEGATIVE_EXIT=1
+```
+
+File dipulihkan dari backup `cp` di `%LOCALAPPDATA%\Temp`, backup dihapus (`BACKUP_GONE`), dan re-run pasca-restore hijau (`RESTORE_EXIT=0`, `+3: All tests passed!`). Kontrak terbukti punya daya deteksi, bukan sekadar lulus pasif.
+
+### Gate
+
+| Gate | Perintah | Hasil |
+|---|---|---|
+| Format | `dart format test/features/references/reference_library_focus_order_test.dart` | `Formatted 1 file (1 changed)` (exit 0) |
+| Analyzer | `dart analyze test/features/references/reference_library_focus_order_test.dart` | `No issues found!` (exit 0) |
+| Kontrak | `flutter test test/features/references/reference_library_focus_order_test.dart` | `+3: All tests passed!` (exit 0) |
+| Negative control | mutasi `_expectedStops` 8 -> 7 | `+2 -1: Some tests failed.` (exit 1) |
+| Suite feature | `flutter test test/features/references/` | `+28: All tests passed!` (exit 0) |
+| Scan CJK/Cyrillic | atas file kontrak | `none` |
+
+### Status
+
+**VERIFIED** untuk 2.4.3 (Focus Order) pada layar ini: urutan reading AppBar -> filter -> grid, urutan kiri-ke-kanan per baris, area fokus non-zero, dan terpelihannya kontrol chrome saat hasil kosong, semuanya terkunci kontrak yang terbukti negatif. Probe tidak menemukan defect produksi focus order, jadi tidak ada kode produksi yang diubah pada fase ini.
+
+### Catatan metodologi
+
+- `_screen()` tidak butuh `ProviderScope` karena layar ini `StatefulWidget` murni dengan data injeksi constructor.
+- Kunci siklus memakai segitiga (`top|left|width`) supaya dua stop dengan `top|left` sama tapi lebar berbeda (`Set Primary` 173.6 px vs 138.6 px pada dua baris berbeda) tidak collapsing.
+- Kartu dibaca baris per baris oleh `FocusTraversalGroup` bawaan Material pada `GridView`, mengikuti urutan baca visual — sesuai WCAG 2.4.3.
+- `ReferenceType` dan `ReferenceSource` dibaca langsung dari `lib/features/references/domain/reference_models.dart` saat menyusun fixture (`ReferenceSource.imported`, bukan `upload` — nilai tersebut tidak ada dan compile gagal saat probe pertama).
+- Screen ini berbeda dari `ReferenceManagementScreen` yang sudah diaudit di Bagian 23; keduanya berada di feature `references` tapi widget dan traversal-nya tidak sama.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

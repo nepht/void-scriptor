@@ -143,3 +143,85 @@ Sprint 118 — VOID SCRIPTOR Account & Cloud Center Stability & Provider Expansi
 **WORKING TREE:** dirty 93 -> 95 selama slice -> 93 setelah commit; selisih tepat 2 file slice. Kedua file probe (`zz_probe_11743_14_test.dart`, `zz_probe_11743_14_diag_test.dart`) dihapus setelah semua temuan dipindahkan; `probes_remaining=0`. Manifest 117.43 TIDAK diubah, 0 byte (`git show --name-only cc5ae78` tidak memuatnya).
 
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. **TODO-OPERATOR TETAP ADA:** putuskan `117.43-02` - (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA yang diterima dan persempit acceptance 117.43. Cron tidak mengarang pilihan.
+
+### Slice 117.43-15 (2026-10-03, run SESEBELUH) - `provenance_record` dibaca hanya sebagai "ada isi", tidak pernah dibanding dengan yang ia ringkas
+
+**HUNT KESEBELAS: unmeasured-claim / fail-open decode.** `required_evidence.provenance_record` adalah satu-satunya grup
+evidence yang tidak pernah masuk ke decoder mana pun. Gate memanggil `_hasContent(...)` yang hanya bertanya "apakah grup ini
+memuat string non-kosong" - tanpa pernah membandingkan satu baris pun dari grup itu dengan `rebuild_results` yang ia
+ringkas. Kemudian verdict mencetak `provenance_record: 6 item` seolah enam baris itu sudah diperiksa terhadap sesuatu.
+Tujuh baris shipped, dua di antaranya menyertakan exit code, durasi, dan jendela - tiga fakta yang sudah diukur di tempat
+lain sejak 117.43-08/-09/-10. Jadi grup yang paling ditagih sebagai bukti justru yang paling tidak pernah dibaca, dan
+dokumen yang mengontradiksi dirinya sendiri adalah satu-satunya dokumen yang tidak diterima gate reproduktibilitas.
+
+**BUKTI BATAS (probe sebelum fix, di manifest SHIPPED, JSON dibaca ulang dari `readManifest` lalu di-decode ulang):**
+lima kontradiksi antara ringkasan dan record yang ia ringkas, semuanya mengembalikan `pass` - (1) `rebuild_a exit_code 1`
+padahal record menyatakan 0; (2) `rebuild_b ... duration_seconds 900` padahal record menyatakan 115 dan jendela 115 dtk;
+(3) jendela dipindah ke hari berbeda (2026-09-24 09:00) dari jendela record; (4) `rebuild_z` yang tidak disebut record mana
+pun; (5) `provenance_logs` diberi `docs/evidence/never-existed.log` yang tidak dikutip record mana pun.
+
+**YANG DIPERBAIKI.** Helper `_summaryAgreesWithRebuilds` mendekode tata bahasa yang sudah dipakai dokumen itu sendiri,
+`rebuild_LABEL exit_code N duration_seconds N (START .. FINISH)`, lalu menahan tiap ringkasan pada record yang ia sebut:
+label harus ada di `rebuild_results` (bukan hanya "tidak nol"), exit code harus sama, dan jendela + durasi harus sama
+dengan jendela record. `provenance_logs` juga dibandingkan: himpunan log yang disebut harus PERSIS sama dengan yang
+dikutip record, karena 117.43-10/-14 sudah membuat setiap log rebuild bisa dibaca. Tidak ada infrastruktur baru -
+kelima fakta itu sudah terukur di file yang sama.
+
+**TIGA BATASAN DIPIN dengan test, masing-masing karena aturan yang jelas-jelas akan SALAH:**
+(1) `build_command` menyatakan apa yang dijalankan release pipeline, bukan apa yang dijalankan satu siklus rebuild. Nilai
+shipped sengaja TIDAK memuat prefiks `flutter clean &&` yang dibawa record rebuild, dan selisih itu benar - 117.43-10
+mengukur langkah clean di tempat yang benar-benar diklaim, yaitu record rebuild yang membawanya. (2) `source_revision`
+TIDAK diukur: revisi fabrikasi adalah 40 karakter hex yang valid - bentuknya PERSIS sama dengan revisi nyata yang
+`git cat-file -e` resolve - dan lapisan domain ini tidak menjalankan proses apa pun. Aturan bentuk sempat ditulis lalu
+DIBATALKAN karena fixture shipped secara sah memakai placeholder 64-hex, jadi aturan itu menolak dokumen yang jujur;
+mengarang kriteria yang tidak pernah dinyatakan bukti adalah overclaim yang sama yang hunt ini meski. (3) Baris prosa yang
+menyebut rebuild tanpa menyatakan exit code/durasi/jendela tidak membuat klaim apa pun untuk dibantah, dan ringkasan yang
+tidak menyebut log tidak dikontradiksi bila tidak ada record yang menyebut log - ketiadaan klaim bukan defect (aturan
+non-claim yang sudah ditegakkan 117.43-07). Arah sebaliknya juga TIDAK diwajibkan: dokumen tidak berjanji meringkas
+setiap rebuild, dan mewajibkannya akan mengarang acceptance.
+
+**PROBE 1 (v1, exit 0):** enam probe pertama; probe A/A2 ternyata VAKUUM - `String.replaceAll` mengembalikan String BARU,
+jadi helper tidak pernah memutasi map dan probe lulus tanpa membuktikan apa pun. **PROBE 2 (v1, exit 0):** ditulis ulang
+dengan `withMode(from,to)` yang membangun map BARU - semua probe lulus, Artinya blind spot terbukti. Kedua probe
+`zz_probe_11743_15*_test.dart` sudah dihapus, `probes_remaining=0`, sebelum commit.
+
+**RED (bukti batas):** revert HANYA file gate ke HEAD -> **110 pass, TEPAT 7 test bernama gagal** (6 test defect + 1 test
+histori `every one of these passed before this slice`), kontrol tetap hijau, tanpa compile error. Satu klaim sempat
+DROPPED saat RED: "revisi sumber bukan commit" - tidak bisa dibuktikan karena bentuknya sama, jadi dicatat sebagai
+DEFERRED eksplisit, bukan diklaim.
+
+**GREEN:** `flutter test --no-pub test/release/sprint_117_ga_artifact_reproducibility_test.dart -j 1` -> **117/117 exit 0**
+(naik dari 106, +11).
+
+**GERBANG:** `dart format` 2 file `0 changed` exit 0 (stabil diulang setelah format pertama mengubah 1 file).
+`dart analyze` 3 file `No issues found!` exit 0 DIULANG SETELAH format. `git diff --check` exit 0.
+`flutter build windows --debug` exit 0, 25,7 dtk.
+
+**REGRESI:** `sprint_113_build_reproducibility_provenance_test.dart` exit 1 - **SATU** fail, signature **PERSIS SAMA**
+sejak sebelum slice (expected `73101e78...`, actual `c7a33055...`), akar TODO-OPERATOR 117.43-02, BUKAN regresi slice ini.
+Pada slice ini ia sempat muncul sebagai DUA fail: `113.39 provenance manifest records all six evidence groups` dengan
+`Actual: ['provenance_record']`. Akarnya nyata dan milik slice ini: test 113.39 membangun `RebuildResult` TANPA field
+`log`, jadi tidak ada record yang menyebut log, dan aturan `provenance_logs` sempat memperlakukannya sebagai kontradiksi.
+Diperbaiki sesuai doktrin non-claim yang sama - ketiadaan klaim bukan klaim yang dibantah. Setelah itu tersisa SATU fail
+dengan signature yang sama seperti sebelum slice.
+
+**JEBakan EOL terjadi lagi (kali ke-3).** File ledger `docs/sprints/sprint-117-beta-validation.md` tetap MIXED-EOL =
+70 baris CRLF + 75 bare LF (bukan 70 CRLF semuanya seperti tercatat run sebelumnya). Append kali ini LF-only menjaga
+70 -> 70. Manifest 113.39 sendiri 105 CRLF, 0 bare LF, jadi sha mentahnya di disk SELALU berbeda dari blob; nilai
+LF-canonical yang sama persis dengan blob, dan itulah yang ditulis ke state.
+
+**MANIFEST 117.43 TIDAK diubah.** Dibuktikan dari history, bukan dari asumsi: `git show 7267ebb:<manifest>` identik byte
+dengan `git show 07aec63:<manifest>` (`unchanged vs 07aec63 = True`).
+
+**SHA 3-SISI FINAL:** gate `f5c34052dab2ba583d44d8e382eb55ac34830f8b74a495cc855b5b715ca088b4` dan test
+`5ce9b734d54921f6204f95be1af4280a1a0ac933d2c6737580d6bfed219cae33` - dihitung dari `git show 7267ebb:<path>` SETELAH
+commit, bukan dari working tree; disk == blob == MATCH untuk keduanya.
+
+**COMMIT:** `7267ebb` (2 path eksplisit). **PUSH:** tidak dilakukan.
+
+**WORKING TREE:** dirty 93 -> 95 selama slice -> 93 sesudah commit; selisih tepat 2 file slice.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya
+menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. TODO-OPERATOR 117.43-02 (pilihan (a) re-sign kandidat rc.1 lalu
+refresh checksum, atau (b) nyatakan drift sebagai limitasi GA diterima + persempit acceptance 117.43) BELUM diputuskan
+dan tetap blocker penutupan step.

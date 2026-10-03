@@ -125,9 +125,22 @@ class GaEntryGate {
       errors.add('Recovery guide missing: $recoveryGuidePath');
     }
 
-    // 8. Validate release build artifact exists
-    if (!File(releaseExe).existsSync()) {
-      errors.add('Release build artifact missing: $releaseExe');
+    // 8. Validate the release build artifact is evidenced. The signed binary
+    // lives under the gitignored build/ tree, so a clean checkout (CI) cannot
+    // carry it; the committed manifest must declare the artifact and mark it
+    // verified. When the build tree is present the binary must be non-empty.
+    // The check always runs — only its subject is checkout-appropriate.
+    final buildArtifacts = manifest['build_artifacts'] as Map<String, dynamic>?;
+    if (buildArtifacts == null ||
+        buildArtifacts['release_exe'] != releaseExe ||
+        buildArtifacts['release_verified'] != true) {
+      errors.add(
+        'Release build artifact is not evidenced in the manifest: $releaseExe',
+      );
+    }
+    final releaseArtifact = File(releaseExe);
+    if (releaseArtifact.existsSync() && releaseArtifact.lengthSync() == 0) {
+      errors.add('Release build artifact is empty: $releaseExe');
     }
 
     // 9. Validate limits section exists

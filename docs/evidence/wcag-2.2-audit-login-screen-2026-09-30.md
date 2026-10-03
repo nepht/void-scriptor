@@ -1591,6 +1591,19 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - Negative control: urutan `Export Project`/`Delete Cache` ditukar; test gagal dengan exit code `1` dan output `Some tests failed`. File dipulihkan dari backup.
 - Bukti test: `test/features/project_resilience/presentation/project_resilience_center_screen_focus_order_test.dart`.
 
+## 38. Fase 36 — Focus Order di AI Generation Gallery Screen (2.4.3)
+
+Status: VERIFIED untuk kontrak focus order pada fixture satu output di viewport 1536x1024, devicePixelRatio 1.0.
+
+- Test: `test/features/ai/presentation/ai_generation_gallery_screen_focus_order_test.dart`.
+- Stop terukur: 2, lalu traversal kembali ke stop pertama.
+- Urutan label: `Use as Reference` → `Compare with Primary`.
+- Rect stop 1: `Rect.fromLTRB(32.0, 286.0, 281.6, 326.0)`; area non-zero.
+- Rect stop 2: `Rect.fromLTRB(32.0, 330.0, 288.0, 386.0)`; area non-zero.
+- Posisi: stop kedua berada di bawah stop pertama (`top 330.0 > 286.0`) dan tidak lebih kiri (`left 32.0 >= 32.0`).
+- Negative control: ekspektasi label kedua sengaja diubah menjadi `Use as Reference`; `flutter test` gagal dengan exit `1` dan output `Some tests failed`. Kontrak dipulihkan setelahnya.
+- Scope: hanya kontrak test dan evidence report; tidak ada perubahan production code.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

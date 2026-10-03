@@ -47,7 +47,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-04T06:40:00+07:00",
-  "updated_by": "core_worker_cron_117.43-21",
+  "updated_by": "core_worker_cron_117.43-22",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3158,7 +3158,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-04T06:05:00+07:00",
+    "updated_at": "2026-10-04T07:35:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3180,21 +3180,21 @@
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
     "defects_fixed_count": 13,
-    "slice_commit": "8c3a5f8",
+    "slice_commit": "4b65d46",
     "last_slice_files": [
       {
-        "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
-        "sha256": "ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239",
-        "sha256_lf_canonical": "ae16a8bc",
-        "source": "git show 8c3a5f8:lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
-        "bytes": 76315
+        "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
+        "sha256": "47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff",
+        "sha256_lf_canonical": "47b674e3",
+        "source": "git show 4b65d46:lib/features/world_logic/domain/build_reproducibility_provenance.dart",
+        "bytes": 34375
       },
       {
-        "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
-        "sha256_lf_canonical": "b7d80b51",
-        "source": "git show 8c3a5f8:test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "bytes": 153103
+        "path": "test/release/sprint_113_build_reproducibility_provenance_test.dart",
+        "sha256": "444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13",
+        "sha256_lf_canonical": "444d929d",
+        "source": "git show 4b65d46:test/release/sprint_113_build_reproducibility_provenance_test.dart",
+        "bytes": 21089
       }
     ],
     "gates_reverified_run9_2026_10_03": {
@@ -3334,17 +3334,17 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "id": "117.43-20",
-      "defect": "document-level `canonical_step` restates WHICH step the evidence belongs to and no lib/ reader ever decoded it; pass published for a manifest naming another step or holding the field unreadably",
-      "commit": "8c3a5f8",
-      "gate_sha256": "ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239",
-      "test_sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
-      "sha_source": "hashed from committed blobs via `git show 8c3a5f8:<path>` (policy clause 1), after commit",
-      "focused_tests": "136/136 PASS exit 0 (from 133, +3)",
-      "red": "exactly 1 failing test, 7/7 impossible shapes wrongly pass, 2 controls green; second RED boundary (gate reverted to HEAD alone) reproduced exactly 1 failure with no compile error",
-      "full_suite": "NOT CLAIMED - an argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed 2-file regression is asserted (+141 -2)",
-      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0 in 21.8s; roadmap_guard PASS pre-slice",
-      "verified_on": "2026-10-04"
+      "id": "117.43-22",
+      "defect": "ArtifactComparison.method restates WHICH digest algorithm produced the recorded values and no lib/ reader ever decoded it; pass published for a comparison naming an algorithm that cannot emit 64-hex digests, while the gate printed the artifact count as though the hashing had been checked",
+      "commit": "4b65d46",
+      "gate_sha256": "47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff",
+      "test_sha256": "444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13",
+      "sha_source": "hashed from committed blobs via `git show 4b65d46:<path>` (policy clause 1+2), after commit; disk == blob, both LF-pure",
+      "focused_tests": "113 file: slice assertions green (7/7 file, +1 new); directed two-file regression +143 -2, both failures 113.39 pre-existing",
+      "red": "exactly 1 failing test, 4 impossible methods wrongly pass, 3 controls green; second RED boundary (implementation reverted to HEAD alone) reproduced exactly 1 failure at the same line with no compile error",
+      "full_suite": "NOT CLAIMED - argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed two-file run is claimed",
+      "status": "PARTIAL-LOCAL (unchanged)",
+      "next_step": "117.43 (unchanged)"
     },
     "defect_117_43_19": {
       "status": "FIXED-LOCAL",
@@ -3417,6 +3417,54 @@
       },
       "regression": "directed 2 files +142 -2: slice 117 136/136 PASS; both failures are 113.39 pre-existing with the same signatures as previous runs (manifest 32e31fd3 vs live lock c9a365e6; 73101e78 vs c7a33055). The second was reproduced with THIS slice's implementation removed, proving independence. NO full-suite claim (full_suite_trap).",
       "pushed": false
+    },
+    "defect_117_43_22": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-22",
+      "hunt": "unmeasured-claim / fail-open, seventeenth slice of the family",
+      "family_closed_so_far": 17,
+      "shape": "ArtifactComparison.method is the document's own sentence about HOW the recorded digests were produced, and the only question ever asked of it was 'is it blank?' (method == null || method!.trim().isEmpty). Every other check in the same getter is about the digests themselves - each value in artifactHashes must be exactly 64 hex characters - so nothing connected the stated algorithm to the width it had just validated.",
+      "symptom": "a method of 'MD5 over the 6 exe/dll artifacts' on a document that also records 6 64-hex digests states that the comparison ran on an algorithm that cannot emit those values at all. missingEvidence returned [], evaluate returned pass, and the gate printed 'artifact_comparison: NOT_BIT_IDENTICAL (6 artifact)' as though the hashing had been checked. Same direction as 117.43-21 (one path restated in two groups) but across a different pair: there the two copies of one digest were never compared; here the sentence that describes the hashing was never read.",
+      "why_worse_than_a_wrong_answer": "the artifact_comparison group is the one group whose whole purpose is to say whether two clean rebuilds were compared correctly. A record that misstates the algorithm under which it compared them is not a wrong verdict, it is an unevidenced one - and the gate printed the artifact count, implying the six artifacts had been examined.",
+      "empirical_before_fix": "RED verified independently: exit 1 with EXACTLY 1 failing test - four methods naming another algorithm (MD5, SHA-1, SHA-512, crc32) on an otherwise honest non-identity comparison (limits documented) each gave isWellFormed == true. Three controls green: both spellings the shipped documents use ('SHA-256 over exe+dll set', 'sha256') stay well formed; a method naming NO algorithm at all ('cold rebuilds, cache dropped') makes no algorithm claim (non-claim rule of 117.43-07/-11/-21); the contradiction reaches missingEvidence with 'artifact_comparison' and evaluate(...).state isNot pass, not just the comparison object. RED boundary re-proven: with the implementation restored to HEAD (git show HEAD:<path>, sha ced490ec... == HEAD) and the test kept, the SAME single failure returned at the SAME line (322, MD5) with no compile error; restore verified byte-identical (cmp) against the scratch snapshot.",
+      "bounds_pinned": [
+        "a method that names no algorithm makes no claim and is left alone (non-claim rule, 117.43-07/-11/-21)",
+        "both spellings of SHA-256 the shipped documents use stay well formed",
+        "token matching, not substring: prose that merely mentions a digest cannot trip it",
+        "BLAKE2b, BLAKE3, Keccak and SHA3 are deliberately ABSENT - they also emit 64 hex characters, so this layer cannot tell whether a document used one, and refusing them would be a guess",
+        "nothing is required about WHICH artifacts a method chooses to cover"
+      ],
+      "shipped_document_unaffected": "the committed 113.39 manifest's method is 'SHA-256 over the 6 exe/dll artifacts ...', so the honest document still passes; no manifest, pubspec.lock or sign file was touched by this slice",
+      "verified_on": "2026-10-04",
+      "commit": "4b65d46",
+      "committed_sha256": {
+        "source": "hashed from committed blobs via `git show 4b65d46:<path>` (policy 2026-10-02 clause 1+2), AFTER commit; disk sha256sum == git show for both files; both sides LF-pure (0 CRLF)",
+        "lib/features/world_logic/domain/build_reproducibility_provenance.dart": "47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff",
+        "test/release/sprint_113_build_reproducibility_provenance_test.dart": "444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13"
+      },
+      "gates": {
+        "format": "dart format 2 files: Formatted 2 files (0 changed) exit 0; re-check with --output=none --set-exit-if-changed: 0 changed exit 0 = idempotent (format_idempotency_jebakan: the writing pass runs first)",
+        "analyzer": "dart analyze 2 files: No issues found! exit 0",
+        "diff_check": "git diff --check exit 0",
+        "build": "flutter build windows --debug exit 0, 24,7 s, Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe",
+        "guard": "dart run tool/roadmap_guard.dart PASS before AND after the slice; canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 UNCHANGED, recommended_step 117.43",
+        "focused_suite": "113 file 7/7 green for the slice's own assertions; the 2 remaining 113.39 failures are pre-existing (see regression)"
+      },
+      "regression": "directed two-file run (sprint_113_build_reproducibility_provenance_test.dart + sprint_117_ga_artifact_reproducibility_test.dart): exit 1, +143 -2 (from +142, +1 new test). Slice 117 = 136/136 PASS across the whole 117.43-14..-22 family. BOTH failures are 113.39 pre-existing with the exact same signature as the previous run: 'dependency lock evidence matches the live lockfile' (manifest records 32e31fd3..., live lock c9a365e6..., re-verified this run: sha256sum pubspec.lock = c9a365e6402b1128199dc3915eb365f4a6cacfb13ac70fbb323582dcee8386e4, file unchanged) and 'signed release artifact from 113.38 remains intact' (expected 73101e78..., actual c7a33055...). Neither imports the 117 gate. FULL SUITE NOT CLAIMED (full_suite_trap): -2 is only these two directed files, not the whole repo.",
+      "mid_slice_trap": "the first helper only tokenized, so 'SHA-1' split into the tokens 'sha' and '1' and was NOT caught - the test went green for MD5 while still failing for SHA-1 on the same line. Fixed by folding the numbered forms (sha[\\s_-]*(\\d+) -> sha\\1) before tokenizing; the trailing digit matters because SHA-512 must stay distinct from the SHA-256 family and is refused for the same width reason. Control (1) stayed green afterwards, so the fold does not reach SHA-256.",
+      "pushed": false
+    },
+    "gates_reverified_run13_2026_10_04": {
+      "slice": "117.43-22",
+      "focused_suite": "113 file exit 1 with 2 pre-existing 113.39 failures; slice assertions green",
+      "directed_regression": "2 files exit 1, +143 -2 (from +142); slice 117 136/136 PASS; both failures 113.39 pre-existing, signature identical to previous run",
+      "analyzer": "dart analyze 2 files: No issues found! exit 0",
+      "format": "dart format 2 files: 0 changed exit 0; --output=none --set-exit-if-changed 0 changed exit 0",
+      "diff_check": "git diff --check exit 0",
+      "build": "flutter build windows --debug exit 0, 24,7 s",
+      "guard": "PASS pre and post slice, canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 unchanged",
+      "full_suite": "NOT CLAIMED (full_suite_trap)",
+      "sha_4_side": "disk == git show <commit>:<path> == this state == ledger, for both slice files"
     }
   },
   "sprint_117_step_11744": {
@@ -3550,7 +3598,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "cc5ae78",
+  "last_slice_commit": "4b65d46",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3650,6 +3698,6 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
+  "commit": "c746676fce30f68138bff1f36a0f7d9cbc88a1b8",
   "ahead": 19
 }

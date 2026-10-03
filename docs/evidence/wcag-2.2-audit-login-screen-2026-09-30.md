@@ -2418,6 +2418,68 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Preview Modes Screen. Jumlah layar teraudit dari 89 kandidat: 39 (sebelum fase ini 38).
 
+## 50. Fase 50 — Focus Order di AI Generation Queue Screen (2.4.3)
+
+**Target:** `lib/features/ai/presentation/ai_generation_queue_screen.dart` (kelas `AiGenerationQueueScreen`)
+**Kontrak:** `test/features/ai/ai_generation_queue_screen_focus_order_test.dart`
+
+### Alasan pemilihan
+
+Layar ini meneruskan fixture lewat parameter `jobs:` bertipe `GenerationJob`, jadi tidak ada database, tidak ada network, tidak ada plugin platform, dan tidak ada `session.lock`. Seluruh surface interaktifnya tetap beragam: satu action di AppBar, satu `TextField`, satu `DropdownButton`, satu tombol submit, dan `IconButton` aksi per job. Dari 89 layar kandidat yang belum diaudit, ini adalah layar dengan titik fokus paling beragam per baris kode dan biaya setup fixture paling rendah.
+
+### Probe sebelum kontrak
+
+Probe sementara `test/features/ai/_probe_focus_test.dart` (viewport 1536x1024, devicePixelRatio 1.0, `LogicalKeyboardKey.tab` berulang, berhenti saat geometri berulang) menghasilkan enam stop; traversal kembali ke stop 0 setelah stop 5:
+
+| Stop | Label | Rect (left, top, width, height) |
+|---|---|---|
+| 0 | Run Queue (AppBar action) | 1355.1, 8.0, 180.9, 40.0 |
+| 1 | Image prompt (TextField) | 56.0, 148.0, 1424.0, 96.0 |
+| 2 | openai / comfyui (Dropdown) | 40.0, 272.0, 137.1, 48.0 |
+| 3 | Generate Image (FilledButton) | 189.1, 276.0, 263.4, 40.0 |
+| 4 | Cancel job-queued (IconButton) | 1444.0, 376.0, 40.0, 40.0 |
+| 5 | Retry job-failed (IconButton) | 1444.0, 460.0, 40.0, 40.0 |
+
+Job berstatus `completed` sengaja tidak menambah stop fokus karena UI hanya menampilkan status dan tidak merender aksi apa pun untuk status itu. Ini perilaku yang benar, bukan control yang hilang, dan dikunci eksplisit oleh test keempat.
+
+Probe dihapus setelah kontrak ditulis (`ls test/features/ai/` tidak lagi memuat `_probe_focus_test.dart`); hanya file kontrak yang tersisa.
+
+### Cara label fokus ditentukan
+
+Label diambil dari subtree elemen yang difokuskan (semua `Text.data` dan `Tooltip.message` descendant, digabung dengan prefiks `runtimeType:`). Bila subtree tidak memberi apa pun, label dicari di ancestor: `TextField.decoration.labelText`/`.hintText` untuk field input, dan `Tooltip.message` untuk `IconButton` yang menyimpan tooltip sebagai ancestor. Tanpa fallback ancestor, `IconButton` dan `TextField` akan menghasilkan label generik `widget:...` dan urutan fokus tidak bisa dibedakan satu per satu.
+
+### Yang dikunci kontrak
+
+- `expect(stops.map((s) => s.label).toList(), _expectedLabels)` — urutan enam label persis: Run Queue, Image prompt, dropdown provider, Generate Image, Cancel job-queued, Retry job-failed.
+- `expect(stops.length, 6)` — tepat enam stop fokus, tidak ada stop tersembunyi dari AppBar atau card submit.
+- Setiap stop punya `width > 0` dan `height > 0`, serta `rect.shortestSide >= 40.0` (ambang `_minFocusArea`) sehingga target fokus sekecil mungkin tetap terukur.
+- Traversal kembali ke geometri stop pertama (`_firstStopGeometry = '1355,8,181,40'`) pada fixture satu job queued, membuktikan tidak ada jebakan fokus setelah aksi job terakhir.
+- Fixture satu job `completed` menghasilkan tepat empat label (`_expectedLabels.take(4)`), membuktikan status tanpa aksi tidak menambah stop.
+- `expect(tester.takeException(), isNull)` pada setiap fixture sebagai pagar overflow/render exception.
+
+### Negative control
+
+Satu mutasi dicadangkan ke `%LOCALAPPDATA%\Temp\wcag243_negctl_backup.dart` lalu dipulihkan: label stop 0 dan stop 1 ditukar (`Text:Run Queue` <-> `TextField:Image prompt`). Hasil: `EXIT=1`, `00:02 +2 -2: Some tests failed`, dengan dua test gagal dan pesan `at location [0] is 'Text:Run Queue' instead of 'TextField:Image prompt'`. Setelah `cp` restore, urutan label kembali ke bentuk semula dan file cadangan dihapus.
+
+### Bukti eksekusi
+
+```
+dart format test/features/ai/ai_generation_queue_screen_focus_order_test.dart
+-> Formatted 1 file (1 changed) in 0.01 seconds
+dart analyze test/features/ai/ai_generation_queue_screen_focus_order_test.dart
+-> No issues found!
+flutter test test/features/ai/ai_generation_queue_screen_focus_order_test.dart
+-> 00:01 +4: All tests passed!
+flutter test test/features/ai/ai_generation_queue_screen_focus_order_test.dart  (mutasi label)
+-> NEGCTL_EXIT=1, 00:02 +2 -2: Some tests failed
+```
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `none` (0 hit).
+
+Tidak ada perubahan kode produksi pada fase ini; hanya dua file yang di-`git add` dengan pathspec eksplisit, tanpa `git add -A`, dan tanpa menyentuh file WIP Core Worker.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada AI Generation Queue Screen. Jumlah layar teraudit dari 89 kandidat: 40 (sebelum fase ini 39).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

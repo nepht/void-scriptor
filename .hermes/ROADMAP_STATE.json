@@ -3043,7 +3043,8 @@
       "117.43-09 the rebuild WINDOWS were never read by anything in lib/ or test/ (grep for started_at/finished_at/duration_seconds returned zero matches; duration_seconds was not even parsed) and RebuildResult declared startedAt/finishedAt that nothing read, so the manifest's method claim - two INDEPENDENT clean rebuild cycles - was never measured. Proven before the fix: four impossible histories all reported status=pass with text indistinguishable from the honest case (rebuild_b starting inside rebuild_a's window; a rebuild finishing before it started; a duration_seconds contradicting its own timestamps; an unparseable timestamp). Fixed at both ends, because a domain-only fix would be theatre: the parser dropped all three fields, so every record would arrive with a null window and be waved through as a non-claim. _decodeWindow now returns null for a present-but-undecodable field so _rebuildFrom fails closed, RebuildResult.hasWellFormedWindow reads the window (both ends must parse, finish must be strictly after start), and _windowsAreIndependent additionally requires the two windows not to overlap - overlapping clean rebuilds share one build/ directory, so their digests prove nothing. Absence of BOTH ends stays non-claiming per 117.43-07 (which keeps the 117.43-06/-07 fixtures green); half-recorded is NOT absence and fails closed (the first implementation read one missing end as non-claiming and the official test caught it: Expected false, Actual true). Mistyped window fields are refused, not cast past, via the _kUndecodable sentinel. The shipped manifest still passes because its windows are genuinely honest - measured independently in this run: rebuild_a 13:27:45->13:29:47 = 122s matching its recorded duration, rebuild_b 13:30:17->13:32:12 = 115s also matching, 30s apart, both log files present. A second test moves rebuild_b's window inside rebuild_a's on the REAL shipped document with every digest, verdict and partition untouched, and must fail; if only digests were measured it would still pass. Commit be01156.",
       "117.43-10 found and fixed in this slice (2026-10-03): the shipped comparison method claims 'SHA-256 after two INDEPENDENT CLEAN rebuild CYCLES' and 117.43-09 measured 'independent' (windows must not overlap) but NOTHING measured 'clean', because _rebuildFrom dropped 'command' and 'log' exactly as it had dropped the window fields, and RebuildResult never declared them - zero readers in lib/. Proven before the fix with a probe whose manifest was honest in every other respect: four impossible claims all reported pass - a command naming no clean step; two rebuilds run in different build modes (--release vs --debug), i.e. two different experiments compared; a log pointing at a file that does not exist; and both fields present but of the wrong type (int). Absent fields stayed a correct non-claim, which is what keeps 117.43-06/-07 fixtures green. Fix, both ends: the gate decodes 'command' and 'log' under the 117.43-09 rule (present-but-undecodable fails closed via the _kUndecodable sentinel, absent stays a non-claim) and a recorded log must resolve on disk; RebuildResult.hasWellFormedMethod requires a recorded command to name a clean step, and ranSameExperimentAs requires both rebuilds to have run the same experiment compared on a normalized form so cosmetic differences do not refuse honest manifests. The shipped manifest is unaffected because its claim is honest - measured this run, both commands carry flutter clean, both build windows --release, both logs exist on disk. RED->GREEN: 5 of 7 new tests fail before the gate change, 7/7 after, file total 75/75 (up from 68/68). Necessity proven by reverting ONLY the gate file while the domain keeps the new getters: exactly 5 named tests fail, no compile error. EOL PITFALL RECORDED: the commit warned CRLF will be replaced by LF; 3-side sha verification MUST normalize EOL first (git check-attr text=auto eol=lf), disk had 1144 CRLF vs committed 0 and only matched after normalization.",
       "117.43-11 found and fixed in this slice (2026-10-03): build_inputs and dependency_lock exist to record WHICH file was hashed and WHAT it hashed to, as '<path> sha256 <64 hex>', and nothing ever parsed them - _hasContent only asked whether each entry was non-blank, so a fabricated 64-hex digest, an 8-character truncation, 63 or 65 hex characters, and the literal NOT-A-DIGEST all reported pass while the gate printed 'build_inputs: 5 item' as though the content had been read. Proven before the fix with eleven cases, ten of which passed; the one that failed failed for being blank rather than for its digest. The rule matches the CLAIM rather than one spelling of it (sha256/SHA256/sha-256) and deliberately stops at form: build_inputs pins digests at the provenance anchor revision 30dda0c3389a8bd9e3cae705abd51eaecbca2630, not at HEAD, so re-hashing against the live checkout would refuse an honest manifest - this repo's pubspec.yaml digest matches its CRLF variant at that revision and not the LF bytes on disk, measured across a four-variant EOL sweep after the drift hypothesis was disproved. A line that merely names the algorithm without a value states no claim and is left alone, per the non-claim rule 117.43-07 established for the comparison verdict.\",",
-      "117.43-12 found and fixed in this slice (2026-10-03): the same three evidence groups were read through '(evidence[key] as List<dynamic>?)?.cast<String>()', which asserts rather than checks - a group holding [42], holding a Map, not being a list at all, or containing a blank string did not report unmet but threw a TypeError out of the gate, so a malformed manifest escaped the verdict entirely instead of failing closed. Probed before the fix: every shape printed status=NO-STATUS thrown=TypeError. Every other decode in that file was written for this under 117.43-08/-09/-10; this one was missed. A gate that crashes on malformed input is not fail-closed, which is why this is filed beside the digest rule rather than folded into it: one reads content, the other decodes shape. Now decoded by explicit _stringList, which returns null for a present-but-malformed group so the callers report unmet.\","
+      "117.43-12 found and fixed in this slice (2026-10-03): the same three evidence groups were read through '(evidence[key] as List<dynamic>?)?.cast<String>()', which asserts rather than checks - a group holding [42], holding a Map, not being a list at all, or containing a blank string did not report unmet but threw a TypeError out of the gate, so a malformed manifest escaped the verdict entirely instead of failing closed. Probed before the fix: every shape printed status=NO-STATUS thrown=TypeError. Every other decode in that file was written for this under 117.43-08/-09/-10; this one was missed. A gate that crashes on malformed input is not fail-closed, which is why this is filed beside the digest rule rather than folded into it: one reads content, the other decodes shape. Now decoded by explicit _stringList, which returns null for a present-but-malformed group so the callers report unmet.\",",
+      "117.43-14 found and fixed in this slice (2026-10-03): _evaluateShippedProvenance read rebuildList[0] and rebuildList[1] out of a list that may hold more, then reported the count of the two it had read as though it were the document's. Every rule added by 117.43-08/-09/-10/-12/-13 (the window, the independence of the windows, the clean command, the digest, the exit code, the reachable log, the partition) was therefore applied to two records and to no other, so a manifest recording three or more rebuilds had all but two of them never decoded and never measured. Proven before the fix by APPENDING one record to the shipped manifest, so that only the appended defect could decide the outcome: eight defects travelled in that third record (non-zero exit code, fabricated digest, window ending before it starts, command admitting no clean step, log nobody can open, duplicate label, an artifact the partition never names, and a window overlapping the first rebuild) and all eight returned pass, each reporting 'rebuild_results: 2 item' for a document recording three. 117.43-13 is this same omission seen from inside one record - it made a mistyped THIRD record fail closed, which it could not and could not have done, because the third record was never decoded. Now decodes every record, refuses two records sharing a label, holds every record to the window, method, digest, exit-code and reachable-log rules, requires every PAIR of windows to stand clear (new helper _windowsArePairwiseIndependent, since _windowsAreIndependent compares only two), and requires the partition to account for the inventory across ALL recorded rebuilds rather than the first rebuild alone. A manifest recording one rebuild stays unevaluable (the claim needs two) and one recording three is checked three times over; absent fields stay null (117.43-07) and a present-but-unreadable value stays unevaluable, hence unmet."
     ],
     "defects_measured_not_fixed": [
       "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance. Independently re-measured 2026-10-03 (not copied from the previous run): docs/release/v1.2.0-rc.1-checksums.txt has 493 entries, 0 malformed -> 485 MATCH / 7 DRIFT / 1 MISSING. Drift = the 6 signed artifacts plus data/app.so; missing = build/windows/x64/runner/Release/native_assets.json. Figures are identical to the 2026-10-02 run and stable after 'flutter build windows --debug'. Confirmed reading: the 117.43 GA gate measures only the 6 signed artifacts from docs/planning/v1.2/sprint_113_ga_artifact_packaging.json, so the full 493-row checksum index is never measured by the gate - a real blind spot, not gate drift.",
@@ -3145,7 +3146,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T09:20:00+07:00",
+    "updated_at": "2026-10-03T09:55:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3167,17 +3168,22 @@
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
     "defects_fixed_count": 12,
-    "slice_commit": "4283ebd",
+    "slice_commit": "cc5ae78",
     "last_slice_files": [
       {
         "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
-        "sha256_lf_canonical": "9b282cf7",
+        "sha256_lf_canonical": "6c0754c3",
         "crlf_in_disk": 0
       },
       {
         "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "sha256_lf_canonical": "32643665",
+        "sha256_lf_canonical": "f5acbb58",
         "crlf_in_disk": 0
+      },
+      {
+        "path": "docs/sprints/sprint-117-beta-validation.md",
+        "sha256_lf_canonical": "f02de66c",
+        "crlf_in_disk": 70
       }
     ],
     "gates_reverified_run9_2026_10_03": {
@@ -3223,8 +3229,58 @@
       "commit": "4283ebd",
       "pushed": false
     },
-    "ledger_sha256_lf_canonical": "eceee91d",
-    "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally."
+    "ledger_sha256_lf_canonical": "f02de66c",
+    "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally.",
+    "defect_117_43_14": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-14",
+      "hunt": "unmeasured-claim / fail-open, tenth slice of the family",
+      "family_closed_so_far": 10,
+      "shape": "the gate read TWO records out of a list that may hold more, then reported the two it had read",
+      "symptom": "required_evidence.rebuild_results may document three or more rebuilds; the gate decoded only indexes 0 and 1, built rebuildResults as [a, b], and printed 'rebuild_results: 2 item' - a number it CHOSE, not one it read. Every defect rule in the file was pointed at those two records, so a third record's exit code, digest, window, command, log and label were never checked at all.",
+      "why_worse_than_a_wrong_answer": "it is a silent UNDERCOUNT in a reproducibility claim: the document says the claim rests on N rebuilds and the gate reports two, so the output looks like a clean two-rebuild result while N-2 rebuilds went unexamined. A reader has no way to see that anything was skipped, and the count printed in observed is precisely the number that hides it.",
+      "empirical_before_fix": "probe zz_probe_11743_14_test.dart (deleted after the findings moved into the official suite) appended one derived record to the SHIPPED manifest, inheriting command, log and every untouched digest so that only the injected defect could decide the outcome. Seven variants plus the historical assertion: every one returned status=pass and every one reported 'rebuild_results: 2 item' for a document recording three.",
+      "defects_that_passed_before_the_fix": [
+        "exit_code = 1 (a failed build called a rebuild)",
+        "artifact digest fabricated ('NOT-A-DIGEST', the rule 117.43-11 already enforces on the first two)",
+        "window ending before it starts, duration_seconds = -1800 (the rule 117.43-09 already enforces)",
+        "command with no clean step (the rule 117.43-10 already enforces)",
+        "log naming a document nobody can open (the rule 117.43-13 already enforces)",
+        "two records sharing the label rebuild_a",
+        "an artifact 'ghost.dll' the partition in artifact_comparison never names",
+        "a window overlapping rebuild_a's 13:27:45 -> 13:29:47, i.e. two builds contending for one build/ directory"
+      ],
+      "seams_closed": [
+        "decode every record in rebuildList, not indexes 0 and 1",
+        "distinct labels across all recorded rebuilds",
+        "window well-formedness and duration agreement for every record",
+        "every PAIR of windows clear of the others (_windowsArePairwiseIndependent)",
+        "hasWellFormedMethod and ranSameExperimentAs for every record against the first",
+        "the partition must account for the union of every recorded rebuild's inventory",
+        "rebuildResults carries every decoded rebuild, so the reported count is the document's"
+      ],
+      "non_claim_rule_preserved": "a manifest recording ONE rebuild remains unevaluable - the comparison claim needs two - and is still reported unmet; absent fields stay null (117.43-07); a value present but unreadable stays unevaluable, hence unmet.",
+      "red_boundary": "gate reverted to HEAD alone -> 96 pass, exactly 10 named failures (9 defect cases + 1 historical), the control and all shipped tests green, no compile error",
+      "focused_suite": "106/106 exit 0 (was 95; +11)",
+      "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1, ONE failure, signature byte-identical to the 117.43-02 root cause (expected 73101e78..., actual c7a33055...) - not a regression",
+      "verified_on": "2026-10-03",
+      "commit": "cc5ae78",
+      "pushed": false
+    },
+    "gates_reverified_run11_2026_10_03": {
+      "focused_suite": "106/106 exit 0 (was 95; +11)",
+      "red_boundary": "gate reverted to HEAD alone -> 96 pass and exactly 10 named failures (9 defect + 1 historical), no compile error",
+      "dart_analyze": "3 files, No issues found!, exit 0, re-run AFTER dart format",
+      "dart_format": "1 changed, then 0 changed idempotent",
+      "git_diff_check": "exit 0",
+      "windows_build": "flutter build windows --debug exit 0, 19.7s",
+      "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1, ONE failure, signature byte-identical to the 117.43-02 root cause (expected 73101e78..., actual c7a33055...) - not a regression",
+      "sha_three_way": "slice files MATCH disk == committed: gate 6c0754c3, test f5acbb58 (LF-canonical). Ledger quotes LF-canonical f02de66c, because the file legitimately carries 70 pre-existing CRLF lines and git normalises them to LF in the blob, so its RAW disk sha (d1574a0a) will never match its own blob. This state file records no sha of itself.",
+      "working_tree": "93 -> 95 during slice -> 93 after commit; delta is exactly the 2 slice files",
+      "probes": "2 temporary probes (zz_probe_11743_14_test.dart, zz_probe_11743_14_diag_test.dart) deleted after every finding moved to the official suite; remaining=0",
+      "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json unchanged, 0 bytes altered; git show --name-only cc5ae78 does not list it",
+      "defect": "117.43-14 - ten recorded rebuilds were reported as two; the gate decoded the first two records of a list that may hold more"
+    }
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -3357,7 +3413,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "4283ebd",
+  "last_slice_commit": "cc5ae78",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",

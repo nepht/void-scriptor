@@ -1554,6 +1554,19 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - **Negative control:** kontrak sengaja dijalankan dengan urutan label yang diubah; test gagal dengan exit code non-zero, lalu file dipulihkan dan test kembali lulus.
 - **Batasan:** audit ini mengukur focus order aktual Theme Settings pada fixture tanpa database/network. Tidak ada perubahan produksi.
 
+## 35. Fase 35 — Focus Order di Login Screen (2.4.3)
+
+- **Layar:** `lib/features/authentication/presentation/login_screen.dart`
+- **Kontrak:** `test/features/authentication/presentation/login_screen_focus_order_test.dart`
+- **Viewport probe:** 1536x1024, device pixel ratio 1.0.
+- **Hasil terukur:** 9 focus stops; traversal kembali ke stop pertama setelah stop kesembilan.
+- **Urutan label:** `widget:Focus` → `widget:Focus` → `widget:Focus` → `widget:Focus` → `Forgot password?` → `Sign In` → `Work Offline` → `Continue as Guest` → `Create account`. Empat stop pertama adalah wrapper `Focus` di sekitar kontrol Email, Password, visibility toggle, dan area terkait; probe mencatat label widget karena tidak ada `Text` descendant pertama pada context fokus.
+- **Geometri:** seluruh stop memiliki area non-zero. Stop 0 berada di kanan atas (`1364,32,40x40`); stop 1–2 berada pada form (`1020,325,368x24` dan `1020,437,336x24`); visibility toggle berada di `1360,425,48x48`; action stops berikutnya berurutan pada y `479`, `535`, `789`, `837`, dan `901`.
+- **Kontrak posisi:** action stops setelah visibility toggle meningkat dari atas ke bawah; stop pertama berada di atas dan lebih kanan daripada field form; seluruh area fokus non-zero; tidak ada exception rendering.
+- **Negative control:** ekspektasi jumlah stop diubah dari 9 menjadi 8; test gagal dengan exit `1` dan output `Some tests failed`. File kontrak dipulihkan dari backup.
+- **Gate:** `dart analyze test/features/authentication/presentation/login_screen_focus_order_test.dart` menghasilkan `No issues found!`; focused test lulus.
+- **Status:** VERIFIED untuk bukti focus order Login Screen pada konfigurasi probe ini. Cakupan audit focus-order layar: 29 dari 89 target layar.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

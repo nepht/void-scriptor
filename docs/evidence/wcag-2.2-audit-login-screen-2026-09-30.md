@@ -1958,6 +1958,88 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 
 
+## 44. Fase 44 — Focus Order di Settings Hub Screen (2.4.3)
+
+**Layar**: `lib/features/settings/presentation/settings_hub_screen.dart` (Settings / Settings Hub, kelas `SettingsHubScreen`, 192 baris, `ConsumerWidget`)
+**Kontrak**: `test/features/settings/settings_hub_screen_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 24 Tab). Provider sesi di-override ke `null` sehingga layar berdiri tanpa database/network.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `General` | header `ExpansionTile` (collapsed) | 16.0, 73.0, 1504.0, 56.0 |
+| 1 | `Appearance` | header `ExpansionTile` (collapsed) | 16.0, 131.0, 1504.0, 56.0 |
+| 2 | `Sidebar & Workspace` | header `ExpansionTile` (collapsed) | 16.0, 189.0, 1504.0, 56.0 |
+| 3 | `About & Diagnostics` | header `ExpansionTile` (`initiallyExpanded`) | 16.0, 247.0, 1504.0, 56.0 |
+| 4 | `Lokasi penyimpanan kustom` | `ListTile` bertap di dalam About | 16.0, 519.0, 1504.0, 72.0 |
+| 5 | `General` (ulang stop 0, `REPEAT at stop 5 -> cycle closed`) | — | 16.0, 73.0, 1504.0, 56.0 |
+
+Jumlah stop = **5**. `find.byType(ExpansionTile)` = 4. `tester.takeException()` = `null`.
+
+Layar ini memakai `ref.watch(projectSessionProvider)` dan dua masa depan (`BootstrapDirectories.resolve()` untuk baris Storage diagnostik), tetapi keduanya tidak butuh fixture berat: test cukup meng-override `projectSessionProvider` ke controller yang mengembalikan `null` (pola yang sudah dipakai `settings_hub_screen_test.dart`), dan `FutureBuilder` cukup dibiarkan pada status loading. Tanpa sesi, cabang `session == null` merender `ListTile` "Buka proyek untuk mengatur modul sidebar" — tetapi tile itu berada di dalam `ExpansionTile` `Sidebar & Workspace` yang collapsed, sehingga tidak ikut traversal.
+
+Pembentukan urutan Tab:
+
+- Empat header `ExpansionTile` masing-masing punya satu stop (`InkWell` header), berurutan deklarasi: General → Appearance → Sidebar & Workspace → About & Diagnostics.
+- `About & Diagnostics` adalah satu-satunya yang `initiallyExpanded: true`, jadi anaknya ikut ter-render. Dari tiga `ListTile` anak yang selalu ada (`Versi`, `Platform`, `Storage diagnostik`) tidak ada yang punya `onTap` — bukan stop. `Lokasi penyimpanan kustom` punya `onTap` → stop kelima.
+- `Diagnostik proyek` (bertap) hanya dirender saat `session != null`, jadi tidak ada pada konfigurasi ini.
+- Setelah stop kelima, Tab berikutnya kembali ke `General` dengan `Rect` identik; satu Tab lagi lanjut ke `Appearance` — siklus utuh.
+
+### Kontrak yang dikunci
+
+- `expect(find.byType(ExpansionTile), findsNWidgets(4))` dan `stops` `hasLength(5)` — jumlah stop disetel dengan jumlah elemen focusable nyata (4 header + 1 ListTile bertap).
+- Urutan label `['General', 'Appearance', 'Sidebar & Workspace', 'About & Diagnostics', 'Lokasi penyimpanan kustom']` — urutan deklarasi widget, diverifikasi probe.
+- Area fokus non-nol pada tiap stop (`width > 0 && height > 0`); keempat header 1504.0 x 56.0, ListTile About 1504.0 x 72.0.
+- Fokus bergerak menurun atas-ke-bawah: `top` tiap stop `>` `top` stop sebelumnya (73 → 131 → 189 → 247 → 519).
+- Semua stop berbagi tepi kiri identik (16.0) karena keduanya baris penuh dalam `ListView` yang sama.
+- Setelah stop terakhir traversal wrap ke `General` dengan `Rect` identik, lalu satu Tab lanjutan mengenai `Appearance` — siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Tidak ada perubahan kode produksi pada fase ini: probe tidak menemukan defect urutan (semua elemen bertap ikut traversal, tidak ada stop tersembunyi atau area nol). File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format --set-exit-if-changed test/features/settings/settings_hub_screen_focus_order_test.dart
+=> Formatted 1 file (0 changed) in 0.02 seconds.   (exit 0)
+
+dart analyze test/features/settings/settings_hub_screen_focus_order_test.dart
+=> No issues found!   (exit 0)
+
+flutter test test/features/settings/settings_hub_screen_focus_order_test.dart
+=> 00:01 +3: All tests passed!   (exit 0)
+
+flutter test test/features/settings/   (gate)
+=> 00:12 +25: All tests passed!   (exit 0)
+   4 file test (language_switcher 2 + kontrak focus-order 3 +
+   settings_hub_screen 6 + storage_locations_screen 8 testWidgets,
+   total 25 unit/widget assertions tercatat runner).
+```
+
+**Negative control** (wajib): dua baris pertama `_expectedLabels` pada salinan cadangan di `%LOCALAPPDATA%\Temp` ditukar menjadi `['Appearance', 'General', ...]`, lalu kontrak dijalankan:
+
+```
+00:01 +1 -2: Settings Hub — kontrak focus order 2.4.3 3. Tab setelah stop terakhir kembali ke General [E]
+   Expected: 'Appearance'
+     Actual: 'General'
+00:01 +1 -2: Settings Hub — kontrak focus order 2.4.3 1. lima stop dengan urutan label yang dikunci [E]
+00:02 +1 -2: Some tests failed.
+exit code 1 (NEGCTL_EXIT=1)
+```
+
+Salinan cadangan dipulihkan lalu dihapus (`BACKUP_DELETED`), kontrak diverifikasi ulang `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus order (2 dari 3 test gagal saat ekspektasi urutan dibalik), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Sisa artefak yang tidak dihitung**: `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` (untracked, tanpa section report) tetap dibiarkan apa adanya, sama seperti catatan fase 41/42/43.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Settings Hub Screen di konfigurasi probe ini (sesi null + viewport desktop). Cakupan audit focus-order layar: **35 dari 89** target layar (34 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini). Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

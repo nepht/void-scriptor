@@ -2597,4 +2597,354 @@ void main() {
       expect(check.observed, contains('NOT_BIT_IDENTICAL'));
     });
   });
+
+  // RED-first for defect 117.43-14: the ninth slice in the same hunt, and the
+  // first one where the gate did not merely IGNORE a field — it read the first
+  // TWO rebuild records and no others, then reported the count of the two it
+  // had chosen as though it were the count the document states.
+  //
+  // `_evaluateShippedProvenance` requires `rebuildList.length >= 2`, decodes
+  // `rebuildList[0]` and `rebuildList[1]`, and builds the domain object with
+  // `rebuildResults: <RebuildResult>[a, b]`. Every rule 117.43-08/-09/-10/-12/
+  // -13 added — the window, the clean command, the digest, the exit code, the
+  // reachable log — is therefore applied to TWO of the records a document may
+  // hold, and to no other. The gate then prints `rebuild_results: 2 item`, a
+  // number it chose rather than one it measured.
+  //
+  // This is the same failure the hunt has been closing all along, one level out:
+  // 117.43-13 made a mistyped THIRD record fail closed, but it could not, and
+  // could not have, because the third record is never decoded. Proven against
+  // HEAD before the fix, by appending one record to the SHIPPED manifest so
+  // that only the appended defect could decide the outcome — a non-zero exit
+  // code, a fabricated digest, a reversed window, a command with no clean step,
+  // a duplicate label, and an artifact no comparison names. All six returned
+  // `pass`, and every one of them reported `rebuild_results: 2 item`.
+  group('117.43-14 every recorded rebuild is measured, and the count is measured '
+      'too', () {
+    String digest(String seed) => seed * 64;
+
+    /// The SHIPPED manifest, deep-copied so a defect injected into a copy
+    /// cannot touch the file on disk.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(
+                  'docs/planning/v1.2/'
+                  'sprint_113_build_reproducibility_provenance.json',
+                ),
+              ),
+            )
+            as Map<String, Object?>;
+
+    Map<String, Object?> evidenceOf(Map<String, Object?> m) =>
+        m['required_evidence']! as Map<String, Object?>;
+
+    List<Map<String, Object?>> rebuildsOf(Map<String, Object?> m) =>
+        (evidenceOf(m)['rebuild_results']! as List<dynamic>)
+            .cast<Map<String, Object?>>();
+
+    /// A THIRD record derived from the shipped first record, so that the only
+    /// thing distinguishing it from an honest one is the defect under test.
+    /// The command, the log, and every untouched digest are inherited, which
+    /// is what keeps these findings about the record being ignored rather
+    /// than about the shape of the manifest.
+    Map<String, Object?> extraRecord({
+      String label = 'rebuild_c',
+      Object? exitCode = 0,
+      String hour = '06',
+    }) {
+      final inherited = rebuildsOf(shipped()).first;
+      return <String, Object?>{
+        ...inherited,
+        'label': label,
+        'exit_code': exitCode,
+        'started_at': '2026-09-23T$hour:00:00+07:00',
+        'finished_at': '2026-09-23T$hour:30:00+07:00',
+        'duration_seconds': 1800,
+        'artifact_hashes': <String, Object?>{
+          ...(inherited['artifact_hashes']! as Map<String, Object?>),
+          'void_scriptor.exe': digest('d'),
+        },
+      };
+    }
+
+    Map<String, Object?> withExtras(List<Map<String, Object?>> extras) {
+      final m = shipped();
+      evidenceOf(m)['rebuild_results'] = <Map<String, Object?>>[
+        ...rebuildsOf(shipped()),
+        ...extras,
+      ];
+      return m;
+    }
+
+    /// The rebuild count the gate REPORTS, read out of its own output rather
+    /// than inferred from what was sent in.
+    String reportedRebuildCount(Sprint117GaArtifactCheck check) {
+      final match = RegExp(
+        r'rebuild_results: (\d+) item',
+      ).firstMatch(check.observed);
+      return match?.group(1) ?? 'ABSENT';
+    }
+
+    test('117.43-14 a third rebuild that exited non-zero is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[
+          extraRecord(exitCode: 1, hour: '14'),
+        ]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a recorded rebuild that reports a non-zero exit code is not a '
+            'rebuild, and the domain already refuses such a record — but the '
+            'gate never decoded this one, so the verdict was pass',
+      );
+    });
+
+    test('117.43-14 a third rebuild with a fabricated digest is refused', () {
+      final extra = extraRecord(hour: '15');
+      (extra['artifact_hashes']! as Map<String, Object?>)['void_scriptor.exe'] =
+          'NOT-A-DIGEST';
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a digest no rebuild could have produced must fail closed, the '
+            'same rule 117.43-13 applies to the first two records',
+      );
+    });
+
+    test('117.43-14 a third rebuild whose window runs backwards is refused', () {
+      final extra = extraRecord(hour: '16')
+        ..['started_at'] = '2026-09-23T16:30:00+07:00'
+        ..['finished_at'] = '2026-09-23T16:00:00+07:00'
+        ..['duration_seconds'] = -1800;
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            '117.43-09 refuses a window that ends before it starts; that rule '
+            'must reach every recorded rebuild, not only the first two',
+      );
+    });
+
+    test('117.43-14 a third rebuild whose command admits no clean step is '
+        'refused', () {
+      final extra = extraRecord(hour: '17')
+        ..['command'] = 'flutter build windows --release';
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            '117.43-10 requires a recorded command to contain a clean step; '
+            'the rule must reach every recorded rebuild',
+      );
+    });
+
+    test('117.43-14 a third rebuild citing an unreadable log is refused', () {
+      final extra = extraRecord(hour: '18')
+        ..['log'] = 'docs/evidence/no-such-rebuild.log';
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            '117.43-13 refuses a record whose log names a document nobody can '
+            'open; the rule must reach every recorded rebuild',
+      );
+    });
+
+    test('117.43-14 two rebuilds sharing one label are refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[
+          extraRecord(label: 'rebuild_a', hour: '19'),
+        ]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a label is how a reader tells one rebuild from another; two '
+            'records under one label make the document ambiguous about how '
+            'many rebuilds were actually compared',
+      );
+    });
+
+    test('117.43-14 a rebuild hashing an artifact the comparison never names '
+        'is refused', () {
+      final extra = extraRecord(hour: '20')
+        ..['artifact_hashes'] = <String, Object?>{
+          ...extraRecord()['artifact_hashes']! as Map<String, Object?>,
+          'ghost.dll': digest('f'),
+        };
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the partition in artifact_comparison must account for the whole '
+            'recorded inventory; an artifact outside it is an unaccounted '
+            'digest, and the inventory now spans every recorded rebuild',
+      );
+    });
+
+    test('117.43-14 a rebuild overlapping another is refused', () {
+      // rebuild_a runs 13:27:45 -> 13:29:47, so a record claiming to start
+      // inside that window is a second build contending for one `build/`
+      // directory. The rule 117.43-09 applies to the first two records has
+      // to apply to this one too.
+      final extra = extraRecord(hour: '13')
+        ..['started_at'] = '2026-09-23T13:28:00+07:00'
+        ..['finished_at'] = '2026-09-23T13:29:00+07:00'
+        ..['duration_seconds'] = 60;
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'overlapping clean rebuilds share one build directory, so their '
+            'digests cannot support an independence claim',
+      );
+    });
+
+    test('117.43-14 the reported rebuild count is the document count', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: withExtras(<Map<String, Object?>>[
+          extraRecord(hour: '14'),
+          extraRecord(label: 'rebuild_d', hour: '16'),
+        ]),
+      );
+
+      expect(
+        reportedRebuildCount(check),
+        '4',
+        reason:
+            'the count the gate reports must be the count the document '
+            'records, not the count of the first two records the gate chose '
+            'to read',
+      );
+    });
+
+    test('117.43-14 the shipped manifest still passes and reports two', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: shipped(),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(reportedRebuildCount(check), '2');
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+
+    test('117.43-14 every one of these passed before this slice', () {
+      // The historical record, kept as an executable assertion. Pre-fix the
+      // gate decoded only records 0 and 1, so all seven manifests below —
+      // each carrying one extra record with one injected defect — returned
+      // `pass`, and each reported `rebuild_results: 2 item` while its own
+      // document recorded three. The rules existed; they were simply never
+      // pointed at the third record.
+      final passed = <String>[];
+      void record(String seam, Map<String, Object?> manifest) {
+        final status = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+        if (status == 'pass') passed.add(seam);
+      }
+
+      record(
+        'exit_code=1',
+        withExtras(<Map<String, Object?>>[
+          extraRecord(exitCode: 1, hour: '14'),
+        ]),
+      );
+      final fabricated = extraRecord(hour: '15');
+      (fabricated['artifact_hashes']!
+              as Map<String, Object?>)['void_scriptor.exe'] =
+          'NOT-A-DIGEST';
+      record(
+        'digest=fabricated',
+        withExtras(<Map<String, Object?>>[fabricated]),
+      );
+      record(
+        'window=reversed',
+        withExtras(<Map<String, Object?>>[
+          (extraRecord(hour: '16')
+            ..['started_at'] = '2026-09-23T16:30:00+07:00'
+            ..['finished_at'] = '2026-09-23T16:00:00+07:00'
+            ..['duration_seconds'] = -1800),
+        ]),
+      );
+      record(
+        'command=no-clean-step',
+        withExtras(<Map<String, Object?>>[
+          (extraRecord(hour: '17')
+            ..['command'] = 'flutter build windows --release'),
+        ]),
+      );
+      record(
+        'log=unreadable',
+        withExtras(<Map<String, Object?>>[
+          (extraRecord(hour: '18')
+            ..['log'] = 'docs/evidence/no-such-rebuild.log'),
+        ]),
+      );
+      record(
+        'label=duplicate',
+        withExtras(<Map<String, Object?>>[
+          extraRecord(label: 'rebuild_a', hour: '19'),
+        ]),
+      );
+      record(
+        'artifact=unnamed',
+        withExtras(<Map<String, Object?>>[
+          (extraRecord(hour: '20')
+            ..['artifact_hashes'] = <String, Object?>{
+              ...extraRecord()['artifact_hashes']! as Map<String, Object?>,
+              'ghost.dll': digest('f'),
+            }),
+        ]),
+      );
+      record(
+        'window=overlapping',
+        withExtras(<Map<String, Object?>>[
+          (extraRecord(hour: '13')
+            ..['started_at'] = '2026-09-23T13:28:00+07:00'
+            ..['finished_at'] = '2026-09-23T13:29:00+07:00'
+            ..['duration_seconds'] = 60),
+        ]),
+      );
+
+      expect(
+        passed,
+        isEmpty,
+        reason:
+            'pre-fix all seven defects were carried by a record the gate '
+            'never decoded, and each reported a rebuild count of 2 while its '
+            'document recorded 3',
+      );
+    });
+  });
 }

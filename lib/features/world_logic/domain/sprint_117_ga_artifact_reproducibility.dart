@@ -866,6 +866,56 @@ abstract final class Sprint117GaArtifactGate {
     final b = _rebuildFrom(rebuildList[1]);
     if (a == null || b == null) return null;
 
+    // Sprint 117.43-14 (fail-open, fixed): this seam read TWO records out of a
+    // list that may hold more, and then reported the two it had read. Every
+    // rule above and below — the window, the independence of the windows, the
+    // clean command, the digest, the exit code, the reachable log, the
+    // partition — was therefore applied to `rebuildList[0]` and
+    // `rebuildList[1]` and to nothing else, while the gate printed
+    // `rebuild_results: 2 item`: a number it CHOSE rather than one it read.
+    //
+    // Proven before the fix, by appending one record to the shipped manifest so
+    // that only the appended defect could decide the outcome. Eight defects
+    // travelled in that third record — a non-zero exit code, a fabricated
+    // digest, a window that ends before it starts, a command admitting no
+    // clean step, a log nobody can open, a duplicate label, an artifact the
+    // partition never names, and a window overlapping the first rebuild — and
+    // all eight returned `pass`, each reporting two rebuilds for a document
+    // that recorded three.
+    //
+    // 117.43-13 is the same omission seen from inside one record: it made a
+    // mistyped THIRD record fail closed, which it could not and could not have
+    // done, because the third record was never decoded. Decode every record
+    // now, and hold every one of them to the rules that already exist. A
+    // manifest that records one rebuild is still unevaluable (the claim needs
+    // two), and a document that records three is checked three times over.
+    final decodedRebuilds = <RebuildResult>[];
+    for (final record in rebuildList) {
+      final rebuild = _rebuildFrom(record);
+      if (rebuild == null) return null;
+      decodedRebuilds.add(rebuild);
+    }
+
+    // A label is how a reader tells one rebuild from another, so two records
+    // sharing one make the document ambiguous about how many rebuilds were
+    // actually run. Distinct labels are part of what the `rebuild_results`
+    // group claims once it may hold more than two records.
+    final labels = <String>{};
+    for (final rebuild in decodedRebuilds) {
+      if (!labels.add(rebuild.label)) return null;
+    }
+
+    // The partition in `artifact_comparison` accounts for the artifacts of the
+    // rebuilds it names. Once the evidence may record more than those two, the
+    // inventory spans every recorded rebuild, so an artifact some other
+    // rebuild hashed is an unaccounted digest and the partition is publishing a
+    // partial account as the complete one — the defect 117.43-08 fixed for two
+    // records, now applied to the whole list.
+    final inventoryAcrossRebuilds = <String>{};
+    for (final rebuild in decodedRebuilds) {
+      inventoryAcrossRebuilds.addAll(rebuild.artifactHashes.keys);
+    }
+
     // Sprint 117.43-09 (fail-open, fixed): the two rebuild WINDOWS were never
     // read, and neither the domain object nor the gate had anywhere to hold
     // them, so the manifest's independence claim — the `method` string says the
@@ -884,6 +934,16 @@ abstract final class Sprint117GaArtifactGate {
       return null;
     }
 
+    // Sprint 117.43-14: the independence rule above compares the first two
+    // windows only. Once the evidence may record more, every recorded rebuild
+    // must stand clear of every other one — overlapping clean rebuilds share a
+    // single `build/` directory, so a third window that overlaps either of the
+    // first two makes their digests unattributable in exactly the way 117.43-09
+    // refused for the pair.
+    if (!_windowsArePairwiseIndependent(decodedRebuilds, rebuildList)) {
+      return null;
+    }
+
     // Sprint 117.43-10 (fail-open, fixed): the windows above establish WHEN and
     // THAT the rebuilds ran; nothing established WHAT they ran. The comparison
     // method says the digests come from two INDEPENDENT CLEAN rebuild CYCLES,
@@ -893,6 +953,16 @@ abstract final class Sprint117GaArtifactGate {
     // for the same reason 117.43-09 measured the windows.
     if (!a.hasWellFormedMethod || !b.hasWellFormedMethod) return null;
     if (!a.ranSameExperimentAs(b)) return null;
+
+    // Sprint 117.43-14: the same rule for every recorded rebuild. A third
+    // record built in a different mode, or by a command admitting no clean
+    // step, contradicts the comparison's "two independent clean rebuild cycles"
+    // phrase just as surely for the pair did, and the shipped document now
+    // records how many rebuilds the claim rests on, so each one is checked.
+    for (final rebuild in decodedRebuilds) {
+      if (!rebuild.hasWellFormedMethod) return null;
+      if (!rebuild.ranSameExperimentAs(a)) return null;
+    }
 
     // Sprint 117.43-07 (fail-open, fixed): the verdict was INFERRED, never read.
     // `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`
@@ -931,6 +1001,7 @@ abstract final class Sprint117GaArtifactGate {
           partition,
           a.artifactHashes,
           b.artifactHashes,
+          inventoryAcrossRebuilds,
         )) {
       return null;
     }
@@ -970,7 +1041,9 @@ abstract final class Sprint117GaArtifactGate {
       buildInputs: buildInputs,
       toolchainVersions: toolchainVersions,
       dependencyLock: dependencyLock,
-      rebuildResults: <RebuildResult>[a, b],
+      rebuildResults: <RebuildResult>[
+        for (final recorded in decodedRebuilds) rebuild(recorded),
+      ],
       artifactComparison: ArtifactComparison(
         method: method as String?,
         rebuildA: rebuild(a),
@@ -1052,6 +1125,7 @@ abstract final class Sprint117GaArtifactGate {
     _ArtifactPartition partition,
     Map<String, String> hashesA,
     Map<String, String> hashesB,
+    Set<String> inventoryAcrossRebuilds,
   ) {
     final differing = partition.differing!;
     final identical = partition.identical!;
@@ -1060,6 +1134,18 @@ abstract final class Sprint117GaArtifactGate {
 
     final inventory = hashesA.keys.toSet();
     if (inventory.length != hashesA.length) return false;
+    // Sprint 117.43-14: the completeness test used to run against the first
+    // rebuild's inventory alone. It now runs against the union across every
+    // recorded rebuild, because the partition claims to account for what the
+    // document hashed — and when a later rebuild hashes something the first
+    // two never mentioned, that artifact is part of the recorded inventory too.
+    // A partition that names the first two but omits a third is publishing a
+    // partial account as the complete one, which is the defect 117.43-08
+    // already refused for the pair.
+    if (claimed.length != inventoryAcrossRebuilds.length ||
+        !claimed.containsAll(inventoryAcrossRebuilds)) {
+      return false;
+    }
     if (!claimed.containsAll(inventory)) return false;
 
     for (final entry in hashesA.entries) {
@@ -1226,6 +1312,43 @@ abstract final class Sprint117GaArtifactGate {
       return false;
     }
     return !startB.isBefore(finishA);
+  }
+
+  /// Whether every pair of recorded rebuild windows stands clear of the others.
+  ///
+  /// Sprint 117.43-14: `_windowsAreIndependent` compares exactly two windows,
+  /// so a manifest recording a third rebuild was free to place it INSIDE the
+  /// first rebuild's window — two builds contending for one `build/` directory
+  /// while the gate reported `pass`. Two rebuilds contending for one directory
+  /// is already refused for the pair; a third has to be refused too, which means
+  /// every pair, not only the first two.
+  ///
+  /// A record that states no complete window states no window claim
+  /// (117.43-07) and cannot be placed on a timeline, so it is skipped rather
+  /// than treated as a conflict — the same non-claim rule the pair helper
+  /// applies.
+  static bool _windowsArePairwiseIndependent(
+    List<RebuildResult> rebuilds,
+    List<Map<String, Object?>> records,
+  ) {
+    for (var i = 0; i < rebuilds.length; i++) {
+      if (!_hasWindow(rebuilds[i])) continue;
+      final startI = DateTime.tryParse(rebuilds[i].startedAt!.trim());
+      final finishI = DateTime.tryParse(rebuilds[i].finishedAt!.trim());
+      if (startI == null || finishI == null) return false;
+      if (!_durationAgrees(records[i]['duration_seconds'], startI, finishI)) {
+        return false;
+      }
+      for (var j = i + 1; j < rebuilds.length; j++) {
+        if (!_hasWindow(rebuilds[j])) continue;
+        final startJ = DateTime.tryParse(rebuilds[j].startedAt!.trim());
+        final finishJ = DateTime.tryParse(rebuilds[j].finishedAt!.trim());
+        if (startJ == null || finishJ == null) return false;
+        if (startJ.isBefore(finishI) && !startJ.isBefore(startI)) return false;
+        if (startI.isBefore(finishJ) && !startI.isBefore(startJ)) return false;
+      }
+    }
+    return true;
   }
 
   /// Whether a record states a complete window (both ends present).

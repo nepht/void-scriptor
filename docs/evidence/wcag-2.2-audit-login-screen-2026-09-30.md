@@ -1393,6 +1393,22 @@ Tidak ada defect produksi focus order yang ditemukan, jadi tidak ada kode produk
 - `_screen()` tidak butuh `ProviderScope` karena layar ini `StatefulWidget` murni dengan data injeksi constructor.
 - ScrollBehavior default Material sudah menyertakan `widgetsApp` di traversal, jadi `InteractiveViewer` di area gambar tidak muncul sebagai stop — memang tidak punya kontrol keyboard yang dapat difokus.
 - Screen ini berbeda dari `ReferenceLibraryScreen` (Bagian 25) dan `ReferenceManagementScreen` (Bagian 24), meski ketiganya berada di feature `references`.
+## 27. Fase 22 — Focus Order di Forgot Password Screen (2.4.3)
+
+**Layar:**  ()
+**Kontrak:** 
+**Tanggal:** 2026-10-03 | **Viewport probe & kontrak:** 1536 x 1024, dpr 1.0 | **Metode:** traversal  berulang, berhenti saat  fokus berulang.
+
+Layar ini mandiri: callback  dan state email diinjeksikan langsung, tanpa database, network, atau provider. Probe memperbaiki hanya utilitas test untuk mengambil  dari ; tidak ada kode produksi yang diubah.
+
+### Hasil probe (evidence-first)
+
+
+
+Kontrak final memetakan tiga stop:  ->  -> . Semua  memiliki lebar dan tinggi non-zero; posisi stop monoton atas-ke-bawah dan sejajar kiri. Negative control mengubah jumlah stop dari 3 menjadi 4: test gagal dengan exit code 1 dan output ; file dipulihkan dan test kontrak kembali lulus.
+
+**VERIFIED** untuk 2.4.3 (Focus Order): jumlah stop, urutan kontrol, geometri fokus non-zero, dan ketiadaan exception rendering terkunci oleh kontrak widget.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

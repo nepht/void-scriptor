@@ -997,6 +997,25 @@ Test mengunci dua keadaan UI: draft incomplete (3 stop) dan draft valid (4 stop)
 
 ---
 
+## 19. Fase 14 — Focus Order di Cinematic Production Workspace (2.4.3)
+
+Probe nyata pada viewport 1536x1024, devicePixelRatio 1.0 menemukan dua stop fokus interaktif pada workspace:
+
+1. `Import Audio` — kiri 24.0, atas 312.0
+2. `Validation Center` — kiri 271.2, atas 312.0
+
+Kartu informasi VFX, Audio, dan Timeline tidak menjadi stop fokus karena hanya `Card` dekoratif tanpa handler interaksi. Kontrak mengunci bahwa dua aksi ditab kiri-ke-kanan pada baris yang sama, dengan area fokus non-zero. Traversal setelah `Validation Center` kembali ke `Import Audio`.
+
+Gate:
+
+- Test focus order: **1/1 PASS**.
+- Test seluruh `test/features/cinematic_production/`: **3 PASS**.
+- `dart analyze`: **No issues found**.
+- Probe sementara dihapus.
+- CJK/Cyrillic scan: **none**.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

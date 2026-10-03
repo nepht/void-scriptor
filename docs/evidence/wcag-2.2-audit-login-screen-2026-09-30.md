@@ -1544,6 +1544,16 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - **Negative control:** ekspektasi label ditukar menjadi `Next` → `Cancel`; test gagal dengan exit `1` dan output `Some tests failed`. File kontrak dipulihkan dari backup.
 - **Status:** VERIFIED untuk bukti focus order layar Create Product Wizard pada konfigurasi probe ini. Cakupan audit focus-order layar: 28 dari 89 target layar.
 
+## 34. Fase 34 — Focus Order di Theme Settings Screen (2.4.3)
+
+- **Status:** PASS pada traversal keyboard yang diukur langsung.
+- **Probe:** viewport 1536x1024, device pixel ratio 1.0, `Tab` berulang sampai rect fokus berulang.
+- **Hasil:** 7 stop, dengan urutan `System` → `Void Purple` → `Ink` → `Ember` → `Sage` → `Rose` → `Ocean`.
+- **Geometri:** stop pertama berada di atas deret accent; enam accent chip berikutnya sebaris dan meningkat kiri-ke-kanan. Semua rect fokus memiliki lebar dan tinggi non-zero.
+- **Kontrak:** `test/features/platform/presentation/theme_settings_screen_focus_order_test.dart`; kontrak memvalidasi jumlah stop, label, geometri, dan `tester.takeException()`.
+- **Negative control:** kontrak sengaja dijalankan dengan urutan label yang diubah; test gagal dengan exit code non-zero, lalu file dipulihkan dan test kembali lulus.
+- **Batasan:** audit ini mengukur focus order aktual Theme Settings pada fixture tanpa database/network. Tidak ada perubahan produksi.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

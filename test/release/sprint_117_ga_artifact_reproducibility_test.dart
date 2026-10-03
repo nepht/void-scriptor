@@ -3646,4 +3646,116 @@ void main() {
       expect(outcome(broken), isNot('pass'));
     });
   });
+
+  group('117.43-18 the document must be able to state its own limits', () {
+    // Defect 117.43-18: the thirteenth slice in the hunt, and the last level
+    // above the header — the document-level `limits` group. The shipped
+    // manifest states three limits of its own, and its `decision` token names
+    // them (`VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS`), yet the only
+    // limits this gate ever decoded was the NESTED
+    // `artifact_comparison.limits`. So the group the document's own verdict
+    // rests on was never opened by anything: a `limits` value in a shape
+    // nobody could read was silently skipped while the gate published
+    // `provenance_evaluation: pass`, and the `limit: ...` notes it printed came
+    // from a different list than the one the header claims.
+    //
+    // The bounds are the same shape as 117.43-16/-17, so no acceptance is
+    // invented: a document-level `limits` is REFUSED only when it is present
+    // and cannot be read as a list of non-blank strings. An absent key and an
+    // explicit null stay non-claims (117.43-07). No requirement is added about
+    // what the limits say, how many there are, or how they relate to the
+    // nested comparison limits — that vocabulary belongs to the document.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// Shipped manifest whose document-level `limits` holds [value] verbatim.
+    Map<String, Object?> withLimits(Object? value) =>
+        shipped()..['limits'] = value;
+
+    test('117.43-18 a document-level limits group this gate cannot read is '
+        'refused while the evidence passes', () {
+      final cases = <String, String>{
+        'limits as an integer': outcome(withLimits(42)),
+        'limits as a bare string': outcome(withLimits('no bit-identity')),
+        'limits as an object': outcome(
+          withLimits(<String, Object?>{'limit': 'no bit-identity'}),
+        ),
+        'limits holding an integer': outcome(withLimits(<Object?>[42])),
+        'limits holding an object': outcome(
+          withLimits(<Object?>[
+            <String, Object?>{'limit': 'no bit-identity'},
+          ]),
+        ),
+        'limits holding a blank entry': outcome(withLimits(<Object?>[''])),
+        'limits holding a whitespace-only entry': outcome(
+          withLimits(<Object?>['   ']),
+        ),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose own limits group is in a shape nobody decoded, while the '
+            'notes it prints come from the nested comparison limits: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-18 the shipped document states limits this gate reads', () {
+      // Without a shipped document-level `limits` group, every refusal above
+      // would prove nothing: a gate that ignored the group would pass them
+      // all.
+      final manifest = shipped();
+      final limits = manifest['limits'];
+      expect(
+        limits,
+        isA<List<dynamic>>(),
+        reason: 'the shipped group is a list',
+      );
+      final items = (limits! as List<dynamic>).cast<Object?>();
+      expect(items, isNotEmpty, reason: 'the shipped group states limits');
+      expect(
+        items.every((item) => item is String && item.trim().isNotEmpty),
+        isTrue,
+        reason:
+            'every shipped limit is a non-blank string, the shape the gate now '
+            'decodes',
+      );
+      expect(outcome(manifest), 'pass');
+    });
+
+    test('117.43-18 a document that states no limits claims nothing, and a '
+        'readable limits group cannot rescue failing evidence', () {
+      final absent = shipped()..remove('limits');
+      expect(
+        outcome(absent),
+        'pass',
+        reason: 'an absent group is a non-claim (117.43-07)',
+      );
+      expect(
+        outcome(withLimits(null)),
+        'pass',
+        reason: 'an explicit null states nothing, like an absent key',
+      );
+      // The shipped document already states readable limits: breaking the
+      // evidence under them must still refuse, so the group can never buy back
+      // a pass the measurement does not support.
+      final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'provenance_record',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
 }

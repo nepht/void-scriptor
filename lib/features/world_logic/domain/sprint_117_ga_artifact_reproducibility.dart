@@ -827,12 +827,61 @@ abstract final class Sprint117GaArtifactGate {
         note: 'document header does not declare the published verdict',
       );
     }
+    // Sprint 117.43-18: the document-level `limits` group is the last level
+    // above the header, and it is the one the header's own `decision` token
+    // names (`VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS`). The only
+    // limits this gate ever decoded was the NESTED
+    // `artifact_comparison.limits`, so a document-level `limits` in a shape
+    // nobody could read was silently skipped while the gate published
+    // `provenance_evaluation: pass` — and the `limit: ...` notes it printed
+    // came from a different list than the one the header claims. Decode the
+    // group the document states; a present-but-unreadable one is unevaluable,
+    // an absent one and an explicit null stay non-claims (117.43-07).
+    final documentLimitsRefusal = _documentLimitsRefusal(provenanceManifest);
+    if (documentLimitsRefusal != null) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: declared,
+        observed: documentLimitsRefusal,
+        note: 'document limits group cannot be read',
+      );
+    }
     return Sprint117GaArtifactCheck.pass_(
       outputId: 'provenance',
       check: 'provenance_evaluation',
       declared: declared,
       observed: notes,
     );
+  }
+
+  /// Refuses a document-level `limits` group that cannot be read as a list of
+  /// non-blank strings. Returns the observed reason, or null when the group
+  /// states nothing or reads cleanly.
+  ///
+  /// Sprint 117.43-18: `limits` is the level above the header that the header
+  /// itself names in its `decision`, and the gate decoded only the nested
+  /// `artifact_comparison.limits`, so the document's own limits were never
+  /// opened by anything. Bounds pinned by the tests:
+  ///
+  ///  * an absent key and an explicit null are non-claims (117.43-07,
+  ///    117.43-16, 117.43-17);
+  ///  * a present value that is not a list, or that holds anything but
+  ///    non-blank strings, is unevaluable — the same fail-closed rule
+  ///    117.43-12 applied to the evidence groups, which `_stringList` already
+  ///    implements;
+  ///  * nothing is required about WHAT the limits say, how many there are, or
+  ///    how they relate to the nested comparison limits — that vocabulary
+  ///    belongs to the document, so this reader adds no acceptance of its own.
+  static String? _documentLimitsRefusal(Map<String, Object?> document) {
+    if (!document.containsKey('limits')) return null;
+    final value = document['limits'];
+    if (value == null) return null;
+    final limits = _stringList(value);
+    if (limits == null) {
+      return 'limits present without a readable group (${value.runtimeType})';
+    }
+    return null;
   }
 
   /// Refuses a document header whose verdict fields disagree with the

@@ -1488,6 +1488,38 @@ Kontrak `test/features/marketplace/product_detail_screen_focus_order_test.dart` 
 
 Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Product Detail Screen. Cakupan audit focus-order layar: 25 dari 89 target layar (berdasarkan kontrak focus-order yang ada setelah fase ini).
 
+## 31. Fase 26 — Focus Order di Performance Preview Screen (2.4.3)
+
+### 31.1 Layar dan fixture
+
+`PerformancePreviewScreen` dipilih karena mandiri, tanpa database/network, dan memiliki lima `Switch` aktif dengan callback no-op. Probe memakai viewport 1536x1024 dengan device pixel ratio 1.0.
+
+### 31.2 Data traversal terukur
+
+Traversal memakai `LogicalKeyboardKey.tab` sampai Rect fokus berulang sebagai tanda wrap. Hasil nyata:
+
+- Stop 1 — `High Quality Hair`, Rect `Rect.fromLTRB(1432.0, 116.0, 1492.0, 164.0)`
+- Stop 2 — `Heavy VFX`, Rect `Rect.fromLTRB(1432.0, 184.0, 1492.0, 232.0)`
+- Stop 3 — `Ray Tracing`, Rect `Rect.fromLTRB(1432.0, 252.0, 1492.0, 300.0)`
+- Stop 4 — `High Resolution Shadows`, Rect `Rect.fromLTRB(1432.0, 320.0, 1492.0, 368.0)`
+- Stop 5 — `Crowd Detail`, Rect `Rect.fromLTRB(1432.0, 388.0, 1492.0, 436.0)`
+- Tab berikutnya kembali ke `High Quality Hair` dan menghentikan probe.
+
+Urutan keyboard mengikuti urutan visual atas-ke-bawah; semua area fokus memiliki lebar dan tinggi non-zero.
+
+### 31.3 Kontrak dan negative control
+
+Kontrak `test/features/cinema/presentation/performance_preview_screen_focus_order_test.dart` mengunci tepat lima stop, label sesuai urutan di atas, posisi top yang meningkat, area fokus non-zero, dan tidak adanya exception rendering. Negative control menukar dua label pertama; test gagal dengan exit code `1` dan output `Some tests failed`, lalu file dipulihkan dari backup.
+
+### 31.4 Gate dan cakupan
+
+- `dart format test/features/cinema/presentation/performance_preview_screen_focus_order_test.dart` — exit `0`.
+- `dart analyze test/features/cinema/presentation/performance_preview_screen_focus_order_test.dart` — `No issues found!`.
+- Focus-order test — `All tests passed!`.
+- Feature-suite gate dan commit dicatat setelah eksekusi closeout.
+
+Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Screen. Cakupan audit focus-order layar: 26 dari 89 target layar (berdasarkan kontrak focus-order yang ada setelah fase ini).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

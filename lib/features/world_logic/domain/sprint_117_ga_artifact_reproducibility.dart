@@ -808,8 +808,15 @@ abstract final class Sprint117GaArtifactGate {
     final comparison = evidence['artifact_comparison'];
     if (comparison is! Map<String, Object?>) return null;
 
-    List<String> strings(String key) =>
-        ((evidence[key] as List<dynamic>?)?.cast<String>()) ?? const <String>[];
+    // Sprint 117.43-12 (fail-open, fixed): these three groups arrived here
+    // through `(evidence[key] as List<dynamic>?)?.cast<String>()`, which
+    // asserts rather than checks. A group holding `[42]`, holding a Map, or
+    // not being a list at all did not report `unmet` — it threw a
+    // `type 'int' is not a subtype of type 'String' in type cast` out of the
+    // gate, so a malformed manifest escaped the verdict entirely instead of
+    // failing closed. Every other decode in this file was written for this
+    // (117.43-08/-09/-10); this one was missed. Read the list explicitly.
+    List<String>? strings(String key) => _stringList(evidence[key]);
 
     RebuildResult rebuild(RebuildResult source) => RebuildResult(
       label: source.label,
@@ -894,10 +901,21 @@ abstract final class Sprint117GaArtifactGate {
       return null;
     }
 
+    final buildInputs = strings('build_inputs');
+    final toolchainVersions = strings('toolchain_versions');
+    final dependencyLock = strings('dependency_lock');
+    final provenanceRecord = strings('provenance_record');
+    if (buildInputs == null ||
+        toolchainVersions == null ||
+        dependencyLock == null ||
+        provenanceRecord == null) {
+      return null;
+    }
+
     final shipped = BuildProvenanceEvidence(
-      buildInputs: strings('build_inputs'),
-      toolchainVersions: strings('toolchain_versions'),
-      dependencyLock: strings('dependency_lock'),
+      buildInputs: buildInputs,
+      toolchainVersions: toolchainVersions,
+      dependencyLock: dependencyLock,
       rebuildResults: <RebuildResult>[a, b],
       artifactComparison: ArtifactComparison(
         method: comparison['method'] as String?,
@@ -906,10 +924,31 @@ abstract final class Sprint117GaArtifactGate {
         verdict: verdict,
         limits: ((comparison['limits'] as List<dynamic>?)?.cast<String>()),
       ),
-      provenanceRecord: strings('provenance_record'),
+      provenanceRecord: provenanceRecord,
     );
     final result = BuildProvenanceEvidence.evaluate(shipped);
     return (result.state.name, result.notes.join('; '));
+  }
+
+  /// Decodes a claimed list of strings, or null when it is present but is not
+  /// a list of non-blank strings.
+  ///
+  /// Sprint 117.43-12: the reader this replaces was
+  /// `(evidence[key] as List<dynamic>?)?.cast<String>()`. The `as` there throws
+  /// on a non-list and `cast<String>()` throws on any non-string element, so a
+  /// malformed evidence group escaped the verdict as an exception rather than
+  /// being reported `unmet`. A gate that crashes is not fail-closed, so decode
+  /// the shape instead of asserting it. An absent key is null, which the
+  /// callers treat as unevaluable.
+  static List<String>? _stringList(Object? value) {
+    if (value == null) return null;
+    if (value is! List<dynamic>) return null;
+    final items = <String>[];
+    for (final entry in value) {
+      if (entry is! String || entry.trim().isEmpty) return null;
+      items.add(entry);
+    }
+    return items;
   }
 
   /// The per-artifact partition a comparison claims, or null when a declared

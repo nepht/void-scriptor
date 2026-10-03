@@ -1924,4 +1924,378 @@ void main() {
       );
     });
   });
+
+  group('117.43-11 a recorded digest claim must be a digest', () {
+    String digest(String seed) => seed * 64;
+
+    const honestCommand =
+        'flutter clean && flutter.bat build windows --release';
+    const honestLockDigest =
+        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+    const honestLockProse =
+        'hosted dependencies hash-pinned sha256; '
+        '0 git/path source; 0 dependency_overrides (113.26 dependency_scan)';
+
+    /// An otherwise honest manifest — honest windows, commands, logs, verdict
+    /// and per-artifact partition — so only the DIGEST GROUPS can decide the
+    /// result. `buildInputs` and `dependencyLock` are the two groups under test.
+    Map<String, Object?> manifestWithDigests({
+      required List<String> buildInputs,
+      List<String>? dependencyLock,
+    }) {
+      Map<String, Object?> rebuild(
+        String label,
+        String hashB,
+        String started,
+        String finished,
+        int duration,
+        String log,
+      ) => <String, Object?>{
+        'label': label,
+        'artifact_hashes': <String, String>{
+          'a.exe': digest('a'),
+          'b.dll': hashB,
+        },
+        'exit_code': 0,
+        'started_at': started,
+        'finished_at': finished,
+        'duration_seconds': duration,
+        'command': honestCommand,
+        'log': log,
+      };
+
+      return <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': buildInputs,
+          'toolchain_versions': <String>['Flutter 3.44.6 channel stable'],
+          'dependency_lock':
+              dependencyLock ??
+              <String>[honestLockProse] +
+                  ['pubspec.lock sha256 $honestLockDigest'],
+          'rebuild_results': <Map<String, Object?>>[
+            rebuild(
+              'rebuild_a',
+              digest('b'),
+              '2026-09-23T13:27:45+07:00',
+              '2026-09-23T13:29:47+07:00',
+              122,
+              'docs/evidence/sprint-113-39-rebuild-a.log',
+            ),
+            rebuild(
+              'rebuild_b',
+              digest('c'),
+              '2026-09-23T13:30:17+07:00',
+              '2026-09-23T13:32:12+07:00',
+              115,
+              'docs/evidence/sprint-113-39-rebuild-b.log',
+            ),
+          ],
+          'artifact_comparison': <String, Object?>{
+            'method':
+                'SHA-256 over the artifacts after two independent clean '
+                'rebuild cycles',
+            'verdict': 'NOT_BIT_IDENTICAL',
+            'differing_artifacts': <String>['b.dll'],
+            'identical_artifacts': <String>['a.exe'],
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['source_revision 30dda0c3'],
+        },
+      };
+    }
+
+    String statusOf(List<String> buildInputs, {List<String>? dependencyLock}) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithDigests(
+            buildInputs: buildInputs,
+            dependencyLock: dependencyLock,
+          ),
+        ).status.name;
+
+    test('117.43-11 a line naming a digest must carry one', () {
+      // `build_inputs` exists to say WHICH file was hashed and WHAT it hashed
+      // to. Before this slice the group was checked for being non-blank and for
+      // nothing else, so every one of these reported `pass` and the gate
+      // printed `build_inputs: 5 item` as though the content had been read.
+      // Eleven cases were run before the fix; ten of them passed, and the one
+      // that failed did so for being blank, not for its digest.
+      expect(
+        statusOf(<String>['pubspec.yaml sha256 NOT-A-DIGEST']),
+        'unmet',
+        reason: 'the line announces a sha256 and supplies something else',
+      );
+      expect(
+        statusOf(<String>['pubspec.yaml sha256 deadbeef']),
+        'unmet',
+        reason: 'an eight-character value is not a SHA-256 digest',
+      );
+      expect(
+        statusOf(<String>['pubspec.yaml sha256 ${'a' * 63}']),
+        'unmet',
+        reason: '63 hex characters is a truncated digest, not a digest',
+      );
+      expect(
+        statusOf(<String>['pubspec.yaml sha256 ${'a' * 65}']),
+        'unmet',
+        reason: '65 hex characters is not a SHA-256 digest either',
+      );
+      expect(
+        statusOf(<String>[
+          'pubspec.lock sha256 $honestLockDigest',
+          'pubspec.yaml sha256 GARBAGE',
+        ]),
+        'unmet',
+        reason: 'one malformed claim fails the group it sits in',
+      );
+    });
+
+    test('117.43-11 the same rule covers dependency_lock', () {
+      expect(
+        statusOf(
+          <String>['pubspec.lock sha256 $honestLockDigest'],
+          dependencyLock: <String>['pubspec.lock sha256 zzz'],
+        ),
+        'unmet',
+      );
+      expect(
+        statusOf(
+          <String>['pubspec.lock sha256 $honestLockDigest'],
+          dependencyLock: <String>['pubspec.lock sha256 deadbeef'],
+        ),
+        'unmet',
+      );
+    });
+
+    test(
+      '117.43-11 a line that merely MENTIONS the algorithm is not a claim',
+      () {
+        // The shipped manifest's own dependency_lock carries this prose line
+        // describing a dependency scan. It names `sha256` but states no value,
+        // so it makes no digest claim — the same non-claim rule 117.43-07
+        // established for the comparison verdict. A rule that refused this would
+        // refuse an honest document.
+        expect(
+          statusOf(<String>[
+            'pubspec.lock sha256 $honestLockDigest',
+            honestLockProse,
+          ]),
+          'pass',
+        );
+        expect(statusOf(<String>['inputs were hashed at some point']), 'pass');
+      },
+    );
+
+    test('117.43-11 case and hyphen spelling are still read as a claim', () {
+      // The rule matches the CLAIM, not one exact spelling of it: a document
+      // that writes `SHA256` or `sha-256` and then supplies garbage has still
+      // made a claim it cannot back up.
+      expect(statusOf(<String>['pubspec.yaml SHA256 NOPE']), 'unmet');
+      expect(statusOf(<String>['pubspec.yaml sha-256 nope']), 'unmet');
+    });
+
+    test('117.43-11 the shipped manifest passes, and stops when a claim breaks', () {
+      // If only the PRESENCE of the group were measured, rewriting the shipped
+      // document's digests into garbage would still pass. It must not — and the
+      // untouched document must keep passing, or the rule refuses honest work.
+      final shipped = _manifest(_kProvenanceManifest);
+      final evidence = shipped['required_evidence'] as Map<String, Object?>;
+      final inputs = (evidence['build_inputs']! as List).cast<String>();
+      expect(
+        inputs.first,
+        matches(RegExp(r'sha256 [0-9a-f]{64}')),
+        reason:
+            'the fixture must be the honest shape for this to prove anything',
+      );
+      expect(
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: shipped,
+        ).status,
+        Sprint117GaArtifactStatus.pass,
+      );
+
+      expect(
+        statusOf(<String>[
+          for (final line in inputs)
+            line.replaceAll(RegExp(r'[0-9a-f]{64}'), 'NOT-A-DIGEST'),
+        ]),
+        'unmet',
+        reason:
+            'the shipped document is only evidence of which files were hashed '
+            'while it actually states digests',
+      );
+    });
+
+    test('117.43-11 a digest is not re-hashed against the working tree', () {
+      // Why the rule stops at FORM. `build_inputs` pins digests at the
+      // provenance anchor revision `30dda0c3`, not at HEAD, and re-hashing
+      // them against the live checkout would refuse an honest manifest: this
+      // repo's `pubspec.yaml` digest matches its CRLF variant at that
+      // revision and not the LF bytes on disk. Measured, not assumed — the
+      // drift hypothesis was disproved before the rule was written.
+      expect(
+        statusOf(<String>[
+          'pubspec.yaml sha256 $honestLockDigest',
+          'pubspec.lock sha256 $honestLockDigest',
+          'windows/CMakeLists.txt sha256 ${digest('1')}',
+          'windows/runner/main.cpp sha256 ${digest('2')}',
+          'windows/runner/flutter_window.cpp sha256 ${digest('3')}',
+        ]),
+        'pass',
+        reason:
+            'a well-formed digest claim is honest even when its value cannot be '
+            're-derived from the tree the gate happens to run in',
+      );
+    });
+  });
+
+  group('117.43-12 a mistyped evidence group is refused, not thrown on', () {
+    String digest(String seed) => seed * 64;
+
+    /// The 117.43-11 fixture, with one group replaced by something of the wrong
+    /// shape. Everything else stays honest so the shape is the only variable.
+    Map<String, Object?> manifestWithGroup(String key, Object? group) {
+      final base = <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': <String>['pubspec.lock sha256 ${digest('2')}'],
+          'toolchain_versions': <String>['Flutter 3.44.6 channel stable'],
+          'dependency_lock': <String>['pubspec.lock sha256 ${digest('2')}'],
+          'rebuild_results': <Map<String, Object?>>[
+            <String, Object?>{
+              'label': 'rebuild_a',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': digest('b'),
+              },
+              'exit_code': 0,
+              'started_at': '2026-09-23T13:27:45+07:00',
+              'finished_at': '2026-09-23T13:29:47+07:00',
+              'duration_seconds': 122,
+              'command': 'flutter clean && flutter.bat build windows --release',
+              'log': 'docs/evidence/sprint-113-39-rebuild-a.log',
+            },
+            <String, Object?>{
+              'label': 'rebuild_b',
+              'artifact_hashes': <String, String>{
+                'a.exe': digest('a'),
+                'b.dll': digest('c'),
+              },
+              'exit_code': 0,
+              'started_at': '2026-09-23T13:30:17+07:00',
+              'finished_at': '2026-09-23T13:32:12+07:00',
+              'duration_seconds': 115,
+              'command': 'flutter clean && flutter.bat build windows --release',
+              'log': 'docs/evidence/sprint-113-39-rebuild-b.log',
+            },
+          ],
+          'artifact_comparison': <String, Object?>{
+            'method':
+                'SHA-256 over the artifacts after two independent clean '
+                'rebuild cycles',
+            'verdict': 'NOT_BIT_IDENTICAL',
+            'differing_artifacts': <String>['b.dll'],
+            'identical_artifacts': <String>['a.exe'],
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['source_revision 30dda0c3'],
+        },
+      };
+      (base['required_evidence']! as Map<String, Object?>)[key] = group;
+      return base;
+    }
+
+    void expectRefused(String key, Object? group) {
+      Object? thrown;
+      String status = 'THREW';
+      try {
+        status = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifestWithGroup(key, group),
+        ).status.name;
+      } catch (error) {
+        thrown = error;
+      }
+      expect(
+        thrown,
+        isNull,
+        reason:
+            'a malformed "$key" must fail closed with a verdict, not escape the '
+            'gate as ${thrown.runtimeType}',
+      );
+      expect(
+        status,
+        'unmet',
+        reason:
+            'a malformed "$key" of shape ${group.runtimeType} is unevaluable',
+      );
+    }
+
+    test('117.43-12 a non-string element is refused, not cast past', () {
+      expectRefused('build_inputs', <dynamic>[42]);
+      expectRefused('toolchain_versions', <dynamic>[42]);
+      expectRefused('dependency_lock', <dynamic>[42]);
+      expectRefused('provenance_record', <dynamic>[42]);
+    });
+
+    test('117.43-12 a nested object is refused too', () {
+      expectRefused('build_inputs', <dynamic>[<String, Object?>{}]);
+      expectRefused('toolchain_versions', <dynamic>[<String, Object?>{}]);
+    });
+
+    test('117.43-12 a group that is not a list at all is refused', () {
+      expectRefused('build_inputs', 'a bare string');
+      expectRefused('toolchain_versions', 'a bare string');
+      expectRefused('dependency_lock', <String, Object?>{'not': 'a list'});
+      expectRefused('provenance_record', 42);
+    });
+
+    test('117.43-12 a blank string inside an honest list is refused', () {
+      expectRefused('build_inputs', <dynamic>[
+        'pubspec.lock sha256 ${digest('2')}',
+        '   ',
+      ]);
+    });
+
+    test('117.43-12 every one of these threw before this slice', () {
+      // The reader this replaces was
+      // `(evidence[key] as List<dynamic>?)?.cast<String>()`: `as` throws on a
+      // non-list and `cast<String>()` throws on a non-string element, so all
+      // nine shapes above escaped the gate as a TypeError instead of being
+      // reported. Probed before the fix — every case printed
+      // `status=NO-STATUS thrown=TypeError`. A gate that crashes on malformed
+      // input is not fail-closed, which is why this is filed beside the
+      // digest rule rather than folded into it: one reads content the other
+      // decodes shape.
+      final thrown = <String>[];
+      for (final entry in <Object?>[
+        <Object?>[42],
+        <Object?>[<String, Object?>{}],
+        <Object?>['a bare string'],
+        <Object?>['x', '   '],
+        42,
+      ]) {
+        try {
+          Sprint117GaArtifactGate.measureProvenance(
+            provenanceManifest: manifestWithGroup('build_inputs', entry),
+          );
+        } catch (error) {
+          thrown.add(error.runtimeType.toString());
+        }
+      }
+      expect(
+        thrown,
+        isEmpty,
+        reason: 'pre-fix these all threw TypeError out of the gate',
+      );
+    });
+
+    test('117.43-12 the honest manifest still passes', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithGroup('build_inputs', <String>[
+          'pubspec.lock sha256 ${digest('2')}',
+          'a plain note',
+        ]),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+    });
+  });
 }

@@ -276,10 +276,16 @@ class BuildProvenanceEvidence {
   static List<String> missingEvidence(BuildProvenanceEvidence evidence) {
     final missing = <String>[];
     if (!_hasContent(evidence.buildInputs)) missing.add('build_inputs');
+    if (!_hasWellFormedDigestClaims(evidence.buildInputs)) {
+      missing.add('build_inputs');
+    }
     if (!_hasContent(evidence.toolchainVersions)) {
       missing.add('toolchain_versions');
     }
     if (!_hasContent(evidence.dependencyLock)) missing.add('dependency_lock');
+    if (!_hasWellFormedDigestClaims(evidence.dependencyLock)) {
+      missing.add('dependency_lock');
+    }
     final rebuilds = evidence.rebuildResults;
     if (rebuilds == null ||
         rebuilds.length < 2 ||
@@ -344,6 +350,47 @@ class BuildProvenanceEvidence {
     if (items == null || items.isEmpty) return false;
     return items.every((item) => item.trim().isNotEmpty);
   }
+
+  /// A line that NAMES a digest must carry a real one.
+  ///
+  /// `<path> sha256 <64 hex>` is the whole point of `build_inputs` and
+  /// `dependency_lock`: it says WHICH file was hashed and WHAT it hashed to.
+  /// Sprint 117.43-11 (fail-open, fixed): nothing here ever parsed those
+  /// lines — `_hasContent` only asked whether each entry was non-blank — so
+  /// the shipped manifest's five real digests were checked for being
+  /// non-empty strings and for nothing else. A line naming a file with a
+  /// fabricated 64-hex digest, a truncated 8-character one, the literal
+  /// `NOT-A-DIGEST`, or 63 hex characters instead of 64 all reported `pass`,
+  /// and the gate printed `build_inputs: 5 item` as though the content had
+  /// been verified. Proven before the fix: eleven cases, of which ten passed
+  /// — only a blank line was refused, and then for being blank rather than
+  /// for its digest.
+  ///
+  /// The rule is deliberately narrow, because over-refusing is the other way
+  /// to make a gate useless. What counts as a claim is a `sha256` (any case,
+  /// hyphen optional) followed by whitespace and a value: that is the form
+  /// `<path> sha256 <digest>` always takes. Merely mentioning the word is not
+  /// a claim, which is what keeps the shipped manifest's own prose entry
+  /// honest — `hosted dependencies hash-pinned sha256; 0 git/path source`
+  /// names the algorithm as a description of a scan and states no value, so it
+  /// is left alone, the same non-claim rule 117.43-07 established for the
+  /// comparison verdict. What this refuses is the half-written claim: a line
+  /// that announces a digest and then supplies something that is not one,
+  /// because the difference between those two cases is exactly the difference
+  /// between evidence and a promise about it.
+  static bool _hasWellFormedDigestClaims(List<String>? items) {
+    if (items == null) return true;
+    final values = RegExp(r'sha-?256\s+(\S+)', caseSensitive: false);
+    for (final item in items) {
+      for (final match in values.allMatches(item)) {
+        if (!_digestPattern.hasMatch(match.group(1)!)) return false;
+      }
+    }
+    return true;
+  }
+
+  /// A SHA-256 digest is exactly 64 hexadecimal characters.
+  static final RegExp _digestPattern = RegExp(r'^[0-9a-fA-F]{64}$');
 
   static bool _isUnrecorded(BuildProvenanceEvidence evidence) {
     return evidence.buildInputs == null &&

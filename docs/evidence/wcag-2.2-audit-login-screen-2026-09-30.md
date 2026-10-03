@@ -1802,6 +1802,85 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada HUD Designer Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **31 dari 89** target layar (30 kontrak focus-order di-track git setelah pemulihan fase 40 + kontrak baru ini; kontrak Content Capability Matrix Screen masih untracked di working tree dan tidak dihitung di sini).
 
+## 42. Fase 42 — Focus Order di Automation Templates Screen (2.4.3)
+
+**Layar**: `lib/features/workflow/presentation/automation_center_screen.dart` (Workflow / Automation Templates, kelas `AutomationTemplatesScreen`)
+**Kontrak**: `test/features/workflow/presentation/automation_templates_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam `ListTile` terdekat milik subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `Export after job completes` | `Focus` (ListTile template pertama) | 0.0, 0.0, 1536.0, 72.0 |
+| 1 | `Backup at startup` | `Focus` (ListTile template kedua) | 0.0, 72.0, 1536.0, 72.0 |
+| 2 | `Thumbnail pipeline on import` | `Focus` (ListTile template ketiga) | 0.0, 144.0, 1536.0, 72.0 |
+| 3 | `Export after job completes` (ulang stop 0) | — | 0.0, 0.0, 1536.0, 72.0 |
+
+Jumlah stop = **3**. `tester.takeException()` = `null`. Layar ini berdiri sendiri: `AutomationTemplatesScreen` hanya berisi `ListView` berisi `ListTile` statis (data const `_templates`), tanpa `Scaffold`/`AppBar`/`IconButton` lain, sehingga tidak ada stop sebelum template pertama dan tidak ada fixture database/network.
+
+### Kontrak yang dikunci
+
+- `hasLength(3)` — tepat tiga stop fokus yang dapat dicapai lewat Tab.
+- Urutan label `['Export after job completes', 'Backup at startup', 'Thumbnail pipeline on import']` — urutan deklarasi `_templates` di produksi.
+- Luas fokus non-nol pada setiap stop (`width > 0 && height > 0`); masing-masing 1536.0 x 72.0.
+- Fokus bergerak strictly atas-ke-bawah: `stops[i].rect.top > stops[i-1].rect.top` (selisih konstan 72.0 px) — bukan kiri-ke-kanan, karena baris ditumpuk vertikal.
+- Semua stop berbagi tepi kiri yang sama (`stops[i].rect.left == stops[0].rect.left` = 0.0), karena tiap `ListTile` membentang penuh viewport.
+- Setelah template terakhir, traversal wrap kembali ke template pertama dengan `rect` identik; satu Tab lanjutan mengenai label kedua (`Backup at startup`), membuktikan siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Screen presentational murni: callback `onInstantiate` di-`noop` (`(_) {}`) dan tidak ada `ref.watch`/`read`, storage, jaringan, maupun database. `Switch`/`onPressed` lain tidak ada di layar ini. File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format test/features/workflow/presentation/automation_templates_focus_order_test.dart
+=> Formatted 1 file (1 changed) in 0.01 seconds.
+
+dart analyze test/features/workflow/presentation/automation_templates_focus_order_test.dart
+=> No issues found!
+
+dart analyze test/features/workflow/
+=> No issues found!   (exit 0)
+
+dart analyze   (full repo)
+=> 211 issues found.  (exit 3)
+   Semua issue berada di file WIP sibling (test/release/scratch_*, test/shared/…); grep
+   "automation_templates_focus_order" pada output = 0 hit, jadi tidak ada issue dari file audit ini.
+
+flutter test test/features/workflow/presentation/automation_templates_focus_order_test.dart
+=> 00:01 +3: All tests passed!
+
+flutter test test/features/workflow/   (gate)
+=> 00:07 +19: All tests passed!  (exit 0)
+```
+
+**Negative control** (wajib, pada commit yang sama): dua label pertama ditukar menjadi `['Backup at startup', 'Export after job completes', 'Thumbnail pipeline on import']` pada salinan cadangan di `%LOCALAPPDATA%\Temp`, lalu test dijalankan:
+
+```
+00:01 +0 -1: Automation Templates — kontrak focus order 2.4.3 1. tiga stop dengan urutan label template [E]
+  Expected: ['Backup at startup', 'Export after job completes', 'Thumbnail pipeline on import']
+  Actual: ['Export after job completes', 'Backup at startup', 'Thumbnail pipeline on import']
+00:01 +0 -2: Automation Templates — kontrak focus order 2.4.3 3. Tab setelah template terakhir kembali ke template pertama [E]
+  Test failed. See exception logs above.
+00:01 +1 -2: Some tests failed.
+Failing tests: .../automation_templates_focus_order_test.dart: 1. tiga stop dengan urutan label template, ...: 3. Tab setelah template terakhir kembali ke template pertama
+exit code 1
+```
+
+Salinan cadangan dipulihkan dan dihapus; kontrak diverifikasi ulang `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus (2 dari 3 test gagal), bukan sekadar lolos karena tidak ada ekspektasi.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
+
+**Sisa artefak yang tidak dihitung**: `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` + `_probe_focus_test.dart` (untracked, tanpa section report) tetap dibiarkan apa adanya, sama seperti catatan fase 41.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Automation Templates Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **32 dari 89** target layar (31 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini; kontrak Content Capability Matrix Screen masih untracked di working tree dan tidak dihitung di sini).
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

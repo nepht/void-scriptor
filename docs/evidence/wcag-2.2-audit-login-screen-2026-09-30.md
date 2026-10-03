@@ -1881,6 +1881,83 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Automation Templates Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **32 dari 89** target layar (31 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini; kontrak Content Capability Matrix Screen masih untracked di working tree dan tidak dihitung di sini).
 
 
+## 43. Fase 43 — Focus Order di Workflow Library Screen (2.4.3)
+
+**Layar**: `lib/features/workflow/presentation/workflow_library_screen.dart` (Workflow / Workflow Library, kelas `WorkflowLibraryScreen`, 59 baris, `StatelessWidget`)
+**Kontrak**: `test/features/workflow/presentation/workflow_library_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam `ListTile` terdekat milik subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 16 Tab).
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `backup-startup@1` | `IconButton` trailing baris 1 (`tooltip: Instantiate & run`) | 1468.0, 64.0, 40.0, 40.0 |
+| 1 | `rename-asset@2` | `IconButton` trailing baris 2 (`tooltip: Instantiate & run`) | 1468.0, 120.0, 40.0, 40.0 |
+| 2 | `backup-startup@1` (ulang stop 0, `repeat=true`) | — | 1468.0, 64.0, 40.0, 40.0 |
+
+Jumlah stop = **2**. `find.byType(IconButton)` = 2. `tester.takeException()` = `null`.
+
+Layar ini berdiri sendiri tanpa fixture database/network: `AppBar` hanya berisi `title` (route home, tanpa `leading`/`actions`, jadi tidak ada stop toolbar), `ListTile` dibangun oleh `ListView.builder` tanpa `onTap`, sehingga satu-satunya elemen focusable adalah `IconButton` trailing `Instantiate & run` per baris. Fixture test mendaftarkan dua `WorkflowDefinition` const ke `WorkflowTemplateRegistry` in-memory; registry mengurutkan `templateIds`, sehingga urutan list deterministik `backup-startup` -> `rename-asset`.
+
+### Kontrak yang dikunci
+
+- `expect(find.byType(IconButton), findsNWidgets(2))` dan `stops` `hasLength(2)` — tepat dua stop, disetel dengan jumlah tombol interaktif.
+- Urutan label `['backup-startup@1', 'rename-asset@2']` — urutan sort `templateIds` registry, bukan urutan deklarasi test.
+- Area fokus non-nol pada tiap stop (`width > 0 && height > 0`); keduanya 40.0 x 40.0.
+- Fokus bergerak atas-ke-bawah: `stops[1].rect.top (120.0) > stops[0].rect.top (64.0)` — bukan kiri-ke-kanan, walau kedua tombol sejajar di tepi kanan.
+- Kedua stop berbagi tepi kiri identik (1468.0) karena keduanya tombol trailing baris penuh.
+- Setelah baris terakhir traversal wrap ke baris pertama dengan `rect` identik, lalu satu Tab lanjutan mengenai `rename-asset@2` — siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Screen presentational murni: tanpa `ref.watch`/`read`, storage, jaringan, maupun database; satu-satunya aksi (`registry.instantiate` + callback `onInstantiate`) dijalankan hanya oleh tombol yang diuji. Tidak ada perubahan kode produksi pada fase ini (probe tidak menemukan defect). File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format --set-exit-if-changed test/features/workflow/presentation/workflow_library_focus_order_test.dart
+=> Formatted 1 file (0 changed) in 0.01 seconds.   (exit 0)
+
+dart analyze test/features/workflow/
+=> No issues found!   (exit 0)
+
+flutter test test/features/workflow/presentation/workflow_library_focus_order_test.dart
+=> 00:01 +3: All tests passed!
+
+flutter test test/features/workflow/   (gate)
+=> 00:12 +22: All tests passed!   (exit 0)
+   Percobaan pertama gate berhenti sebelum test berjalan dengan
+   "Flutter failed to delete file ... build/native_assets/windows/sqlite3.dll
+   (file terkunci oleh proses lain). Setelah `taskkill` flutter_tester/dart dan
+   penghapusan DLL terkunci, gate diulang dan lulus 22 test.
+```
+
+**Negative control** (wajib): `_expectedLabels` pada salinan cadangan di `%LOCALAPPDATA%\Temp` ditukar menjadi `['rename-asset@2', 'backup-startup@1']`, lalu kontrak dijalankan:
+
+```
+00:01 +0 -1: Workflow Library — kontrak focus order 2.4.3 1. dua stop dengan urutan label template [E]
+  Expected: ['rename-asset@2', 'backup-startup@1']
+    Actual: ['backup-startup@1', 'rename-asset@2']
+00:01 +1 -2: Workflow Library — kontrak focus order 2.4.3 3. Tab setelah baris terakhir kembali ke baris pertama [E]
+  Expected: 'rename-asset@2'
+    Actual: 'backup-startup@1'
+00:01 +1 -2: Some tests failed.
+exit code 1 (NEGCTL_EXIT=1)
+```
+
+Salinan cadangan dipulihkan lalu dihapus; kontrak diverifikasi ulang `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus order (2 dari 3 test gagal saat ekspektasi urutan dibalik), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Sisa artefak yang tidak dihitung**: `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` (untracked, tanpa section report) tetap dibiarkan apa adanya, sama seperti catatan fase 41/42.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Workflow Library Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **34 dari 89** target layar (33 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini; catatan: section 42 mencatat 32, sedangkan `git ls-files` live sebelum fase ini = 33, jadi ada satu kontrak tracked yang tidak tercatat di section 42 — hitungan live yang dipakai di sini. Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung).
+
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

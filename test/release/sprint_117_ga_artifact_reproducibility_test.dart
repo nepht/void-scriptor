@@ -3758,4 +3758,95 @@ void main() {
       expect(outcome(broken), isNot('pass'));
     });
   });
+
+  group('117.43-19 the document must be able to state its own version', () {
+    // Sprint 117.43-19 (unmeasured-claim, fixed): the provenance document
+    // names the application version it measured (`version: 1.2.0-rc.1`),
+    // one level above the header 117.43-17 opened, and NO reader in `lib/`
+    // had ever opened it — so a document stating an unreadable or plainly
+    // wrong version still received `provenance_evaluation: pass`. The gate
+    // even ships `deriveApplicationVersion()`, yet nothing ever called it.
+    //
+    // The bounds mirror 117.43-16/-17/-18, so no acceptance is invented: a
+    // document-level `version` is REFUSED only when it is present and cannot be
+    // read as a non-blank string. An absent key and an explicit null stay
+    // non-claims (117.43-07). Nothing is required about WHICH version it
+    // states — that vocabulary belongs to the document.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// The value the shipped document itself states for `version`.
+    Object? shippedVersion() => shipped()['version'];
+
+    /// Shipped manifest whose document-level `version` holds [value] verbatim.
+    Map<String, Object?> withVersion(Object? value) =>
+        shipped()..['version'] = value;
+
+    test('117.43-19 a document-level version this gate cannot read is refused '
+        'while the evidence passes', () {
+      final cases = <String, String>{
+        'version as an integer': outcome(withVersion(42)),
+        'version as a list': outcome(withVersion(<Object?>['1.2.0-rc.1'])),
+        'version as an object': outcome(
+          withVersion(<String, Object?>{'version': '1.2.0-rc.1'}),
+        ),
+        'version as a blank string': outcome(withVersion('')),
+        'version as a whitespace-only string': outcome(withVersion('   ')),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose own version field is in a shape nobody decoded: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-19 the shipped document states a version this gate reads', () {
+      // Without a shipped document-level `version`, every refusal above would
+      // prove nothing: a gate that ignored the field would pass them all.
+      final version = shippedVersion();
+      expect(version, isA<String>(), reason: 'the shipped field is a string');
+      expect(
+        (version! as String).trim(),
+        isNotEmpty,
+        reason: 'the shipped field states a version',
+      );
+      expect(outcome(shipped()), 'pass');
+    });
+
+    test('117.43-19 a document that states no version claims nothing, and a '
+        'readable version cannot rescue failing evidence', () {
+      final absent = shipped()..remove('version');
+      expect(
+        outcome(absent),
+        'pass',
+        reason: 'an absent field is a non-claim (117.43-07)',
+      );
+      expect(
+        outcome(withVersion(null)),
+        'pass',
+        reason: 'an explicit null states nothing, like an absent key',
+      );
+      // The shipped document already states a readable version: breaking the
+      // evidence under it must still refuse, so the field can never buy back a
+      // pass the measurement does not support.
+      final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'provenance_record',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
 }

@@ -847,6 +847,22 @@ abstract final class Sprint117GaArtifactGate {
         note: 'document limits group cannot be read',
       );
     }
+    // Sprint 117.43-19: the same level as the header and the limits group
+    // holds `version` — the application version this document measured — and
+    // no reader in `lib/` had ever opened it, so a document naming an
+    // unreadable version still received `pass`. Read the field the document
+    // states, with the same bounds as 117.43-18: absent and explicit null
+    // stay non-claims (117.43-07).
+    final versionRefusal = _documentVersionRefusal(provenanceManifest);
+    if (versionRefusal != null) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: declared,
+        observed: versionRefusal,
+        note: 'document version field cannot be read',
+      );
+    }
     return Sprint117GaArtifactCheck.pass_(
       outputId: 'provenance',
       check: 'provenance_evaluation',
@@ -916,6 +932,32 @@ abstract final class Sprint117GaArtifactGate {
         return '$field states ${value.trim()} while the evidence evaluates '
             'pass';
       }
+    }
+    return null;
+  }
+
+  /// Refuses a document-level `version` that cannot be read as a non-blank
+  /// string. Returns the observed reason, or null when the field states
+  /// nothing or reads cleanly.
+  ///
+  /// Sprint 117.43-19: `version` sits on the same document level the header
+  /// (117.43-17) and the limits group (117.43-18) opened, and names the
+  /// application version the provenance document measured. No reader in
+  /// `lib/` had opened it — `deriveApplicationVersion()` is shipped but never
+  /// called — so a document naming an unreadable version still received
+  /// `provenance_evaluation: pass`. Bounds pinned by the tests:
+  ///
+  ///  * an absent key and an explicit null are non-claims (117.43-07,
+  ///    117.43-18);
+  ///  * a present value that is not a string, or that is blank, is unevaluable;
+  ///  * nothing is required about WHICH version it states — that vocabulary
+  ///    belongs to the document, so this reader adds no acceptance of its own.
+  static String? _documentVersionRefusal(Map<String, Object?> document) {
+    if (!document.containsKey('version')) return null;
+    final value = document['version'];
+    if (value == null) return null;
+    if (value is! String || value.trim().isEmpty) {
+      return 'version present without a readable value (${value.runtimeType})';
     }
     return null;
   }

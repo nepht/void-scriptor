@@ -1567,6 +1567,18 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - **Gate:** `dart analyze test/features/authentication/presentation/login_screen_focus_order_test.dart` menghasilkan `No issues found!`; focused test lulus.
 - **Status:** VERIFIED untuk bukti focus order Login Screen pada konfigurasi probe ini. Cakupan audit focus-order layar: 29 dari 89 target layar.
 
+## 36. Fase 36 — Focus Order di Create Project Screen (2.4.3)
+
+- **Layar:** `lib/features/projects/presentation/create_project_screen.dart`
+- **Kontrak:** `test/features/projects/presentation/create_project_screen_focus_order_test.dart`
+- **Viewport probe:** 1536x1024, device pixel ratio 1.0; fixture `ProviderScope` tanpa database/network.
+- **Hasil terukur:** 3 focus stops; traversal kembali ke stop pertama pada stop keempat.
+- **Urutan label:** `widget:Focus` → `Cancel` → `Create Project`. Stop pertama adalah wrapper fokus field Project name; label widget tercatat karena context fokus tidak memiliki `Text` descendant pertama.
+- **Geometri:** field rect `Rect.fromLTRB(519.0, 443.5, 1017.0, 467.5)`, Cancel `Rect.fromLTRB(519.0, 645.5, 627.6, 685.5)`, Create Project `Rect.fromLTRB(758.6, 645.5, 1017.0, 685.5)`; seluruh area fokus non-zero.
+- **Kontrak posisi:** field berada di atas action row; `Cancel` berada di kiri `Create Project` pada baris yang sama; seluruh rect berada dalam viewport dan tidak ada exception rendering.
+- **Negative control:** ekspektasi `Create Project` → `Cancel` ditukar; test gagal dengan exit `1` dan output `Some tests failed`. Kontrak dipulihkan dan test fokus kembali lulus.
+- **Status:** VERIFIED untuk bukti focus order Create Project Screen pada konfigurasi probe ini. Cakupan audit focus-order layar: 30 dari 89 target layar.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

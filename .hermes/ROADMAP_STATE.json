@@ -46,7 +46,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T07:40:00+07:00",
+  "updated_at": "2026-10-03T08:05:00+07:00",
   "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-09 slice)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -615,7 +615,7 @@
   },
   "current_step": "117.41",
   "current_step_status": "VERIFIED-LOCAL",
-  "last_run_summary": "117.33 Privacy Assessment VERIFIED-LOCAL. 8 sumbu kanonik (consent, minimization, destinations, content_exclusion, retention, deletion, disconnect, telemetry_controls) diukur terhadap kode yang benar-benar di-ship. 2 defect fail-open ditemukan lalu diperbaiki: WorkflowPrivacyPolicy.strict mengirim allowlist kosong di belakang guard isNotEmpty sehingga kebijakan paling ketat melakukan ZERO minimization (creative content & credential lolos) -> allowlist eksplisit 9 data kind; ArchiveSecretPolicy._secretFolders tidak memuat .git sehingga kredensial di remote URL VCS plaintext ikut ter-ekspor -> .git masuk daftar folder rahasia. Cacat harness necessityketahuan dan diperbaiki sebelum diklaim: revert pertama memotong brace sehingga berkas gagal kompilasi (rc=1) = BUKAN bukti necessity; drill ditulis ulang jadi perilaku (allowlist jadi <String>{}), lalu minimize rc=1 dengan 3 test gagal dan content_exclusion rc=1 dengan 1 test gagal, 2 berkas dipulihkan byte-identical via SHA-256 (residu 0). Sumbu deletion DILAPORKAN TIDAK TERPENUHI (hanya unlink, tanpa delete irreversible), bukan diwaive; project.sqlite tidak dikecualikan dan kontrak ekspor belum rekonsiliasi. Re-verifikasi independen run ini pada HEAD c4ef323: slice 27/27 exit 0, regresi 450 pass +1 skip exit 0 di 4 target, analyzer 4 file No issues found! exit 0, format pass1 0 changed + pass2 idempoten, git diff --check exit 0. Slice commit c4ef323; commit ledger/state/manifest dicatat pada HEAD berikutnya. next_step=117.34 Billing & Webhook Integrity.",
+  "last_run_summary": "2026-10-03 08:05 WIB run 8: defect 117.43-10 closed - the rebuild METHOD claim was never measured (command/log had zero readers in lib/). Both ends fixed, 75/75 focus, analyze/format/diff-check/build green, commit ea27041 (3 explicit paths). Status unchanged PARTIAL-LOCAL; 117.43-02 still awaits operator decision.",
   "last_commit": "c4ef3230ac218296e1a8c318102e673e2189f3bd",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -3023,7 +3023,7 @@
   "sprint_117_step_11743": {
     "status": "PARTIAL-LOCAL",
     "verified_on": "2026-10-03",
-    "commit": "d29f61d",
+    "commit": "ea27041",
     "canonical_step": "117.43",
     "title": "GA Artifact & Reproducibility",
     "verdict": "GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE",
@@ -3040,7 +3040,8 @@
       "117.43-06 ArtifactComparison.isWellFormed verified the bitIdentical branch (117.43-01) but never verified the notBitIdentical branch: a claim that the artifacts DIFFER, recorded with byte-identical digests on both rebuilds, was reported isWellFormed == true, BuildProvenanceEvidence.evaluate returned pass, and the 117.43 gate reported the provenance output as pass. Exact mirror of 117.43-01 in the opposite direction: there an unverified false identity claim, here an unverified false difference claim. Fix: notBitIdentical now requires at least one recorded digest that actually differs, otherwise isWellFormed == false (minimal fail-closed guard before the pre-existing limits documentation check). Commit 0ce8c5f.",
       "117.43-07 recorded 2026-10-03 run 5 but never appended to this list (state bookkeeping gap found and repaired in run 6; the fix itself was committed in fb12fde): _evaluateShippedProvenance INFERRED the provenance verdict instead of reading it (`comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`), so an absent, null or misspelled verdict was silently coerced into a measured notBitIdentical claim. The gate printed provenance as pass for a manifest that stated no verdict at all. Fixed with a closed vocabulary: any value outside the two canonical strings returns null, leaving measureProvenance unmet instead of fabricating a claim.",
       "117.43-08 the per-artifact partition was never read by anything in lib/ or test/ and ArtifactComparison had no field to hold it, so the shipped manifest's far sharper claim (\"these four binaries differ, these two upstream DLLs are identical\") was never measured. Proven before the fix: a manifest naming a.exe differing and b.dll identical while the recorded digests prove the exact reverse reported status=pass printing NOT_BIT_IDENTICAL - every individual claim false, only the aggregate accidentally true, because the 117.43-06 “at least one difference” rule was still satisfied. Each named artifact is now measured against its own digest and the two lists must classify the whole recorded inventory; undecodable field types and half-declared partitions fail closed, while absence of both fields stays non-claiming per 117.43-07. Commit d29f61d.",
-      "117.43-09 the rebuild WINDOWS were never read by anything in lib/ or test/ (grep for started_at/finished_at/duration_seconds returned zero matches; duration_seconds was not even parsed) and RebuildResult declared startedAt/finishedAt that nothing read, so the manifest's method claim - two INDEPENDENT clean rebuild cycles - was never measured. Proven before the fix: four impossible histories all reported status=pass with text indistinguishable from the honest case (rebuild_b starting inside rebuild_a's window; a rebuild finishing before it started; a duration_seconds contradicting its own timestamps; an unparseable timestamp). Fixed at both ends, because a domain-only fix would be theatre: the parser dropped all three fields, so every record would arrive with a null window and be waved through as a non-claim. _decodeWindow now returns null for a present-but-undecodable field so _rebuildFrom fails closed, RebuildResult.hasWellFormedWindow reads the window (both ends must parse, finish must be strictly after start), and _windowsAreIndependent additionally requires the two windows not to overlap - overlapping clean rebuilds share one build/ directory, so their digests prove nothing. Absence of BOTH ends stays non-claiming per 117.43-07 (which keeps the 117.43-06/-07 fixtures green); half-recorded is NOT absence and fails closed (the first implementation read one missing end as non-claiming and the official test caught it: Expected false, Actual true). Mistyped window fields are refused, not cast past, via the _kUndecodable sentinel. The shipped manifest still passes because its windows are genuinely honest - measured independently in this run: rebuild_a 13:27:45->13:29:47 = 122s matching its recorded duration, rebuild_b 13:30:17->13:32:12 = 115s also matching, 30s apart, both log files present. A second test moves rebuild_b's window inside rebuild_a's on the REAL shipped document with every digest, verdict and partition untouched, and must fail; if only digests were measured it would still pass. Commit be01156."
+      "117.43-09 the rebuild WINDOWS were never read by anything in lib/ or test/ (grep for started_at/finished_at/duration_seconds returned zero matches; duration_seconds was not even parsed) and RebuildResult declared startedAt/finishedAt that nothing read, so the manifest's method claim - two INDEPENDENT clean rebuild cycles - was never measured. Proven before the fix: four impossible histories all reported status=pass with text indistinguishable from the honest case (rebuild_b starting inside rebuild_a's window; a rebuild finishing before it started; a duration_seconds contradicting its own timestamps; an unparseable timestamp). Fixed at both ends, because a domain-only fix would be theatre: the parser dropped all three fields, so every record would arrive with a null window and be waved through as a non-claim. _decodeWindow now returns null for a present-but-undecodable field so _rebuildFrom fails closed, RebuildResult.hasWellFormedWindow reads the window (both ends must parse, finish must be strictly after start), and _windowsAreIndependent additionally requires the two windows not to overlap - overlapping clean rebuilds share one build/ directory, so their digests prove nothing. Absence of BOTH ends stays non-claiming per 117.43-07 (which keeps the 117.43-06/-07 fixtures green); half-recorded is NOT absence and fails closed (the first implementation read one missing end as non-claiming and the official test caught it: Expected false, Actual true). Mistyped window fields are refused, not cast past, via the _kUndecodable sentinel. The shipped manifest still passes because its windows are genuinely honest - measured independently in this run: rebuild_a 13:27:45->13:29:47 = 122s matching its recorded duration, rebuild_b 13:30:17->13:32:12 = 115s also matching, 30s apart, both log files present. A second test moves rebuild_b's window inside rebuild_a's on the REAL shipped document with every digest, verdict and partition untouched, and must fail; if only digests were measured it would still pass. Commit be01156.",
+      "117.43-10 found and fixed in this slice (2026-10-03): the shipped comparison method claims 'SHA-256 after two INDEPENDENT CLEAN rebuild CYCLES' and 117.43-09 measured 'independent' (windows must not overlap) but NOTHING measured 'clean', because _rebuildFrom dropped 'command' and 'log' exactly as it had dropped the window fields, and RebuildResult never declared them - zero readers in lib/. Proven before the fix with a probe whose manifest was honest in every other respect: four impossible claims all reported pass - a command naming no clean step; two rebuilds run in different build modes (--release vs --debug), i.e. two different experiments compared; a log pointing at a file that does not exist; and both fields present but of the wrong type (int). Absent fields stayed a correct non-claim, which is what keeps 117.43-06/-07 fixtures green. Fix, both ends: the gate decodes 'command' and 'log' under the 117.43-09 rule (present-but-undecodable fails closed via the _kUndecodable sentinel, absent stays a non-claim) and a recorded log must resolve on disk; RebuildResult.hasWellFormedMethod requires a recorded command to name a clean step, and ranSameExperimentAs requires both rebuilds to have run the same experiment compared on a normalized form so cosmetic differences do not refuse honest manifests. The shipped manifest is unaffected because its claim is honest - measured this run, both commands carry flutter clean, both build windows --release, both logs exist on disk. RED->GREEN: 5 of 7 new tests fail before the gate change, 7/7 after, file total 75/75 (up from 68/68). Necessity proven by reverting ONLY the gate file while the domain keeps the new getters: exactly 5 named tests fail, no compile error. EOL PITFALL RECORDED: the commit warned CRLF will be replaced by LF; 3-side sha verification MUST normalize EOL first (git check-attr text=auto eol=lf), disk had 1144 CRLF vs committed 0 and only matched after normalization."
     ],
     "defects_measured_not_fixed": [
       "117.43-02 committed 113.38 GA manifest names build-tree paths unresolvable on a clean checkout and all six recorded checksums have drifted from the live build/ tree; re-signing a release candidate is a release action outside this step acceptance. Independently re-measured 2026-10-03 (not copied from the previous run): docs/release/v1.2.0-rc.1-checksums.txt has 493 entries, 0 malformed -> 485 MATCH / 7 DRIFT / 1 MISSING. Drift = the 6 signed artifacts plus data/app.so; missing = build/windows/x64/runner/Release/native_assets.json. Figures are identical to the 2026-10-02 run and stable after 'flutter build windows --debug'. Confirmed reading: the 117.43 GA gate measures only the 6 signed artifacts from docs/planning/v1.2/sprint_113_ga_artifact_packaging.json, so the full 493-row checksum index is never measured by the gate - a real blind spot, not gate drift.",
@@ -3142,7 +3143,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T06:35:00+07:00",
+    "updated_at": "2026-10-03T08:05:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3162,7 +3163,27 @@
       "working_tree": "dirty 93 -> 95 during the slice and back to 93 after commit; the delta was exactly my 2 slice files. generate_release_train_test.dart and sprint_117_wide_desktop_visual_validation_test.dart were already dirty at preflight and were not touched (sibling WIP).",
       "cross_slice_regeneration": "docs/ and .hermes/ clean vs HEAD after suite + build - no cross-slice regeneration (incidents 5/6 not repeated).",
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
-    }
+    },
+    "defects_fixed_count": 9,
+    "slice_commit": "ea27041",
+    "last_slice_files": [
+      {
+        "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
+        "sha256_lf_canonical": "e08179b5fbe0e3d8",
+        "crlf_in_disk": 0
+      },
+      {
+        "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
+        "sha256_lf_canonical": "11ae0b66eb4b419c",
+        "crlf_in_disk": 1144,
+        "note": "eol=lf; disk CRLF normalized by git at commit; LF value is canonical"
+      },
+      {
+        "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
+        "sha256_lf_canonical": "ffa67020a46a0700",
+        "crlf_in_disk": 0
+      }
+    ]
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -3395,6 +3416,6 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "be01156",
-  "ahead": 12
+  "commit": "ea27041",
+  "ahead": 14
 }

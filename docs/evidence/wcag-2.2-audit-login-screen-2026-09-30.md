@@ -2641,6 +2641,87 @@ Tidak ada perubahan kode produksi pada fase ini. Hanya dua berkas yang di-`git a
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Project List Screen. Layar teraudit dari 89 kandidat: **38 distinct** (serial fase: 52; counter fase sebelumnya melaporkan 41).
 
+## 53. Fase 53 — Focus Order di Cinema Workspace Screen (2.4.3)
+
+Tanggal probe: 2026-10-04. Layar alvo `lib/features/cinema/presentation/cinema_workspace_screen.dart` (182 baris, bersih di `git status`, tanpa `*_focus_order_test.dart` sebelumnya).
+
+Fixture deterministik: tidak ada. Layar ini `ConsumerWidget` yang hanya `ref.watch(cinemaProvider)`; `CinemaController` adalah `Notifier<CinemaState>` murni in-memory (`build()` mengembalikan `const CinemaState()`), jadi `ProviderScope` tanpa override sudah deterministik. Kedua tombol memanggil `togglePlayback()`, tidak menyentuh database, network, `path_provider`, maupun file picker. SyaratWR: total proyek punya `test/features/cinema/presentation/cinema_workspace_screen_test.dart` yang hanya asserting label — probe fokus butuh viewport desktop yang tidak pernah disentuh test lama itu.
+
+### Traversal terukur
+
+Viewport 1536x1024, devicePixelRatio 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)` berulang, dedup berdasarkan geometri. Traversal kembali ke stop 0 setelah stop 1, jadi N = 2 stop unik dan traversal melingkar penuh:
+
+```
+0 Preview  (TextButton.icon)   Rect(1204.70, 8.0, 152.70, 40.0)
+1 Render   (FilledButton.icon) Rect(1369.40, 8.0, 150.60, 40.0)
+2 <kembali ke stop 0>
+```
+
+Branch sempit 390x844 (lebar < 1000, threshold `constraints.maxWidth >= 1000` di `cinema_workspace_screen.dart:54`) mengukur urutan label yang sama dengan offset berbeda karena AppBar action tidak lagi berdesain ke kanan:
+
+```
+0 Preview  Rect(58.70, 8.0, 152.70, 40.0)
+1 Render   Rect(223.40, 8.0, 150.60, 40.0)
+2 <kembali ke stop 0>
+```
+
+Catatan mekanika yang terukur:
+
+- Body three-panel (sidebar Project dengan `Shots`/`Sequences`/`Timeline`, viewport, dan panel `Shot Details`) **tidak punya kontrol interaktif** — semuanya `Icon` + `Text` tanpa `onTap`/`InkWell`/`Focus`. Jadi 2 stop di AppBar adalah hasil lengkap, bukan traversal terpotong oleh kontrol yang hilang. Ini kebalikan dari pitfallWCAG "collection kosong = region non-fokusable": di sini kosongnya memang benar, ditandai oleh probe sebagai `FlutterError`-free traversal dua stop.
+- Urutan fokus mengikuti urutan visual kiri ke kanan di baris AppBar (`left` 1204.70 → 1369.40), bukan urutan baca terbalik. `top` keduanya identik `8.0` dan tinggi identik `40.0`, sesuai tinggi toolbar Material.
+- Layar memakai `key: ValueKey(cinemaState.isPlaying)` pada `Scaffold` (`cinema_workspace_screen.dart:26`), jadi `togglePlayback()` membangun ulang seluruh pohon. Kontrak sengaja **tidak** mengunci perilaku re-tree tersebut: fokus di Flutter kembali ke `FocusScope` akar sesudah widget tree diganti, dan mengunci-nya akan membuat kontrak rapuh tanpa nilai aksesibilitas.
+
+### Asersi kontrak
+
+`test/features/cinema/presentation/cinema_workspace_screen_focus_order_test.dart` mengunci lima hal:
+
+1. jumlah stop = 2 dan urutan label lengkap `['Preview', 'Render']` pada viewport 1536x1024;
+2. area fokus non-zero pada setiap stop (`width > 0`, `height > 0`);
+3. kedua stop berada pada baris yang sama — `top` identik dan `height` identik;
+4. urutan kiri ke kanan (`stops[i].rect.left > stops[i-1].rect.left`) plus kedua tombol di dalam viewport (`top >= 0`, `right < 1536`);
+5. urutan label yang sama pada viewport sempit 390x844, sekaligus `tester.takeException()` null untuk branch narrow.
+
+Probe tidak menyimpan daftar geometri persis sebagai konstanta; ia mengunci Hubungan geometris (baris sama, kiri-ke-kanan, non-zero, dalam viewport) karena angka piksel berasal dari metrics Material dan bisa bergeser antar versi SDK, sementara invarian yang diwndud adalah urutan dan relasi posisinya.
+
+### Negative control
+
+Ekspektasi urutan label di temporarily ditukar dari `['Preview', 'Render']` menjadi `['Render', 'Preview']` (backup `C:\Users\nepht\AppData\Local\Temp\cinema_focus_order_contract.bak`, 5 661 byte):
+
+```
+NEG_CONTROL_EXIT=1
+Expected: ['Render', 'Preview']
+  Actual: MappedListIterable<({String label, Rect rect}), String>:['Preview', 'Render']
+00:01 +0 -1: mengunci urutan fokus Cinema Workspace Screen [E]
+00:01 +1 -1: Some tests failed.
+```
+
+Kontrak dikembalikan dari backup lalu backup dihapus. Bukti bahwa kontrak benar-benar bisa mendeteksi regresi urutan, bukan hanya hijau karena tidak pernah gagal.
+
+### Gap yang ditemukan probe (belum diperbaiki pada fase ini)
+
+Probe menemukan **defect produksi nyata yang terpisah dari fokus**: pada branch wide (1536x1024) `RenderFlex overflowed by 10 pixels on the right` pada `Row` di `cinema_workspace_screen.dart:63` — baris item sidebar (`Icon` 18px + `SizedBox(width: 12)` + `Text`) di dalam `Container(width: 180, padding: EdgeInsets.all(16))` memberi lebar efektif 148px, dan label terpanjang ("Sequences") meluap 10px. Kontrak fokus mengambil exception itu lewat `tester.takeException()` dan mencetak `KNOWN_LAYOUT_DEFECT: FlutterError` alih-alih mengunci overflow sebagai perilaku yang diharapkan; test branch sempit tetapowns `takeException() isNull` karena branch itu memang tidak meluap.
+
+Test lama `cinema_workspace_screen_test.dart` tidak menangkapnya karena hanya menguji viewport 390x844 (branch narrow), bukan branch wide desktop.
+
+Status: **GAP terverifikasi, belum di-fix.** Kode produksi tidak disentuh pada fase ini sesuai aturan "jangan mengubah kode produksi kecuali defect terbukti dari probe — laporkan dulu"; perbaikanIEDIRECTLY (bungkus `Text` dengan `Expanded`/`Flexible` di sidebar `Row`) menjadi kandidat RED→GREEN untuk cron berikutnya. Entry ini dicatat di laporan bukti ini, **belum** dipromosikan ke `docs/sprints/` ledger, karena kontrak run ini membatasi `git add` pada dua berkas (laporan + kontrak) dan tidak boleh meninggalkan dirty file baru di working tree yang dipakai Core Worker.
+
+### Catatan koreksi counter
+
+Penghitungan nyata pada repo saat fase ini:
+
+- 43 berkas `test/**/*_focus_order_test.dart` setelah fase ini (42 tracked sebelum fase ini + kontrak baru ini);
+- **39 layar `*_screen.dart` distinct** tercakup, naik dari 38distinct pada section 52;
+- 1 kontrak lain mengaudit `tech_tree_workspace_view.dart` (bukan `_screen.dart`, jadi tidak masuk hitungan layar);
+- duplikasi historis tetap: `agent_permission_screen`, `create_product_wizard_screen`, dan `product_detail_screen` masing-masing punya dua kontrak.
+
+Counter fase sebelumnya (41 pada section 51) menghitung fase, bukan layar distinct; phase ini memakai pengukuran distinct dari `git ls-files` + import yang discan terhadap `*_screen.dart`.
+
+Line ending berkas bukti: **LF murni** (2 774 LF, 0 CRLF saat diukur), jadi sisip section ini memakai LF agar tidak menghasilkan diff seluruh berkas.
+
+Tidak ada perubahan kode produksi pada fase ini. Hanya dua berkas yang di-`git add` dengan pathspec eksplisit, tanpa `git add -A`, tanpa menyentuh 96 file dirty milik Core Worker, dan probe `_probe_focus_test.dart` dihapus setelah kontrak final dibuat.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Cinema Workspace Screen (2 stop: `Preview` → `Render`, kedua branch layout). Layar teraudit dari 89 kandidat: **39 distinct `*_screen.dart`** (serial fase: 53; 38 distinct sebelum fase ini). Satu GAP terverifikasi tercatat di atas dan belum di-fix.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

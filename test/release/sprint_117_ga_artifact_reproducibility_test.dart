@@ -3840,6 +3840,115 @@ void main() {
         reason: 'an explicit null states nothing, like an absent key',
       );
       // The shipped document already states a readable version: breaking the
+      // evidence under it must still refuse, so the field can never buy back
+      // a pass the measurement does not support.
+      final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'provenance_record',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
+
+  group('117.43-20 the document must name the step the gate reconciles', () {
+    // Sprint 117.43-20 (unmeasured-claim, fixed): `canonical_step` is the one
+    // field left on the document level that restates WHICH STEP the evidence
+    // belongs to, and no reader in `lib/` ever opened it. The gate opens
+    // `Sprint117GaPackagingContract.provenanceManifestPath` — the 113.39
+    // document — and publishes `provenance_evaluation: pass` from whatever that
+    // file holds, without ever checking that the file claims to BE the 113.39
+    // document. A manifest naming another step, or holding the field in a shape
+    // nobody decoded, received the same `pass` as the shipped one. Twelve
+    // sibling GA gates in this same directory already refuse exactly that
+    // (`document['canonical_step'] != canonicalStep`).
+    //
+    // The bounds mirror 117.43-16/-17/-18/-19, so no acceptance is invented:
+    // the field is REFUSED only when it is present and either unreadable or
+    // naming a step other than the provenance step the gate reconciles
+    // against. An absent key and an explicit null stay non-claims (117.43-07).
+    // Nothing is required about `title`, which the 117.43-19 run already
+    // recorded as prose outside acceptance — deliberately left unmeasured.
+    const String kProvenanceStep = '113.39';
+
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// The value the shipped document itself states for `canonical_step`.
+    Object? shippedStep() => shipped()['canonical_step'];
+
+    /// Shipped manifest whose document-level `canonical_step` holds [value].
+    Map<String, Object?> withStep(Object? value) =>
+        shipped()..['canonical_step'] = value;
+
+    test('117.43-20 a document-level canonical_step this gate cannot read, or '
+        'that names another step, is refused while the evidence passes', () {
+      final cases = <String, String>{
+        'canonical_step as an integer': outcome(withStep(42)),
+        'canonical_step as a list': outcome(
+          withStep(<Object?>[kProvenanceStep]),
+        ),
+        'canonical_step as an object': outcome(
+          withStep(<String, Object?>{'step': kProvenanceStep}),
+        ),
+        'canonical_step as a blank string': outcome(withStep('')),
+        'canonical_step as a whitespace-only string': outcome(withStep('   ')),
+        'canonical_step naming 113.40': outcome(withStep('113.40')),
+        'canonical_step naming 117.43': outcome(withStep('117.43')),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'that either cannot be read as a step or claims a step other than '
+            'the provenance step it reconciles against: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-20 the shipped document names the provenance step this gate '
+        'reconciles against', () {
+      // Without a shipped document that names 113.39, every refusal above
+      // would prove nothing: a gate that ignored the field would pass them all
+      // and pass the shipped document too. The shipped state is what makes this
+      // check a measurement rather than an invented requirement — and it must
+      // not change the verdict, which stays `pass` as 117.43-19 measured.
+      final step = shippedStep();
+      expect(step, isA<String>(), reason: 'the shipped field is a string');
+      expect(
+        (step! as String).trim(),
+        kProvenanceStep,
+        reason:
+            'the manifest the gate opens at provenanceManifestPath names the '
+            'step it documents, so the check agrees with what ships',
+      );
+      expect(outcome(shipped()), 'pass');
+    });
+
+    test('117.43-20 a document that states no step claims nothing, and a '
+        'correct step cannot rescue failing evidence', () {
+      final absent = shipped()..remove('canonical_step');
+      expect(
+        outcome(absent),
+        'pass',
+        reason: 'an absent field is a non-claim (117.43-07)',
+      );
+      expect(
+        outcome(withStep(null)),
+        'pass',
+        reason: 'an explicit null states nothing, like an absent key',
+      );
+      // The shipped document already names the right step: breaking the
       // evidence under it must still refuse, so the field can never buy back a
       // pass the measurement does not support.
       final broken = shipped();

@@ -202,6 +202,13 @@ abstract final class Sprint117GaPackagingContract {
   static const String provenanceManifestPath =
       'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json';
 
+  /// The step [provenanceManifestPath] documents.
+  ///
+  /// Read from the document rather than assumed, and then compared: the gate
+  /// publishes a verdict about the 113.39 provenance evidence, so a file that
+  /// names a different step is not that document (117.43-20).
+  static const String provenanceStep = '113.39';
+
   static const String passVerdict =
       'GA_ARTIFACT_REPRODUCIBILITY_COMPLETE_LOCAL';
   static const String failVerdict = 'GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE';
@@ -863,6 +870,23 @@ abstract final class Sprint117GaArtifactGate {
         note: 'document version field cannot be read',
       );
     }
+    // Sprint 117.43-20: the last document-level field the gate never opened is
+    // `canonical_step` — the claim about WHICH step this evidence documents.
+    // The file at `provenanceManifestPath` is reconciled against as the 113.39
+    // provenance document, and a file naming another step is not that document,
+    // so publishing `provenance_evaluation: pass` from it was never evidence
+    // about 113.39. Same bounds as the header above: absent and explicit null
+    // stay non-claims (117.43-07).
+    final stepRefusal = _documentStepRefusal(provenanceManifest);
+    if (stepRefusal != null) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: declared,
+        observed: stepRefusal,
+        note: 'document names a step other than the provenance step',
+      );
+    }
     return Sprint117GaArtifactCheck.pass_(
       outputId: 'provenance',
       check: 'provenance_evaluation',
@@ -958,6 +982,48 @@ abstract final class Sprint117GaArtifactGate {
     if (value == null) return null;
     if (value is! String || value.trim().isEmpty) {
       return 'version present without a readable value (${value.runtimeType})';
+    }
+    return null;
+  }
+
+  /// Refuses a document-level `canonical_step` that cannot be read as the step
+  /// the provenance evidence is documented under. Returns the observed reason,
+  /// or null when the field states nothing or names the right step.
+  ///
+  /// Sprint 117.43-20: `canonical_step` is the last field on the document level
+  /// that restates which step the evidence belongs to, and no reader in `lib/`
+  /// had opened it. The gate opens [Sprint117GaPackagingContract
+  /// .provenanceManifestPath] and publishes `provenance_evaluation: pass`
+  /// from whatever that file holds, without ever asking whether the file claims
+  /// to BE the 113.39 document — so a manifest naming 113.40, or 117.43, or
+  /// holding the field as a number, received exactly the same `pass` as the
+  /// shipped one. Twelve sibling GA gates in this directory already refuse
+  /// precisely that (`document['canonical_step'] != canonicalStep`), which is
+  /// what makes its absence here a defect rather than a design choice.
+  ///
+  /// Bounds pinned by the tests, identical in shape to 117.43-16/-17/-18/-19 so
+  /// no acceptance is invented:
+  ///
+  ///  * an absent key and an explicit null are non-claims (117.43-07);
+  ///  * a present value that is not a string, or that is blank, is unevaluable;
+  ///  * a present, readable string must name
+  ///    [Sprint117GaPackagingContract.provenanceStep]. Which step the document
+  ///    is *about* is exactly what this field claims, so comparing it adds no
+  ///    acceptance of its own;
+  ///  * nothing is required about `title`, which 117.43-19 recorded as prose
+  ///    outside acceptance and deliberately left unmeasured.
+  static String? _documentStepRefusal(Map<String, Object?> document) {
+    if (!document.containsKey('canonical_step')) return null;
+    final value = document['canonical_step'];
+    if (value == null) return null;
+    if (value is! String || value.trim().isEmpty) {
+      return 'canonical_step present without a readable value '
+          '(${value.runtimeType})';
+    }
+    final expected = Sprint117GaPackagingContract.provenanceStep;
+    if (value.trim() != expected) {
+      return 'canonical_step states ${value.trim()} while the gate reconciles '
+          '$expected';
     }
     return null;
   }

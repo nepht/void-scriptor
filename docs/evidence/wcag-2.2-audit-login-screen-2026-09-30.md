@@ -2722,6 +2722,92 @@ Tidak ada perubahan kode produksi pada fase ini. Hanya dua berkas yang di-`git a
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Cinema Workspace Screen (2 stop: `Preview` → `Render`, kedua branch layout). Layar teraudit dari 89 kandidat: **39 distinct `*_screen.dart`** (serial fase: 53; 38 distinct sebelum fase ini). Satu GAP terverifikasi tercatat di atas dan belum di-fix.
 
+## 54. Fase 54 — Focus Order di Game Creation Dashboard Screen (2.4.3)
+
+**Layar audited:** `lib/features/game/presentation/game_creation_dashboard_screen.dart` (`GameCreationDashboardScreen`).
+**Kontrak:** `test/features/game/presentation/game_creation_dashboard_screen_focus_order_test.dart` (2 test).
+**Metode:** probe sementara pada viewport 1536x1024 dan 390x844, dpr 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)` berulang sampai geometri fokus berulang (wrap ke stop pertama). Label diambil dari `Text` non-`Icon` terdekat ke pusat Rect fokus.
+
+### Klasifikasi kontrol interaktif
+
+Layar ini hanya punya dua kontrol interaktif, keduanya di `AppBar.actions`:
+
+| Kontrol | Widget | Baris kode | Callback |
+|---|---|---|---|
+| Play | `TextButton.icon` | 34-38 | `onPlay` (nullable) |
+| Build | `FilledButton.icon` | 42-47 | `onBuild` (nullable) |
+
+Body layar (sidebar World, panel Game World, Inspector) murni teks: tidak ada `ListTile.onTap`, `Switch`, `Checkbox`, atau `TextField`. `_worldItems` hanya dirender sebagai `Row` berisi `Icon` + `Text` tanpa `InkWell`/`GestureDetector`, sehingga **tidak** masuk traversal fokus.
+
+Karena `onPlay`/`onBuild` nullable, probe dan kontrak **wajib** mengirim callback non-null. Dengan callback null, Flutter membuang tombol dari traversal fokus dan probe akan melaporkan `hasLength(1)` yang salah.
+
+### Hasil pengukuran — 1536x1024 (branch `wide`)
+
+```
+STOP 0 label="Play"  rect=(1261.1, 8.0, 110.4, 40.0)
+STOP 1 label="Build" rect=(1383.5, 8.0, 136.5, 40.0)
+STOP#WRAP after 2
+```
+
+### Hasil pengukuran — 390x844 (branch sempit)
+
+```
+STOP 0 label="Play"  rect=(115.1, 8.0, 110.4, 40.0)
+STOP 1 label="Build" rect=(237.5, 8.0, 136.5, 40.0)
+STOP#WRAP after 2
+```
+
+### Yang dikunci kontrak
+
+- Tepat **2 stop** fokus, urutan label `['Play', 'Build']` di kedua viewport.
+- Area fokus non-zero pada setiap stop (lebar dan tinggi > 0) — kontrol benar-benar bisa dijangkau keyboard.
+- Kedua tombol pada baris AppBar yang sama: `rect.top` identik (8.0) dan `rect.height` identik (40.0).
+- Urutan fokus mengikuti urutan visual kiri ke kanan (`rect.left` menaik).
+- Baris tombol tidak keluar dari viewport: `top >= 0` dan `right < 1536`.
+- **Aktivasi nyata via keyboard** (bukan hanya perpindahan fokus): setelah loop wrap fokus berada di Play → `Enter` memicu `onPlay` (playCalls 1); `Tab` maju ke Build → `Enter` memicu `onBuild` (buildCalls 1). Status awal diverifikasi nol sebelum aktivasi.
+
+### Negative control (WAJIB, terbukti)
+
+| # | Mutasi | Hasil |
+|---|---|---|
+| NC1 | `expect(stops, hasLength(2))` → `hasLength(3)` | **exit 1**, `Some tests failed`, `Expected: an object with length of <3>` |
+| NC2 | label order viewport sempit `['Play','Build']` → `['Build','Play']` | **exit 1**, `Some tests failed`, `Expected: ['Build', 'Play'] / Actual: ['Play', 'Build']` |
+
+Kedua mutasi dikembalikan dari backup di `/c/Users/nepht/AppData/Local/Temp/`; SHA-256 file kontrak setelah restore identik dengan baseline (`1b7b0bbbc8860ad1…`) dan backup sudah dihapus.
+
+Catatan proses: percobaan NC versi label-order pertama gagal diterapkan karena `assert s.count(old) == 1` menemukan **2** kemunculan (ekspektasi yang sama ada di kedua test). Guard itu justru membuktikan ekspektasi terduplikasi, sehingga mutasi pertama tidak pernah mengubah file dan hasil run tersebut **tidak** dihitung sebagai negative control. NC di atas memakai targeting yang terverifikasiuniquely.
+
+### Defect TERPISAH yang ditemukan (bukan bagian kontrak 2.4.3)
+
+Pada viewport **1536x1024** saja, probe menangkap exception `A RenderFlex overflowed by 25 pixels on the right.` yang **tidak** muncul di 390x844. Lokasi ditentukan secara terukur, bukan ditebak:
+
+```
+ITEM "Levels"     textWidth=85.5   naturalRow=115.5  available=148.0
+ITEM "Characters" textWidth=142.5  naturalRow=172.5  available=148.0  <-- +24.5
+ITEM "Quests"     textWidth=85.5   naturalRow=115.5  available=148.0
+ICON_SIZE: Size(18.0, 18.0)
+```
+
+- Sidebar `Container(width: 180)` dikurangi `padding: EdgeInsets.all(VoidSpacing.md)` (16) x2 → **148 px** tersedia (baris 97-114).
+- Item `Row` = `Icon(size: 18)` + `SizedBox(width: VoidSpacing.sm = 12)` + `Text('Characters')` (baris 62-73).
+- `172.5 - 148 = 24.5`, dibulatkan Flutter menjadi **overflow 25 px**.
+
+Test lama `game_creation_dashboard_screen_test.dart` hanya menguji overflow pada **viewport 390** (`tester.view.physicalSize = const Size(390, 844)`), sehingga defect branch `wide` ini tidak pernah tertangkap.
+
+**Status defect:** `PARTIAL` — dicatat sebagai Gap, **belum** diperbaiki dalam run ini. Kontrak fokus sengaja **tidak** mengunci overflow tersebut sebagai perilaku yang diharapkan: exception diambil lewat `tester.takeException()` hanya agar tidak menutupi kontrak 2.4.3, dan dicetak sebagai `KNOWN_LAYOUT_DEFECT`. Perbaikan produksi (mis. `Flexible`/`Expanded` pada Text label, atau `isExpanded`/ellipsis) adalah slice terpisah di luar scope "satu layar per run" dan perlu RED→GREEN tersendiri.
+
+### Gate
+
+| Gate | Perintah | Hasil |
+|---|---|---|
+| format | `dart format <kontrak>` | Formatted 1 file |
+| analyze | `dart analyze <kontrak>` | `No issues found!` |
+| test kontrak | `flutter test <kontrak>` | `All tests passed!` (2 test) |
+| suite feature | `flutter test test/features/game/` | `All tests passed!` (+44), exit 0 |
+| CJK/Cyrillic scan | regex `\u0400-\u04FF\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af` | 0 hit |
+
+**Status section:** `VERIFIED` untuk fokus 2.4.3 (order, label, geometri, area non-zero, aktivasi keyboard, negative control). Defect overflow branch `wide` dicatat terpisah sebagai `PARTIAL`.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

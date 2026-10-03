@@ -2040,6 +2040,92 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Settings Hub Screen di konfigurasi probe ini (sesi null + viewport desktop). Cakupan audit focus-order layar: **35 dari 89** target layar (34 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini). Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung.
 
+## 45. Fase 45 — Focus Order di Storage Locations Screen (2.4.3)
+
+**Layar**: `lib/features/settings/presentation/storage_locations_screen.dart` (Storage Locations, kelas `StorageLocationsScreen`)
+**Kontrak**: `test/features/settings/storage_locations_screen_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam subtree fokus, dan bila tidak ada jatuh ke `ValueKey<String>` terdekat pada rantai leluhur (IconButton refresh dan ketiga `TextField` tidak punya teks di dalam subtree fokus — `labelText` ada di decoration, di luar node fokus). `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 24 Tab). Layar berdiri tanpa database/network: `customStorageStoreProvider` di-override ke `CustomStorageLocationStore` dengan `registry file` di direktori temporer.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `storage-refresh` | `IconButton` refresh AppBar | 1492.0, 8.0, 40.0, 40.0 |
+| 1 | `storage-set-active-field` | `TextField` Set lokasi aktif | 52.0, 244.0, 1263.2, 24.0 |
+| 2 | `Jalankan` | `FilledButton` kartu Set lokasi aktif | 1339.2, 236.0, 160.8, 40.0 |
+| 3 | `storage-relink-field` | `TextField` Relink lokasi | 52.0, 388.0, 1263.2, 24.0 |
+| 4 | `Jalankan` | `FilledButton` kartu Relink lokasi | 1339.2, 380.0, 160.8, 40.0 |
+| 5 | `storage-probe-field` | `TextField` Probe lokasi | 52.0, 532.0, 1263.2, 24.0 |
+| 6 | `Jalankan` | `FilledButton` kartu Probe lokasi | 1339.2, 524.0, 160.8, 40.0 |
+| 7 | `storage-refresh` (ulang stop 0, `REPEAT at stop 7 -> cycle closed`) | — | 1492.0, 8.0, 40.0, 40.0 |
+
+Jumlah stop = **7**. `find.byType(TextField)` = 3, `find.byType(FilledButton)` = 3. `tester.takeException()` = `null`.
+
+Pembentukan urutan Tab:
+
+- Satu `IconButton` refresh di AppBar (`ValueKey('storage-refresh')`) menjadi stop pertama — rect kanan-atas (1492, 8), berada di atas dan di kanan semua field.
+- Layar ini merender tiga kartu aksi yang ditumpuk atas-ke-bawah: **Set lokasi aktif**, **Relink lokasi**, **Probe lokasi**. Tiap kartu menyumbang dua stop berurutan: `TextField` di kiri (left 52, top 244/388/532) lalu tombol `Jalankan` di kanan (left 1339.2, top 236/380/524 — pusat baris sama, selisih pusat-Y field vs tombol <= 1.0 px karena tinggi 24 vs 40 dipusatkan pada baris yang sama).
+- Ketiga tombol aksi berbagi label teks `Jalankan`, jadi kontrak membedakannya lewat posisi (indeks array), bukan teks.
+- Setelah stop terakhir, Tab berikutnya kembali ke `storage-refresh` dengan `Rect` identik; satu Tab lagi lanjut ke `storage-set-active-field` — siklus utuh.
+
+### Kontrak yang dikunci
+
+- `expect(find.byType(TextField), findsNWidgets(3))`, `find.byType(FilledButton), findsNWidgets(3)`, dan `stops` `hasLength(7)` — jumlah stop disetel dengan jumlah elemen focusable nyata (1 refresh + 3 field + 3 tombol).
+- Urutan label `['storage-refresh', 'storage-set-active-field', 'Jalankan', 'storage-relink-field', 'Jalankan', 'storage-probe-field', 'Jalankan']` — urutan Tab nyata dari probe.
+- Area fokus non-nol pada tiap stop (`width > 0 && height > 0`).
+- Refresh berada di atas dan di kanan field pertama (`stops.first.rect.top < stops[1].rect.top`, `stops.first.rect.left > stops[1].rect.left`).
+- Tiga kartu aksi turun atas-ke-bawah: `top` stop 1 < stop 3 < stop 5 (244 → 388 → 532).
+- Di dalam tiap kartu: field di kiri tombolnya (`left[i] < left[i+1]`) dan keduanya satu baris (`|Δcenter.dy| <= 1.0`).
+- Setelah stop terakhir traversal wrap ke `storage-refresh` dengan `Rect` identik, lalu satu Tab lanjutan mengenai `storage-set-active-field` — siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Tidak ada perubahan kode produksi pada fase ini: probe tidak menemukan defect urutan (semua elemen interaktif ikut traversal, tidak ada stop tersembunyi atau area nol, dan urutan mengikuti layout kartu). File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format --set-exit-if-changed test/features/settings/storage_locations_screen_focus_order_test.dart
+=> Formatted 1 file (0 changed) in 0.01 seconds.   (exit 0)
+
+dart analyze test/features/settings/storage_locations_screen_focus_order_test.dart
+=> No issues found! (ran in 4.2s)   (exit 0)
+
+flutter test test/features/settings/storage_locations_screen_focus_order_test.dart
+=> 00:02 +3: All tests passed!   (exit 0)
+
+flutter test test/features/settings/   (gate)
+=> 00:11 +28: All tests passed!   (exit 0)
+   4 file test (language_switcher 7 + kontrak focus-order Settings Hub 3 +
+   settings_hub_screen 1 + kontrak focus-order Storage Locations 3 +
+   storage_locations_screen 8 testWidgets, total 28).
+```
+
+**Negative control** (wajib): dua baris pertama `_expectedLabels` pada salinan cadangan di `%LOCALAPPDATA%\Temp` ditukar menjadi `['storage-set-active-field', 'storage-refresh', ...]`, lalu kontrak dijalankan:
+
+```
+00:01 +0 -1: Storage Locations — kontrak focus order 2.4.3 1. tujuh stop dengan urutan label yang dikunci [E]
+   Expected: ['storage-set-active-field', 'storage-refresh', 'Jalankan', ...]
+     Actual: ['storage-refresh', 'storage-set-active-field', 'Jalankan', ...]
+   Which: at location [0] is 'storage-refresh' instead of 'storage-set-active-field'
+00:02 +1 -2: Some tests failed.
+NEGCTL_EXIT=1
+RESTORED_BACKUP_DELETED
+00:02 +3: All tests passed!
+REVERIFY_EXIT=0
+```
+
+Salinan cadangan dipulihkan lalu dihapus, kontrak diverifikasi ulang `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus order (2 dari 3 test gagal saat dua label pertama dibalik), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Sisa artefak yang tidak dihitung**: `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` (untracked, tanpa section report) tetap dibiarkan apa adanya, sama seperti catatan fase 41/42/43.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Storage Locations Screen di konfigurasi probe ini (registry file temp + viewport desktop). Cakupan audit focus-order layar: **35 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 34 sebelum commit fase ini, + kontrak baru ini = 35. (Koreksi hitungan: status fase 44 mencatat 35 dari 89, tetapi `git ls-tree -r 992fb49` = 34 kontrak tracked setelah commit fase 44, jadi angka fase 45 yang benar adalah 35.) Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

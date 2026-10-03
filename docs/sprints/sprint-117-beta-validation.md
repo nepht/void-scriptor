@@ -115,3 +115,31 @@ Sprint 118 — VOID SCRIPTOR Account & Cloud Center Stability & Provider Expansi
 **WORKING TREE:** dirty 93 -> 95 selama slice -> 93 setelah commit; selisih tepat 2 file slice (helper `_durationOrNull` dan `_stringList` sudah ada di file provenance, jadi file itu tidak berubah). Manifest 117.43 TIDAK diubah, 0 byte.
 
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. **TODO-OPERATOR TETAP ADA:** putuskan `117.43-02` - (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA yang diterima dan persempit acceptance 117.43. Cron tidak mengarang pilihan.
+
+### Slice 117.43-14 (2026-10-03, run SEBELUM) - dua record rebuild dibaca, sisanya tidak pernah diukur
+
+**HUNT KESEMBILAN: unmeasured-claim / fail-open.** Slice ini yang KESEMBILAN, dan pertama yang bukan "mengabaikan satu field" melainkan **memilih dua record dari list yang boleh lebih banyak**, lalu melaporkan jumlah yang ia pilih seolah-olah itu jumlah yang tertulis di dokumen.
+
+**DEFECT (satu, delapan cacat dalam SATU record):** `_evaluateShippedProvenance` mendekode `rebuildList[0]` dan `rebuildList[1]`, lalu membentuk `rebuildResults: <RebuildResult>[a, b]`. Jadi setiap aturan yang sudah ditambahkan 117.43-08/-09/-10/-12/-13 - jendela waktu, independensi jendela, perintah clean, digest, exit code, log yang bisa dibaca, partisi - diterapkan ke **dua** record yang boleh dimiliki dokumen, dan ke tidak ada record lain. Gate lalu mencetak `rebuild_results: 2 item`: angka yang ia **PILIH**, bukan angka yang ia baca.
+
+**PROBE (bukti batas, sebelum fix):** satu record ditambahkan ke manifest SHIPPED, sehingga **hanya** cacat yang ditambahkan itu yang bisa menentukan hasil. Delapan cacat dibawa record ketiga itu: exit code bukan nol, digest fabrikat, jendela berakhir sebelum mulai, perintah tanpa langkah clean, log yang tidak bisa dibuka, label duplikat, artefak yang tidak pernah disebut partisi, dan jendela yang overlap dengan rebuild pertama. **SEMUA DELAPAN mengembalikan `pass`**, masing-masing melaporkan `rebuild_results: 2 item` untuk dokumen yang mencatat tiga rebuild.
+
+117.43-13 adalah omission yang sama dilihat dari dalam satu record: ia membuat record ketiga salah bentuk fail-closed, yang tidak bisa dan memang tidak mungkin bisa dilakukan, karena record ketiga tidak pernah didekode.
+
+**Yang ditutup (fail-closed):** dekode **setiap** record; tolak dua record berbagi satu label; setiap record dipegang aturan jendela, method, digest, exit code, dan log-reachable; setiap **pasangan** jendela harus berdiri terpisah (helper baru `_windowsArePairwiseIndependent`, karena `_windowsAreIndependent` hanya membandingkan dua); partisi wajib sacked seluruh inventory **gabungan semua rebuild** (bukan hanya inventory rebuild pertama). Manifest yang mencatat **satu** rebuild tetap unevaluable - klaim butuh dua - dan yang mencatat tiga diperiksa tiga kali.
+
+**NON-CLAIM terjaga:** field absen tetap null (aturan 117.43-07); nilai ada-tapi-tak-terbaca tetap unevaluable, jadi dilaporkan `unmet`.
+
+**RED (bukti batas):** revert HANYA file gate ke HEAD -> **96 pass, TEPAT 10 test bernama gagal** (9 test defect + 1 test riwayat), kontrol tetap hijau, tanpa compile error.
+
+**GERBANG:** fokus **106/106 exit 0** (naik dari 95, +11). `dart analyze` 3 file `No issues found!` exit 0 **DIULANG SETELAH `dart format`** (1 file berubah, pass kedua 0 changed idempotent). `git diff --check` exit 0. `flutter build windows --debug` exit 0, 19,7 dtk.
+
+**REGRESI:** `sprint_113_build_reproducibility_provenance_test.dart` exit 1 - **SATU** fail, signature **PERSIS SAMA** (expected `73101e78...`, actual `c7a33055...`), akar TODO-OPERATOR 117.43-02, **BUKAN** regresi slice ini.
+
+**SHA 3-SISI FINAL:** gate `6c0754c3...` dan test `f5acbb58...` - disk == `git show cc5ae78:<path> | sha256sum`, **MATCH**.
+
+**COMMIT:** `cc5ae78` (2 path eksplisit). **PUSH:** tidak dilakukan.
+
+**WORKING TREE:** dirty 93 -> 95 selama slice -> 93 setelah commit; selisih tepat 2 file slice. Kedua file probe (`zz_probe_11743_14_test.dart`, `zz_probe_11743_14_diag_test.dart`) dihapus setelah semua temuan dipindahkan; `probes_remaining=0`. Manifest 117.43 TIDAK diubah, 0 byte (`git show --name-only cc5ae78` tidak memuatnya).
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**, step tidak ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. **TODO-OPERATOR TETAP ADA:** putuskan `117.43-02` - (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA yang diterima dan persempit acceptance 117.43. Cron tidak mengarang pilihan.

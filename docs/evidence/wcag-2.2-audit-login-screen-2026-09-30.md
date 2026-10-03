@@ -2904,6 +2904,71 @@ Kontrak karena itu membandingkan traversal terhadap **rotasi** dari satu siklus 
 
 **VERIFIED** untuk focus order `ContentCapabilityMatrixScreen` di 1536x1024 dan 390x844 pada codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; koreksi yang dibuat hanya pada ekspektasi kontrak yang salah asumsi terhadap titik mulai traversal. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun.
 
+## 56. Fase 56 — Focus Order di Map Time Slider View (2.4.3)
+
+**Layar audited:** `lib/features/world_logic/presentation/map_time_slider.dart` (`MapTimeSliderView`).
+**Kontrak:** `test/features/world_logic/map_time_slider_focus_order_test.dart` (5 test).
+**Metode:** probe sementara pada viewport 1536x1024 dan 390x844, dpr 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)` berulang sampai `Rect` fokus mengulang. Label tiap stop diturunkan dari jenis widget fokus, bukan dari posisi piksel.
+
+Layar dipilih karena seluruh surface interaktifnya berdiri sendiri: satu `Slider`, delapan `IconButton` kunci waktu, dan tiga `InputChip` layer beserta tombol hapusnya. State berasal dari `TemporalMapState` yang dibangun in-memory lewat `MapTimeSliderController.forState`, tanpa database, tanpa network, tanpa DI, tanpa `session.lock`. Tidak ada fixture yang perlu disiapkan, sehingga cocok untuk run audit terjadwal.
+
+### Klasifikasi kontrol interaktif
+
+| Kontrol | Widget | Keterangan |
+|---|---|---|
+| Slider tick | `Slider` | `ValueKey('map-time-slider')` |
+| 8 tombol navigasi waktu | `IconButton` | `map-time-key-*`, masing-masing dibungkus `Tooltip` |
+| 3 chip layer aktif | `InputChip` | `map-time-layer-chip-<tick>`, `onDeleted` aktif |
+| 3 tombol hapus layer | affordance `InputChip` | dirender Material sebagai `InkWell` bersarang, bukan `IconButton` |
+
+### Hasil pengukuran — 1536x1024 dan 390x844
+
+Siklus traversal **15 node**, urutan identik di kedua viewport; hanya geometri yang berbeda karena baris tombol membungkus pada lebar sempit.
+
+```
+STOP  0 slider:map-time-slider
+STOP  1 key:map-time-key-advanceSmall
+STOP  2 key:map-time-key-retreatSmall
+STOP  3 key:map-time-key-advanceBig
+STOP  4 key:map-time-key-retreatBig
+STOP  5 key:map-time-key-jumpStart
+STOP  6 key:map-time-key-jumpEnd
+STOP  7 key:map-time-key-nextKeyTick
+STOP  8 key:map-time-key-prevKeyTick
+STOP  9 chip:map-time-layer-chip-0|Tick 0
+STOP 10 delete:map-time-layer-chip-0
+STOP 11 chip:map-time-layer-chip-40|Tick 40
+STOP 12 delete:map-time-layer-chip-40
+STOP 13 chip:map-time-layer-chip-80|Tick 80
+STOP 14 delete:map-time-layer-chip-80
+```
+
+Aritmetika siklus: 1 slider + 8 tombol kunci + 3 pasang (chip + hapus) = 15. Traversal masuk pertama kali pada slider, yang merupakan node fokus pertama pada subtree widget ini.
+
+### Temuan teknis: tombol hapus chip bukan `IconButton`
+
+Draf kontrak pertama mengasumsikan node fokus tombol hapus chip memiliki ancestor `IconButton`. Probe membuktikannya salah: Material merender affordance hapus `InputChip` sebagai `InkWell` bersarang dengan `FocusNode` internal, sehingga **tidak ada** `IconButton` di subtree-nya. Kontrak dikoreksi ke diskriminator yang terukur:
+
+- Identitas lewat `chip.focusNode` **tidak bisa dipakai** — nilainya `null` saat pemanggil tidak menyediakannya, sehingga perbandingan identitas tidak membedakan kedua stop.
+- Tinggi **tidak bisa dipakai** — stop label (tinggi 38) lebih pendek daripada chip (tinggi 48), sama seperti stop hapus.
+- **Lebar bisa dipakai** — stop label membentang selebar chip (138.6), sedangkan stop hapus hanya kotak ikon 18x18 di dalamnya.
+
+Klasifikasi final memakai lebar dengan toleransi 0.5 px, ditambah anak `InputChip` sebagai penanda bahwa node itu berada di dalam chip. Ini dicatat sebagai fakta terukur, **bukan** defect produksi: tidak ada kode produksi yang diubah pada fase ini.
+
+### Verifikasi
+
+- `dart format` pada file kontrak: `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/world_logic/map_time_slider_focus_order_test.dart`: `No issues found!`.
+- `flutter test test/features/world_logic/map_time_slider_focus_order_test.dart`: `All tests passed!` (5 test), `EXIT=0`.
+- `flutter test test/features/world_logic/`: `All tests passed!` (+2260 test), `EXIT=0`.
+- Negative control: `key:map-time-key-prevKeyTick` dipindahkan satu posisi mundur dalam daftar ekspektasi. Hasil `+3 -2: Some tests failed.` dengan `EXIT=1`, dua test gagal, pesan `at location [8] is 'key:map-time-key-prevKeyTick' instead of 'chip:map-time-layer-chip-0|Tick 0'`. Backup dipulihkan dari `%LOCALAPPDATA%\Temp\map_time_slider_focus_order_test.bak.dart` (11.485 B), dicocokkan byte-wise identik, lalu file backup dihapus.
+- Scan CJK/Cyrillic pada test dan report: `none`.
+- Probe `test/features/world_logic/_probe_focus_test.dart` dihapus setelah kontrak dibuat. Probe `test/features/platform/presentation/_probe_focus_test.dart` dari fase kandidat juga dihapus.
+
+### Status
+
+**VERIFIED** untuk focus order `MapTimeSliderView` di 1536x1024 dan 390x844 pada codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; koreksi hanya pada ekspektasi kontrak yang salah asumsi terhadap bentuk affordance hapus chip. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -3201,12 +3201,13 @@
       "git_diff_check": "exit 0",
       "windows_build": "flutter build windows --debug exit 0, 18.1s",
       "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1, ONE failure, signature byte-identical to the 117.43-02 root cause (expected 73101e78..., actual c7a33055...) - not a regression",
-      "sha_three_way": "both slice files MATCH disk == committed (9b282cf7 / 32643665) after EOL normalisation",
+      "sha_three_way": "all four files MATCH disk == committed after LF normalisation: slice 9b282cf7 (gate) and 32643665 (test); docs a1a8871b (state) and eceee91d (ledger, LF-canonical). The raw disk sha of the ledger is 7a8461e8 because the file legitimately carries 70 pre-existing CRLF lines; git normalises them to LF in the blob, so the ledger quotes the LF-canonical sha, not the raw disk sha.",
       "working_tree": "93 -> 95 during slice -> 93 after commit; delta is exactly the 2 slice files",
       "probes": "1 temporary probe (117.43-13) deleted after every finding moved to the official suite; remaining=0",
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json unchanged, 0 bytes altered",
       "defect": "117.43-13 - twelve decode seams one level below the four evidence groups still reached their value through 'as T' / 'cast<T>()', which asserts a shape instead of checking it. 13 malformed shapes reached a TypeError and returned no check at all to the caller. Seams: rebuild_results list and per-element record, comparison method, comparison limits, per-element artifact digest, exit_code, the signed_artifacts group in measureSignedArtifacts, and log reachability. Because _rebuildFrom decodes BOTH rebuild records, one bad digest destroyed the whole provenance verdict. Absent fields stay null per 117.43-07.",
-      "discarded_probe_case": "a non-string map KEY is unreachable from jsonDecode (JSON keys are always strings), so that shape was dropped instead of being asserted as behaviour"
+      "discarded_probe_case": "a non-string map KEY is unreachable from jsonDecode (JSON keys are always strings), so that shape was dropped instead of being asserted as behaviour",
+      "ledger_eol_note": "docs/sprints/sprint-117-beta-validation.md: 70 CRLF lines before this slice, 70 after - the append was LF-only and the old lines are byte-identical. Quoting the raw disk sha here would read as a mismatch on the next run; quote the LF-canonical sha instead."
     },
     "defect_117_43_13": {
       "status": "FIXED-LOCAL",
@@ -3221,7 +3222,9 @@
       "verified_on": "2026-10-03",
       "commit": "4283ebd",
       "pushed": false
-    }
+    },
+    "ledger_sha256_lf_canonical": "eceee91d",
+    "state_sha256": "a1a8871b"
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",

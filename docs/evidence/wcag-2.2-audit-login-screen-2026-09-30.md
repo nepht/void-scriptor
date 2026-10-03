@@ -1604,6 +1604,62 @@ Status: VERIFIED untuk kontrak focus order pada fixture satu output di viewport 
 - Negative control: ekspektasi label kedua sengaja diubah menjadi `Use as Reference`; `flutter test` gagal dengan exit `1` dan output `Some tests failed`. Kontrak dipulihkan setelahnya.
 - Scope: hanya kontrak test dan evidence report; tidak ada perubahan production code.
 
+## 39. Fase 39 — Focus Order di Variant Inspector Screen (2.4.3)
+
+**Layar**: `lib/features/multiverse/presentation/variant_inspector_screen.dart` (Multiverse / Character Portability, Sprint 45)
+**Kontrak**: `test/features/multiverse/presentation/variant_inspector_screen_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 dpr 1.0, label diambil dari `Text` non-`Icon` pertama di subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, berhenti saat rect berulang.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `Arin Vale` | `Focus` (dropdown Karakter) | 37.0, 153.0, 246.0, 48.0 |
+| 1 | `Canon Prime · Arin Vale` | `Focus` (dropdown Universe Variant) | 37.0, 242.0, 246.0, 48.0 |
+| 2 | (repeats stop 0) | — | 37.0, 153.0, 246.0, 48.0 |
+
+Jumlah stop = **2**. `tester.takeException()` = `null`.
+
+### Kontrak yang dikunci
+
+- `hasLength(2)` — tepat dua stop fokus yang dapat dicapai lewat Tab.
+- Urutan label `['Arin Vale', 'Canon Prime · Arin Vale']` — dropdown Karakter dilemmas sebelum dropdown Universe Variant, sesuai urutan vertikal di UI.
+- Luas fokus non-nol pada setiap stop (`width > 0 && height > 0`).
+- Sisi kiri kedua dropdown sama (`stops[0].rect.left == stops[1].rect.left`) karena keduanya berada di kolom selector kiri pada layout lebar.
+- Fokus bergerak atas-ke-bawah di dalam kolom selector (`stops[0].rect.top < stops[1].rect.top`).
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Layar ini murni presentational + state lokal: tidak memakai Riverpod provider, tidak menyentuh database, jaringan, atau storage. Karena itu tidak ada fixture yang perlu diremock dan tidak ada item `DEFERRED` pada fase ini. Panel `Base` dan `Variant` (`_VariantPanel`) sengaja tidak dihitung: keduanya non-interaktif (hanya `Container` + `Text`), sehingga tidak memiliki node fokus sendiri.
+
+### Verifikasi
+
+```
+dart analyze test/features/multiverse/presentation/variant_inspector_screen_focus_order_test.dart \
+             lib/features/multiverse/presentation/variant_inspector_screen.dart
+=> No issues found!
+
+flutter test test/features/multiverse/presentation/variant_inspector_screen_focus_order_test.dart
+=> 00:01 +1: All tests passed!
+```
+
+**Negative control** (wajib, dilakukan pada commit yang sama): ekspektasi urutan label dibalik menjadi `['Canon Prime · Arin Vale', 'Arin Vale']` pada salinan cadangan di `%LOCALAPPDATA%\Temp`, lalu test dijalankan:
+
+```
+Expected: ['Canon Prime · Arin Vale', 'Arin Vale']
+  Actual: ['Arin Vale', 'Canon Prime · Arin Vale']
+00:01 +0 -1: Variant Inspector Screen follows the measured WCAG 2.4.3 focus order [E]
+00:01 +0 -1: Some tests failed.
+exit code 1
+```
+
+Salinan cadangan dipulihkan dan dihapus; isi `_expectedLabels` diverifikasi kembali persis seperti semula. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus, bukan sekadar lolos karena tidak ada ekspektasi.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `none` (karakter non-ASCII satu-satunya yang ada adalah U+00B7 MIDDLE DOT pada label `Canon Prime · Arin Vale`).
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

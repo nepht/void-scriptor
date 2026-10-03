@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T10:55:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 slice 117.43-15",
+  "updated_at": "2026-10-04T00:55:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 slice 117.43-16",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -199,14 +199,14 @@
   },
   "last_worker_run": {
     "job": "b0c2c7d744d9",
-    "run_at": "2026-10-03T06:35:00+07:00",
+    "run_at": "2026-10-04T00:55:00+07:00",
     "step": "117.43",
-    "slice": "defect 117.43-08 (per-artifact partition parsed and measured, never read)",
-    "commit": "d29f61d",
-    "evidence_sha256_committed": "6165ec55793ed8fdd2925f3b04cf5f19ab37c2bd7b2299d7c95429c076506cd1",
-    "evidence_note": "canonical sha is the committed blob via `git show fb12fde:<path>`; the on-disk file differs only by CRLF->LF normalisation under the `text: auto` git attribute (normalized disk == blob, git diff HEAD empty)",
-    "status": "PARTIAL-LOCAL",
-    "pushed": false
+    "slice": "defect 117.43-16 (rebuild_run restates facts no reader decoded)",
+    "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
+    "evidence_sha256_committed": "701c32a24b8cfe2da80aaafe1569eafe8bcbed53bf63e16adf42d079b59fde78",
+    "evidence_note": "canonical shas are the committed blobs via `git show cfcba26:<path>`; gate and test shas recorded in ledger and here, all four sides verified equal",
+    "focused_tests": "123/123 PASS exit 0",
+    "full_suite": "+9654 ~1 -11 EXIT=1 (11 pre-existing, unrelated)"
   },
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34.",
   "studio_hunt_2026_09_13_run289": {
@@ -3320,6 +3320,19 @@
       "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1 - ONE failure, signature IDENTICAL to pre-slice (expected 73101e78..., actual c7a33055...), root cause TODO-OPERATOR 117.43-02, not a slice regression",
       "three_sided_sha": "measured from git show 7267ebb:<path> AFTER commit per policy 2026-10-02 clause 1; disk sha256sum == blob for both files",
       "probes_remaining": 0
+    },
+    "latest_slice": {
+      "id": "117.43-16",
+      "defect": "rebuild_run group restated facts no lib/ reader ever decoded; pass published for documents contradicting their own records",
+      "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
+      "gate_sha256": "701c32a24b8cfe2da80aaafe1569eafe8bcbed53bf63e16adf42d079b59fde78",
+      "test_sha256": "00ff4b3c0ce7da53a65a9f7ce324001ea391e1bd6cd2c548312666f2901a71d4",
+      "sha_source": "hashed from committed blobs via `git show cfcba26:<path>` (policy clause 1), after commit",
+      "focused_tests": "123/123 PASS exit 0 (from 117, +6)",
+      "red": "121 pass / 2 fail, exactly the two new 117.43-16 tests",
+      "full_suite": "+9654 ~1 -11 EXIT=1 41:29; 11 failures audited one by one, none touch this slice (6x sprint_113 release-tree/lock drift = same root as TODO-OPERATOR 117.43-02, 1x login golden 0.01% pixel diff, 2x untracked a11y focus-order tests owned by the parallel worker, 2x gitignored scratch probes); gate 117 itself passed inside the full suite",
+      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0; roadmap_guard PASS post-commit",
+      "verified_on": "2026-10-04"
     }
   },
   "sprint_117_step_11744": {
@@ -3553,6 +3566,6 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "7267ebb",
-  "ahead": 14
+  "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
+  "ahead": 4
 }

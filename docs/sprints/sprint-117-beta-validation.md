@@ -225,3 +225,71 @@ commit, bukan dari working tree; disk == blob == MATCH untuk keduanya.
 menerima VERIFIED/COMPLETED sementara gate INCOMPLETE. TODO-OPERATOR 117.43-02 (pilihan (a) re-sign kandidat rc.1 lalu
 refresh checksum, atau (b) nyatakan drift sebagai limitasi GA diterima + persempit acceptance 117.43) BELUM diputuskan
 dan tetap blocker penutupan step.
+## 117.43-16 - `rebuild_run` harus sepakat dengan yang ia ringkas (2026-10-04)
+
+**DEFECT (arah sama: unmeasured-claim, ke-12).** Grup `rebuild_run` tingkat dokumen
+merestat fakta yang sudah lama diukur dari `rebuild_results` (jumlah siklus lewat
+`cycles`, durasi per rebuild lewat `rebuild_<label>_duration_seconds`) tetapi TIDAK
+ADA pembaca di `lib/` yang pernah mendekode-nya. Ia berada satu tingkat di atas
+`required_evidence`, itulah sebabnya reader slice 117.43-15 tidak pernah bisa
+menjangkaunya. Akibatnya gate menerbitkan `provenance_evaluation: pass` untuk
+dokumen yang membantah catatannya sendiri: siklus `cycles: 3` vs 2 rebuild, durasi
+klaim 900 dtk vs rekaman 122 dtk.
+
+**RED:** dua test baru `117.43-16 rebuild_run must agree with what it restates`
+-> **121 pass / 2 fail**, tepat dua test baru itu yang gagal, kontrol hijau.
+**GREEN:** fokus **123/123 exit 0** (dari 117, +6).
+
+**IMPLEMEN.** Panggilan `provenance_evaluation` kini menyerahkan
+`provenanceManifest['rebuild_run']` ke `_evaluateShippedProvenance`;
+`_rebuildRunAgrees` menolak: grup bukan objek, `cycles`/durasi ada tapi tak terbaca
+(fail-closed, selaras 117.43-13), jumlah siklus beda dengan jumlah record, durasi
+beda dengan jendela `finished-started` yang sudah diukur untuk record itu, serta
+label durasi yang tidak dikenal. `_durationAgrees`: null boleh (bukan klaim),
+bukan-int gagal, selain itu dibandingkan dengan jendela record. Absennya field dan
+durasi `null` TIDAK dianggap kontradiksi - dokumen tidak berjanji meringkas tiap
+rebuild, dan mengarang keharusan itu = mengarang acceptance.
+
+**JEBAKAN FIXTURE.** `withExtras` meng-append record tanpa menyegarkan
+`rebuild_run.cycles`, jadi delapan pemanggil yang menyuntir cacat justru ditolak
+karena count basi, bukan karena cacat yang diuji. Diperbaiki di helper
+(`cycles = records.length`) beserta komentar alasan.
+
+**GERBANG:** `dart format` 2 file `0 changed` exit 0 (diulang setelah pass pertama
+mengubah 1 file) -> `dart analyze` `No issues found!` exit 0 -> `git diff --check`
+exit 0 -> `flutter build windows --debug` exit 0 -> roadmap guard **PASS**
+(canonical 117, recommended 117.43, canonical_sha256 `b7ef2d35...`) ulang di HEAD
+sesudah slice.
+
+**REGRESI PENUH (LONG-TEST: satu perintah dijalankan sebagai background log, tidak
+diulang):** `flutter test --no-pub` -> **41:29, +9654 ~1 -11, EXIT=1**. Sebelas
+failure semuanya diaudit satu per satu dan TIDAK ADA yang menyangkut slice ini -
+test gate 117 sendiri LULUS di dalam suite penuh:
+1. 6 x keluarga `sprint_113` (113.38 x3, 113.39 x2, 113.40 x1) = drift tree rilis
+   vs live + lock drift: manifest provenance (`d150973`) mencatat
+   `pubspec.lock sha256 32e31fd3...` sedangkan lock live/committed = `c9a365e6...`
+   sejak `5c1ec0a build: upgrade Flutter dependency toolchain`; plus signature
+   `73101e78...` vs `c7a33055...` yang persis sama dengan sebelum slice. Akar sama
+   dengan TODO-OPERATOR 117.43-02, sudah direproduksi ulang solo exit 1.
+2. 1 x golden `login_screen` = pixel diff 0,01% / 113px, reproduksi solo juga
+   exit 1, tidak menyentuh gate 117.
+3. 2 x `content_capability_matrix` focus-order = file test UNTRACKED milik worker
+   a11y paralel yang sedang commit satu per satu, di luar slice ini.
+4. 2 x `scratch_*` = probe yang sudah di-.gitignore (`.gitignore:68`), sisa probe
+   lama, selalu gagal di suite penuh.
+Klasifikasi dijalankan ulang: 4 file gagal di-submit solo -> exit 1 dengan signature
+sama; 113.39 lock gagal ulang dengan live sha tetap `c9a365e6` (file tidak berubah).
+
+**SHA 4-SISI (dihitung SETELAH commit, dari artefak ter-commit):** gate
+`701c32a24b8cfe2da80aaafe1569eafe8bcbed53bf63e16adf42d079b59fde78` dan test `00ff4b3c0ce7da53a65a9f7ce324001ea391e1bd6cd2c548312666f2901a71d4` - `git show cfcba26:<path>` sha256 ==
+nilai di ledger ini == nilai di `ROADMAP_STATE.json`.
+
+**COMMIT:** `cfcba26` (2 path eksplisit). **PUSH:** tidak dilakukan run ini.
+**WORKING TREE:** >90 file dirty TETAP (milik worker lain) - tidak disentuh,
+commit memakai `--only` 2 path slice.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak
+ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate
+masih INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** - pilihan (a) re-sign
+kandidat rc.1 lalu refresh checksum, atau (b) nyatakan drift sebagai limitasi GA
+yang diterima + persempit acceptance 117.43. Cron tidak mengarang pilihan.

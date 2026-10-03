@@ -707,3 +707,89 @@ Tidak ada satupun meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah.
+
+
+### Slice 117.43-22 - `method` yang menyebut algoritma digest lain (defect ke-17 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Penomoran slice diverifikasi dulu sesuai jebakan `slice_numbering`: `117.43-01`..`-21` sudah
+terpakai di ledger DAN state, hunt ke-17 ini memakai `-22`. Nomor urut hunt (17) != nomor
+slice (22) karena repo sudah punya defect 117.43-14 yang bertabrakan dengan urutan hunt ke-14.
+
+Tidak ada WIP yang perlu diadopsi: kedua file slice KOSONG di `git status --porcelain`
+sebelum mutasi (HEAD awal `242d362`, ahead 31, dirty 94, 0 conflict marker, preflight CIM
+Win32_Process 0 proses dart/flutter_tester/msbuild/java). Snapshot recoverable di
+`cache/scratch/slice-117-43-22-20261004/` (`domain.dart.pre`, `test113.dart.pre`, plus
+`domain.dart.fixed` dan `domain.dart.head` untuk batas RED).
+
+**DEFECT:** `ArtifactComparison.method` adalah kalimat yang menyatakan **bagaimana** digest
+direkam, dan `isWellFormed` sudah memvalidasi bahwa setiap nilai di `artifactHashes` tepat 64
+hex - tetapi satu-satunya pemeriksaan atas `method` adalah `method == null || method!.trim()
+.isEmpty`, yaitu "apakah dia kosong?". Tidak ada pembaca yang menanyakan algoritmanya. Contohnya, sebuah method `MD5 over the 6 exe/dll artifacts` pada dokumen
+yang juga merekam 6 digest 64-hex: algoritma MD5 tidak mungkin menghasilkan nilai 64 karakter, jadi dokumen
+itu mendeskripsikan hashing yang tidak bisa ia buktikan - namun `missingEvidence` mengembalikan
+`[]`, `evaluate` mengembalikan `pass`, dan gate mencetak
+`artifact_comparison: NOT_BIT_IDENTICAL (6 artifact)` seolah hashing sudah diverifikasi.
+Verified secara struktural: method dokumen yang di-ship adalah
+`SHA-256 over the 6 exe/dll artifacts ...`, jadi dokumen jujur tidak tersentuh.
+
+**RED (independen, exit 1, TEPAT 1 test baru gagal):** empat method yang menyebut
+algoritma lain (MD5, SHA-1, SHA-512, crc32) pada perbandingan non-identitas yang jujur
+(lima batas terdokumentasi) -> `isWellFormed` `true` pada keempatnya. Dua kontrol hijau:
+(1) kedua ejaan SHA-256 yang dipakai dokumen (`SHA-256 over exe+dll set`, `sha256`) tetap
+well formed; (2) method yang TIDAK menyebut algoritma apa pun (`cold rebuilds, cache
+dropped`) tidak punya klaim untuk dikontradiksi (aturan non-claim 117.43-07/11/21). Kontradiksi
+yang sama harus sampai ke `missingEvidence` berisi `artifact_comparison`, bukan hanya ke objek
+perbandingan.
+
+**BATAS RED KEDUA (wajib untuk defect keluarga ini):** implementasi dikembalikan ke HEAD
+sementara (`git show HEAD:<path>`, sha `ced490ec...` == sha HEAD) sementara test tetap ada
+-> **mengulang TEPAT 1 kegagalan yang sama di baris yang sama (322, MD5) tanpa compile
+error**, membuktikan kegagalan milik pembaca baru dan bukan efek samping. Restore diverifikasi
+`cmp` byte-identik terhadap snapshot `domain.dart.fixed`.
+
+**JEBAKAN YANG TERJADI DI TENGAH SLICE (dicatat karena hampir salah hijau):** helper pertama
+hanya menokenisasi, sehingga `SHA-1` terbaca sebagai token `sha` + `1` dan **tidak** tertangkap
+- test hijau untuk MD5 tapi masih gagal untuk SHA-1 pada baris yang sama. Diperbaiki dengan
+mengg-fold bentuk bernomor (`sha[\s_-]*(\d+)` -> `sha\1`) SEBELUM tokenisasi; trailing digit
+penting karena `SHA-512` harus tetap berbeda dari keluarga SHA-256 dan justru ikut ditolak.
+Kontrol (1) tetap hijau sesudahnya, jadi fold tidak melebar ke SHA-256.
+
+**GREEN 7/7 pada file 113 (dari 6, +1 test baru):** test baru hijau; 2 kegagalan 113.39
+proven pre-existing (lihat regresi).
+
+**GATES:** `dart format` 2 file `Formatted 2 files (0 changed)` exit 0, lalu
+`dart format --output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten, tanpa perlu
+menulis ulang); `dart analyze` 2 file **No issues found!** exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 **24,7 dtk**,
+`Built build\windows\x64\runner\Debug\void_scriptor.exe`;
+`dart run tool/roadmap_guard.dart` PASS pre dan post slice,
+`canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`
+TIDAK berubah, `recommended_step 117.43`.
+
+**SHA 2-SISI dari artefak TER-COMMIT `git show 4b65d46:<path>`** (pathspec forward slash;
+sesuai klausul 1+2 policy 2026-10-02): domain
+`47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff` (34375 B), test
+`444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13` (21089 B) -
+`disk == git show <commit>:<path>` untuk keduanya, kedua sisi LF-murni (0 CRLF).
+
+**COMMIT:** `4b65d46` (2 path eksplisit, 157 insertions / 1 deletion). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +143 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **136/136 LULUS**
+seluruhnya (termasuk seluruh keluarga 117.43-14..-22), 2 kegagalan **keduanya 113.39
+pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
+`dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
+lock `c9a365e6…`, diverifikasi ulang di run ini: `sha256sum pubspec.lock` =
+`c9a365e6402b1128199dc3915eb365f4a6cacfb13ac70fbb323582dcee8386e4`, file tidak berubah) dan
+`signed release artifact from 113.38 remains intact` (expected `73101e78…`, actual
+`c7a33055…`). **Tidak ada satupun meng-import gate 117.** **Tidak ada klaim suite penuh**
+(jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file terarah ini, bukan seluruh repo.
+Manifest 113.39 dan `pubspec.lock` TIDAK disentuh run ini.
+
+**KEADAAN REPOSITORI:** dirty 94 -> 98 selama slice, **96** sesudah commit (selisih tepat
+2 file slice). HEAD masuk `242d362 -> 4b65d46`, ahead 31 -> 32.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

@@ -2203,6 +2203,78 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada AI Provider Workspace Screen di konfigurasi probe ini (store memori + viewport desktop). Cakupan audit focus-order layar: **36 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 35 sebelum commit fase ini, + kontrak baru ini = 36. Kontrak Content Capability Matrix Screen masih untracked dan tidak dihitung (catatan fase 41/42/43/45 tetap berlaku).
 
+## 47. Fase 47 — Focus Order di Advanced AI Studio Screen (2.4.3)
+
+**Layar**: `lib/features/ai/presentation/advanced_ai_studio_screen.dart` (Advanced AI Studio, kelas `AdvancedAiStudioScreen`)
+**Kontrak**: `test/features/ai/presentation/advanced_ai_studio_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam subtree fokus (tanpa fallback `ValueKey`); `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 10 Tab). Layar berdiri tanpa database/network: dua callback `onOpenImageGenerator`/`onOpenVideoGenerator` di-override noop, tidak ada platform channel yang tersentuh.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `Image Generator` | `OutlinedButton` Image Generator | 12.0, 72.0, 277.5, 40.0 |
+| 1 | `Video Generator` | `OutlinedButton` Video Generator | 299.5, 72.0, 277.5, 40.0 |
+| 2 | `null` (tidak ada `Text` berdata) | `Focus` di dalam `EditableText` (TextField prompt) | 28.0, 148.0, 1480.0, 24.0 |
+| 3 | `Image Generator` (ulang rect stop 0 — CYCLE complete) | — | 12.0, 72.0, 277.5, 40.0 |
+
+Jumlah stop = **3**. `tester.takeException()` = `null`.
+
+Pembentukan urutan Tab:
+
+- Toolbar atas memuat dua `OutlinedButton.icon` (`Image Generator`, `Video Generator`) — kiri-ke-kanan: `left` 12.0 → 299.5 dengan `top` sama 72.0, jarak tombol 10 px gutter.
+- Field prompt (`TextField`) berada di bawah toolbar (`top` 148.0 > 72.0, atas-ke-bawah) dan memulai setelah kolom tombol pertama (`left` 28.0 > 12.0); lebarnya 1480 px mengisi viewport.
+- Fokus stop 2 berada pada `Focus` internal `EditableText`; subtree-nya tidak berisi `Text` dengan data sehingga label `null` — identitas stop dikunci dengan keberadaan tepat satu `EditableText` di dalam `find.byType(TextField)`, bukan dengan teks karangan.
+- Setelah TextField, Tab wrap kembali ke rect stop 0 — siklus utuh.
+
+### Kontrak yang dikunci
+
+- `stops` `hasLength(3)` — jumlah stop disetel dengan tiga elemen focusable di state default.
+- Urutan label `['Image Generator', 'Video Generator', null]` — urutan Tab nyata dari probe.
+- Area fokus non-nol (`width > 0 && height > 0`) untuk ketiga stop.
+- Kiri-ke-kanan pada baris yang sama: `stops[1].left > stops[0].left` dan `|stops[1].top - stops[0].top| <= 1.0` (via `closeTo`).
+- Atas-ke-bawah: `stops[2].top > stops[1].top`, dan `stops[2].left > stops[0].left` (TextField mulai setelah kolom tombol pertama).
+- `EditableText` di dalam `TextField` = 1 widget (identitas stop TextField).
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Tidak ada perubahan kode produksi pada fase ini: probe tidak menemukan defect urutan (ketiga elemen interaktif ikut traversal, tidak ada area nol, urutan mengikuti layout visual toolbar lalu field). File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format test/features/ai/presentation/advanced_ai_studio_focus_order_test.dart
+=> Formatted 1 file (0 changed) in 0.01 seconds.   (exit 0)
+
+dart analyze test/features/ai/presentation/advanced_ai_studio_focus_order_test.dart
+=> No issues found!   (exit 0)
+
+flutter test test/features/ai/presentation/advanced_ai_studio_focus_order_test.dart
+=> 00:01 +1: All tests passed!   (exit 0)
+
+flutter test test/features/ai/   (gate)
+=> 00:49 +172: All tests passed!   (exit 0)
+```
+
+**Negative control** (wajib): ekspektasi `expect(stops[0].label, 'Image Generator')` pada salinan cadangan di `%LOCALAPPDATA%\Temp` diubah sementara menjadi `'Video Generator'`, lalu kontrak dijalankan:
+
+```
+Actual: 'Image Generator'
+This was caught by the test expectation on the following line:
+  .../advanced_ai_studio_focus_order_test.dart line 66
+00:01 +0 -1: Advanced AI Studio: urutan fokus Tab stabil, kiri-ke-kanan lalu ke bawah [E]
+00:01 +0 -1: Some tests failed.
+```
+
+Salinan cadangan dipulihkan lalu dihapus (ekspektasi asli kembali terverifikasi lewat grep: 1 hit) dan kontrak diverifikasi ulang lewat gate `+172: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikuti urutan focus order (1 test gagal saat label stop pertama diganti), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Advanced AI Studio Screen di konfigurasi probe ini (viewport desktop 1536x1024). Cakupan audit focus-order layar: **37 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 36 sebelum commit fase ini, + kontrak baru ini = 37.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

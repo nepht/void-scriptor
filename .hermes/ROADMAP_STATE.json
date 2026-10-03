@@ -3158,7 +3158,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-04T05:05:00+07:00",
+    "updated_at": "2026-10-04T06:05:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3180,21 +3180,21 @@
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
     "defects_fixed_count": 13,
-    "slice_commit": "3981e2d",
+    "slice_commit": "8c3a5f8",
     "last_slice_files": [
       {
-        "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
-        "sha256": "f5c34052dab2ba583d44d8e382eb55ac34830f8b74a495cc855b5b715ca088b4",
-        "sha256_lf_canonical": "f5c34052",
-        "source": "git show 7267ebb:<path>",
-        "bytes": 26727
+        "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
+        "sha256": "ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239",
+        "sha256_lf_canonical": "ae16a8bc",
+        "source": "git show 8c3a5f8:lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
+        "bytes": 76315
       },
       {
         "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "sha256": "5ce9b734d54921f6204f95be1af4280a1a0ac933d2c6737580d6bfed219cae33",
-        "sha256_lf_canonical": "5ce9b734",
-        "source": "git show 7267ebb:<path>",
-        "bytes": 125493
+        "sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
+        "sha256_lf_canonical": "b7d80b51",
+        "source": "git show 8c3a5f8:test/release/sprint_117_ga_artifact_reproducibility_test.dart",
+        "bytes": 153103
       }
     ],
     "gates_reverified_run9_2026_10_03": {
@@ -3334,16 +3334,16 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "id": "117.43-19",
-      "defect": "document-level `version` restated facts no lib/ reader ever decoded; deriveApplicationVersion() shipped but never called; pass published for documents naming an unreadable version",
-      "commit": "3981e2d",
-      "gate_sha256": "9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d",
-      "test_sha256": "cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5",
-      "sha_source": "hashed from committed blobs via `git show 3981e2d:<path>` (policy clause 1), after commit",
-      "focused_tests": "133/133 PASS exit 0 (from 130, +3)",
-      "red": "exactly 1 failing test, 5/5 unreadable shapes wrongly pass, 2 controls green",
-      "full_suite": "NOT CLAIMED - an argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed 2-file regression is asserted (+138 -2)",
-      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0 in 25s; roadmap_guard PASS post-commit",
+      "id": "117.43-20",
+      "defect": "document-level `canonical_step` restates WHICH step the evidence belongs to and no lib/ reader ever decoded it; pass published for a manifest naming another step or holding the field unreadably",
+      "commit": "8c3a5f8",
+      "gate_sha256": "ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239",
+      "test_sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
+      "sha_source": "hashed from committed blobs via `git show 8c3a5f8:<path>` (policy clause 1), after commit",
+      "focused_tests": "136/136 PASS exit 0 (from 133, +3)",
+      "red": "exactly 1 failing test, 7/7 impossible shapes wrongly pass, 2 controls green; second RED boundary (gate reverted to HEAD alone) reproduced exactly 1 failure with no compile error",
+      "full_suite": "NOT CLAIMED - an argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed 2-file regression is asserted (+141 -2)",
+      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0 in 21.8s; roadmap_guard PASS pre-slice",
       "verified_on": "2026-10-04"
     },
     "defect_117_43_19": {
@@ -3362,6 +3362,24 @@
       "gate_sha256": "9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d",
       "test_sha256": "cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5",
       "sha_source": "hashed from committed blobs via `git show 3981e2d:<path>` (policy 2026-10-02 clause 1), after commit; both sides LF-pure (0 CRLF), disk == blob",
+      "verified_on": "2026-10-04"
+    },
+    "defect_117_43_20": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-20",
+      "hunt": "unmeasured-claim / fail-open, fifteenth slice of the family",
+      "family_closed_so_far": 15,
+      "shape": "document-level `canonical_step` had no reader in lib/ at all: the gate opens the 113.39 provenance manifest and published provenance_evaluation: pass without ever asking whether the file claims to BE the 113.39 document",
+      "symptom": "the provenance document names WHICH step the evidence belongs to (canonical_step: 113.39) on the same document level the header (117.43-17), the limits group (117.43-18) and the version (117.43-19) already opened. Nothing decoded it, so a document naming 113.40 or 117.43, or holding the field as an integer, list, object, blank or whitespace-only string, received exactly the same pass as the shipped document. Not a design choice: sibling GA gates in the same directory already refuse that shape (document['canonical_step'] != canonicalStep), verified by grep in this slice.",
+      "empirical_before_fix": "RED re-verified independently against the unmodified gate: exit 1 with EXACTLY 1 failing test, all 7 impossible shapes reported pass, 2 controls green. Second RED boundary (gate temporarily reverted to HEAD while the tests stayed) reproduced the SAME exactly 1 failure with no compile error, proving the failure belongs to the new reader and not to a side effect. Absence of a reader was proven by dumping the manifest keys and matching each against gate string literals - not by assumption.",
+      "bounds": "identical in shape to 117.43-16/-17/-18/-19, so no acceptance was invented: a present canonical_step that is not a non-blank string, or that names a step other than provenanceStep (113.39), is unevaluable (fail-closed); an absent key and an explicit null stay non-claims (117.43-07); only the document's own claim about which step it is compared, which is precisely what the field asserts, so no new acceptance is added.",
+      "non_claims_confirmed": "`title` and `signed_snapshot_restore` remain deliberately unmeasured prose outside acceptance (bound by 117.43-16/-17/-18) and were NOT touched in this slice. `canonical_step` was the only genuinely unmeasured document-level claim.",
+      "gates": "focused suite 136/136 exit 0 (was 133, +3); format 0 changed idempotent; analyze No issues found! exit 0 on 3 files; git diff --check 0; flutter build windows --debug exit 0 in 21.8s; roadmap_guard PASS pre-slice, canonical_sha256 b7ef2d35... unchanged, recommended_step 117.43",
+      "regression": "directed 2-file +141 -2 (slice 117 = 136/136 pass); 2 FAIL pre-existing 113.39, signatures reproduced solo and unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02; pubspec.lock and the provenance manifest were not touched by this run (porcelain empty for both). No full-suite claim per full_suite_trap.",
+      "slice_commit": "8c3a5f8",
+      "gate_sha256": "ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239",
+      "test_sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
+      "sha_source": "hashed from committed blobs via `git show 8c3a5f8:<path>` (policy 2026-10-02 clause 1), after commit; both sides LF-pure (0 CRLF), disk == blob",
       "verified_on": "2026-10-04"
     }
   },

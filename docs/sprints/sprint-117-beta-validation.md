@@ -552,3 +552,87 @@ jadi invarian satu-proses-Flutter terjaga tanpa perlu membersihkan yatim.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah - pilihan (a) re-sign kandidat
 rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift
 sebagai limitasi GA yang diterima + persempit acceptance 117.43. Cron tidak mengarang pilihan.
+
+### Slice 117.43-20 - `canonical_step` dokumen level yang tidak pernah dibuka (defect ke-15 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Tidak ada WIP yang perlu diadopsi: `git status --porcelain` untuk kedua file slice KOSONG
+sebelum mutasi, dan SHA pra-mutasi **PERSIS sama** dengan ledger 117.43-19 - gate
+`9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d`, test
+`cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5`. Snapshot recoverable di
+`cache/scratch/slice-117-43-20-20261004/` (`gate.dart.pre`/`test.dart.pre`, plus
+`gate.dart.fixed` untuk restore byte-identik saat prove batas RED). Dirty 96 saat snapshot.
+
+**DEFECT:** `canonical_step` adalah field level dokumen yang tersisa yang merestatement
+**step mana** bukti ini milik, dan **TIDAK ADA pembaca di `lib/`**. Gate membuka
+`Sprint117GaPackagingContract.provenanceManifestPath` - dokumen 113.39 - lalu menerbitkan
+`provenance_evaluation: pass` dari isi file itu **tanpa pernah bertanya apakah file itu
+mengaku sebagai dokumen 113.39**. Manifest yang menyebut `113.40`, atau `117.43`, atau
+menyimpan field itu sebagai angka, mendapat `pass` yang sama persis dengan manifest yang
+di-ship. Ini bukan pilihan desain: gate GA sekelas di direktori yang sama sudah menolak hal
+persis itu lewat `document['canonical_step'] != canonicalStep` (contoh yang terverifikasi
+grep di slice ini: `baseline_acceptance_thresholds.dart`,
+`beta_reader_spoiler_validation.dart`, `feature_flag_dependency_validation.dart`,
+`ga_entry_gate.dart`, `incident_stop_ship_protocol.dart`, `migration_restore_validation.dart`,
+`observation_charter.dart`, `platform_validation_matrix.dart`, `post_release_entry_gate.dart`,
+`privacy_safe_evidence_plan.dart`).
+
+Bukti ketiadaan pembaca (independen, bukan inferred): dump seluruh kunci distinct manifest
+lalu pencocokan tiap kunci ke literal string di gate - setelah 117.43-19 membaca `version`,
+tinggal `canonical_step`, `title`, dan `signed_snapshot_restore` tanpa pembaca. Dua terakhir
+**sengaja** dibebaskan sebagai prose di luar acceptance oleh 117.43-16/17/18 dan **TIDAK**
+disentuh slice ini; `canonical_step` satu-satunya yang benar-benar belum diukur.
+
+**BATAS (tidak mengarang acceptance):** bentuk identik dengan 117.43-16/-17/-18/-19. Field
+yang HADIR dan (a) tidak terbaca sebagai string non-blank, atau (b) menyatakan nama step lain
+dari `provenanceStep` (`113.39`) = unevaluable (fail-closed). Key absen dan `null` eksplisit
+tetap non-klaim (117.43-07). Yang dibandingkan hanya "step mana dokumen ini mengaku" - persis
+klaim field itu sendiri, jadi tidak ada acceptance baru. `title` tetap tidak diukur.
+
+**RED (independen, gate belum diubah):** exit 1, **TEPAT 1** test gagal, 2 kontrol hijau.
+**7/7 kasus mustahil SEMUA `pass`**: integer, list, object, string blank, string
+whitespace-only, `113.40`, `117.43`. Batas RED kedua (gate dikembalikan ke HEAD sementara,
+test tetap ada) mengulang **TEPAT 1** kegagalan yang sama tanpa compile error - jadi
+kegagalan itu milik reader baru, bukan efek samping.
+
+**GREEN:** `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart` ->
+**136/136 exit 0** (dari 133, +3). Ketiga test slice 117.43-20 hijau.
+
+**GERBANG:** `dart format` 2 file - apply lalu **0 changed** idempotent exit 0;
+`dart analyze` 3 file **No issues found!** exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 **21,8 dtk**,
+`Built build\windows\x64\runner\Debug\void_scriptor.exe`; `dart run tool/roadmap_guard.dart`
+PASS pre-slice, `canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`
+TIDAK berubah, `recommended_step 117.43`.
+
+**SHA (2-sisi, dari artefak TER-COMMIT sesuai klausul 1+2 policy 2026-10-02):** gate
+`ae16a8bcef606f1fbb7fd6178c55683c4ce7b98bed0d2d53a84c25c8d0766239`, test
+`b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969` -
+`disk == git show 8c3a5f8:<path>` untuk keduanya, dan **kedua sisi LF-murni** (0 CRLF).
+(Pathspec forward slash wajib; bentuk backslash pernah mengembalikan 0 byte diam-diam.)
+
+**REGRESI TERARIH (2 file, exit 1):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart` -> **+141 -2**.
+- **Slice 117 = 136/136 LULUS** di committed HEAD (termasuk ketiga test 117.43-20).
+- **2 GAGAL, keduanya `113.39`, signature PERSIS SAMA** dengan run sebelumnya, dan
+  **direproduksi ulang SOLO** (hanya file 113.39 -> exit 1, `+5 -2`):
+  `dependency lock evidence matches the live lockfile` (expected `c9a365e6…` dari lock live;
+  `sha256sum pubspec.lock` = `c9a365e6…` diverifikasi ulang di run ini, file tidak berubah;
+  actual record manifest `32e31fd3…`) dan
+  `signed release artifact from 113.38 remains intact` (expected `73101e78…`, actual
+  `c7a33055…`). Keduanya **pre-existing**, akar `TODO-OPERATOR 117.43-02`. Manifest dan lock
+  **tidak disentuh** run ini (`git status --porcelain` untuk keduanya kosong).
+- **Tidak ada klaim suite penuh.** Sesuai jebakan `full_suite_trap` di notepad,
+  `flutter test` tanpa argumen tidak menghasilkan ringkasan tepercaya; yang sah hanyalah
+  regresi terarah di atas. `-2` itu **keduanya 113.39**, bukan hitungan kegagalan seluruh repo.
+
+**COMMIT:** `8c3a5f8` (2 path eksplisit, 175 insertions, insert-only). **PUSH:** tidak.
+
+**KEADAAN REPOSITORI:** dirty 96 -> 98 selama slice, **96** sesudah commit (selisih tepat
+2 file slice). Manifest 117.43 TIDAK diubah. Tidak ada proses Flutter/Dart/MSBuild/java lain
+yang berjalan saat preflight (CIM Win32_Process: 0 proses), jadi invarian satu-proses-Flutter
+terjaga tanpa perlu membersihkan yatim. HEAD masuk `afffadc -> 8c3a5f8`, ahead 21 -> 23.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup karena
+`_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

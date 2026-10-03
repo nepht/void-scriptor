@@ -83,7 +83,9 @@ void main() {
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(const MaterialApp(home: UniverseSwitcherScreen()));
+      await tester.pumpWidget(
+        const MaterialApp(home: UniverseSwitcherScreen()),
+      );
       await tester.pumpAndSettle();
 
       final seen = <String>{};
@@ -111,25 +113,43 @@ void main() {
       }
 
       // Empat tile adalah stop 1..4 (stop 0 = dropdown topbar).
-      expect(kinds.length, 5, reason: 'harus 5 stop lalu LOOP, dapat ${kinds.length}');
-      expect(kinds.first, 'dropdown',
-          reason: 'stop pertama harus dropdown universe di topbar');
-      expect(kinds.sublist(1), <String>['ink', 'ink', 'ink', 'ink'],
-          reason: 'empat tile berikutnya harus InkWell');
+      expect(
+        kinds.length,
+        5,
+        reason: 'harus 5 stop lalu LOOP, dapat ${kinds.length}',
+      );
+      expect(
+        kinds.first,
+        'dropdown',
+        reason: 'stop pertama harus dropdown universe di topbar',
+      );
+      expect(kinds.sublist(1), <String>[
+        'ink',
+        'ink',
+        'ink',
+        'ink',
+      ], reason: 'empat tile berikutnya harus InkWell');
 
       // Urutan baca atas ke bawah: top monoton naik.
       for (var i = 1; i < tops.length; i++) {
-        expect(tops[i], greaterThan(tops[i - 1]),
-            reason: 'stop $i harus di bawah stop ${i - 1}');
+        expect(
+          tops[i],
+          greaterThan(tops[i - 1]),
+          reason: 'stop $i harus di bawah stop ${i - 1}',
+        );
       }
     });
 
-    testWidgets('2. empat tile terurut sesuai deklarasi _universes', (tester) async {
+    testWidgets('2. empat tile terurut sesuai deklarasi _universes', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1536, 1024);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(const MaterialApp(home: UniverseSwitcherScreen()));
+      await tester.pumpWidget(
+        const MaterialApp(home: UniverseSwitcherScreen()),
+      );
       await tester.pumpAndSettle();
 
       final labels = <String>[];
@@ -176,16 +196,23 @@ void main() {
         labels.add(label);
       }
 
-      expect(labels, _universeOrder,
-          reason: 'urutan tile harus persis sama dengan deklarasi _universes');
+      expect(
+        labels,
+        _universeOrder,
+        reason: 'urutan tile harus persis sama dengan deklarasi _universes',
+      );
     });
 
-    testWidgets('3. empat tile berbaris vertikal, satu per baris', (tester) async {
+    testWidgets('3. empat tile berbaris vertikal, satu per baris', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1536, 1024);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(const MaterialApp(home: UniverseSwitcherScreen()));
+      await tester.pumpWidget(
+        const MaterialApp(home: UniverseSwitcherScreen()),
+      );
       await tester.pumpAndSettle();
 
       final tops = <double>[];
@@ -218,17 +245,24 @@ void main() {
         expect(l, lefts.first, reason: 'semua tile harus satu kolom');
       }
       for (var i = 1; i < tops.length; i++) {
-        expect(tops[i], greaterThan(tops[i - 1]),
-            reason: 'tile harus satu baris (top naik monoton)');
+        expect(
+          tops[i],
+          greaterThan(tops[i - 1]),
+          reason: 'tile harus satu baris (top naik monoton)',
+        );
       }
     });
 
-    testWidgets('4. dropdown universe muncul sebelum semua tile', (tester) async {
+    testWidgets('4. dropdown universe muncul sebelum semua tile', (
+      tester,
+    ) async {
       tester.view.physicalSize = const Size(1536, 1024);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(const MaterialApp(home: UniverseSwitcherScreen()));
+      await tester.pumpWidget(
+        const MaterialApp(home: UniverseSwitcherScreen()),
+      );
       await tester.pumpAndSettle();
 
       var dropdownTop = 0.0;
@@ -260,8 +294,11 @@ void main() {
       }
 
       expect(sawDropdown, isTrue, reason: 'dropdown harus muncul di traversal');
-      expect(dropdownTop, lessThan(firstTileTop),
-          reason: 'dropdown harus di atas tile pertama (stop pertama)');
+      expect(
+        dropdownTop,
+        lessThan(firstTileTop),
+        reason: 'dropdown harus di atas tile pertama (stop pertama)',
+      );
     });
   });
 }

@@ -164,7 +164,9 @@ Future<void> _pumpWizard(WidgetTester tester) async {
   tester.view.devicePixelRatio = 1.0;
   addTearDown(tester.view.reset);
 
-  await tester.pumpWidget(const MaterialApp(home: CreateUniverseWizardScreen()));
+  await tester.pumpWidget(
+    const MaterialApp(home: CreateUniverseWizardScreen()),
+  );
   await tester.pumpAndSettle();
 }
 
@@ -181,77 +183,116 @@ void main() {
       expect(stops.length, 4, reason: 'harus 4 stop lalu kembali ke close');
 
       // Stop 0 = IconButton close di AppBar (top paling atas).
-      expect(stops[0].rect.top, lessThan(stops[1].rect.top),
-          reason: 'close di AppBar harus stop pertama (top paling kecil)');
+      expect(
+        stops[0].rect.top,
+        lessThan(stops[1].rect.top),
+        reason: 'close di AppBar harus stop pertama (top paling kecil)',
+      );
 
       // Stop 1 = TextField (tengah layar).
       expect(stops[1].rect.top, greaterThan(stops[0].rect.top));
-      expect(stops[1].rect.top, lessThan(stops[2].rect.top),
-          reason: 'field harus di atas footer');
+      expect(
+        stops[1].rect.top,
+        lessThan(stops[2].rect.top),
+        reason: 'field harus di atas footer',
+      );
 
       // Stop 2 = Cancel, stop 3 = Next: footer satu baris, kiri ke kanan.
-      expect(stops[2].rect.top, stops[3].rect.top,
-          reason: 'Cancel dan Next harus satu baris (top sama)');
-      expect(stops[2].rect.left, lessThan(stops[3].rect.left),
-          reason: 'Cancel harus di kiri Next');
+      expect(
+        stops[2].rect.top,
+        stops[3].rect.top,
+        reason: 'Cancel dan Next harus satu baris (top sama)',
+      );
+      expect(
+        stops[2].rect.left,
+        lessThan(stops[3].rect.left),
+        reason: 'Cancel harus di kiri Next',
+      );
 
       // Next adalah tombol utama (FilledButton) dan berada paling kanan.
       expect(stops[3].label, 'Next', reason: 'tombol utama harus "Next"');
     });
 
-    testWidgets('2. langkah Type: delapan chip kiri ke kanan sesuai _universeTypes',
-        (tester) async {
-      await _pumpWizard(tester);
+    testWidgets(
+      '2. langkah Type: delapan chip kiri ke kanan sesuai _universeTypes',
+      (tester) async {
+        await _pumpWizard(tester);
 
-      // Pindah ke langkah Type.
-      final next = find.text('Next');
-      expect(next, findsOneWidget);
-      await tester.tap(next);
-      await tester.pumpAndSettle();
+        // Pindah ke langkah Type.
+        final next = find.text('Next');
+        expect(next, findsOneWidget);
+        await tester.tap(next);
+        await tester.pumpAndSettle();
 
-      final stops = await _stops(tester, maxTabs: 20);
+        final stops = await _stops(tester, maxTabs: 20);
 
-      // 8 chip + Cancel + Next + close = 11 stop lalu LOOP. Setelah
-      // normalisasi, close (top terkecil) jadi stop 0.
-      expect(stops.length, 11,
-          reason: 'harus 8 chip + 2 footer + close = 11 stop, dapat ${stops.length}');
+        // 8 chip + Cancel + Next + close = 11 stop lalu LOOP. Setelah
+        // normalisasi, close (top terkecil) jadi stop 0.
+        expect(
+          stops.length,
+          11,
+          reason:
+              'harus 8 chip + 2 footer + close = 11 stop, dapat ${stops.length}',
+        );
 
-      // Stop 0 = IconButton close di AppBar.
-      expect(stops[0].rect.top, lessThan(stops[1].rect.top),
-          reason: 'close di AppBar harus stop pertama');
+        // Stop 0 = IconButton close di AppBar.
+        expect(
+          stops[0].rect.top,
+          lessThan(stops[1].rect.top),
+          reason: 'close di AppBar harus stop pertama',
+        );
 
-      // Chip 1..8 semua satu baris (top sama) dan kiri ke kanan.
-      final chips = stops.sublist(1, 9);
-      final expectedTypes = <String>[
-        'Canon',
-        'Alternate',
-        'What If',
-        'Spin-Off',
-        'AU',
-        'Crossover',
-        'Parallel',
-        'Dream',
-      ];
-      expect(chips.map((s) => s.label).toList(), expectedTypes,
-          reason: 'urutan chip harus sama dengan deklarasi _universeTypes');
-      for (var i = 1; i < chips.length; i++) {
-        expect(chips[i].rect.top, chips[0].rect.top,
-            reason: 'semua chip harus satu baris');
-        expect(chips[i].rect.left, greaterThan(chips[i - 1].rect.left),
-            reason: 'chip harus urut kiri ke kanan');
-      }
+        // Chip 1..8 semua satu baris (top sama) dan kiri ke kanan.
+        final chips = stops.sublist(1, 9);
+        final expectedTypes = <String>[
+          'Canon',
+          'Alternate',
+          'What If',
+          'Spin-Off',
+          'AU',
+          'Crossover',
+          'Parallel',
+          'Dream',
+        ];
+        expect(
+          chips.map((s) => s.label).toList(),
+          expectedTypes,
+          reason: 'urutan chip harus sama dengan deklarasi _universeTypes',
+        );
+        for (var i = 1; i < chips.length; i++) {
+          expect(
+            chips[i].rect.top,
+            chips[0].rect.top,
+            reason: 'semua chip harus satu baris',
+          );
+          expect(
+            chips[i].rect.left,
+            greaterThan(chips[i - 1].rect.left),
+            reason: 'chip harus urut kiri ke kanan',
+          );
+        }
 
-      // Footer Cancel lalu Next, keduanya di bawah chip.
-      final cancel = stops[9];
-      final nextBtn = stops[10];
-      expect(cancel.rect.top, greaterThan(chips[7].rect.top),
-          reason: 'footer harus di bawah semua chip');
-      expect(nextBtn.rect.top, cancel.rect.top,
-          reason: 'Cancel dan Next satu baris');
-      expect(nextBtn.rect.left, greaterThan(cancel.rect.left),
-          reason: 'Next harus di kanan Cancel');
-      expect(nextBtn.label, 'Next', reason: 'tombol utama di langkah Type');
-    });
+        // Footer Cancel lalu Next, keduanya di bawah chip.
+        final cancel = stops[9];
+        final nextBtn = stops[10];
+        expect(
+          cancel.rect.top,
+          greaterThan(chips[7].rect.top),
+          reason: 'footer harus di bawah semua chip',
+        );
+        expect(
+          nextBtn.rect.top,
+          cancel.rect.top,
+          reason: 'Cancel dan Next satu baris',
+        );
+        expect(
+          nextBtn.rect.left,
+          greaterThan(cancel.rect.left),
+          reason: 'Next harus di kanan Cancel',
+        );
+        expect(nextBtn.label, 'Next', reason: 'tombol utama di langkah Type');
+      },
+    );
 
     testWidgets('3. langkah Confirm: hanya footer, tombol utama "Create"', (
       tester,
@@ -272,17 +313,29 @@ void main() {
       expect(stops.length, 3, reason: 'harus 3 stop, dapat ${stops.length}');
 
       // Stop 0 = IconButton close di AppBar, di atas footer.
-      expect(stops[0].rect.top, lessThan(stops[1].rect.top),
-          reason: 'close di AppBar harus stop pertama');
+      expect(
+        stops[0].rect.top,
+        lessThan(stops[1].rect.top),
+        reason: 'close di AppBar harus stop pertama',
+      );
 
       // Footer Cancel lalu Create, satu baris, kiri ke kanan.
       expect(stops[1].label, 'Cancel');
-      expect(stops[2].label, 'Create',
-          reason: 'tombol utama berubah jadi "Create" di langkah terakhir');
-      expect(stops[1].rect.top, stops[2].rect.top,
-          reason: 'Cancel dan Create satu baris');
-      expect(stops[1].rect.left, lessThan(stops[2].rect.left),
-          reason: 'Cancel harus di kiri Create');
+      expect(
+        stops[2].label,
+        'Create',
+        reason: 'tombol utama berubah jadi "Create" di langkah terakhir',
+      );
+      expect(
+        stops[1].rect.top,
+        stops[2].rect.top,
+        reason: 'Cancel dan Create satu baris',
+      );
+      expect(
+        stops[1].rect.left,
+        lessThan(stops[2].rect.left),
+        reason: 'Cancel harus di kiri Create',
+      );
     });
 
     testWidgets('4. traversal selalu kembali ke close (LOOP di tiap langkah)', (
@@ -304,32 +357,42 @@ void main() {
       expect(stops2.length, 3);
       // Setelah normalisasi, close (top terkecil) selalu jadi stop 0 di
       // setiap langkah: satu-satunya stop di baris paling atas.
-      expect(stops2[0].rect.top, lessThan(stops2[1].rect.top),
-          reason: 'loop harus kembali ke close di AppBar');
+      expect(
+        stops2[0].rect.top,
+        lessThan(stops2[1].rect.top),
+        reason: 'loop harus kembali ke close di AppBar',
+      );
     });
 
-    testWidgets('5. tidak ada field/chip mendahului footer di langkah mana pun', (
-      tester,
-    ) async {
-      await _pumpWizard(tester);
+    testWidgets(
+      '5. tidak ada field/chip mendahului footer di langkah mana pun',
+      (tester) async {
+        await _pumpWizard(tester);
 
-      // Langkah 0: field (stop 1) tidak boleh di bawah footer mana pun.
-      final stops0 = await _stops(tester, maxTabs: 10);
-      expect(stops0.length, 4);
-      final fieldTop = stops0[1].rect.top;
-      final footerTop = stops0[2].rect.top;
-      expect(fieldTop, lessThan(footerTop),
-          reason: 'field harus sebelum footer di langkah Name');
+        // Langkah 0: field (stop 1) tidak boleh di bawah footer mana pun.
+        final stops0 = await _stops(tester, maxTabs: 10);
+        expect(stops0.length, 4);
+        final fieldTop = stops0[1].rect.top;
+        final footerTop = stops0[2].rect.top;
+        expect(
+          fieldTop,
+          lessThan(footerTop),
+          reason: 'field harus sebelum footer di langkah Name',
+        );
 
-      // Langkah 1: semua chip (1..8) harus sebelum footer.
-      await tester.tap(find.text('Next'));
-      await tester.pumpAndSettle();
-      final stops1 = await _stops(tester, maxTabs: 20);
-      expect(stops1.length, 11);
-      final lastChipTop = stops1[8].rect.top;
-      final footerTop1 = stops1[9].rect.top;
-      expect(lastChipTop, lessThan(footerTop1),
-          reason: 'chip terakhir harus sebelum footer di langkah Type');
-    });
+        // Langkah 1: semua chip (1..8) harus sebelum footer.
+        await tester.tap(find.text('Next'));
+        await tester.pumpAndSettle();
+        final stops1 = await _stops(tester, maxTabs: 20);
+        expect(stops1.length, 11);
+        final lastChipTop = stops1[8].rect.top;
+        final footerTop1 = stops1[9].rect.top;
+        expect(
+          lastChipTop,
+          lessThan(footerTop1),
+          reason: 'chip terakhir harus sebelum footer di langkah Type',
+        );
+      },
+    );
   });
 }

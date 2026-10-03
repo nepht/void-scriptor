@@ -810,12 +810,65 @@ abstract final class Sprint117GaArtifactGate {
         note: 'shipped provenance seam did not pass',
       );
     }
+    // Sprint 117.43-17: one level above `rebuild_run` sits the document
+    // header, and its verdict fields state the very conclusion this check
+    // is about to publish — `status: VERIFIED-LOCAL`, `decision:
+    // VERIFIED_LOCAL_...`. Nothing opened them before this slice, so the
+    // gate published `pass` over a document that refused it, or over one
+    // holding a value in a shape nobody could read. A header that agrees
+    // (or states nothing at all) changes nothing here.
+    final headerRefusal = _headerVerdictRefusal(provenanceManifest);
+    if (headerRefusal != null) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: declared,
+        observed: headerRefusal,
+        note: 'document header does not declare the published verdict',
+      );
+    }
     return Sprint117GaArtifactCheck.pass_(
       outputId: 'provenance',
       check: 'provenance_evaluation',
       declared: declared,
       observed: notes,
     );
+  }
+
+  /// Refuses a document header whose verdict fields disagree with the
+  /// evaluation this gate is about to publish, or hold a shape it cannot
+  /// read. Returns the observed reason, or null when the header agrees — or
+  /// states no verdict at all.
+  ///
+  /// Sprint 117.43-17: `status` and `decision` are document-level
+  /// restatements of the gate's own `provenance_evaluation` conclusion, one
+  /// level above `rebuild_run`, which 117.43-16 opened. Bounds pinned by
+  /// the tests:
+  ///
+  ///  * an absent key and an explicit null are non-claims (117.43-07,
+  ///    117.43-16);
+  ///  * `status` declares local verification only with the shipped token
+  ///    `VERIFIED-LOCAL`; `decision` only with a `VERIFIED_LOCAL` leading
+  ///    segment — the remainder of that token is the document's own;
+  ///  * `version`, `canonical_step` and `title` are NOT measured here.
+  static String? _headerVerdictRefusal(Map<String, Object?> document) {
+    for (final field in const <String>['status', 'decision']) {
+      if (!document.containsKey(field)) continue;
+      final value = document[field];
+      if (value == null) continue;
+      if (value is! String || value.trim().isEmpty) {
+        return '$field present without a readable verdict '
+            '(${value.runtimeType})';
+      }
+      final declaresLocalVerification = field == 'status'
+          ? value.trim() == 'VERIFIED-LOCAL'
+          : value.trim().startsWith('VERIFIED_LOCAL');
+      if (!declaresLocalVerification) {
+        return '$field states ${value.trim()} while the evidence evaluates '
+            'pass';
+      }
+    }
+    return null;
   }
 
   /// Runs the shipped 113.39 evaluation over a decoded manifest, returning

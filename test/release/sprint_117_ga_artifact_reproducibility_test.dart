@@ -3525,4 +3525,125 @@ void main() {
       );
     });
   });
+
+  group('117.43-17 the header must agree with the verdict it declares', () {
+    // Defect 117.43-17: the twelfth slice in the hunt, and the last level
+    // above the body — the document header. `status: VERIFIED-LOCAL` and
+    // `decision: VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS` state
+    // the very conclusion this check publishes (`provenance_evaluation:
+    // pass`), and no reader in `lib/` opened either field: the shipped
+    // `BuildProvenanceEvidence` seam is a typed model built from
+    // `required_evidence` alone, and this gate read `required_evidence`,
+    // `rebuild_run` and `comparison`. So the gate published a verification
+    // pass over a document whose own header refused it, or held a value in
+    // a shape nobody could read. Every refusal below compares the header to
+    // an evaluation this gate already performs, so no acceptance is
+    // invented; the vocabulary (`VERIFIED-LOCAL`, the `VERIFIED_LOCAL`
+    // decision prefix) is the shipped document's own, asserted by
+    // sprint_113's test for this exact manifest.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// Shipped manifest whose header field [key] holds [value] verbatim.
+    Map<String, Object?> withHeader(String key, Object? value) =>
+        shipped()..[key] = value;
+
+    /// Shipped manifest with its header field [key] removed.
+    Map<String, Object?> withoutHeader(String key) => shipped()..remove(key);
+
+    test('117.43-17 a header that does not declare local verification is '
+        'refused while the evidence passes', () {
+      final cases = <String, String>{
+        "status stating 'UNVERIFIED'": outcome(
+          withHeader('status', 'UNVERIFIED'),
+        ),
+        "status stating 'REVIEW'": outcome(withHeader('status', 'REVIEW')),
+        "decision stating 'DRAFT_PROVENANCE'": outcome(
+          withHeader('decision', 'DRAFT_PROVENANCE'),
+        ),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose own header refuses that verdict: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-17 a header value this gate cannot read is unevaluable, not '
+        'silently skipped', () {
+      final cases = <String, String>{
+        'status as an integer': outcome(withHeader('status', 42)),
+        'status as a blank string': outcome(withHeader('status', '   ')),
+        'status as an object': outcome(
+          withHeader('status', <String, Object?>{'verdict': 'VERIFIED-LOCAL'}),
+        ),
+        'decision as an integer': outcome(withHeader('decision', 7)),
+        'decision as a blank string': outcome(withHeader('decision', '')),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'a present header value in a shape nobody decoded is not a '
+            'silent agreement (117.43-13): '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-17 the shipped header declares exactly the verdict this gate '
+        'publishes', () {
+      // Without a shipped header stating the verdict, every refusal above
+      // would prove nothing: a gate that ignored the header would pass
+      // them all.
+      final manifest = shipped();
+      expect(manifest['status'], 'VERIFIED-LOCAL');
+      final decision = manifest['decision'];
+      expect(decision, isA<String>());
+      expect(
+        (decision! as String).startsWith('VERIFIED_LOCAL'),
+        isTrue,
+        reason:
+            'the decision token leads with the local-verification '
+            'segment this gate matches',
+      );
+      expect(outcome(manifest), 'pass');
+    });
+
+    test('117.43-17 a header that states nothing claims nothing, and a '
+        'declared verdict cannot rescue failing evidence', () {
+      expect(
+        outcome(withoutHeader('status')),
+        'pass',
+        reason: 'an absent field is a non-claim (117.43-07)',
+      );
+      expect(
+        outcome(withHeader('status', null)),
+        'pass',
+        reason: 'an explicit null states nothing, like an absent key',
+      );
+      expect(outcome(withoutHeader('decision')), 'pass');
+      expect(outcome(withHeader('decision', null)), 'pass');
+      // The shipped header already claims VERIFIED-LOCAL: breaking the
+      // evidence under it must still refuse, so the header can never buy
+      // back a pass the measurement does not support.
+      final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'provenance_record',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
 }

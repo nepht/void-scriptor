@@ -1579,6 +1579,18 @@ Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Scre
 - **Negative control:** ekspektasi `Create Project` → `Cancel` ditukar; test gagal dengan exit `1` dan output `Some tests failed`. Kontrak dipulihkan dan test fokus kembali lulus.
 - **Status:** VERIFIED untuk bukti focus order Create Project Screen pada konfigurasi probe ini. Cakupan audit focus-order layar: 30 dari 89 target layar.
 
+## 37. Fase 37 — Focus Order di Project Resilience Center Screen (2.4.3)
+
+**Status: VERIFIED (kontrak widget + negative control).**
+
+- Layar: `ProjectResilienceCenterScreen`, fixture mandiri dengan tiga aksi aktif.
+- Viewport probe: `1536x1024`, device pixel ratio `1.0`.
+- Hasil probe: 3 stop unik lalu kembali ke stop pertama; semua rect fokus non-zero.
+- Urutan terukur: `Scan Again` (`24.0,373.8`–`231.0,413.8`) → `Export Project` (`243.0,373.8`–`506.4,413.8`) → `Delete Cache` (`518.4,373.8`–`753.6,413.8`) → kembali ke `Scan Again`.
+- Kontrak memverifikasi urutan label, posisi kiri-ke-kanan, area fokus non-zero, batas viewport, dan tidak adanya exception rendering.
+- Negative control: urutan `Export Project`/`Delete Cache` ditukar; test gagal dengan exit code `1` dan output `Some tests failed`. File dipulihkan dari backup.
+- Bukti test: `test/features/project_resilience/presentation/project_resilience_center_screen_focus_order_test.dart`.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

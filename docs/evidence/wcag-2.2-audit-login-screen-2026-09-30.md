@@ -1091,6 +1091,59 @@ Gate:
 
 ---
 
+## 23. Fase 18 — Focus Order di Reference Management Screen (2.4.3)
+
+Layar `lib/features/references/presentation/reference_management_screen.dart` (Identity Consistency workspace) diuji pada viewport 1536x1024 dpr 1.0. Layar ini mandiri: hanya butuh list model in-memory, tanpa database, tanpa network, tanpa Riverpod provider.
+
+Traversal diukur dengan menekan `LogicalKeyboardKey.tab` berulang dan mencatat `FocusManager.instance.primaryFocus`, rect global focus, serta label `Text` pertama yang bukan `Icon` di dalam subtree fokus. Traversal dihentikan saat rect berulang (siklus tertutup).
+
+Hasil probe pada tab `Reference Sets` dengan ketiga callback create aktif:
+
+1. `Reference Sets` — top 56.0, left 52.0, 229.4x48.0
+2. `Identity Locks` — top 56.0, left 281.4, 229.4x48.0
+3. `Consistency Rules` — top 56.0, left 510.8, 271.7x48.0
+4. `Reports` — top 56.0, left 782.5, 130.7x48.0
+5. `Create Set` — top 132.0, left 1305.0, 207.0x40.0
+
+Empat stop pertama adalah tab strip: satu baris fokus (top sama) dengan koordinat `left` naik strict, lalu aksi konten berada di bawahnya. Ini sesuai WCAG 2.4.3: urutan fokus mengikuti urutan baca visual, bukan urutan deklarasi widget.
+
+Per tab:
+
+- `Reference Sets` — 4 tab + `Create Set` (5 stop).
+- `Identity Locks` — 4 tab + `Add Lock` (5 stop).
+- `Consistency Rules` — 4 tab + `Add Rule` (5 stop).
+- `Reports` — 4 tab saja, tanpa aksi (4 stop), karena `_EntityList` untuk Reports menerima `actionLabel: null`.
+
+Temuan penting dari probe: saat ketiga callback create dibiarkan `null`, traversal hanya menghasilkan 4 stop, karena `FilledButton.icon` dengan `onPressed: null` tidak bisa difokuskan. Ini perilaku Material yang benar (tombol nonaktif bukan stop fokus), bukan defect produksi. Kontrak sengaja memverifikasi state interaktif (callback aktif) supaya traversal penuh terukur.
+
+Baris `SwitchListTile` pada tab `Identity Locks` memakai `onChanged: null` sehingga tidak menjadi stop fokus — juga disengaja di produksi (lock ditampilkan read-only di layar ini).
+
+Kontrak `test/features/references/reference_management_focus_order_test.dart` mengunci:
+
+- urutan label lengkap 5 stop pada tab default;
+- keempat tab berbagi satu `rect.top` dan `left` naik strict;
+- aksi konten `rect.top` lebih besar dari baris tab;
+- tab `Reports` menghasilkan tepat 4 stop, semua di satu baris;
+- tab `Identity Locks` dan `Consistency Rules` masing-masing mengekspos satu aksi, dengan tab strip tetap berupa siklus kiri-ke-kanan lalu wrap, tanpa duplikasi;
+- setiap stop punya `width > 0` dan `height > 0`.
+
+Kontrak hanya mengukur traversal satu arah (Tab). Perilaku `Shift+Tab` (reverse order) tidak diuji pada fase ini; itu kandidat fase berikutnya.
+
+Catatan koreksi selama penyusunan: dua ekspektasi awal salah. Ekspektasi tab `Reports` mengasumsikan traversal dimulai dari tab aktif (`Reports`), padahal setelah `DefaultTabController` dengan `initialIndex`, fokus awal tetap pada tab pertama. Probe kedua mengoreksinya menjadi urutan `Reference Sets, Identity Locks, Consistency Rules, Reports`. Ekspektasi kedua gagal karena reorder list setelah tap tidak mempertahankan posisi awal. Kontrak akhir menguji sifat siklus, bukan posisi start yang rapuh.
+
+Negative control: memindahkan `Create Set` ke depan urutan expected menghasilkan `NEG_EXIT=1` dan `+2 -1: Some tests failed`, membuktikan assertion urutan punya witness RED. File dipulihkan dari backup dan suite kembali `+3: All tests passed!`.
+
+Gate:
+
+- Test kontrak: **3/3 PASS**.
+- `dart analyze` file kontrak: **No issues found!**
+- `flutter test test/features/references/`: **25/25 All tests passed!**
+- Probe sementara `_probe_focus_test.dart` dihapus.
+- CJK/Cyrillic scan pada file test: **none**.
+
+Status: **VERIFIED** (test-level, satu arah Tab, viewport 1536x1024). Belum ada bukti native/computer-use pada fase ini.
+
+---
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-03T09:20:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 (core worker, 117.43-13 slice)",
+  "updated_at": "2026-10-03T10:55:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 slice 117.43-15",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -616,7 +616,7 @@
   "current_step": "117.41",
   "current_step_status": "VERIFIED-LOCAL",
   "last_run_summary": "2026-10-03 08:05 WIB run 8: defect 117.43-10 closed - the rebuild METHOD claim was never measured (command/log had zero readers in lib/). Both ends fixed, 75/75 focus, analyze/format/diff-check/build green, commit ea27041 (3 explicit paths). Status unchanged PARTIAL-LOCAL; 117.43-02 still awaits operator decision.",
-  "last_commit": "4283ebd",
+  "last_commit": "7267ebb",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -3146,7 +3146,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T09:55:00+07:00",
+    "updated_at": "2026-10-03T10:55:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3167,23 +3167,22 @@
       "cross_slice_regeneration": "docs/ and .hermes/ clean vs HEAD after suite + build - no cross-slice regeneration (incidents 5/6 not repeated).",
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
-    "defects_fixed_count": 12,
-    "slice_commit": "cc5ae78",
+    "defects_fixed_count": 13,
+    "slice_commit": "7267ebb",
     "last_slice_files": [
       {
-        "path": "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
-        "sha256_lf_canonical": "6c0754c3",
-        "crlf_in_disk": 0
+        "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
+        "sha256": "f5c34052dab2ba583d44d8e382eb55ac34830f8b74a495cc855b5b715ca088b4",
+        "sha256_lf_canonical": "f5c34052",
+        "source": "git show 7267ebb:<path>",
+        "bytes": 26727
       },
       {
         "path": "test/release/sprint_117_ga_artifact_reproducibility_test.dart",
-        "sha256_lf_canonical": "f5acbb58",
-        "crlf_in_disk": 0
-      },
-      {
-        "path": "docs/sprints/sprint-117-beta-validation.md",
-        "sha256_lf_canonical": "f02de66c",
-        "crlf_in_disk": 70
+        "sha256": "5ce9b734d54921f6204f95be1af4280a1a0ac933d2c6737580d6bfed219cae33",
+        "sha256_lf_canonical": "5ce9b734",
+        "source": "git show 7267ebb:<path>",
+        "bytes": 125493
       }
     ],
     "gates_reverified_run9_2026_10_03": {
@@ -3229,7 +3228,7 @@
       "commit": "4283ebd",
       "pushed": false
     },
-    "ledger_sha256_lf_canonical": "f02de66c",
+    "ledger_sha256_lf_canonical": "62e199f1784ea9c2999de9e45ce2185f38617381debda2d19ada037af99f5bbf",
     "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally.",
     "defect_117_43_14": {
       "status": "FIXED-LOCAL",
@@ -3280,6 +3279,47 @@
       "probes": "2 temporary probes (zz_probe_11743_14_test.dart, zz_probe_11743_14_diag_test.dart) deleted after every finding moved to the official suite; remaining=0",
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json unchanged, 0 bytes altered; git show --name-only cc5ae78 does not list it",
       "defect": "117.43-14 - ten recorded rebuilds were reported as two; the gate decoded the first two records of a list that may hold more"
+    },
+    "defect_117_43_15": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-15",
+      "hunt": "unmeasured-claim / fail-open, eleventh slice of the family",
+      "family_closed_so_far": 11,
+      "shape": "required_evidence.provenance_record was read ONLY by _hasContent - 'does this group hold non-blank strings' - and never compared with the rebuild_results it summarises, while the verdict printed 'provenance_record: 6 item' as if six lines had been checked against anything",
+      "symptom": "the group's prose is the human-readable statement of what the rebuild records measured, and two of the seven shipped lines restate a whole measurement (label, exit code, duration, both ends of a window) in a precise grammar. No reader anywhere decoded those lines, so the summary could contradict the document's own measurements in every direction at once and the 113.39 evaluation still returned pass.",
+      "why_worse_than_a_wrong_answer": "a reproducibility gate whose own summary contradicts its own measurements has no fixed point to report: the reader sees agreement between a claim and its evidence when there is none. It is the one document class a reproducibility gate cannot accept, and the most heavily billed evidence group was the only one never read.",
+      "empirical_before_fix": "probe zz_probe_11743_15_test.dart (deleted after the findings moved into the official suite) re-read the SHIPPED manifest through readManifest, deep-copied it, rewrote provenance_record only, and ran the live gate: all cases returned status=pass. A first version of the probe was VACUOUS - String.replaceAll returns a NEW string, so the map was never mutated and two probes passed without proving anything; it was rewritten with withMode(from,to) returning a fresh map before its result was believed.",
+      "defects_that_passed_before_the_fix": [
+        "rebuild_a summary claiming exit_code 1 where the record states 0",
+        "rebuild_b summary claiming duration_seconds 900 where the record states 115 and its own window measures 115",
+        "a summary window moved to a different day (2026-09-24T09:00) from the record's window - the same self-contradiction 117.43-09 measured inside a single record",
+        "rebuild_z, a rebuild no record mentions - the inverse of the omission 117.43-14 closed",
+        "provenance_logs naming docs/evidence/never-existed.log, which no rebuild cites"
+      ],
+      "claim_dropped_rather_than_made": "whether source_revision names a commit that exists. A fabricated revision is 40 valid hex characters - the exact shape of the real 30dda0c3389a8bd9e3cae705abd51eaecbca2630, which git cat-file -e resolves - and this domain layer spawns no processes. A shape rule was written and then REVERTED: the shipped fixtures legitimately carry a 64-hex placeholder, so the rule refused an honest document. Recorded as DEFERRED, not claimed.",
+      "fix": "_summaryAgreesWithRebuilds decodes the grammar the document already uses (rebuild_LABEL exit_code N duration_seconds N (START .. FINISH)) and holds each restatement to the record it names: the label must exist in rebuild_results, the exit code must match, and the window plus duration must match the record's own window. provenance_logs must name exactly the logs the records cite. No new infrastructure - all five facts were already measured in the same file by 117.43-08/-09/-10/-13.",
+      "boundaries_pinned_because_the_obvious_rule_was_wrong": [
+        "build_command states what the release pipeline runs, not what one rebuild cycle ran; the shipped value omits the 'flutter clean &&' prefix its rebuild records carry and that difference is correct, so it is not compared",
+        "source_revision is left unmeasured (see claim_dropped_rather_than_made)",
+        "a prose line naming a rebuild without stating a measurement makes no claim to contradict; a summary naming no log is not contradicted when no record states one; and the reverse direction is NOT required, because nothing in the document promises every rebuild is restated in prose - requiring it would invent an acceptance criterion"
+      ],
+      "regression_caused_and_fixed_by_this_slice": "sprint_113_build_reproducibility_provenance_test.dart briefly failed with TWO failures. The second, 'Actual: [provenance_record]', was real and mine: that test builds RebuildResult WITHOUT a log field, so no record states a log and the provenance_logs rule briefly treated that as a contradiction. Fixed under the same non-claim doctrine - absence of a claim is not a claim to be contradicted. After the fix the file returns to exactly one failure with the identical signature it had before this slice.",
+      "red_boundary": "gate file reverted to HEAD alone -> 110 pass and exactly 7 named failures (6 defect + 1 historical 'every one of these passed before this slice'), controls green, no compile error",
+      "manifest_untouched": "proven from history, not assumed: git show 7267ebb:<manifest> is byte-identical to git show 07aec63:<manifest>",
+      "deferred_claims": [
+        "117.43-02 (operator decision; unchanged)"
+      ]
+    },
+    "gates_reverified_run12_2026_10_03": {
+      "focused_suite": "117/117 exit 0 (was 106; +11)",
+      "red_boundary": "110 pass, exactly 7 named failures, no compile error",
+      "analyzer": "dart analyze on 3 files (build_reproducibility_provenance.dart, sprint_117_ga_artifact_reproducibility.dart, sprint_117_ga_artifact_reproducibility_test.dart): No issues found! exit 0, re-run after dart format",
+      "format": "dart format 2 files: 0 changed exit 0 (re-run after the first pass changed 1 file)",
+      "diff_check": "git diff --check exit 0",
+      "build": "flutter build windows --debug exit 0, 25.7 s",
+      "regression": "sprint_113_build_reproducibility_provenance_test.dart exit 1 - ONE failure, signature IDENTICAL to pre-slice (expected 73101e78..., actual c7a33055...), root cause TODO-OPERATOR 117.43-02, not a slice regression",
+      "three_sided_sha": "measured from git show 7267ebb:<path> AFTER commit per policy 2026-10-02 clause 1; disk sha256sum == blob for both files",
+      "probes_remaining": 0
     }
   },
   "sprint_117_step_11744": {
@@ -3513,6 +3553,6 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "ea27041",
+  "commit": "7267ebb",
   "ahead": 14
 }

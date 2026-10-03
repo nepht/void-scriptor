@@ -3224,7 +3224,7 @@
       "pushed": false
     },
     "ledger_sha256_lf_canonical": "eceee91d",
-    "state_sha256": "a1a8871b"
+    "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally."
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",

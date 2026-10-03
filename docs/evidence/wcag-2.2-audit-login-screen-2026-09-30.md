@@ -1458,6 +1458,36 @@ Kontrak `test/features/platform/presentation/welcome_screen_focus_order_test.dar
 
 Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Welcome Screen. Cakupan audit focus-order layar: 24 dari 89 target layar (`26eb29a` adalah commit sebelumnya; commit fase ini dicatat setelah gate).
 
+## 30. Fase 25 — Focus Order di Product Detail Screen (2.4.3)
+
+### 30.1 Layar dan fixture
+
+`ProductDetailScreen` dipilih karena mandiri, tanpa database/network, dan memiliki dua CTA aktif dengan callback no-op: `Install` dan `Buy`. Probe memakai viewport 1536x1024 dengan device pixel ratio 1.0.
+
+### 30.2 Data traversal terukur
+
+Traversal memakai `LogicalKeyboardKey.tab` sampai Rect fokus berulang sebagai tanda wrap. Hasil nyata:
+
+- Stop 1 — `Install`, Rect `Rect.fromLTRB(20.0, 309.0, 760.0, 349.0)`
+- Stop 2 — `Buy`, Rect `Rect.fromLTRB(776.0, 309.0, 1516.0, 349.0)`
+- Tab berikutnya kembali ke `Install` dan menghentikan probe.
+
+Kedua kontrol berada pada satu baris; urutan visual dan keyboard sama-sama kiri-ke-kanan. Seluruh area fokus memiliki lebar dan tinggi non-zero.
+
+### 30.3 Kontrak dan negative control
+
+Kontrak `test/features/marketplace/product_detail_screen_focus_order_test.dart` mengunci tepat dua stop, label `Install` lalu `Buy`, posisi kiri-ke-kanan pada baris yang sama, dan area fokus non-zero. Negative control menukar urutan ekspektasi menjadi `Buy` lalu `Install`; test gagal dengan exit code `1` dan output `Some tests failed`, lalu file dipulihkan dari backup.
+
+### 30.4 Gate dan cakupan
+
+- `dart format test/features/marketplace/product_detail_screen_focus_order_test.dart` — exit `0`.
+- `dart analyze test/features/marketplace/product_detail_screen_focus_order_test.dart` — `No issues found!`.
+- Focus-order test — `All tests passed!`.
+- Feature-suite gate `flutter test test/features/marketplace/` — `39` tests passed, exit `0`.
+- Scan CJK/Cyrillic pada test, report, dan pesan commit — `none`.
+
+Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Product Detail Screen. Cakupan audit focus-order layar: 25 dari 89 target layar (berdasarkan kontrak focus-order yang ada setelah fase ini).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

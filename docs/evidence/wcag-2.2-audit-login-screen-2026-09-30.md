@@ -1041,6 +1041,25 @@ Gate:
 
 ---
 
+## 21. Fase 16 — Focus Order di Agent Permission Screen (2.4.3)
+
+Probe nyata pada viewport 1536x1024 menemukan tiga stop fokus:
+
+1. Switch untuk permission optional `AI Provider`, di sisi kanan tile.
+2. `Allow All`, setelah daftar permission.
+3. `Deny Optional`, di sebelah kanan `Allow All`.
+
+Permission required `File Access` dan `Network` memiliki label `Required` tanpa kontrol interaktif. Tile permission sendiri tidak menjadi stop fokus. Kontrak mengunci tiga stop aktual, urutan stateful switch lalu dua aksi, posisi tombol pada baris yang sama, dan area fokus non-zero.
+
+Gate:
+
+- Test focus order: **1/1 PASS**.
+- `dart analyze`: **No issues found**.
+- Probe sementara dihapus.
+- CJK/Cyrillic scan: **none**.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

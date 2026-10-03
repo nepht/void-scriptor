@@ -1428,6 +1428,36 @@ Kontrak final mengunci jumlah stop tepat 2, urutan label `Later` -> `Download`, 
 
 **VERIFIED** untuk 2.4.3 (Focus Order): jumlah stop, urutan kontrol, posisi kiri-ke-kanan, dan area fokus non-zero terkunci oleh kontrak widget.
 
+## 29. Fase 24 — Focus Order di Welcome Screen (2.4.3)
+
+### 29.1 Layar dan fixture
+
+`WelcomeScreen` dipilih karena mandiri, tanpa database/network, dan memiliki tiga aksi keyboard yang aktif: `Create Project`, `Open Project`, dan `Explore Demo`. Probe memakai viewport 1536x1024 dengan device pixel ratio 1.0 serta callback no-op agar ketiga tombol menjadi focusable.
+
+### 29.2 Data traversal terukur
+
+Traversal memakai `LogicalKeyboardKey.tab` sampai Rect fokus berulang sebagai tanda wrap. Hasil nyata:
+
+- Stop 1 — `Create Project`, Rect `Rect.fromLTRB(638.0, 497.5, 898.0, 537.5)`
+- Stop 2 — `Open Project`, Rect `Rect.fromLTRB(638.0, 557.5, 898.0, 597.5)`
+- Stop 3 — `Explore Demo`, Rect `Rect.fromLTRB(638.0, 617.5, 898.0, 657.5)`
+- Tab berikutnya kembali ke `Create Project` dan menghentikan probe.
+
+Urutan aktual mengikuti urutan baca atas-ke-bawah. Seluruh area fokus memiliki lebar dan tinggi non-zero.
+
+### 29.3 Kontrak dan negative control
+
+Kontrak `test/features/platform/presentation/welcome_screen_focus_order_test.dart` mengunci tiga stop, label, posisi top yang meningkat, area fokus non-zero, dan tidak adanya exception rendering. Negative control menukar dua label ekspektasi; test benar-benar gagal dengan exit code `1` dan output `Some tests failed`, lalu file dipulihkan dari backup.
+
+### 29.4 Gate dan cakupan
+
+- `dart format test/features/platform/presentation/welcome_screen_focus_order_test.dart` — exit `0`.
+- `dart analyze test/features/platform/presentation/welcome_screen_focus_order_test.dart` — `No issues found!`.
+- Focus-order test — `All tests passed!`.
+- Feature-suite gate: dijalankan pada closeout dan dilaporkan dari output aktual.
+
+Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Welcome Screen. Cakupan audit focus-order layar: 24 dari 89 target layar (`26eb29a` adalah commit sebelumnya; commit fase ini dicatat setelah gate).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

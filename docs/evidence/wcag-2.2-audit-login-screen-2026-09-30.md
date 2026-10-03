@@ -1409,6 +1409,25 @@ Kontrak final memetakan tiga stop:  ->  -> . Semua  memiliki lebar dan tinggi no
 
 **VERIFIED** untuk 2.4.3 (Focus Order): jumlah stop, urutan kontrol, geometri fokus non-zero, dan ketiadaan exception rendering terkunci oleh kontrak widget.
 
+## 28. Fase 23 — Focus Order di Update Screen (2.4.3)
+
+**Layar:** `UpdateScreen` (`lib/features/platform/presentation/update_screen.dart`)
+**Kontrak:** `test/features/platform/presentation/update_screen_focus_order_test.dart`
+**Tanggal:** 2026-10-03 | **Viewport probe & kontrak:** 1536 x 1024, dpr 1.0 | **Metode:** traversal `Tab` berulang, berhenti saat rect fokus berulang.
+
+Layar ini mandiri dan tidak memerlukan database atau network. Probe memakai callback no-op agar dua tombol tetap masuk focus traversal; tidak ada kode produksi yang diubah.
+
+### Hasil probe (evidence-first)
+
+Probe mengukur 2 stop fokus:
+
+1. `Later` — `Rect.fromLTRB(20.0, 279.0, 760.0, 319.0)`
+2. `Download` — `Rect.fromLTRB(776.0, 279.0, 1516.0, 319.0)`
+
+Kontrak final mengunci jumlah stop tepat 2, urutan label `Later` -> `Download`, area fokus non-zero, dan geometri kiri-ke-kanan pada satu baris. `tester.takeException()` juga wajib `null`. Negative control menukar urutan label menjadi `Download` -> `Later`; test gagal dengan exit code 1 dan output `Some tests failed`, lalu file dipulihkan dan kontrak kembali lulus.
+
+**VERIFIED** untuk 2.4.3 (Focus Order): jumlah stop, urutan kontrol, posisi kiri-ke-kanan, dan area fokus non-zero terkunci oleh kontrak widget.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -709,10 +709,26 @@ abstract final class Sprint117GaArtifactGate {
     required Map<String, Object?> packagingOutputs,
     required List<String> declaredArtifacts,
   }) {
-    final recorded =
-        (packagingOutputs['signed_artifacts'] as List<dynamic>?)
-            ?.cast<String>() ??
-        const <String>[];
+    // Sprint 117.43-13 (fail-open, fixed): this reader was still
+    // `(packagingOutputs['signed_artifacts'] as List<dynamic>?)
+    //     ?.cast<String>()`, the exact `as` + `cast<>` pair 117.43-12 removed
+    // from the four evidence groups. `as` throws on a non-list and
+    // `cast<String>()` throws on any non-string element, so a packaging
+    // manifest naming `signed_artifacts` as a bare string, as a Map, or as a
+    // list holding one number did not report `unmet` — it threw a
+    // `type 'int' is not a subtype of type 'String' in type cast` out of the
+    // gate and the caller received no check at all. Decode the shape instead.
+    final recorded = _stringList(packagingOutputs['signed_artifacts']);
+    if (recorded == null) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'signed_artifacts',
+        check: 'signed_artifact_coverage',
+        declared: '${declaredArtifacts.length} artifact',
+        observed:
+            'packaging manifest records signed_artifacts in a shape this gate '
+            'cannot read',
+      );
+    }
     final recordedSet = recorded.map((p) => p.trim()).toSet();
     final declaredSet = declaredArtifacts.map((p) => p.trim()).toSet();
     if (recorded.isEmpty) {
@@ -802,8 +818,26 @@ abstract final class Sprint117GaArtifactGate {
   static (String, String)? _evaluateShippedProvenance(
     Map<String, Object?> evidence,
   ) {
-    final rebuildList = (evidence['rebuild_results'] as List<dynamic>?)
-        ?.cast<Map<String, Object?>>();
+    // Sprint 117.43-13 (fail-open, fixed): the list itself was read with
+    // `(evidence['rebuild_results'] as List<dynamic>?)?.cast<Map<String,
+    // Object?>>()`, which asserts twice over — `as` throws on a non-list and
+    // `cast<>` throws on a non-map element. A `rebuild_results` holding
+    // `[42, 43]`, holding a Map, or being a bare string did not report
+    // `unmet`; it threw a TypeError out of the gate and the caller received no
+    // provenance verdict at all. Decode the shape, and refuse it when any
+    // element is not a record. 117.43-12 fixed the four groups at this level;
+    // this is the same reader one level down.
+    List<Map<String, Object?>>? rebuildRecordsFrom(Object? value) {
+      if (value is! List<dynamic>) return null;
+      final records = <Map<String, Object?>>[];
+      for (final entry in value) {
+        if (entry is! Map<String, Object?>) return null;
+        records.add(entry);
+      }
+      return records;
+    }
+
+    final rebuildList = rebuildRecordsFrom(evidence['rebuild_results']);
     if (rebuildList == null || rebuildList.length < 2) return null;
     final comparison = evidence['artifact_comparison'];
     if (comparison is! Map<String, Object?>) return null;
@@ -912,17 +946,37 @@ abstract final class Sprint117GaArtifactGate {
       return null;
     }
 
+    // Sprint 117.43-13 (fail-open, fixed): `comparison['method'] as String?`
+    // asserted that the method is a string, and `((comparison['limits'] as
+    // List<dynamic>?)?.cast<String>())` asserted twice that `limits` is a list
+    // of strings. A method recorded as a number, or limits recorded as a bare
+    // string / a list holding one number, did not report `unmet` — each threw
+    // a TypeError clean out of the gate, so the caller received no provenance
+    // verdict instead of a failed one. Decode both shapes: an absent field
+    // stays null (a non-claim per 117.43-07) and a present-but-unreadable one
+    // makes the evidence unevaluable, which the caller reports as `unmet`.
+    final method = comparison.containsKey('method')
+        ? comparison['method'] is String
+              ? comparison['method'] as String
+              : _kUndecodable
+        : null;
+    final limits = comparison.containsKey('limits')
+        ? _stringList(comparison['limits'])
+        : null;
+    if (identical(method, _kUndecodable)) return null;
+    if (comparison.containsKey('limits') && limits == null) return null;
+
     final shipped = BuildProvenanceEvidence(
       buildInputs: buildInputs,
       toolchainVersions: toolchainVersions,
       dependencyLock: dependencyLock,
       rebuildResults: <RebuildResult>[a, b],
       artifactComparison: ArtifactComparison(
-        method: comparison['method'] as String?,
+        method: method as String?,
         rebuildA: rebuild(a),
         rebuildB: rebuild(b),
         verdict: verdict,
-        limits: ((comparison['limits'] as List<dynamic>?)?.cast<String>()),
+        limits: limits,
       ),
       provenanceRecord: provenanceRecord,
     );
@@ -1019,6 +1073,28 @@ abstract final class Sprint117GaArtifactGate {
     final label = json['label'];
     final hashes = json['artifact_hashes'];
     if (label is! String || hashes is! Map<String, Object?>) return null;
+    // Sprint 117.43-13 (fail-open, fixed): the digest map passed its `is`
+    // check but its VALUES were still asserted one at a time by
+    // `hashes.map((key, value) => MapEntry(key, value as String))`, and
+    // `exit_code` by `json['exit_code'] as int?`. A single fabricated or null
+    // digest, or an exit code recorded as the string "0", therefore threw a
+    // TypeError out of the gate instead of being reported — and because
+    // `_rebuildFrom` is the decoder for BOTH rebuild records, one bad digest
+    // destroyed the entire provenance verdict, not just one rebuild. Decode
+    // both values explicitly: an absent `exit_code` is a non-claim per
+    // 117.43-07, while a present-but-unreadable one is a defect.
+    final decodedHashes = <String, String>{};
+    for (final entry in hashes.entries) {
+      final value = entry.value;
+      if (value is! String) return null;
+      decodedHashes[entry.key] = value;
+    }
+    final exitCode = _durationOrNull(
+      json['exit_code'],
+      json.containsKey('exit_code'),
+    );
+    if (identical(exitCode, _kUndecodable)) return null;
+
     final window = _decodeWindow(json);
     if (window == null) return null;
     // Sprint 117.43-10 (fail-open, fixed): `command` and `log` were dropped on
@@ -1033,10 +1109,8 @@ abstract final class Sprint117GaArtifactGate {
     if (!_logIsReadable(log)) return null;
     return RebuildResult(
       label: label,
-      artifactHashes: hashes.map(
-        (key, value) => MapEntry(key, value as String),
-      ),
-      exitCode: json['exit_code'] as int?,
+      artifactHashes: decodedHashes,
+      exitCode: exitCode as int?,
       startedAt: window.startedAt,
       finishedAt: window.finishedAt,
       command: command as String?,
@@ -1053,7 +1127,12 @@ abstract final class Sprint117GaArtifactGate {
   /// not checked — same rule as the window and the command.
   static bool _logIsReadable(Object? log) {
     if (log == null) return true;
-    final path = (log as String).trim();
+    // Sprint 117.43-13: reachability arrived here via `log as String`, which
+    // throws for a non-string rather than reporting it. The caller has already
+    // decoded this field, but the helper must not re-assert a shape it was
+    // handed; a value of another type simply names nothing readable.
+    if (log is! String) return false;
+    final path = log.trim();
     if (path.isEmpty) return true;
     return File(path).existsSync();
   }

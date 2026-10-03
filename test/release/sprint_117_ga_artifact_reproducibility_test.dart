@@ -2298,4 +2298,303 @@ void main() {
       expect(check.status, Sprint117GaArtifactStatus.pass);
     });
   });
+
+  // RED-first for defect 117.43-13: 117.43-12 fixed the FOUR top-level
+  // evidence groups, and every OTHER decode in the gate had already been
+  // written for the same trust boundary under -08/-09/-10. Thirteen reads one
+  // level down were missed. Each reached its value through `as T` or
+  // `cast<T>()`, which ASSERTS the shape instead of checking it, so a
+  // manifest holding a number where a string belongs — or a bare string where a
+  // list belongs — did not report `unmet`. It threw a `TypeError` clean out of
+  // the gate, and the caller received nothing at all: no verdict, no note, no
+  // failed output. A gate that crashes on malformed evidence is not fail-closed,
+  // and the crash is strictly worse than a wrong answer because it is silent
+  // about the very output it was asked to measure.
+  //
+  // Every case below printed `status=NO-STATUS thrown=TypeError` when probed
+  // against HEAD before the fix. They are filed as one defect because they are
+  // one omission: the same reader, applied consistently in one direction and
+  // left asserting in the other.
+  group('117.43-13 every remaining decode seam refuses a shape it cannot read', () {
+    String digest(String seed) => seed * 64;
+
+    /// An otherwise honest manifest — separated windows, clean commands,
+    /// readable logs, canonical verdict, honest per-artifact partition — so
+    /// only the seam under test can decide the result.
+    Map<String, Object?> manifest() => <String, Object?>{
+      'required_evidence': <String, Object?>{
+        'build_inputs': <String>['pubspec.lock sha256 ${digest('2')}'],
+        'toolchain_versions': <String>['Flutter 3.44.6 channel stable'],
+        'dependency_lock': <String>['pubspec.lock sha256 ${digest('2')}'],
+        'rebuild_results': <Map<String, Object?>>[
+          <String, Object?>{
+            'label': 'rebuild_a',
+            'artifact_hashes': <String, String>{
+              'a.exe': digest('a'),
+              'b.dll': digest('b'),
+            },
+            'exit_code': 0,
+            'started_at': '2026-09-23T13:27:45+07:00',
+            'finished_at': '2026-09-23T13:29:47+07:00',
+            'duration_seconds': 122,
+            'command': 'flutter clean && flutter.bat build windows --release',
+            'log': 'docs/evidence/sprint-113-39-rebuild-a.log',
+          },
+          <String, Object?>{
+            'label': 'rebuild_b',
+            'artifact_hashes': <String, String>{
+              'a.exe': digest('a'),
+              'b.dll': digest('c'),
+            },
+            'exit_code': 0,
+            'started_at': '2026-09-23T13:30:17+07:00',
+            'finished_at': '2026-09-23T13:32:12+07:00',
+            'duration_seconds': 115,
+            'command': 'flutter clean && flutter.bat build windows --release',
+            'log': 'docs/evidence/sprint-113-39-rebuild-b.log',
+          },
+        ],
+        'artifact_comparison': <String, Object?>{
+          'method':
+              'SHA-256 over the artifacts after two independent clean '
+              'rebuild cycles',
+          'verdict': 'NOT_BIT_IDENTICAL',
+          'differing_artifacts': <String>['b.dll'],
+          'identical_artifacts': <String>['a.exe'],
+          'limits': <String>['a documented limit, as the verdict requires'],
+        },
+        'provenance_record': <String>['source_revision 30dda0c3'],
+      },
+    };
+
+    Map<String, Object?> evidenceOf(Map<String, Object?> m) =>
+        m['required_evidence']! as Map<String, Object?>;
+
+    List<Map<String, Object?>> rebuildsOf(Map<String, Object?> m) =>
+        evidenceOf(m)['rebuild_results']! as List<Map<String, Object?>>;
+
+    Map<String, Object?> comparisonOf(Map<String, Object?> m) =>
+        evidenceOf(m)['artifact_comparison']! as Map<String, Object?>;
+
+    /// A malformed shape must produce a VERDICT. The crash is the defect: an
+    /// exception escaping the gate is an absent answer, so [thrown] being null
+    /// is asserted before the status so a crash can never read as a pass.
+    void expectRefused(String seam, Map<String, Object?> malformed) {
+      var status = 'NO-STATUS';
+      Object? thrown;
+      try {
+        status = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: malformed,
+        ).status.name;
+      } catch (error) {
+        thrown = error;
+      }
+      expect(
+        thrown,
+        isNull,
+        reason:
+            'a malformed "$seam" must fail closed with a verdict, not '
+            'escape the gate as ${thrown.runtimeType}',
+      );
+      expect(
+        status,
+        'unmet',
+        reason: 'a malformed "$seam" is unevaluable, never a pass',
+      );
+    }
+
+    test('117.43-13 a mistyped rebuild_results group is refused', () {
+      for (final shape in <Object?>[
+        'a bare string',
+        42,
+        <String, Object?>{'not': 'a list'},
+        <Object?>[42, 43],
+      ]) {
+        final m = manifest();
+        evidenceOf(m)['rebuild_results'] = shape;
+        expectRefused('rebuild_results=${shape.runtimeType}', m);
+      }
+    });
+
+    test('117.43-13 a mistyped comparison method is refused', () {
+      final m = manifest();
+      comparisonOf(m)['method'] = 42;
+      expectRefused('method=int', m);
+    });
+
+    test('117.43-13 a mistyped limits group is refused', () {
+      for (final shape in <Object?>[
+        'a bare string',
+        <Object?>[42],
+        42,
+      ]) {
+        final m = manifest();
+        comparisonOf(m)['limits'] = shape;
+        expectRefused('limits=${shape.runtimeType}', m);
+      }
+    });
+
+    test('117.43-13 a mistyped artifact digest is refused', () {
+      // A digest map whose VALUE is not a string is the sharpest case here:
+      // `hashes.map((key, value) => MapEntry(key, value as String))` asserts
+      // per element, so one fabricated or null digest under an otherwise
+      // honest inventory destroyed the entire provenance verdict.
+      for (final shape in <Object?>[42, null]) {
+        final m = manifest();
+        rebuildsOf(m)[0]['artifact_hashes'] = <String, Object?>{
+          'a.exe': shape,
+          'b.dll': digest('b'),
+        };
+        expectRefused('artifact_hashes=${shape.runtimeType}', m);
+      }
+    });
+
+    test('117.43-13 a mistyped exit_code is refused', () {
+      final m = manifest();
+      rebuildsOf(m)[0]['exit_code'] = '0';
+      expectRefused('exit_code=String', m);
+    });
+
+    test('117.43-13 a mistyped signed_artifacts group is refused', () {
+      for (final shape in <Object?>[
+        'a bare string',
+        <Object?>[42],
+        42,
+        <String, Object?>{'not': 'a list'},
+      ]) {
+        var status = 'NO-STATUS';
+        Object? thrown;
+        try {
+          status = Sprint117GaArtifactGate.measureSignedArtifacts(
+            packagingOutputs: <String, Object?>{'signed_artifacts': shape},
+            declaredArtifacts: const <String>['a.exe'],
+          ).status.name;
+        } catch (error) {
+          thrown = error;
+        }
+        expect(
+          thrown,
+          isNull,
+          reason:
+              'a malformed signed_artifacts of ${shape.runtimeType} must '
+              'fail closed with a verdict, not escape as ${thrown.runtimeType}',
+        );
+        expect(status, 'unmet');
+      }
+    });
+
+    test('117.43-13 every one of these threw before this slice', () {
+      // The historical record, kept as an executable assertion: pre-fix all
+      // thirteen reached a `TypeError` and returned nothing to the caller. The
+      // reader is the same at every site — `as T` / `cast<T>()`, asserting a
+      // shape it was supposed to be checking.
+      final thrown = <String>[];
+      void record(String seam, void Function() call) {
+        try {
+          call();
+        } catch (error) {
+          thrown.add('$seam=${error.runtimeType}');
+        }
+      }
+
+      for (final shape in <Object?>[
+        'a bare string',
+        42,
+        <String, Object?>{'n': 1},
+      ]) {
+        final m = manifest();
+        evidenceOf(m)['rebuild_results'] = shape;
+        record(
+          'rebuild_results:${shape.runtimeType}',
+          () =>
+              Sprint117GaArtifactGate.measureProvenance(provenanceManifest: m),
+        );
+      }
+      final listOfInt = manifest();
+      evidenceOf(listOfInt)['rebuild_results'] = <Object?>[42, 43];
+      record(
+        'rebuild_results:list-of-int',
+        () => Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: listOfInt,
+        ),
+      );
+
+      final badMethod = manifest();
+      comparisonOf(badMethod)['method'] = 42;
+      record(
+        'method:int',
+        () => Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: badMethod,
+        ),
+      );
+
+      for (final shape in <Object?>[
+        'a bare string',
+        <Object?>[42],
+        42,
+      ]) {
+        final m = manifest();
+        comparisonOf(m)['limits'] = shape;
+        record(
+          'limits:${shape.runtimeType}',
+          () =>
+              Sprint117GaArtifactGate.measureProvenance(provenanceManifest: m),
+        );
+      }
+
+      for (final shape in <Object?>[42, null]) {
+        final m = manifest();
+        rebuildsOf(m)[0]['artifact_hashes'] = <String, Object?>{
+          'a.exe': shape,
+          'b.dll': digest('b'),
+        };
+        record(
+          'artifact_hashes:${shape.runtimeType}',
+          () =>
+              Sprint117GaArtifactGate.measureProvenance(provenanceManifest: m),
+        );
+      }
+
+      final badExit = manifest();
+      rebuildsOf(badExit)[0]['exit_code'] = '0';
+      record(
+        'exit_code:String',
+        () => Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: badExit,
+        ),
+      );
+
+      for (final shape in <Object?>[
+        'a bare string',
+        <Object?>[42],
+        42,
+        <String, Object?>{'not': 'a list'},
+      ]) {
+        record(
+          'signed_artifacts:${shape.runtimeType}',
+          () => Sprint117GaArtifactGate.measureSignedArtifacts(
+            packagingOutputs: <String, Object?>{'signed_artifacts': shape},
+            declaredArtifacts: const <String>['a.exe'],
+          ),
+        );
+      }
+
+      expect(
+        thrown,
+        isEmpty,
+        reason:
+            'pre-fix all thirteen escaped as an exception rather than a '
+            'verdict; a gate that crashes is not fail-closed',
+      );
+    });
+
+    test('117.43-13 the honest manifest still passes', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest(),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+    });
+  });
 }

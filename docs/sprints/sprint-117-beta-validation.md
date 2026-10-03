@@ -369,3 +369,33 @@ masih INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah -
 pilihan (a) re-sign kandidat rc.1 lalu refresh checksum, atau (b) nyatakan drift
 sebagai limitasi GA yang diterima + persempit acceptance 117.43. Cron tidak
 mengarang pilihan.
+**REGRESI (PENTING, dan koreksi atas ekspektasi run ini):** suite penuh
+`flutter test --reporter expanded` **TIDAK SELESAI** - exit 1 pada `+3995 ~1 -42`
+setelah 24:39 dengan **tanpa blok ringkasan** (`All tests passed` / `Some tests failed`
+/ `Failing tests:` semuanya **0 kemunculan**), jadi run itu **bukan** suite penuh
+yang lengkap. Yang lebih penting: **nol** dari 859 file test yang muncul di log
+berada di `test/release/` - **gate 117 dan test 117 TIDAK PERNAH DIJALANKAN** di
+run itu. Suite penuh yang lalu (41:29, `-11`)其实 tidak punya masalah ini karena
+urutan sharding berbeda. Jadi klaim "gate lulus di dalam suite penuh" **TIDAK
+boleh dibuat untuk run ini**; yang sah adalah regresi terarah di bawah.
+
+**Regresi terarah (2 file, exit 1):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart` -> **+132 -2**.
+- **Slice 117 = 131/131 LULUS** di committed HEAD (termasuk keempat test 117.43-17).
+- **2 GAGAL, keduanya `113.39`, signature PERSIS SAMA** dengan yang sudah
+  terdokumentasi sebelumnya: `113.39 dependency lock evidence matches the live
+  lockfile` (expected `c9a365e6…`, actual record manifest `32e31fd3…`) dan
+  `113.39 signed release artifact from 113.38 remains intact` (expected
+  `73101e78…`, actual `c7a33055…`). Keduanya **pre-existing**, akar
+  `TODO-OPERATOR 117.43-02`.
+- **Bukti isolasi:** commit slice `2e70b13` menyentuh tepat 2 file (gate + test
+  117); commit docs `e76f020` menyentuh tepat 2 file (ledger + state). Test 113.39
+  terakhir disentuh `da54a7c`, manifest-nya `d150973` - keduanya di luar commit
+  ini. Lock live tetap `c9a365e6…` (tidak berubah oleh slice ini).
+
+**38 kegagalan lain yang muncul di log suite penuh yang TIDAK SELESAI** tidak
+diaudit satu per satu karena run itu tidak menghasilkan ringkasan tepercaya
+(tidak ada daftar final) - dan tidak boleh diklaim apa pun tentangnya. Semua
+berada di file yang tidak disentuh slice ini (character/story/account/world/
+login/focus-order), yaitu milik worker lain. Count `-42` di log **bukan**
+jumlah kegagalan final yang sah dan **tidak** dipakai sebagai bukti.

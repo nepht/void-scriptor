@@ -46,7 +46,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T03:10:00+07:00",
+  "updated_at": "2026-10-04T03:40:00+07:00",
   "updated_by": "cron b0c2c7d744d9 slice 117.43-17",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -216,7 +216,9 @@
     "next_step": "117.43",
     "step_closed": false,
     "blocked_on": "TODO-OPERATOR 117.43-02",
-    "push": "none"
+    "push": "none",
+    "regression": "DIRECTED (test/release/sprint_113_... + sprint_117_...): +132 -2 exit 1. Slice 117 = 131/131 PASS at committed HEAD incl. all four 117.43-17 tests. 2 FAIL both 113.39, identical documented signature (lock expected c9a365e6 vs manifest record 32e31fd3; artifact expected 73101e78 vs actual c7a33055), root TODO-OPERATOR 117.43-02. Isolation proven: 2e70b13 touched only gate+test117; e76f020 only ledger+state; 113.39 test last touched da54a7c, its manifest d150973 - both outside this slice.",
+    "full_suite": "INCOMPLETE / UNUSABLE as regression evidence. flutter test --reporter expanded exited 1 at +3995 ~1 -42 after 24:39 with NO summary block (0x 'All tests passed'/'Some tests failed'/'Failing tests:') and ZERO of the 859 test files that appear in the log are under test/release/ - so the 117 gate/test never ran. The -42 count is not a trustworthy final failure count; the 38 [E] entries seen are all in files this slice does not touch. NO claim is made about them. Lesson: 'the gate passed inside the full suite' must not be asserted when the run produced no summary - check for the summary block before treating the log as full."
   },
   "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34.",
   "studio_hunt_2026_09_13_run289": {

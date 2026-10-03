@@ -1520,6 +1520,18 @@ Kontrak `test/features/cinema/presentation/performance_preview_screen_focus_orde
 
 Status fase: **VERIFIED** untuk kontrak WCAG 2.4.3 pada Performance Preview Screen. Cakupan audit focus-order layar: 26 dari 89 target layar (berdasarkan kontrak focus-order yang ada setelah fase ini).
 
+## 32. Fase 32 — Focus Order di Register Screen (2.4.3)
+
+- **Layar:** `lib/features/authentication/presentation/register_screen.dart`
+- **Kontrak:** `test/features/authentication/presentation/register_screen_focus_order_test.dart`
+- **Viewport probe:** 1536x1024, device pixel ratio 1.0.
+- **Hasil terukur:** 6 focus stops; traversal kembali ke stop pertama setelah stop keenam.
+- **Urutan label:** `Display name` → `Email` → `Password` → `Confirm password` → `Create Account` → `Already have an account? Sign in`.
+- **Geometri:** seluruh stop memiliki area non-zero; rect fokus terukur dari atas ke bawah pada `left=579.0`; rect stop 1–4 adalah `378x24`, tombol Create Account `378x40`, dan tombol sign-in `378x56`.
+- **Kontrak posisi:** setiap stop berikutnya berada lebih rendah daripada stop sebelumnya dan seluruhnya memiliki alignment kiri yang sama.
+- **Negative control:** ekspektasi jumlah stop diubah dari 6 menjadi 5; test gagal dengan exit `1` dan output `Some tests failed`. File kontrak dipulihkan setelah probe negatif.
+- **Status:** VERIFIED untuk bukti focus order layar Register pada konfigurasi probe ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

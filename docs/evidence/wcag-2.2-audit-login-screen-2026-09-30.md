@@ -1288,6 +1288,111 @@ File dipulihkan dari backup `cp` di `%LOCALAPPDATA%\Temp`, backup dihapus (`BACK
 - `ReferenceType` dan `ReferenceSource` dibaca langsung dari `lib/features/references/domain/reference_models.dart` saat menyusun fixture (`ReferenceSource.imported`, bukan `upload` — nilai tersebut tidak ada dan compile gagal saat probe pertama).
 - Screen ini berbeda dari `ReferenceManagementScreen` yang sudah diaudit di Bagian 23; keduanya berada di feature `references` tapi widget dan traversal-nya tidak sama.
 
+## 26. Fase 21 — Focus Order di Reference Comparison Screen (2.4.3)
+
+**Layar:** `lib/features/references/presentation/reference_comparison_screen.dart` (`ReferenceComparisonScreen`)
+**Kontrak:** `test/features/references/reference_comparison_focus_order_test.dart`
+**Tanggal:** 2026-10-03 | **Viewport probe & kontrak:** 1536 x 1024 dan 390 x 844, dpr 1.0 | **Metode:** traversal `LogicalKeyboardKey.tab` berulang, berhenti saat `Rect` fokus berulang.
+
+Layar ini mandiri: kedua path gambar disuntikkan lewat constructor dan sengaja menunjuk file yang tidak ada di disk, sehingga setiap pane jatuh ke `errorBuilder` dan menampilkan `Icons.broken_image_outlined`. Tidak ada fixture database, network, maupun Riverpod provider, dan file screen ini tidak pernah disentuh Core Worker (`git status --porcelain` kosong sebelum dan sesudah fase ini).
+
+### Hasil probe (evidence-first)
+
+Output `STOP` mentah dari traversal atas:
+
+```
+=== SCENARIO side-by-side (1536x1024) ===
+STOP 0 | label=Side by Side | 433.2,964.0,223.2x48.0
+STOP 1 | label=Overlay       | 656.4,964.0,223.2x48.0
+STOP 2 | label=Swipe         | 879.6,964.0,223.2x48.0
+STOP 3 | label=Side by Side | 433.2,964.0,223.2x48.0   (REPEAT -> siklus ditutup)
+=== TOTAL 3 ===
+
+=== SCENARIO overlay (1536x1024) ===
+STOP 0 | label=Side by Side | 342.2,964.0,193.2x48.0
+STOP 1 | label=Overlay       | 535.4,964.0,193.2x48.0
+STOP 2 | label=Swipe         | 728.6,964.0,193.2x48.0
+STOP 3 | label=widget:Focus  | 933.8,964.0,260.0x48.0
+STOP 4 | label=Side by Side | 342.2,964.0,193.2x48.0   (REPEAT -> siklus ditutup)
+=== TOTAL 4 ===
+
+=== SCENARIO swipe narrow (390x844) ===
+STOP 0 | label=Side by Side | 12.0,756.0,122.0x76.0
+STOP 1 | label=Overlay       | 134.0,756.0,122.0x76.0
+STOP 2 | label=Swipe         | 256.0,756.0,122.0x76.0
+STOP 3 | label=Side by Side | 12.0,756.0,122.0x76.0   (REPEAT -> siklus ditutup)
+=== TOTAL 3 ===
+
+=== SCENARIO overlay narrow (390x844) ===
+STOP 0 | label=Side by Side        | 12.0,700.0,122.0x76.0
+STOP 1 | label=Overlay              | 134.0,700.0,122.0x76.0
+STOP 2 | label=Swipe                | 256.0,700.0,122.0x76.0
+STOP 3 | label=slider:50% generated  | 12.0,784.0,366.0x48.0
+STOP 4 | label=Side by Side        | 12.0,700.0,122.0x76.0   (REPEAT -> siklus ditutup)
+=== TOTAL 4 ===
+```
+
+Jumlah stop: **3** pada mode `Side by Side`/`Swipe`, **4** pada mode `Overlay`. Probe dihapus setelah kontrak ditulis.
+
+Probe pertama hanya mencari `Text` non-`Icon`, sehingga slider terbaca sebagai `widget:Focus` — label `Slider` disimpan sebagai `label` widget dan tidak pernah di-render sampai slider di-drag, jadi tidak ada `Text` di subtree fokusnya. Kontrak final menyisipkan resolusi `Slider` ke dalam urutan `Tooltip` -> `Slider.label` -> `Text` -> runtime type, hasilnya stabil (`slider:50% generated`).
+
+### Temuan geometri yang menolak asumsi awal
+
+Dua ekspektasi pertama yang saya tulis sendiri ternyata salah dan ditolak oleh probe. Keduanya adalah asumsi saya, bukan defect produksi:
+
+1. **Di layout lebar (1536 px) slider TIDAK turun ke baris baru.** `Wrap` pada panel kontrol punya cukup ruang, jadi slider tetap sebaris dengan tiga segment, di sebelah kanan `Swipe` pada `top` yang sama (964.0). Ekspektasi awal `stops[2].rect.bottom <= stops[3].rect.top` gagal dengan `Expected: a value less than or equal to <964.0> Actual: <1012.0>`.
+2. **Ekspektasi overlap vertikal awal tidak bermakna.** `stops[0].rect.top == stops[1].rect.bottom` menebak `top` sebagai koordinat absolut; yang benar adalah membandingkan tinggi dan lebar. Diganti menjadi assertion tinggi fokus sama dan `top < bottom`.
+
+Yang justru berubah total antara lebar dan sempit adalah **geometri segment**: pada 1536 px tiap segment 223.2 x 48.0 pada `top` 964.0; pada 390 px tiap segment 122.0 x 76.0 pada `top` 756.0, dan slider turun ke baris penuh 366.0 x 48.0 pada `top` 784.0. Keduanya dibaca kiri-ke-kanan sesuai urutan baca visual, sesuai WCAG 2.4.3.
+
+### Kontrak yang dikunci
+
+`test/features/references/reference_comparison_focus_order_test.dart` mengunci lima hal lewat lima test:
+
+1. **Mode Side by Side = 3 stop persis:** `Side by Side`, `Overlay`, `Swipe`, dengan `find.byType(Slider)` harus `findsNothing` — slider hanya boleh muncul di mode `Overlay`.
+2. **Urutan kiri-ke-kanan pada satu baris:** `left` menaik strict pada ketiganya, `top` sama, tinggi sama, `right` segment terakhir tidak melewati 1536.
+3. **Mode Overlay = 4 stop persis:** `Side by Side`, `Overlay`, `Swipe`, `slider:50% generated`. Slider di sebelah kanan `Swipe` (`left` lebih besar), berbagi `top` yang sama di layout lebar, lebarnya lebih besar dari satu segment, `right`-nya tidak melewati viewport, dan `find.text('50% generated')` harus `findsNothing` saat idle karena label slider hanya muncul saat di-drag.
+4. **Viewport 390 x 844 tidak kehilangan kontrol:** urutan label tetap empat, `tester.takeException()` null, lebar slider tidak melewati 390, dan baris segment (`top` 700.0) dibaca sebelum baris slider (`top` 784.0). Semua stop punya area non-zero.
+5. **Perilaku keyboard pada `SegmentedButton`:** `ArrowRight` setelah memfokuskan group memindahkan sorot visual, bukan mengubah mode, sehingga `Slider` tetap `findsNothing` dan traversal dilanjutkan dari node fokus aktif memberi urutan relatif bergeser satu posisi (`Overlay`, `Swipe`, `Side by Side`). Ini didokumentasikan sebagai perilaku nyata, bukan defect focus order.
+
+### Negative control
+
+Ekspektasi urutan label dimutasi sementara (`slider:50% generated` dipindahkan ke depan traversal) lalu `flutter test` dijalankan tanpa pipe:
+
+```
+Expected: ['slider:50% generated', 'Side by Side', 'Overlay', 'Swipe']
+  Actual: ['Side by Side', 'Overlay', 'Swipe', 'slider:50% generated']
+   Which: at location [0] is 'Side by Side' instead of 'slider:50% generated'
+00:02 +4 -1: Some tests failed.
+NEGATIVE_EXIT=1
+```
+
+File dipulihkan dari backup `cp` di `%LOCALAPPDATA%\Temp`, backup dihapus (`BACKUP_GONE=YES`), dan re-run pasca-restore hijau (`RESTORE_EXIT=0`, `+5: All tests passed!`). Kontrak terbukti punya daya deteksi, bukan sekadar lulus pasif.
+
+### Gate
+
+| Gate | Perintah | Hasil |
+|---|---|---|
+| Format | `dart format test/features/references/reference_comparison_focus_order_test.dart` | `Formatted 1 file (0 changed)` (exit 0) |
+| Analyzer | `dart analyze test/features/references/reference_comparison_focus_order_test.dart` | `No issues found!` (exit 0) |
+| Kontrak | `flutter test test/features/references/reference_comparison_focus_order_test.dart` | `+5: All tests passed!` (exit 0) |
+| Negative control | mutasi urutan label traversal | `+4 -1: Some tests failed.` (exit 1) |
+| Suite feature | `flutter test test/features/references/` | lihat tabel status run ini |
+| Scan CJK/Cyrillic | atas file kontrak | `none` |
+
+### Status
+
+**VERIFIED** untuk 2.4.3 (Focus Order) pada layar ini: urutan kiri-ke-kanan pada satu baris segment, penambahan slider sebagai stop keempat hanya di mode `Overlay`, safety geometri berbeda antara layout lebar dan sempit tetap tanpa kontrol hilang, dan area fokus non-zero di kedua viewport — semuanya terkunci kontrak yang terbukti negatif.
+
+Tidak ada defect produksi focus order yang ditemukan, jadi tidak ada kode produksi yang diubah pada fase ini.
+
+### Catatan metodologi
+
+- Dua ekspektasi awal saya sendiri digugur oleh probe (lihat "Temuan geometri yang menolak asumsi awal"). Kontrak yang ditulis ulang mengikuti geometri nyata, bukan sebaliknya.
+- Kunci siklus memakai segitiga (`top|left|width`). Pada layout lebar ketiga segment punya lebar identik (223.2) dan `top` identik, tapi `left` berbeda, jadi tidak collapsing.
+- `_screen()` tidak butuh `ProviderScope` karena layar ini `StatefulWidget` murni dengan data injeksi constructor.
+- ScrollBehavior default Material sudah menyertakan `widgetsApp` di traversal, jadi `InteractiveViewer` di area gambar tidak muncul sebagai stop — memang tidak punya kontrol keyboard yang dapat difokus.
+- Screen ini berbeda dari `ReferenceLibraryScreen` (Bagian 25) dan `ReferenceManagementScreen` (Bagian 24), meski ketiganya berada di feature `references`.
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

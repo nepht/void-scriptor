@@ -23,6 +23,45 @@ const List<String> kBuildProvenanceRequiredEvidence = <String>[
   'provenance_record',
 ];
 
+/// Prefix of the `provenance_record` line that names the logs the rebuild
+/// records are supposed to cite.
+const String _kLogSummaryPrefix = 'provenance_logs ';
+
+/// The grammar a `provenance_record` line uses to restate a rebuild's
+/// measurements: label, exit code, duration, and both ends of its window.
+///
+/// A 40-hex source revision is deliberately NOT part of this pattern — whether
+/// such a revision names a real tree is not decidable without resolving a git
+/// object, which this layer does not do.
+final RegExp _kRebuildSummaryPattern = RegExp(
+  r'^(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)\s+'
+  r'\((.+?)\s+\.\.\s+(.+?)\)$',
+);
+
+/// A `provenance_logs` line and the paths it names.
+final class _LogSummary {
+  const _LogSummary(this.paths);
+
+  final Set<String> paths;
+}
+
+/// One `rebuild_<label> ...` restatement, decoded.
+final class _RebuildSummary {
+  const _RebuildSummary(
+    this.label,
+    this.exitCode,
+    this.duration,
+    this.start,
+    this.finish,
+  );
+
+  final String label;
+  final int exitCode;
+  final int duration;
+  final DateTime start;
+  final DateTime finish;
+}
+
 /// Verdict of comparing two clean rebuilds.
 enum RebuildVerdict {
   /// Both rebuilds produced byte-identical artifact hashes.
@@ -299,7 +338,182 @@ class BuildProvenanceEvidence {
     if (!_hasContent(evidence.provenanceRecord)) {
       missing.add('provenance_record');
     }
+    if (!_summaryAgreesWithRebuilds(evidence)) {
+      missing.add('provenance_record');
+    }
     return missing;
+  }
+
+  /// Whether every summary line that restates a measurement agrees with the
+  /// rebuild record it restates.
+  ///
+  /// Sprint 117.43-15 (fail-open, fixed). `provenance_record` was checked by
+  /// `_hasContent` alone, which asks whether the group holds non-blank strings
+  /// and nothing more — then the verdict printed `provenance_record: 6 item`
+  /// as though six lines had been checked against anything. Nothing ever read
+  /// them, so the group could contradict the `rebuild_results` it summarises
+  /// in every direction at once and the 113.39 evaluation still returned
+  /// `pass`.
+  ///
+  /// The shipped document states four of its six lines in a precise grammar:
+  ///
+  ///   rebuild_LABEL exit_code N duration_seconds N (START .. END)
+  ///
+  /// That line restates three facts this file already measures elsewhere — the
+  /// exit code (`isWellFormed`), the duration (`hasWellFormedWindow`), and the
+  /// window — so those three are compared against the record they name. A
+  /// summary that disagrees with the measurement it summarises is not evidence,
+  /// and a document that contradicts itself is the one document a
+  /// reproducibility gate cannot accept.
+  ///
+  /// `provenance_logs <paths...>` is the same kind of restatement: 117.43-10
+  /// and 117.43-14 made every rebuild's log readable, so a summary naming a
+  /// different set of logs is contradicted by the records it summarises. The
+  /// named set must equal the set the rebuild records cite.
+  ///
+  /// Two lines are deliberately NOT compared, and the boundaries are pinned by
+  /// the 117.43-15 tests:
+  ///
+  /// * `build_command` states what the release pipeline runs, not what one
+  ///   rebuild cycle ran. The shipped value omits the `flutter clean &&`
+  ///   prefix its rebuild records carry, and that difference is CORRECT —
+  ///   comparing them would refuse the honest document. 117.43-10 measures the
+  ///   clean step where it is actually claimed, on the record that carries it.
+  /// * `source_revision` names the tree, and this layer resolves no git
+  ///   objects. A fabricated 40-hex revision is shape-identical to a real one,
+  ///   so its existence is not decidable here without adding a process seam
+  ///   that would make the verdict depend on a live checkout. Only its weaker
+  ///   shape claim is enforced: a value that is not 40 hex characters at all
+  ///   names no tree.
+  ///
+  /// Everything else is prose. `rebuild_a rebuilt cleanly after ...` names a
+  /// rebuild while stating no exit code, duration, or window, so it makes no
+  /// claim to contradict — the same non-claim rule 117.43-07 settled for the
+  /// comparison verdict. Absence of a summary line is likewise not a defect:
+  /// a document that stops restating its own measurements loses a convenience,
+  /// not its evidence.
+  static bool _summaryAgreesWithRebuilds(BuildProvenanceEvidence evidence) {
+    final lines = evidence.provenanceRecord;
+    final rebuilds = evidence.rebuildResults;
+    if (lines == null || rebuilds == null) return true;
+
+    for (final line in lines) {
+      final summary = _parseRebuildSummary(line.trim());
+      if (summary == null) {
+        if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
+        continue;
+      }
+
+      final label = summary.label;
+      final matches = <RebuildResult>[];
+      for (final rebuild in rebuilds) {
+        if (rebuild.label == label) matches.add(rebuild);
+      }
+      // A summary naming a rebuild no record mentions is the inverse of the
+      // omission 117.43-14 closed: the gate once reported a rebuild count it
+      // had chosen rather than read, and this adds a count it never read.
+      if (matches.isEmpty) return false;
+      for (final rebuild in matches) {
+        if (rebuild.exitCode != summary.exitCode) return false;
+        if (!_summaryDurationAgrees(rebuild, summary)) return false;
+      }
+    }
+    // The reverse direction is deliberately NOT required. Nothing in the
+    // document promises that every rebuild is restated in prose, and the
+    // shipped fixtures restate none of them — requiring it would invent an
+    // acceptance criterion the evidence never stated, which is the same
+    // overclaim this gate exists to refuse. Only lines that ARE written are
+    // held to agree.
+    return true;
+  }
+
+  /// A `provenance_logs <paths...>` line, or null when [line] is not one.
+  static _LogSummary? _parseLogSummary(String line) {
+    if (!line.startsWith(_kLogSummaryPrefix)) return null;
+    final paths = line
+        .substring(_kLogSummaryPrefix.length)
+        .split(RegExp(r'\s+'))
+        .where((path) => path.isNotEmpty)
+        .toList();
+    if (paths.isEmpty) return null;
+    return _LogSummary(paths.toSet());
+  }
+
+  /// A `rebuild_<label> exit_code <n> duration_seconds <n> (<a> .. <b>)` line.
+  ///
+  /// Null for every other line, including prose that names a rebuild without
+  /// restating a measurement.
+  static _RebuildSummary? _parseRebuildSummary(String line) {
+    final match = _kRebuildSummaryPattern.firstMatch(line);
+    if (match == null) return null;
+    final label = match.group(1)!;
+    // Only the summary lines that name a rebuild are restatements. A line that
+    // merely starts with `rebuild_` but states no measurement is prose.
+    if (!label.startsWith('rebuild_')) return null;
+    final exitCode = int.tryParse(match.group(2)!);
+    final duration = int.tryParse(match.group(3)!);
+    if (exitCode == null || duration == null) return null;
+    final start = DateTime.tryParse(match.group(4)!);
+    final finish = DateTime.tryParse(match.group(5)!);
+    if (start == null || finish == null) return null;
+    return _RebuildSummary(label, exitCode, duration, start, finish);
+  }
+
+  /// Whether a `provenance_logs` line contradicts the logs the rebuild records
+  /// cite. A line that names no log at all is prose.
+  ///
+  /// When NO record states a log there is no claim for the summary to
+  /// contradict, so the line is left alone — the same non-claim rule
+  /// 117.43-07/09/10 settled for windows, commands, and logs. Decoders that
+  /// omit the field entirely (the 113.39 contract test builds its
+  /// `RebuildResult` without one) therefore stay honest rather than being
+  /// refused for stating something the records never denied.
+  static bool _logSummaryNamesUnknownLogs(
+    String line,
+    List<RebuildResult> rebuilds,
+  ) {
+    final summary = _parseLogSummary(line);
+    if (summary == null) return false;
+    final cited = <String>{
+      for (final rebuild in rebuilds)
+        if (rebuild.log != null && rebuild.log!.trim().isNotEmpty)
+          rebuild.log!.trim(),
+    };
+    if (cited.isEmpty) return false;
+    // 117.43-10 makes a cited-but-unreadable log fail closed, so the summary
+    // may neither add a log no record cites nor drop one the records do:
+    // either would restate the evidence differently from the records it
+    // summarises.
+    return !_samePathSet(summary.paths, cited);
+  }
+
+  /// Whether the summary's window is the rebuild's own window, and the stated
+  /// duration is the window's own length.
+  static bool _summaryDurationAgrees(
+    RebuildResult rebuild,
+    _RebuildSummary summary,
+  ) {
+    final start = rebuild.startedAt == null
+        ? null
+        : DateTime.tryParse(rebuild.startedAt!.trim());
+    final finish = rebuild.finishedAt == null
+        ? null
+        : DateTime.tryParse(rebuild.finishedAt!.trim());
+    if (start == null || finish == null) return true;
+    if (!start.isAtSameMomentAs(summary.start)) return false;
+    if (!finish.isAtSameMomentAs(summary.finish)) return false;
+    // The record's own duration is measured against its own window by the
+    // gate's `_durationAgrees`; here the summary is measured against that same
+    // window, so both numbers are held to the interval itself rather than to
+    // each other. A summary that restates a correct duration while the record
+    // disagrees with its own window is still caught, because the summary is
+    // compared to the window, not copied from the record.
+    return summary.duration == finish.difference(start).inSeconds;
+  }
+
+  static bool _samePathSet(Set<String> left, Set<String> right) {
+    if (left.length != right.length) return false;
+    return left.containsAll(right);
   }
 
   /// Evaluates evidence: null or unrecorded evidence is

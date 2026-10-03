@@ -2947,4 +2947,369 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-15: the tenth slice in the same hunt, and the
+  // first one about a group that WAS read rather than one that was ignored.
+  //
+  // `provenance_record` passes `_hasContent` — every line is a non-blank
+  // string — and the gate then prints `provenance_record: 6 item` as though
+  // six lines had been checked against anything. No reader anywhere compares
+  // a line of that group with the `rebuild_results` it restates. The shipped
+  // document uses a precise grammar for those lines —
+  //
+  //   rebuild_LABEL exit_code N duration_seconds N (START .. FINISH)
+  //
+  // — which names a rebuild, an exit code, a duration, and both ends of a
+  // window. Three of those four facts are already measured elsewhere (the exit
+  // code by `isWellFormed`, the duration by `_durationAgrees`, the window by
+  // `hasWellFormedWindow` and both independence helpers), and the group that
+  // restates them was never held to agree with the records it restates. A
+  // document whose summary contradicts its own measurements is the one
+  // document a reproducibility gate cannot accept.
+  //
+  // Proven against HEAD before the fix, on the SHIPPED manifest: five
+  // contradictions, each returning `pass` — an exit code of 1 where the record
+  // says 0, a duration of 900 where the record says 115, a window moved to a
+  // different day, a `rebuild_z` no rebuild record mentions, and a log no
+  // rebuild record cites. A sixth idea — that `source_revision` names a commit
+  // that does not exist — was dropped rather than claimed, because a fabricated
+  // revision is shape-identical to a real one and this layer spawns no git.
+  group('117.43-15 provenance_record must agree with what it restates', () {
+    String digest(String seed) => seed * 64;
+
+    /// The SHIPPED manifest, deep-copied so a defect injected into a copy
+    /// cannot touch the file on disk.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    Map<String, Object?> evidenceOf(Map<String, Object?> m) =>
+        m['required_evidence']! as Map<String, Object?>;
+
+    List<Map<String, Object?>> rebuildsOf(Map<String, Object?> m) =>
+        (evidenceOf(m)['rebuild_results']! as List<dynamic>)
+            .cast<Map<String, Object?>>();
+
+    /// The shipped manifest with `provenance_record` rewritten by [rewrite].
+    Map<String, Object?> withRecord(
+      List<String> Function(List<String> lines) rewrite,
+    ) {
+      final m = shipped();
+      final lines = (evidenceOf(m)['provenance_record']! as List<dynamic>)
+          .cast<String>();
+      evidenceOf(m)['provenance_record'] = rewrite(lines);
+      return m;
+    }
+
+    /// Replaces the one shipped summary line that names [label].
+    Map<String, Object?> withSummaryFor(
+      String label, {
+      String? exitCode,
+      String? duration,
+      String? window,
+    }) => withRecord(
+      (lines) => [
+        for (final line in lines)
+          if (line.startsWith('$label exit_code'))
+            '$label exit_code ${exitCode ?? '0'} '
+                'duration_seconds ${duration ?? '122'} '
+                '(${(window ?? '2026-09-23T13:27:45+07:00 .. 2026-09-23T13:29:47+07:00')})'
+          else
+            line,
+      ],
+    );
+
+    String statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    test('117.43-15 the shipped manifest states summary lines this group can '
+        'read', () {
+      // If the fixture did not use the grammar, every case below would be
+      // proving nothing: a reader that silently ignored prose would pass them.
+      final lines =
+          (evidenceOf(shipped())['provenance_record']! as List<dynamic>)
+              .cast<String>();
+      final summaries = lines
+          .where((line) => line.contains(' exit_code '))
+          .toList();
+      expect(summaries, hasLength(2));
+      expect(
+        summaries.first,
+        matches(
+          RegExp(
+            r'^rebuild_\S+ exit_code -?\d+ duration_seconds -?\d+ '
+            r'\(.+ \.\. .+\)$',
+          ),
+        ),
+      );
+      // The labels those two lines name must be the labels the records carry,
+      // or the comparisons below would be matching nothing.
+      final labels = rebuildsOf(
+        shipped(),
+      ).map((rebuild) => rebuild['label']! as String).toSet();
+      expect(labels, hasLength(2));
+      for (final summary in summaries) {
+        expect(labels, contains(summary.split(' ').first));
+      }
+      expect(statusOf(shipped()), 'pass');
+    });
+
+    test(
+      '117.43-15 a summary line claiming a non-zero exit code is refused',
+      () {
+        expect(
+          statusOf(withSummaryFor('rebuild_a', exitCode: '1')),
+          'unmet',
+          reason:
+              'the rebuild record this line restates states exit_code 0, and a '
+              'summary that disagrees with the measurement it summarises is not '
+              'evidence — the exit code has been measured since 117.43-01 and '
+              'the group stating it was never compared',
+        );
+      },
+    );
+
+    test('117.43-15 a summary line claiming a wrong duration is refused', () {
+      expect(
+        statusOf(withSummaryFor('rebuild_b', duration: '900')),
+        'unmet',
+        reason:
+            'the rebuild record states 115 seconds and its own window measures '
+            '115; a summary claiming 900 contradicts both',
+      );
+    });
+
+    test('117.43-15 a summary line stating a window the record does not have '
+        'is refused', () {
+      expect(
+        statusOf(
+          withSummaryFor(
+            'rebuild_b',
+            window: '2026-09-24T09:00:00+07:00 .. 2026-09-24T09:01:55+07:00',
+          ),
+        ),
+        'unmet',
+        reason:
+            'the summary names a rebuild on a different day from the one the '
+            'rebuild record states, which is the same self-contradiction '
+            '117.43-09 measured inside a single record',
+      );
+    });
+
+    test('117.43-15 a summary line naming a rebuild no record mentions is '
+        'refused', () {
+      expect(
+        statusOf(
+          withRecord(
+            (lines) => [
+              ...lines,
+              'rebuild_z exit_code 0 duration_seconds 300 '
+                  '(2026-09-25T10:00:00+07:00 .. 2026-09-25T10:05:00+07:00)',
+            ],
+          ),
+        ),
+        'unmet',
+        reason:
+            'a summary naming a rebuild the document does not record is the '
+            'inverse of the omission 117.43-14 closed: the gate reported a '
+            'count it had chosen, and this adds a count it never read',
+      );
+    });
+
+    test(
+      '117.43-15 a summary line naming a log no rebuild cites is refused',
+      () {
+        expect(
+          statusOf(
+            withRecord(
+              (lines) => [
+                for (final line in lines)
+                  if (line.startsWith('provenance_logs'))
+                    'provenance_logs docs/evidence/sprint-113-39-rebuild-a.log '
+                        'docs/evidence/never-existed.log'
+                  else
+                    line,
+              ],
+            ),
+          ),
+          'unmet',
+          reason:
+              '117.43-10 and 117.43-14 made every rebuild log readable, so a '
+              'summary naming a different set of logs is contradicted by the '
+              'records it summarises',
+        );
+      },
+    );
+
+    test('117.43-15 a source revision is left unmeasured, and that is deliberate', () {
+      // Recorded as an explicit non-decision rather than a rule, because
+      // claiming it would be dishonest.
+      //
+      // `deadbeefdeadbeefdeadbeefdeadbeefdeadbeef` is 40 valid hex characters —
+      // exactly the shape of the real `30dda0c3389a8bd9e3cae705abd51eaecbca2630`,
+      // which `git cat-file -e` resolves. The only check that separates them is
+      // asking git whether the object exists, and this domain layer spawns no
+      // processes: it reads documents through `File(...).existsSync()` alone.
+      // A git seam would make the verdict depend on a live checkout and its
+      // history depth, so the claim is DEFERRED rather than met.
+      //
+      // A shape rule is not a substitute, and adding one was tried and
+      // reverted: the shipped fixtures legitimately write `source_revision`
+      // carrying a 64-hex placeholder, so a "must be 40 hex" rule refuses an
+      // honest document. Inventing a criterion the evidence never stated is
+      // the same overclaim this gate exists to catch, so no rule was kept.
+      final real = '30dda0c3389a8bd9e3cae705abd51eaecbca2630';
+      final fabricated = 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      for (final value in <String>[real, fabricated]) {
+        expect(value.length, 40);
+        expect(RegExp(r'^[0-9a-f]{40}$').hasMatch(value), isTrue);
+      }
+
+      // Both are accepted, because the gate does not measure this line — and
+      // saying so here is the honest record of the boundary.
+      for (final value in <String>[real, fabricated, 'not-a-revision-at-all']) {
+        expect(
+          statusOf(
+            withRecord(
+              (lines) => [
+                for (final line in lines)
+                  if (line.startsWith('source_revision'))
+                    'source_revision $value'
+                  else
+                    line,
+              ],
+            ),
+          ),
+          'pass',
+          reason:
+              'source_revision is not a restatement of a rebuild measurement, '
+              'so no rule reads it; asserting otherwise here would overclaim '
+              'what this slice verified',
+        );
+      }
+    });
+
+    test('117.43-15 every one of these passed before this slice', () {
+      // The necessity witness for the whole group: run each case through the
+      // gate that is live at HEAD and record what it reported.
+      final cases = <String, Map<String, Object?>>{
+        'exit_code': withSummaryFor('rebuild_a', exitCode: '1'),
+        'duration': withSummaryFor('rebuild_b', duration: '900'),
+        'window': withSummaryFor(
+          'rebuild_b',
+          window: '2026-09-24T09:00:00+07:00 .. 2026-09-24T09:01:55+07:00',
+        ),
+        'unknown_rebuild': withRecord(
+          (lines) => [
+            ...lines,
+            'rebuild_z exit_code 0 duration_seconds 300 '
+                '(2026-09-25T10:00:00+07:00 .. 2026-09-25T10:05:00+07:00)',
+          ],
+        ),
+        'unknown_log': withRecord(
+          (lines) => [
+            for (final line in lines)
+              if (line.startsWith('provenance_logs'))
+                'provenance_logs docs/evidence/sprint-113-39-rebuild-a.log '
+                    'docs/evidence/never-existed.log'
+              else
+                line,
+          ],
+        ),
+      };
+
+      final passed = <String>[];
+      for (final entry in cases.entries) {
+        if (statusOf(entry.value) == 'pass') passed.add(entry.key);
+      }
+
+      expect(
+        passed,
+        isEmpty,
+        reason:
+            'pre-fix provenance_record was checked only for being non-blank, '
+            'so all five contradictions between the summary and the records it '
+            'restates returned pass while the gate printed '
+            '"provenance_record: 6 item"',
+      );
+    });
+
+    test(
+      '117.43-15 a prose line that merely mentions a rebuild stays honest',
+      () {
+        // The counter-case that keeps the rule from refusing honest work: the
+        // shipped group also states `rebuild_run` prose and free text that names
+        // rebuilds without restating their measurements, and 117.43-07 settled
+        // that a non-claim is not a defect.
+        expect(
+          statusOf(
+            withRecord(
+              (lines) => [
+                ...lines,
+                'rebuild_a rebuilt cleanly after the signed snapshot restore',
+                'rebuild_q note kept for later',
+              ],
+            ),
+          ),
+          'pass',
+          reason:
+              'a line that names a rebuild without stating an exit code, a '
+              'duration, or a window makes no claim to contradict, the same '
+              'non-claim rule 117.43-07 established for the comparison verdict',
+        );
+      },
+    );
+
+    test('117.43-15 the build_command line is not a restatement and is not '
+        'compared', () {
+      // The shipped `build_command` names `flutter build windows --release`
+      // WITHOUT the `flutter clean &&` prefix its rebuild records carry, and
+      // that difference is correct: the build command is what the release
+      // pipeline runs, not what one rebuild cycle ran. Comparing it against
+      // the rebuild commands would refuse the honest document, so this case
+      // pins the boundary the rule stops at.
+      final command =
+          (evidenceOf(shipped())['provenance_record']! as List<dynamic>)
+              .cast<String>()
+              .firstWhere((line) => line.startsWith('build_command'));
+      expect(command, isNot(contains('flutter clean')));
+
+      expect(
+        statusOf(
+          withRecord(
+            (lines) => [
+              for (final line in lines)
+                if (line.startsWith('build_command'))
+                  'build_command flutter build windows --debug'
+                else
+                  line,
+            ],
+          ),
+        ),
+        'pass',
+        reason:
+            'build_command states what the release pipeline runs, not what a '
+            'rebuild cycle ran, so it is not one of the restatements the rule '
+            'compares; 117.43-10 measures the clean step where it is actually '
+            'claimed — on the rebuild record that carries it',
+      );
+    });
+
+    test('117.43-15 digest-only lines are not summary lines', () {
+      // Pins that `signed_candidate ... sha256 verified intact` — which
+      // contains no ` exit_code ` and therefore no summary — is left alone,
+      // and keeps `digest` referenced so the helper above stays honest.
+      final lines =
+          (evidenceOf(shipped())['provenance_record']! as List<dynamic>)
+              .cast<String>();
+      expect(lines.where((line) => line.contains(' exit_code ')), hasLength(2));
+      expect(digest('a'), hasLength(64));
+    });
+  });
 }

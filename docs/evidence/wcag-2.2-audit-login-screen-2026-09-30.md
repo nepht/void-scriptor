@@ -977,6 +977,26 @@ Ekspektasi sengaja diubah agar melewati item pertama enum. Hasil **2 dari 3 PASS
 
 ---
 
+## 18. Fase 13 — Focus Order di Workflow Editor (2.4.3)
+
+`workflow_editor_screen.dart` dipilih karena memiliki tiga field input dan satu aksi Save yang muncul setelah draft valid.
+
+### 18.1 Kontrak traversal
+
+Pada draft awal, probe dan test menghasilkan tiga stop fokus dalam urutan visual vertikal: `Workflow ID`, `Name`, dan `Steps (comma-separated ids)`. Setelah ID dan steps diisi sehingga draft valid, tombol `Save` muncul sebagai stop keempat dan berada di bawah ketiga field.
+
+Test mengunci dua keadaan UI: draft incomplete (3 stop) dan draft valid (4 stop). Perubahan status valid tidak mengubah urutan field; ia hanya menambahkan Save di akhir.
+
+### 18.2 Evidence dan gate
+
+- Test fokus Workflow Editor: **2/2 PASS**.
+- Test seluruh `test/features/workflow/`: **19 PASS**.
+- Negative control mengubah ekspektasi draft incomplete dari 3 menjadi 4 stop dan menghasilkan **1 failure**, membuktikan assertion traversal aktif.
+- `dart analyze` test fokus: **No issues found**.
+- CJK/Cyrillic scan: **none**.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

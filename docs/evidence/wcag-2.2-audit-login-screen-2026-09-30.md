@@ -1679,7 +1679,7 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 Jumlah stop = **5**. `tester.takeException()` = `null`.
 
-Catatan probe: probe pertama sempat salah karena `seen.add(key)` dipanggil dua kali dalam satu iterasi (key kedua membuat match pertama selalu dianggap repeat), sehingga traversal berhenti di stop 0. Bug berada di probe, bukan di produksi; probe diperbaiki dengan menyimpan hasil `seen.add` ke variabel lokal sebelum 판단 repeat.
+Catatan probe: probe pertama sempat salah karena `seen.add(key)` dipanggil dua kali dalam satu iterasi (key kedua membuat match pertama selalu dianggap repeat), sehingga traversal berhenti di stop 0. Bug berada di probe, bukan di produksi; probe diperbaiki dengan menyimpan hasil `seen.add` ke variabel lokal sebelum memutuskan repeat.
 
 ### Kontrak yang dikunci
 
@@ -1730,6 +1730,78 @@ Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak dan bagian report ini: 
 Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Mobile Navigation Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **31 dari 89** target layar (30 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini; satu kontrak lain — Content Capability Matrix Screen — masih untracked di working tree dan tidak dihitung di sini).
+## 41. Fase 41 — Focus Order di HUD Designer Screen (2.4.3)
+
+**Layar**: `lib/features/game/presentation/hud_designer_screen.dart` (Game / HUD Designer, Step 47.63)
+**Kontrak**: `test/features/game/presentation/hud_designer_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam `ListTile` tergeografis pada subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `Health` | `Focus` (Switch kartu Health) | 1432.0, 127.0, 60.0, 48.0 |
+| 1 | `Energy` | `Focus` (Switch kartu Energy) | 1432.0, 195.0, 60.0, 48.0 |
+| 2 | `Ability` | `Focus` (Switch kartu Ability) | 1432.0, 263.0, 60.0, 48.0 |
+| 3 | `Weapon` | `Focus` (Switch kartu Weapon) | 1432.0, 331.0, 60.0, 48.0 |
+| 4 | `Minimap` | `Focus` (Switch kartu Minimap) | 1432.0, 399.0, 60.0, 48.0 |
+| 5 | `Quest` | `Focus` (Switch kartu Quest) | 1432.0, 467.0, 60.0, 48.0 |
+| 6 | `Interaction` | `Focus` (Switch kartu Interaction) | 1432.0, 535.0, 60.0, 48.0 |
+| 7 | `Boss Health` | `Focus` (Switch kartu Boss Health) | 1432.0, 603.0, 60.0, 48.0 |
+| 8 | `Health` (repeats stop 0) | — | 1432.0, 127.0, 60.0, 48.0 |
+
+Jumlah stop = **8**. `tester.takeException()` = `null`. Tiap kartu memberi tepat satu node fokus (Switch di kolom `trailing`); `AppBar` `HUD Designer` tidak punya tombol back pada konfigurasi test, sehingga tidak ada stop sebelum `Health`.
+
+### Kontrak yang dikunci
+
+- `hasLength(8)` — tepat delapan stop fokus yang dapat dicapai lewat Tab.
+- Urutan label `['Health', 'Energy', 'Ability', 'Weapon', 'Minimap', 'Quest', 'Interaction', 'Boss Health']` — urutan deklarasi `_hudItems` di produksi.
+- Luas fokus non-nol pada setiap stop (`width > 0 && height > 0`); masing-masing 60.0 x 48.0.
+- Fokus bergerak strictly atas-ke-bawah: `stops[i].rect.top > stops[i-1].rect.top` untuk semua i (selisih konstan 68.0 px).
+- Semua stop berbagi kolom trailing yang sama (`stops[i].rect.left == stops[0].rect.left` = 1432.0) — bukan kiri-ke-kanan, karena kartu ditumpuk vertikal.
+- Setelah kartu terakhir, traversal wrap kembali ke kartu pertama dengan `rect` identik; satu Tab lanjutan mengenai label kedua (`Energy`), membuktikan siklus fokus utuh.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Layar ini presentational + konsumer Riverpod tanpa `watch`/`read` apa pun: tidak ada database, jaringan, atau storage, sehingga tidak ada fixture yang perlu diremock dan tidak ada item `DEFERRED` pada fase ini. `Switch` di setiap kartu memakai `value: true` dan `onChanged: (_) {}` (state tidak persisten) — kontrak fokus mengunci urutan & geometri, bukan perilaku toggle. Judul `HUD` (heading) bukan node fokus karena `Text` murni tanpa gesture/semantics action.
+
+### Verifikasi
+
+```
+dart format test/features/game/presentation/hud_designer_focus_order_test.dart
+=> Formatted 1 file (1 changed)
+
+dart analyze test/features/game/presentation/hud_designer_focus_order_test.dart              lib/features/game/presentation/hud_designer_screen.dart
+=> No issues found!
+
+flutter test test/features/game/presentation/hud_designer_focus_order_test.dart
+=> 00:01 +3: All tests passed!
+
+flutter test test/features/game/
+=> 00:13 +42: All tests passed!  (exit 0)
+```
+
+**Negative control** (wajib, dilakukan pada commit yang sama): ekspektasi urutan label dibalik menjadi `[..., 'Quest', 'Minimap', ...]` (tukar `Minimap` <-> `Quest`) pada salinan cadangan di `%LOCALAPPDATA%\Temp`, lalu test dijalankan:
+
+```
+00:01 +0 -1: HUD Designer — kontrak focus order 2.4.3 1. delapan stop dengan urutan label kartu HUD [E]
+  Test failed. See exception logs above.
+00:01 +2 -1: Some tests failed.
+Failing tests: .../hud_designer_focus_order_test.dart: 1. delapan stop dengan urutan label kartu HUD
+exit code 1
+```
+
+Salinan cadangan dipulihkan dan dihapus; `Minimap` kembali ke posisi ke-5 dan test ulang `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus, bukan sekadar lolos karena tidak ada ekspektasi.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
+
+**Pemulihan run terputus (fase 40):** run sebelumnya meninggalkan `## 40. Fase 40` beserta `test/features/creator/presentation/mobile_navigation_screen_focus_order_test.dart` (untracked) tanpa commit karena lock basi (1243 dtk) diambil paksa. Test fase 40 dijalankan ulang (`+1: All tests passed!`, `dart analyze` `No issues found!`) lalu dikomit lebih dulu sebagai `3f10ddf` sebelum fase ini, supaya setiap section di report punya kontrak di git. Sisa artefak lama yang belum di-commit: `test/features/content_capabilities/presentation/content_capability_matrix_screen_focus_order_test.dart` + `_probe_focus_test.dart` (untracked, tanpa section report) — tidak dihitung dan tidak disentuh fase ini.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada HUD Designer Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **31 dari 89** target layar (30 kontrak focus-order di-track git setelah pemulihan fase 40 + kontrak baru ini; kontrak Content Capability Matrix Screen masih untracked di working tree dan tidak dihitung di sini).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -277,6 +277,82 @@ void main() {
     );
   });
 
+  test('117.43-22 a method naming another digest algorithm contradicts the '
+      'digests it records', () {
+    final a = 'a' * 64;
+    final b = 'b' * 64;
+
+    ArtifactComparison comparedWith(String method) => ArtifactComparison(
+      method: method,
+      rebuildA: _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': a}),
+      rebuildB: _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': b}),
+      // An honest non-identity claim: the two rebuilds really do differ, and
+      // the limits document it, so the ONLY question these cases ask is the
+      // method's shape.
+      verdict: RebuildVerdict.notBitIdentical,
+      limits: <String>['fixture: digests deliberately differ'],
+    );
+
+    // Control 1: the algorithm the records are actually validated as. Both
+    // spellings of SHA-256 the shipped documents use stay well formed.
+    expect(comparedWith('SHA-256 over exe+dll set').isWellFormed, isTrue);
+    expect(comparedWith('sha256').isWellFormed, isTrue);
+
+    // Control 2: a method that names no algorithm at all makes no algorithm
+    // claim, so it is not measured (the same non-claim rule 117.43-07 settled
+    // for windows, commands, logs, and verdict strings).
+    expect(
+      comparedWith('cold rebuilds, cache dropped').isWellFormed,
+      isTrue,
+      reason: 'a method that names no algorithm contradicts nothing',
+    );
+
+    // The defect: `method` states how the recorded digests were produced, and
+    // `isWellFormed` has already decided every one of them is exactly 64 hex
+    // characters. A method naming a different digest algorithm states that the
+    // comparison was performed with something whose output cannot have the
+    // width the records carry — and nothing asked, because the only test on
+    // this field was "is it blank?".
+    for (final method in <String>[
+      'MD5 over the 6 exe/dll artifacts',
+      'SHA-1 over the recorded artifacts',
+      'SHA-512 over the recorded artifacts',
+      'crc32 over the recorded artifacts',
+    ]) {
+      expect(
+        comparedWith(method).isWellFormed,
+        isFalse,
+        reason:
+            '"$method" names an algorithm the 64-hex digests cannot be, and a '
+            'comparison that misstates how it hashed is not evidence',
+      );
+    }
+
+    // The same contradiction has to reach the group verdict, not just the
+    // comparison object: the gate printed `artifact_comparison: ...` for a
+    // method it never read.
+    final methodMismatch = BuildProvenanceEvidence(
+      buildInputs: <String>['pubspec.yaml sha256 $a'],
+      toolchainVersions: <String>['Flutter 3.x', 'Dart 3.x'],
+      dependencyLock: <String>['pubspec.lock sha256 $a'],
+      rebuildResults: <RebuildResult>[
+        _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': a}),
+        _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': b}),
+      ],
+      artifactComparison: comparedWith('MD5 over the recorded artifacts'),
+      provenanceRecord: <String>['source_revision $a'],
+    );
+    expect(
+      BuildProvenanceEvidence.missingEvidence(methodMismatch),
+      contains('artifact_comparison'),
+      reason: 'a comparison that misstates its algorithm is not a comparison',
+    );
+    expect(
+      BuildProvenanceEvidence.evaluate(methodMismatch).state,
+      isNot(BuildProvenanceState.pass),
+    );
+  });
+
   test('113.39 provenance manifest records all six evidence groups', () {
     final file = File(
       'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',

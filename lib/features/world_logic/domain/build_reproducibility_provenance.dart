@@ -62,6 +62,67 @@ final class _RebuildSummary {
   final DateTime finish;
 }
 
+/// Whether a recorded comparison method names a digest algorithm whose output
+/// is not the 64-character SHA-256 value every recorded digest is validated as.
+///
+/// Sprint 117.43-22. `ArtifactComparison.method` is the document's own account
+/// of how the digests were produced, and until this slice the only question
+/// asked of it was whether it was blank. The rebuild records it sits beside are
+/// held to a strict rule — every value in `artifactHashes` must be exactly 64
+/// hex characters — so a method naming MD5, SHA-1, or CRC-32 states that the
+/// comparison ran on an algorithm that cannot emit those values at all.
+///
+/// Matching is on whole algorithm TOKENS rather than on substrings, so prose
+/// that merely mentions a digest (`hash-pinned sha256; 0 git/path source`)
+/// cannot trip it, and a method that names no algorithm at all is a non-claim
+/// in the same sense 117.43-07/11/21 settled for windows, commands, logs, and
+/// lines that only mention the word.
+///
+/// BLAKE2b, BLAKE3, Keccak, and SHA3 are deliberately absent: they also emit 64
+/// hex characters, so a method naming one is not contradicting the recorded
+/// values' width and this layer cannot tell whether the document used it.
+bool _namesOtherDigestAlgorithm(String method) {
+  // `SHA-1`, `sha1`, and `Sha 1` are the same algorithm written three ways, but
+  // the hyphen and the space are separators for the tokenizer below, which
+  // would read `SHA-1` as the tokens `sha` and `1` and miss it. Fold the
+  // numbered digests back together first, then tokenize on what remains. The
+  // trailing digits matter: `SHA-512` must stay distinguishable from the
+  // SHA-256 family, so only the fold happens here and the exact number is what
+  // the set lookup then judges.
+  final normalised = method.replaceAllMapped(
+    RegExp(r'sha[\s_-]*(\d+)', caseSensitive: false),
+    (match) => 'sha${match.group(1)}',
+  );
+  final tokens = normalised
+      .split(RegExp(r'[^0-9a-zA-Z]+'))
+      .where((token) => token.isNotEmpty)
+      .map((token) => token.toLowerCase())
+      .toSet();
+  return tokens.any(_kNonSha256Algorithms.contains);
+}
+
+/// Digest algorithms that cannot produce a 64-character hex value, spelled as
+/// the token forms a method line can carry (`SHA-1`, `sha1`, `MD5`, `crc32`).
+///
+/// SHA-224, SHA-384, and SHA-512 are here for a second reason than MD5: they
+/// are digests at all, but they emit 56, 96, and 128 hex characters
+/// respectively, so naming one contradicts the width every recorded value was
+/// just validated to have.
+const Set<String> _kNonSha256Algorithms = <String>{
+  'md5',
+  'sha1',
+  'sha224',
+  'sha384',
+  'sha512',
+  'crc32',
+  'crc32c',
+  'adler32',
+  'xxhash',
+  'murmur',
+  'fnv',
+  'djb2',
+};
+
 /// Verdict of comparing two clean rebuilds.
 enum RebuildVerdict {
   /// Both rebuilds produced byte-identical artifact hashes.
@@ -243,7 +304,26 @@ class ArtifactComparison {
   final List<String>? limits;
 
   bool get isWellFormed {
-    if (method == null || method!.trim().isEmpty) return false;
+    final statedMethod = method;
+    if (statedMethod == null || statedMethod.trim().isEmpty) return false;
+    // Sprint 117.43-22 (fail-open, fixed): the only test on `method` was "is it
+    // blank?". Everything else this getter checks about the two rebuilds is
+    // about the digests themselves — that each one is exactly 64 hex characters,
+    // that the verdict matches what they show — while `method` is the sentence
+    // that says HOW those digests were produced, and nothing ever read it. A
+    // comparison performed with MD5, SHA-1, or CRC-32 cannot produce 64-hex
+    // values, so such a method contradicts every digest the same document
+    // records, yet `missingEvidence` returned no missing group, `evaluate`
+    // returned `pass`, and the gate printed `artifact_comparison:
+    // NOT_BIT_IDENTICAL (6 artifact)` as though the hashing had been checked.
+    //
+    // The rule is narrow on purpose, for the reason 117.43-11 is narrow: a
+    // method that names NO algorithm (`cold rebuilds, cache dropped`) makes no
+    // algorithm claim and is left alone, exactly as a line that only mentions
+    // an algorithm without naming it as the one used makes no claim. What is
+    // refused is the affirmative claim of an algorithm whose output width is not
+    // the 64 characters every recorded digest was just validated to be.
+    if (_namesOtherDigestAlgorithm(statedMethod)) return false;
     if (rebuildA == null || rebuildB == null) return false;
     if (!rebuildA!.isWellFormed || !rebuildB!.isWellFormed) return false;
     if (verdict == null) return false;

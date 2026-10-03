@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T05:05:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 slice 117.43-19",
+  "updated_at": "2026-10-04T06:40:00+07:00",
+  "updated_by": "core_worker_cron_117.43-21",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3381,6 +3381,42 @@
       "test_sha256": "b7d80b51a026d92653771735f526fafdecab1f54e511cbd1a472b45359d81969",
       "sha_source": "hashed from committed blobs via `git show 8c3a5f8:<path>` (policy 2026-10-02 clause 1), after commit; both sides LF-pure (0 CRLF), disk == blob",
       "verified_on": "2026-10-04"
+    },
+    "defect_117_43_21": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-21",
+      "hunt": "unmeasured-claim / fail-open, sixteenth slice of the family",
+      "family_closed_so_far": 16,
+      "shape": "required_evidence.build_inputs and required_evidence.dependency_lock were each checked in ISOLATION: _hasWellFormedDigestClaims (117.43-11) asks only 'is this 64 hex?', and no reader in lib/ ever asked whether the two groups agree with EACH OTHER",
+      "symptom": "the shipped 113.39 document states 'pubspec.lock sha256 <hex>' TWICE - once in build_inputs, once in dependency_lock - so one file is hashed twice and stated twice. A document giving that file two DIFFERENT well-formed digests passed both per-group checks, missingEvidence returned [], and the evaluation returned pass while the gate printed 'dependency_lock: 2 item' as though the lock had been verified twice. A build's recorded inputs cannot change under a single evaluation.",
+      "why_worse_than_a_wrong_answer": "it is the one direction the family had not closed: 117.43-15 held the prose summary lines to the records they restate, but two groups that restate the SAME measurement were only ever asked to be individually well formed. A gate that verifies the lock twice without ever comparing the two copies is stronger in appearance than in fact, which is the exact failure mode this gate exists to refuse.",
+      "empirical_before_fix": "RED verified independently: exit 1 with EXACTLY 1 failing test - two well-formed 64-hex digests for one path, one per group, disagreeing, gave missingEvidence == [] and evaluate(...).state == pass. Three controls green: agreeing digests stay pass, a line that only mentions the word sha256 without a value is a non-claim (117.43-11), and a path named by only one group has nothing to contradict. RED boundary re-proven: with the implementation restored to HEAD and the test kept, the SAME single failure returned at the SAME line with no compile error; restore verified byte-identical (cmp) against the scratch snapshot.",
+      "bounds_pinned": [
+        "a path named by only ONE group has nothing to contradict",
+        "a line that merely mentions the algorithm states no digest and is not a restatement (117.43-07, 117.43-11)",
+        "a group that is absent states nothing and cannot contradict the other",
+        "a half-written claim stays reported missing by 117.43-11 and is not re-reported as a second reason",
+        "nothing is required about WHICH paths a document chooses to restate"
+      ],
+      "shipped_document_unaffected": "both groups in the committed manifest state the same digest today, so the honest document still passes; no manifest or lockfile byte was touched by this slice",
+      "verified_on": "2026-10-04",
+      "commit": "855e325",
+      "committed_sha256": {
+        "lib/features/world_logic/domain/build_reproducibility_provenance.dart": "ced490ecaf452df630eda438db050932bb32bc274ac27605aa456961c905c4fb",
+        "test/release/sprint_113_build_reproducibility_provenance_test.dart": "c42762b0a739cb6543607dc3b1cc8361b64db889caabb5f05eca0be513b5a960"
+      },
+      "gates": {
+        "red": "exit 1, exactly 1 failing test",
+        "green": "7/7 on the 113 file (from 6, +1 new test)",
+        "red_boundary": "exit 1, identical single failure, implementation at HEAD",
+        "dart_format": "applied, then idempotent (0 changed, exit 0)",
+        "dart_analyze": "No issues found! exit 0",
+        "git_diff_check": "clean, exit 0",
+        "flutter_build_windows_debug": "exit 0, 67.0s",
+        "roadmap_guard": "PASS before and after"
+      },
+      "regression": "directed 2 files +142 -2: slice 117 136/136 PASS; both failures are 113.39 pre-existing with the same signatures as previous runs (manifest 32e31fd3 vs live lock c9a365e6; 73101e78 vs c7a33055). The second was reproduced with THIS slice's implementation removed, proving independence. NO full-suite claim (full_suite_trap).",
+      "pushed": false
     }
   },
   "sprint_117_step_11744": {

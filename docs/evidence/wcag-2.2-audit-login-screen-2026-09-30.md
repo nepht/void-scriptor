@@ -2275,6 +2275,86 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Advanced AI Studio Screen di konfigurasi probe ini (viewport desktop 1536x1024). Cakupan audit focus-order layar: **37 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 36 sebelum commit fase ini, + kontrak baru ini = 37.
 
+## 48. Fase 48 — Focus Order di Agent Permission Screen (2.4.3)
+
+**Layar**: `lib/features/marketplace/presentation/agent_permission_screen.dart` (Agent Permission Screen, kelas `AgentPermissionScreen`)
+**Kontrak**: `test/features/marketplace/presentation/agent_permission_screen_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 / dpr 1.0; label diambil dari `Text` non-`Icon` pertama di dalam subtree fokus dengan fallback ke subtree terluar lewat `visitAncestorElements` (stop berupa `Switch` tidak punya `Text` di subtree-nya sendiri, label diambil dari `ListTile.title` di atasnya); `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang (maks 10 Tab). Layar berdiri tanpa database/network: dua callback `onAllowAll`/`onDenyOptional` di-override noop, tidak ada platform channel yang tersentuh.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `AI Provider` | `Switch` pada tile permission optional | 1432.0, 292.0, 60.0, 48.0 |
+| 1 | `Allow All` | `FilledButton` Allow All | 20.0, 388.0, 740.0, 40.0 |
+| 2 | `Deny Optional` | `OutlinedButton` Deny Optional | 776.0, 388.0, 740.0, 40.0 |
+
+Jumlah stop = **3**. `tester.takeException()` = `null`.
+
+Pembentukan urutan Tab:
+
+- `_permissions` berisi tiga entri. Dua di antaranya — `('File Access', 'Read project files', true)` dan `('Network', 'Access internet', true)` — bertanda `isRequired: true`, sehingga `_PermissionTile` merender `Text('Required')` pada posisi `trailing` (baris 105-110), bukan `Switch`. `Text` statis tidak dapat menerima fokus, jadi kedua tile itu **sengaja tidak punya stop fokus**.
+- Hanya `('AI Provider', 'Use AI provider credentials', false)` yang merender `Switch` dengan `onChanged` -> `(v) => setState(...)`, menjadi satu-satunya stop fokus di dalam daftar permission. Aksesibilitasnya benar: user boleh menolak permission optional (sila'i `onDenyOptional` di baris 7-10), sedangkan dua permission required memang tidak dapat dimatikan.
+- Aksi kaki layar berada di satu `Row` dua `Expanded` (baris 50-66): `FilledButton` 'Allow All' di kiri (`left` 20.0) lalu `OutlinedButton` 'Deny Optional' di kanan (`left` 776.0), `top` sama-sama 388.0 dan lebar sama-sama 740.0.
+- Urutan traversal mengikuti urutan visual: tile permission (`top` 292.0) lebih dulu secara atas-ke-bawah, lalu baris tombol. Di dalam baris tombol urutan kiri-ke-kanan.
+
+### Kontrak yang dikunci
+
+- Urutan label `['AI Provider', 'Allow All', 'Deny Optional']` — urutan Tab nyata dari probe, termasuk identitas stop `Switch` yang labelnya diambil dari subtree terluar.
+- Area fokus non-nol (`width > 0 && height > 0`) untuk ketiga stop.
+- Bukti bahwa hanya permission optional yang punya stop fokus di dalam daftar: tepat satu `Switch`, tepat dua `Text('Required')`, dan hanya satu stop dengan `rect.top < 340` (yaitu tile) berlabel `AI Provider`.
+- Positional lock: `toggle.top < allow.top` (tile di atas baris tombol), `allow.left < deny.left` (Allow All di kiri), `allow.top == deny.top` (keduanya satu `Row` action), `allow.right <= deny.left`, dan `toggle.right > allow.left` (toggle berada di sisi trailing tile).
+- `tester.takeException()` = `null`.
+
+Tiga test dalam kontrak: urutan label, bukti satu-satunya stop di dalam daftar, dan urutan posisional kiri-ke-kanan/atas-ke-bawah.
+
+### Catatan cakupan
+
+Tidak ada perubahan kode produksi pada fase ini: probe tidak menemukan defect urutan fokus. Ketiga elemen interaktif yang memang bisa difokuskan ikut traversal, tidak ada area fokus nol, dan urutan mengikuti layout visual. Dua tile permission required tidak punya stop fokus adalah perilaku yang benar (`Text` statis, bukan kontrol interaktif), bukan defect 2.4.3.
+
+File `_probe_focus_test.dart` sementara sudah dihapus setelah kontrak dibuat; kontrak inilah satu-satunya artefak test yang dikomit pada fase ini.
+
+### Verifikasi
+
+```
+dart format test/features/marketplace/presentation/agent_permission_screen_focus_order_test.dart
+=> Formatted 1 file (1 changed) in 0.01 seconds.   (exit 0)
+
+dart analyze test/features/marketplace/presentation/agent_permission_screen_focus_order_test.dart
+=> No issues found!   (exit 0)
+
+flutter test test/features/marketplace/presentation/agent_permission_screen_focus_order_test.dart
+=> 00:01 +3: All tests passed!   (exit 0)
+
+flutter test test/features/marketplace/   (gate)
+=> 00:31 +43: All tests passed!   (exit 0)
+```
+
+Gate feature memuat ketiga test kontrak ini (terkonfirmasi lewat baris `agent_permission_screen_focus_order_test.dart: AgentPermissionScreen focus order is Switch -> Allow All -> Deny Optional` pada `00:09 +19`, lalu suite penuh `+43: All tests passed!`).
+
+Catatan lingkungan: sebelum setiap `flutter test` perlu `taskkill` proses `flutter_tester.exe`/`dart.exe` dan penghapusan `build/native_assets/windows/sqlite3.dll`. File itu pernah tertinggal sebagai remnant terpotong 755 byte sehingga `flutter test` gagal **bukan** karena assertion melainkan karena `Flutter failed to delete file`. Ini bukan regresi kode; setelah dihapus suite berjalan normal.
+
+**Negative control** (wajib): `expectedLabels` pada salinan cadangan di `%LOCALAPPDATA%\Temp\agent_permission_focus_backup.dart` diubah sementara dari `['AI Provider', 'Allow All', 'Deny Optional']` menjadi `['Allow All', 'AI Provider', 'Deny Optional']` (tukar dua label pertama), lalu kontrak dijalankan:
+
+```
+Expected: ['Allow All', 'AI Provider', 'Deny Optional']
+  Actual: ['AI Provider', 'Allow All', 'Deny Optional']
+This was caught by the test expectation on the following line:
+  .../agent_permission_screen_focus_order_test.dart line 84
+00:01 +0 -1: AgentPermissionScreen focus order is Switch -> Allow All -> Deny Optional [E]
+00:01 +2 -1: Some tests failed.
+Failing tests:
+  .../agent_permission_screen_focus_order_test.dart: AgentPermissionScreen focus order is Switch -> Allow All -> Deny Optional
+```
+
+Salinan cadangan dipulihkan lalu dihapus (ekspektasi asli terverifikasi lewat grep: `['AI Provider', 'Allow All', 'Deny Optional']`, backup `BACKUP_REMOVED`) dan kontrak diverifikasi ulang: `dart analyze` `No issues found!` plus `flutter test` `+3: All tests passed!`. Kontrol negatif membuktikan kontrak benar-benar mengunci urutan focus order (1 test gagal dan `Some tests failed.` ketika urutan label ditukar), bukan sekadar lolos.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak, bagian report ini, dan pesan commit: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh (banyak file WIP sibling tetap dirty dan dibiarkan apa adanya).
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Agent Permission Screen di konfigurasi probe ini (viewport desktop 1536x1024). Cakupan audit focus-order layar: **38 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 37 sebelum commit fase ini, + kontrak baru ini = 38.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

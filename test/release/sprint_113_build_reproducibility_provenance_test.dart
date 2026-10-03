@@ -190,6 +190,93 @@ void main() {
     );
   });
 
+  test('117.43-21 the same path restated in two groups must agree', () {
+    final a = 'a' * 64;
+    final b = 'b' * 64;
+    final other = 'c' * 64;
+
+    BuildProvenanceEvidence withLocks({
+      required String buildInputLock,
+      required List<String> dependencyLockLines,
+    }) {
+      return BuildProvenanceEvidence(
+        buildInputs: <String>[
+          'pubspec.yaml sha256 $other',
+          'pubspec.lock sha256 $buildInputLock',
+        ],
+        toolchainVersions: <String>['Flutter 3.x', 'Dart 3.x'],
+        dependencyLock: dependencyLockLines,
+        rebuildResults: <RebuildResult>[
+          _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': a}),
+          _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': b}),
+        ],
+        artifactComparison: ArtifactComparison(
+          method: 'SHA-256 over exe+dll set',
+          rebuildA: _rebuild('rebuild_a', <String, String>{
+            'void_scriptor.exe': a,
+          }),
+          rebuildB: _rebuild('rebuild_b', <String, String>{
+            'void_scriptor.exe': b,
+          }),
+          verdict: RebuildVerdict.notBitIdentical,
+          limits: <String>['MSVC embeds a non-deterministic PE timestamp'],
+        ),
+        provenanceRecord: <String>['source_revision $a'],
+      );
+    }
+
+    // Control 1: both groups state the same digest, as the shipped 113.39
+    // document does. This is the honest case and must stay a pass.
+    final agreeing = withLocks(
+      buildInputLock: a,
+      dependencyLockLines: <String>['pubspec.lock sha256 $a'],
+    );
+    expect(BuildProvenanceEvidence.missingEvidence(agreeing), isEmpty);
+    expect(
+      BuildProvenanceEvidence.evaluate(agreeing).state,
+      BuildProvenanceState.pass,
+    );
+
+    // Control 2: a line that only NAMES the algorithm states no digest, so it
+    // is not a restatement and cannot contradict the other group (117.43-11).
+    final proseOnly = withLocks(
+      buildInputLock: a,
+      dependencyLockLines: <String>[
+        'hosted dependencies hash-pinned sha256; 0 git/path source',
+      ],
+    );
+    expect(
+      BuildProvenanceEvidence.missingEvidence(proseOnly),
+      isEmpty,
+      reason: 'a prose mention is a non-claim, not a contradiction',
+    );
+
+    // Control 3: a path named by only ONE group has nothing to contradict.
+    final singleGroup = withLocks(
+      buildInputLock: a,
+      dependencyLockLines: <String>['hosted dependencies hash-pinned; 0 git'],
+    );
+    expect(BuildProvenanceEvidence.missingEvidence(singleGroup), isEmpty);
+
+    // The defect: `build_inputs` and `dependency_lock` both state a digest for
+    // `pubspec.lock`, both digests are well-formed 64-hex values, and they are
+    // DIFFERENT. Each group passes its own shape check while the document
+    // states two different hashes for one file.
+    final contradicted = withLocks(
+      buildInputLock: a,
+      dependencyLockLines: <String>['pubspec.lock sha256 $b'],
+    );
+    expect(
+      BuildProvenanceEvidence.missingEvidence(contradicted),
+      isNotEmpty,
+      reason: 'one path cannot hash to two different values in one document',
+    );
+    expect(
+      BuildProvenanceEvidence.evaluate(contradicted).state,
+      isNot(BuildProvenanceState.pass),
+    );
+  });
+
   test('113.39 provenance manifest records all six evidence groups', () {
     final file = File(
       'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',

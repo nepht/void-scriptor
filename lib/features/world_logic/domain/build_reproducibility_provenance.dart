@@ -325,6 +325,10 @@ class BuildProvenanceEvidence {
     if (!_hasWellFormedDigestClaims(evidence.dependencyLock)) {
       missing.add('dependency_lock');
     }
+    if (!_restatedDigestsAgree(evidence)) {
+      missing.add('dependency_lock');
+      missing.add('build_inputs');
+    }
     final rebuilds = evidence.rebuildResults;
     if (rebuilds == null ||
         rebuilds.length < 2 ||
@@ -605,6 +609,72 @@ class BuildProvenanceEvidence {
 
   /// A SHA-256 digest is exactly 64 hexadecimal characters.
   static final RegExp _digestPattern = RegExp(r'^[0-9a-fA-F]{64}$');
+
+  /// The digest every group claims for one path, when the claim parses.
+  ///
+  /// The shipped document states `pubspec.lock sha256 <hex>` in BOTH
+  /// `build_inputs` and `dependency_lock`, so the same file is hashed twice
+  /// and stated twice. A line that carries a `sha256` value names a path and
+  /// the digest recorded for it; a line that only mentions the algorithm
+  /// (`hosted dependencies hash-pinned sha256; 0 git/path source`) states
+  /// nothing and is skipped here exactly as 117.43-11 skips it.
+  static Map<String, String>? _digestsByPath(List<String>? items) {
+    if (items == null) return null;
+    final declared = <String, String>{};
+    final claim = RegExp(
+      r'^(\S+)\s+sha-?256\s+(\S+)\s*$',
+      caseSensitive: false,
+    );
+    for (final item in items) {
+      final match = claim.firstMatch(item.trim());
+      // Not a path-plus-digest claim: prose, or a line already refused by
+      // `_hasWellFormedDigestClaims`. Neither is a restatement to compare.
+      if (match == null) continue;
+      // A half-written claim was already reported missing; do not invent a
+      // second, different reason for the same defect here.
+      if (!_digestPattern.hasMatch(match.group(2)!)) continue;
+      declared[match.group(1)!] = match.group(2)!;
+    }
+    return declared;
+  }
+
+  /// Whether the digests one path is given in two different groups agree.
+  ///
+  /// Sprint 117.43-21 (fail-open, fixed). 117.43-11 taught this layer to
+  /// insist that a line naming a digest carries a real one, but it checked each
+  /// group in isolation: `_hasWellFormedDigestClaims` asks "is this 64 hex?",
+  /// and nothing ever asked whether the two groups agree with EACH OTHER. The
+  /// shipped 113.39 document states `pubspec.lock sha256 <hex>` twice — once
+  /// in `build_inputs`, once in `dependency_lock` — and a document that gave
+  /// that one file two different digests passed both checks and returned
+  /// `pass`, while the gate printed `dependency_lock: 2 item` as though the
+  /// lock had been verified twice. Proven before the fix: two well-formed
+  /// 64-hex digests for the same path, one in each group, disagreeing with
+  /// each other, reported no missing evidence and evaluated to `pass`.
+  ///
+  /// This is the cross-group counterpart to 117.43-15, which held the summary
+  /// lines in `provenance_record` to agree with the rebuild records they
+  /// restate. A path hashed in two groups is the same kind of restatement, at
+  /// the same layer, and a build's recorded inputs cannot change under a
+  /// single evaluation.
+  ///
+  /// Bounds, all pinned by test:
+  ///
+  ///  * a path named by only ONE group has nothing to contradict;
+  ///  * a line that merely mentions the algorithm states no digest and is not
+  ///    a restatement (117.43-07, 117.43-11);
+  ///  * a group that is absent states nothing and cannot contradict the other;
+  ///  * nothing is required about WHICH paths a document chooses to restate.
+  static bool _restatedDigestsAgree(BuildProvenanceEvidence evidence) {
+    final fromInputs = _digestsByPath(evidence.buildInputs);
+    final fromLock = _digestsByPath(evidence.dependencyLock);
+    if (fromInputs == null || fromLock == null) return true;
+    for (final entry in fromInputs.entries) {
+      final restated = fromLock[entry.key];
+      if (restated != null && restated != entry.value) return false;
+    }
+    return true;
+  }
 
   static bool _isUnrecorded(BuildProvenanceEvidence evidence) {
     return evidence.buildInputs == null &&

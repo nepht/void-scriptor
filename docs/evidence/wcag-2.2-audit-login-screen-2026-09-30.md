@@ -2355,6 +2355,69 @@ Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang diko
 
 **Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Agent Permission Screen di konfigurasi probe ini (viewport desktop 1536x1024). Cakupan audit focus-order layar: **38 dari 89** target layar — hitungan live `git ls-files | grep -c '_focus_order_test.dart'` = 37 sebelum commit fase ini, + kontrak baru ini = 38.
 
+## 49. Fase 49 — Focus Order di Preview Modes Screen (2.4.3)
+
+**Target:** `lib/features/cinema/presentation/preview_modes_screen.dart` (kelas `PreviewModesScreen`)
+**Kontrak:** `test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart`
+
+### Alasan pemilihan
+
+Layar ini diberi prioritas karena seluruh surface interaktifnya berupa lima `ChoiceChip` di dalam satu `Wrap`, bersumber dari provider `cinemaProvider` yang murni in-memory (`CinemaState` default, tanpa database, tanpa network, tanpa plugin platform). Tidak ada `session.lock`, tidak ada fixture, dan tidak ada ketergantungan Core Worker, sehingga hasil probe bisa direproduksi tanpa kondisiaringan lain. Dipercaya dari 89 layar kandidat, ini adalah kandidat paling kecil yang tetap punya lebih dari dua elemen interaktif.
+
+### Probe sebelum kontrak
+
+Probe sementara (viewport 1536x1024, dpr 1.0, `LogicalKeyboardKey.tab` berulang, berhenti saat Rect berulang) menghasilkan lima stop, seluruhnya pada satu baris:
+
+| Stop | Label | Rect (left, top, width, height) |
+|---|---|---|
+| 0 | Storyboard | 20.0, 81.0, 195.0, 38.0 |
+| 1 | Animatic | 227.0, 81.0, 146.8, 38.0 |
+| 2 | Low Quality | 385.8, 81.0, 189.1, 38.0 |
+| 3 | Real-Time | 586.9, 81.0, 160.9, 38.0 |
+| 4 | Final Preview | 759.8, 81.0, 217.3, 38.0 |
+
+Probe dihapus setelah kontrak ditulis; hanya file kontrak yang tersisa.
+
+### Yang dikunci kontrak
+
+- `expect(stops, hasLength(5))` — tepat lima stop fokus, tidak ada stop tambahan dari AppBar.
+- `equals(['Storyboard', 'Animatic', 'Low Quality', 'Real-Time', 'Final Preview'])` — urutan label persis seperti urutan deklarasi `_modes`.
+- Setiap stop punya `width > 0` dan `height > 0` (area fokus non-zero).
+- Kelima `rect.top` identik, membuktikan kelima chip benar-benar satu baris `Wrap`, bukan susunan bertumpuk yang kebetulan berurutan.
+- `rect.left` naik monotonik, membuktikan urutan fokus mengikuti urutan visual kiri ke kanan.
+- `stops.first.rect.top > 0` (di bawah AppBar) dan `stops.last.rect.right < 1536` (tidak keluar viewport).
+- `expect(tester.takeException(), isNull)` sebagai pagar overflow/render exception.
+
+### Negative control
+
+Dua mutasi, masing-masing dicadangkan ke `%LOCALAPPDATA%\Temp` lalu dipulihkan:
+
+1. Tukar dua label pertama (`Storyboard` <-> `Animatic`): `EXIT=1`, `00:01 +0 -1: Some tests failed`, diff `at location [0] is 'Storyboard' instead of 'Animatic'`.
+2. Ubah `hasLength(5)` menjadi `hasLength(4)`: `EXIT=1`, `Some tests failed`, `Which: has length of <5>`.
+
+Setelah dipulihkan, kontras green kembali (`+1: All tests passed!`) dan file cadangan dihapus.
+
+### Bukti eksekusi
+
+```
+dart format test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart
+-> Formatted 1 file (1 changed) in 0.01 seconds
+dart analyze test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart
+-> No issues found!
+flutter test test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart
+-> 00:01 +1: All tests passed!
+flutter test test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart  (mutasi label)
+-> EXIT=1, Some tests failed
+flutter test test/features/cinema/presentation/preview_modes_screen_focus_order_test.dart  (mutasi hasLength)
+-> EXIT=1, Some tests failed
+```
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh dan tidak di-`git add`.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Preview Modes Screen. Jumlah layar teraudit dari 89 kandidat: 39 (sebelum fase ini 38).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -1660,6 +1660,76 @@ Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak: `none` (karakter non-A
 
 Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
 
+## 40. Fase 40 — Focus Order di Mobile Navigation Screen (2.4.3)
+
+**Layar**: `lib/features/creator/presentation/mobile_navigation_screen.dart` (Creator / Mobile Navigation, Step 43.52)
+**Kontrak**: `test/features/creator/presentation/mobile_navigation_screen_focus_order_test.dart`
+**Metode**: probe `LogicalKeyboardKey.tab` berulang pada viewport 1536x1024 dpr 1.0; label diambil dari `Text` non-`Icon` pertama di subtree fokus, `Rect` fokus dari `localToGlobal(Offset.zero) & size`, traversal berhenti saat `Rect` berulang.
+
+### Hasil probe (sebelum kontrak dikunci)
+
+| Stop | Label | Widget fokus | Rect (left, top, w, h) |
+|---|---|---|---|
+| 0 | `Home` | `Focus` (NavigationDestination) | 0.0, 944.0, 307.2, 80.0 |
+| 1 | `Projects` | `Focus` (NavigationDestination) | 307.2, 944.0, 307.2, 80.0 |
+| 2 | `Create` | `Focus` (NavigationDestination) | 614.4, 944.0, 307.2, 80.0 |
+| 3 | `AI` | `Focus` (NavigationDestination) | 921.6, 944.0, 307.2, 80.0 |
+| 4 | `Profile` | `Focus` (NavigationDestination) | 1228.8, 944.0, 307.2, 80.0 |
+| 5 | `Home` (repeats stop 0) | — | 0.0, 944.0, 307.2, 80.0 |
+
+Jumlah stop = **5**. `tester.takeException()` = `null`.
+
+Catatan probe: probe pertama sempat salah karena `seen.add(key)` dipanggil dua kali dalam satu iterasi (key kedua membuat match pertama selalu dianggap repeat), sehingga traversal berhenti di stop 0. Bug berada di probe, bukan di produksi; probe diperbaiki dengan menyimpan hasil `seen.add` ke variabel lokal sebelum 판단 repeat.
+
+### Kontrak yang dikunci
+
+- `hasLength(5)` — tepat lima stop fokus yang dapat dicapai lewat Tab (lima destination bottom-nav), lalu traversal kembali ke stop pertama.
+- Urutan label `['Home', 'Projects', 'Create', 'AI', 'Profile']` — sesuai urutan deklarasi `_destinations` di produksi, bukan urutan geometri acak.
+- Luas fokus non-nol pada setiap stop (`width > 0 && height > 0`); masing-masing 307.2 x 80.0.
+- Kelima stop berbagi satu `top` (`tops` hasLength 1) pada `top = 944.0` dan `height = 80.0` — satu baris navigation bar, tidak ada stop yang melompat ke baris lain.
+- Urutan fokus kiri-ke-kanan: `stops[i-1].rect.left < stops[i].rect.left` dan `stops[i-1].rect.right <= stops[i].rect.left` (tanpa tumpang tindih), dari `left = 0.0` sampai `right = 1536.0`.
+- `tester.takeException()` = `null`.
+
+### Catatan cakupan
+
+Layar ini murni presentational + state lokal (`int _index` di `_MobileNavigationScreenState`): tidak memakai Riverpod provider, tidak menyentuh database, jaringan, atau storage. Karena itu tidak ada fixture yang perlu diremock dan tidak ada item `DEFERRED` pada fase ini.
+
+Kontrak sengaja menguji `NavigationBar` (Material 3) pada layout lebar desktop. Material membuat satu node fokus per `NavigationDestination` di dalam baris horizontal; pada lebar sempit Material dapat beralih ke `NavigationRail`/label tersembunyi, sehingga geometri ini **tidak** digeneralisasi ke viewport phone. Bukti fokus pada layout sempit tetap milik viewport 1536x1024.
+
+### Verifikasi
+
+```
+dart format test/features/creator/presentation/mobile_navigation_screen_focus_order_test.dart
+=> Formatted 1 file (1 changed)
+
+dart analyze test/features/creator/presentation/mobile_navigation_screen_focus_order_test.dart \
+             lib/features/creator/presentation/mobile_navigation_screen.dart
+=> No issues found!
+
+flutter test test/features/creator/presentation/mobile_navigation_screen_focus_order_test.dart
+=> 00:01 +1: All tests passed!
+
+flutter test test/features/creator/
+=> 00:27 +78: All tests passed!
+```
+
+**Negative control** (wajib, dilakukan pada commit yang sama): ekspektasi urutan label dibalik menjadi `['Profile', 'AI', 'Create', 'Projects', 'Home']` pada salinan cadangan di `%LOCALAPPDATA%\Temp`, lalu test dijalankan:
+
+```
+Expected: ['Profile', 'AI', 'Create', 'Projects', 'Home']
+  Actual: ['Home', 'Projects', 'Create', 'AI', 'Profile']
+00:01 +0 -1: Mobile Navigation Screen follows the measured WCAG 2.4.3 focus order [E]
+00:01 +0 -1: Some tests failed.
+exit code 1
+```
+
+Salinan cadangan dipulihkan dan dihapus; isi `_expectedLabels` diverifikasi kembali persis `['Home', 'Projects', 'Create', 'AI', 'Profile']`. Kontrol negatif membuktikan kontrak benar-benar mengikat urutan focus, bukan sekadar lolos karena tidak ada ekspektasi.
+
+Scan karakter CJK/Cyrillic/Hangul/Kana pada file kontrak dan bagian report ini: `none`.
+
+Tidak ada perubahan kode produksi pada fase ini; file di luar dua path yang dikomit tidak disentuh.
+
+**Status fase:** VERIFIED untuk kontrak WCAG 2.4.3 pada Mobile Navigation Screen di konfigurasi probe ini. Cakupan audit focus-order layar: **31 dari 89** target layar (30 kontrak focus-order di-track git sebelum fase ini + kontrak baru ini; satu kontrak lain — Content Capability Matrix Screen — masih untracked di working tree dan tidak dihitung di sini).
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

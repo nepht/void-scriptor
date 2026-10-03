@@ -1016,6 +1016,31 @@ Gate:
 
 ---
 
+## 20. Fase 15 — Focus Order di Marketplace Workspace (2.4.3)
+
+Probe nyata pada viewport desktop 1536x1024 dan compact 390x844 menghasilkan enam stop fokus pada kedua layout:
+
+1. Discover
+2. AI Agents
+3. Workflows
+4. Prompts
+5. Templates
+6. My Library
+
+Pada layout wide, keenam item berada di sidebar dan ditab dari atas ke bawah. Pada layout compact, item berada di ListView dan mempertahankan urutan yang sama. Setiap item memiliki area fokus non-zero. Setelah `My Library`, traversal kembali ke `Discover`.
+
+Kartu konten utama `Discover` hanya placeholder dekoratif dan tidak menjadi stop fokus.
+
+Gate:
+
+- Test focus order desktop dan compact: **2/2 PASS**.
+- Test seluruh `test/features/marketplace/`: **35 PASS**.
+- `dart analyze`: **No issues found**.
+- Probe sementara dihapus.
+- CJK/Cyrillic scan: **none**.
+
+---
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -1720,4 +1720,208 @@ void main() {
       expect(rebuild.isWellFormed, isTrue);
     });
   });
+
+  group('117.43-10 a rebuild method claim must be measured', () {
+    String digest(String seed) => seed * 64;
+
+    const honestCommand =
+        'flutter clean && flutter.bat build windows --release';
+
+    /// Two honest rebuild records — separated windows, canonical verdict, an
+    /// honest partition — so only the COMMAND and LOG can decide the result.
+    Map<String, Object?> manifestWithRun({
+      String commandA = honestCommand,
+      String commandB = honestCommand,
+      String logA = 'docs/evidence/sprint-113-39-rebuild-a.log',
+      String logB = 'docs/evidence/sprint-113-39-rebuild-b.log',
+      bool dropCommand = false,
+      bool dropLog = false,
+      bool mistypeCommandA = false,
+      bool mistypeLogB = false,
+    }) {
+      Map<String, Object?> rebuild(
+        String label,
+        String hashB,
+        String command,
+        String log,
+        String started,
+        String finished,
+        int duration,
+      ) => <String, Object?>{
+        'label': label,
+        'artifact_hashes': <String, String>{
+          'a.exe': digest('a'),
+          'b.dll': hashB,
+        },
+        'exit_code': 0,
+        'started_at': started,
+        'finished_at': finished,
+        'duration_seconds': duration,
+        if (!dropCommand) 'command': command,
+        if (!dropLog) 'log': log,
+      };
+
+      var a = rebuild(
+        'rebuild_a',
+        digest('b'),
+        commandA,
+        logA,
+        '2026-09-23T13:27:45+07:00',
+        '2026-09-23T13:29:47+07:00',
+        122,
+      );
+      var b = rebuild(
+        'rebuild_b',
+        digest('c'),
+        commandB,
+        logB,
+        '2026-09-23T13:30:17+07:00',
+        '2026-09-23T13:32:12+07:00',
+        115,
+      );
+      if (mistypeCommandA) a = <String, Object?>{...a, 'command': 17};
+      if (mistypeLogB) b = <String, Object?>{...b, 'log': 42};
+
+      return <String, Object?>{
+        'required_evidence': <String, Object?>{
+          'build_inputs': <String>['a'],
+          'toolchain_versions': <String>['a'],
+          'dependency_lock': <String>['a'],
+          'rebuild_results': <Map<String, Object?>>[a, b],
+          'artifact_comparison': <String, Object?>{
+            'method': 'SHA-256 after two independent clean rebuild cycles',
+            'verdict': 'NOT_BIT_IDENTICAL',
+            'differing_artifacts': <String>['b.dll'],
+            'identical_artifacts': <String>['a.exe'],
+            'limits': <String>['a documented limit, as the verdict requires'],
+          },
+          'provenance_record': <String>['a'],
+        },
+      };
+    }
+
+    test('a rebuild that never ran flutter clean is refused', () {
+      // The `method` claims the digests come from CLEAN rebuild cycles. A
+      // recorded command that contains no clean step cannot have produced a
+      // clean rebuild, and nothing read `command` before this slice, so the
+      // gate reported `pass` for a manifest whose own command disproves it.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(
+          commandB: 'flutter.bat build windows --release',
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a rebuild whose recorded command contains no clean step cannot be '
+            'the clean rebuild the comparison method claims',
+      );
+    });
+
+    test('two rebuilds that ran different experiments are refused', () {
+      // rebuild_a is a release build, rebuild_b a debug build. Comparing them
+      // answers a different question from the one the method states, and the
+      // digest difference it records proves nothing about reproducibility.
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(
+          commandB: 'flutter clean && flutter.bat build windows --debug',
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a release build compared against a debug build is not two clean '
+            'rebuilds of one experiment',
+      );
+    });
+
+    test('a rebuild whose log names a file that does not exist is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(
+          logA: 'docs/evidence/zz_probe_absent.log',
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a rebuild record naming a log nobody can open is evidence with no '
+            'supporting document',
+      );
+    });
+
+    test('a mistyped command or log is refused rather than cast past', () {
+      final mistypedCommand = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(mistypeCommandA: true),
+      );
+      final mistypedLog = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(mistypeLogB: true),
+      );
+
+      expect(mistypedCommand.status, Sprint117GaArtifactStatus.unmet);
+      expect(mistypedLog.status, Sprint117GaArtifactStatus.unmet);
+    });
+
+    test('an absent command or log makes no claim and is not a defect', () {
+      // Same rule as 117.43-07: absence is not a claim, so a manifest that
+      // records no command states nothing for the gate to contradict.
+      final noCommand = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(dropCommand: true),
+      );
+      final noLog = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(dropLog: true),
+      );
+
+      expect(noCommand.status, Sprint117GaArtifactStatus.pass);
+      expect(noLog.status, Sprint117GaArtifactStatus.pass);
+    });
+
+    test('an honest command pair still passes', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithRun(),
+      );
+
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+    });
+
+    test('the shipped manifest passes, and stops when its claim is broken', () {
+      // If only the digests were measured, mutating the SHIPPED document's
+      // command to drop its clean step would still pass. It must not.
+      final shipped = _manifest(_kProvenanceManifest);
+      final evidence = shipped['required_evidence'] as Map<String, Object?>;
+      final rebuilds = evidence['rebuild_results']! as List;
+      final first = Map<String, Object?>.from(rebuilds[0] as Map);
+      final second = Map<String, Object?>.from(rebuilds[1] as Map);
+      expect(first['command'], contains('flutter clean'));
+      expect(second['command'], contains('flutter clean'));
+
+      expect(
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: shipped,
+        ).status,
+        Sprint117GaArtifactStatus.pass,
+      );
+
+      first['command'] = 'flutter.bat build windows --release';
+      expect(
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: <String, Object?>{
+            'required_evidence': <String, Object?>{
+              ...evidence,
+              'rebuild_results': <Map<String, Object?>>[first, second],
+            },
+          },
+        ).status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the shipped document is only evidence of a clean rebuild while it '
+            'still records a clean rebuild',
+      );
+    });
+  });
 }

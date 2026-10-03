@@ -815,6 +815,10 @@ abstract final class Sprint117GaArtifactGate {
       label: source.label,
       artifactHashes: Map<String, String>.from(source.artifactHashes),
       exitCode: source.exitCode,
+      startedAt: source.startedAt,
+      finishedAt: source.finishedAt,
+      command: source.command,
+      log: source.log,
     );
 
     final a = _rebuildFrom(rebuildList[0]);
@@ -838,6 +842,16 @@ abstract final class Sprint117GaArtifactGate {
     if (!_windowsAreIndependent(a, b, rebuildList[0], rebuildList[1])) {
       return null;
     }
+
+    // Sprint 117.43-10 (fail-open, fixed): the windows above establish WHEN and
+    // THAT the rebuilds ran; nothing established WHAT they ran. The comparison
+    // method says the digests come from two INDEPENDENT CLEAN rebuild CYCLES,
+    // and a record whose own command admits no clean step — or which was built
+    // in a different mode from its pair — contradicts that phrase while every
+    // other rule in this file still passes. Two more questions, measured here
+    // for the same reason 117.43-09 measured the windows.
+    if (!a.hasWellFormedMethod || !b.hasWellFormedMethod) return null;
+    if (!a.ranSameExperimentAs(b)) return null;
 
     // Sprint 117.43-07 (fail-open, fixed): the verdict was INFERRED, never read.
     // `comparison['verdict'] == 'BIT_IDENTICAL' ? bitIdentical : notBitIdentical`
@@ -968,6 +982,16 @@ abstract final class Sprint117GaArtifactGate {
     if (label is! String || hashes is! Map<String, Object?>) return null;
     final window = _decodeWindow(json);
     if (window == null) return null;
+    // Sprint 117.43-10 (fail-open, fixed): `command` and `log` were dropped on
+    // the floor exactly as the window fields were, so the domain had nowhere to
+    // hold the only record of WHAT was built and the "clean rebuild cycles"
+    // claim stayed unmeasured. Decode them under the same rule as the window:
+    // a present-but-undecodable field fails closed, an absent one is a
+    // non-claim.
+    final command = _stringOrNull(json['command'], json.containsKey('command'));
+    final log = _stringOrNull(json['log'], json.containsKey('log'));
+    if (command == _kUndecodable || log == _kUndecodable) return null;
+    if (!_logIsReadable(log)) return null;
     return RebuildResult(
       label: label,
       artifactHashes: hashes.map(
@@ -976,7 +1000,23 @@ abstract final class Sprint117GaArtifactGate {
       exitCode: json['exit_code'] as int?,
       startedAt: window.startedAt,
       finishedAt: window.finishedAt,
+      command: command as String?,
+      log: log as String?,
     );
+  }
+
+  /// Whether a recorded log path names a document that can be opened.
+  ///
+  /// A rebuild record citing a log nobody can open is evidence with nothing
+  /// behind it: the exit code and the digests are the record's own assertions
+  /// about itself, while the log is the only thing in the manifest that could
+  /// show the build actually ran. An absent log states no such claim, so it is
+  /// not checked — same rule as the window and the command.
+  static bool _logIsReadable(Object? log) {
+    if (log == null) return true;
+    final path = (log as String).trim();
+    if (path.isEmpty) return true;
+    return File(path).existsSync();
   }
 
   /// The rebuild window one record states, or null when a present field cannot

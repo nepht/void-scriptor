@@ -40,6 +40,8 @@ class RebuildResult {
     this.exitCode,
     this.startedAt,
     this.finishedAt,
+    this.command,
+    this.log,
   });
 
   /// Which rebuild this is (for example `rebuild_a`).
@@ -54,6 +56,16 @@ class RebuildResult {
   /// ISO-8601 timestamps of the rebuild window.
   final String? startedAt;
   final String? finishedAt;
+
+  /// The command line the record states produced this rebuild.
+  ///
+  /// Sprint 117.43-10: this is the only field that can show WHAT was built, so
+  /// it is what turns the comparison's "clean rebuild cycles" phrase into
+  /// something checkable rather than a promise.
+  final String? command;
+
+  /// Path to the build log the record states supports this rebuild.
+  final String? log;
 
   bool get isWellFormed {
     if (label.trim().isEmpty || artifactHashes.isEmpty) return false;
@@ -97,6 +109,74 @@ class RebuildResult {
     final parsedFinish = DateTime.tryParse(finish);
     if (parsedStart == null || parsedFinish == null) return false;
     return parsedFinish.isAfter(parsedStart);
+  }
+
+  /// Whether the recorded command supports the CLEAN rebuild the comparison
+  /// claims, or states no command at all.
+  ///
+  /// Sprint 117.43-10 (fail-open, fixed): every prior rule in this file asks
+  /// about the artifacts a rebuild produced or when it ran. None asks WHAT was
+  /// built, because nothing read `command` — so the comparison method's "two
+  /// INDEPENDENT CLEAN rebuild cycles" phrase had nothing behind it, and a
+  /// record admitting it ran no clean step at all was accepted as well formed.
+  /// A command that names no clean step cannot have produced a clean rebuild,
+  /// so when one is recorded it must contain one. Absence stays a non-claim,
+  /// the same rule as the window: a record that states no command gives the
+  /// gate nothing to contradict.
+  bool get hasWellFormedMethod {
+    final stated = command?.trim();
+    if (stated == null || stated.isEmpty) return true;
+    return RegExp(r'(^|[\s;&|])flutter\s+clean([\s;&|]|$)').hasMatch(stated);
+  }
+
+  /// Whether this rebuild ran the same experiment as [other].
+  ///
+  /// Two records that differ only in whitespace, separator, or the absolute
+  /// path of the toolchain binary ran the same build; records that name a
+  /// different build mode did not. Comparing the normalized form keeps a
+  /// cosmetic difference in the recorded line from being read as a difference
+  /// in the experiment, which is the mistake that would make this check
+  /// refuse honest manifests.
+  bool ranSameExperimentAs(RebuildResult other) {
+    final mine = _normalizeCommand(command);
+    final theirs = _normalizeCommand(other.command);
+    if (mine == null || theirs == null) return true;
+    return mine == theirs;
+  }
+
+  /// The comparable form of a recorded command, or null when none is recorded.
+  ///
+  /// Quoted segments are compared verbatim because a quoted argument carries a
+  /// literal path that must not be silently rewritten; everything outside them
+  /// is lowercased and squeezed so separators and spacing do not decide the
+  /// outcome.
+  static String? _normalizeCommand(String? command) {
+    final stated = command?.trim();
+    if (stated == null || stated.isEmpty) return null;
+    final buffer = StringBuffer();
+    var quoted = false;
+    for (final rune in stated.runes) {
+      final char = String.fromCharCode(rune);
+      if (char == '"') {
+        quoted = !quoted;
+        buffer.write(char);
+        continue;
+      }
+      if (quoted) {
+        buffer.write(char);
+        continue;
+      }
+      if (RegExp(r'\s').hasMatch(char)) {
+        buffer.write(' ');
+        continue;
+      }
+      buffer.write(char.toLowerCase());
+    }
+    return buffer
+        .toString()
+        .split(' ')
+        .where((token) => token.isNotEmpty)
+        .join(' ');
   }
 }
 

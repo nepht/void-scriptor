@@ -215,32 +215,47 @@ void main() {
       expect(stops.length, 6, reason: 'harus 6 stop, dapat ${stops.length}');
 
       // Stop 0 = Play di header, pita paling atas.
-      expect(stops[0].rect.top, lessThan(stops[1].rect.top),
-          reason: 'Play di header harus stop pertama');
-      expect(stops[0].rect.left, greaterThan(stops[1].rect.left),
-          reason: 'Play berada di ujung kanan header');
+      expect(
+        stops[0].rect.top,
+        lessThan(stops[1].rect.top),
+        reason: 'Play di header harus stop pertama',
+      );
+      expect(
+        stops[0].rect.left,
+        greaterThan(stops[1].rect.left),
+        reason: 'Play berada di ujung kanan header',
+      );
 
       // Toolbar kiri ke kanan: zoom out, zoom in, Fit Scene, Edit, Preview.
       // Tingginya tidak seragam, jadi urutan dikontrakkan lewat `left`.
       final toolbar = stops.sublist(1);
       for (var i = 1; i < toolbar.length; i++) {
-        expect(toolbar[i].rect.left, greaterThan(toolbar[i - 1].rect.left),
-            reason: 'toolbar harus urut kiri ke kanan');
+        expect(
+          toolbar[i].rect.left,
+          greaterThan(toolbar[i - 1].rect.left),
+          reason: 'toolbar harus urut kiri ke kanan',
+        );
       }
 
       // Dua segmen SegmentedButton dihitung dua stop terpisah.
       expect(toolbar[3].label, 'Edit');
       expect(toolbar[4].label, 'Preview');
-      expect(toolbar[3].rect.left, lessThan(toolbar[4].rect.left),
-          reason: 'Edit harus di kiri Preview');
+      expect(
+        toolbar[3].rect.left,
+        lessThan(toolbar[4].rect.left),
+        reason: 'Edit harus di kiri Preview',
+      );
 
       // Ketiga IconButton (Play, zoom out, zoom in) punya label kosong di
       // subtree fokus meski tooltip terisi, jadi hanya posisinya yang dikunci.
       expect(stops[0].label, '?');
       expect(toolbar[0].label, '?');
       expect(toolbar[1].label, '?');
-      expect(toolbar[2].label, 'Fit Scene',
-          reason: 'TextButton punya label di subtree fokusnya');
+      expect(
+        toolbar[2].label,
+        'Fit Scene',
+        reason: 'TextButton punya label di subtree fokusnya',
+      );
     });
 
     testWidgets('2. setiap clip dapat stop fokus, dikelompokkan per track', (
@@ -251,8 +266,11 @@ void main() {
       final stops = await _stops(tester, maxTabs: 12);
 
       // 6 kontrol toolbar + 3 clip = 9 stop lalu kembali ke Play.
-      expect(stops.length, 9,
-          reason: 'harus 6 toolbar + 3 clip = 9 stop, dapat ${stops.length}');
+      expect(
+        stops.length,
+        9,
+        reason: 'harus 6 toolbar + 3 clip = 9 stop, dapat ${stops.length}',
+      );
 
       // Tiga clip terakhir, semua muncul setelah toolbar.
       final clips = stops.sublist(6);
@@ -265,17 +283,29 @@ void main() {
       // Semua clip satu tinggi baris (28) dan di bawah toolbar.
       for (final c in clips) {
         expect(c.rect.height, 28.0, reason: 'tinggi clip tetap 28');
-        expect(c.rect.top, greaterThan(stops[5].rect.top),
-            reason: 'clip harus setelah seluruh toolbar');
+        expect(
+          c.rect.top,
+          greaterThan(stops[5].rect.top),
+          reason: 'clip harus setelah seluruh toolbar',
+        );
       }
 
       // Track character (baris pertama) sebelum track camera (baris kedua).
-      expect(clips[0].rect.top, clips[1].rect.top,
-          reason: 'dua clip character berbagi satu track');
-      expect(clips[0].rect.left, lessThan(clips[1].rect.left),
-          reason: 'clip character urut kiri ke kanan sesuai startSeconds');
-      expect(clips[2].rect.top, greaterThan(clips[0].rect.top),
-          reason: 'track camera berada di baris di bawah track character');
+      expect(
+        clips[0].rect.top,
+        clips[1].rect.top,
+        reason: 'dua clip character berbagi satu track',
+      );
+      expect(
+        clips[0].rect.left,
+        lessThan(clips[1].rect.left),
+        reason: 'clip character urut kiri ke kanan sesuai startSeconds',
+      );
+      expect(
+        clips[2].rect.top,
+        greaterThan(clips[0].rect.top),
+        reason: 'track camera berada di baris di bawah track character',
+      );
     });
 
     testWidgets('3. traversal kembali ke Play setelah clip terakhir', (
@@ -288,8 +318,7 @@ void main() {
       // Setelah normalisasi, Play (top terkecil) selalu jadi stop 0.
       expect(stops.length, 9);
       expect(stops[0].rect.top, 6.0, reason: 'Play berada di header');
-      expect(stops[0].rect.left, 1476.0,
-          reason: 'Play di ujung kanan header');
+      expect(stops[0].rect.left, 1476.0, reason: 'Play di ujung kanan header');
       expect(stops[0].rect.top, lessThan(stops[1].rect.top));
       // Loop terjadi karena traversal berhenti setelah kembali ke Play.
     });
@@ -304,9 +333,14 @@ void main() {
       expect(stops.length, 6);
       // Tidak ada stop fokus di bawah pita toolbar, sehingga tidak ada fokus
       // yang tertahan pada area timeline yang kosong.
-      final lowest = stops.map((s) => s.rect.top).reduce((a, b) => a > b ? a : b);
-      expect(lowest, lessThanOrEqualTo(64.0),
-          reason: 'seluruh stop harus di header atau toolbar');
+      final lowest = stops
+          .map((s) => s.rect.top)
+          .reduce((a, b) => a > b ? a : b);
+      expect(
+        lowest,
+        lessThanOrEqualTo(64.0),
+        reason: 'seluruh stop harus di header atau toolbar',
+      );
     });
 
     testWidgets('5. mode Preview menyisakan satu stop Back to Edit', (
@@ -322,10 +356,16 @@ void main() {
       // Panel diganti total: hanya tombol kembali yang bisa difokus.
       expect(stops.length, 1, reason: 'harus 1 stop, dapat ${stops.length}');
       expect(stops[0].label, 'Back to Edit');
-      expect(find.text('Fit Scene'), findsNothing,
-          reason: 'toolbar mode Edit tidak boleh tersisa');
-      expect(find.text('Arin Vale'), findsNothing,
-          reason: 'clip timeline tidak boleh tersisa');
+      expect(
+        find.text('Fit Scene'),
+        findsNothing,
+        reason: 'toolbar mode Edit tidak boleh tersisa',
+      );
+      expect(
+        find.text('Arin Vale'),
+        findsNothing,
+        reason: 'clip timeline tidak boleh tersisa',
+      );
     });
   });
 }

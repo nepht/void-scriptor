@@ -32,12 +32,12 @@
   "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-09 fixed - the rebuild WINDOWS were read by nothing in lib/ or test/, so the manifest's independence claim (two clean rebuild cycles, per its own method string) was never measured; four impossible histories all reported pass. Both ends fixed: the parser now fails closed on a present-but-undecodable window field, the domain reads the window, and the two windows must not overlap. Absence of both ends remains non-claiming per 117.43-07. The shipped manifest still passes because its windows are honestly recorded (122s and 115s, 30s apart, both matching their recorded durations), and a directed test overlapping the real shipped windows must fail. Gates: focused suite 68/68 exit 0 (was 54/54), 117.43-09 group 14/14 at committed HEAD, analyzer clean (after removing an unnecessary_non_null_assertion warning the formatter surfaced), format idempotent after apply, diff --check clean, windows --debug build exit 0 in 18.4s, provenance regression 3 FAIL (the same three pre-existing failures, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still an open item awaiting an operator decision, so the guard pointer remains on 117.43.",
-    "verified_commit": "d29f61d",
-    "focused_tests": "45/45",
-    "regression": "sprint_113 provenance+packaging: 3 FAIL (pre-existing, root 117.43-02); rc_migration_recovery: all pass",
+    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-18 fixed - the document-level `limits` group is the last level above the header, and the document's own `decision` token names it (VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS), yet the only limits this gate ever decoded was the NESTED artifact_comparison.limits (sprint_117_ga_artifact_reproducibility.dart:1111). The group the verdict rests on therefore had no reader at all: seven present-but-unreadable shapes (integer, bare string, object, list holding an integer, list holding an object, blank entry, whitespace entry) all reported provenance_evaluation: pass, and the `limit: ...` notes came from a different list than the header claimed. Proven before the fix: RED re-verified independently against the unmodified gate - exactly 1 failing test, 7/7 shapes passing, 2 controls green. Both ends fixed in the same fail-closed shape as 117.43-16/-17: the gate decodes the document group through the existing _stringList reader (117.43-12) and refuses one it cannot read; an absent key and an explicit null stay non-claims (117.43-07). Nothing is required about what the limits say or how they relate to the nested comparison limits - that vocabulary belongs to the document, so no acceptance was invented. The shipped manifest still passes because its header is honest; the fix changes no real status. Gates: full file 130/130 exit 0 (was 127, +3), analyzer clean, format idempotent after apply, diff --check clean, windows --debug build exit 0 in 31.1s, directed regression +135 -2 (slice 117 at 134/134; the 2 failures are the pre-existing 113.39 pair, signatures reproduced solo and unchanged, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still an open item awaiting an operator decision, so the guard pointer remains on 117.43.",
+    "verified_commit": "7c295c8",
+    "focused_tests": "130/130",
+    "regression": "sprint_113 provenance + sprint_117 gate: +135 -2 (slice 117 = 134/134 pass); 2 FAIL pre-existing 113.39, signatures unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02. No full-suite claim: per the full_suite_trap note an argument-less flutter test yields no trustworthy summary, so only the directed regression is asserted.",
     "analyzer": "No issues found!",
-    "build": "flutter build windows --debug exit 0 in 22.7s"
+    "build": "flutter build windows --debug exit 0 in 31.1s"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T03:40:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 slice 117.43-17",
+  "updated_at": "2026-10-04T04:20:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 slice 117.43-18",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

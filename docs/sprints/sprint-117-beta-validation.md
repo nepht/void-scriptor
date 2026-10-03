@@ -399,3 +399,80 @@ diaudit satu per satu karena run itu tidak menghasilkan ringkasan tepercaya
 berada di file yang tidak disentuh slice ini (character/story/account/world/
 login/focus-order), yaitu milik worker lain. Count `-42` di log **bukan**
 jumlah kegagalan final yang sah dan **tidak** dipakai sebagai bukti.
+
+## 117.43-18 - dokumen harus mampu menyatakan limitnya sendiri (2026-10-04)
+
+Defect **ke-13** (ketiga belas) dari hunt unmeasured-claim / fail-open decode di trust
+boundary yang sama, dan **level terakhir di atas header** - grup `limits` level dokumen.
+117.43-17 membuka header (`status`/`decision`); satu tingkat di atasnya ada `limits`,
+dan **token `decision` dokumen itu sendiri yang menamainya**
+(`VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS`) - artinya verdict yang
+diterbitkan persis resting pada grup yang tidak pernah dibuka siapa pun.
+
+**BUKTI KETIADAAN PEMBACA (independen, bukan asumsi):** satu-satunya `limits` yang
+pernah didekode gate ini adalah **bersarang** `artifact_comparison.limits`
+(`sprint_117_ga_artifact_reproducibility.dart:1111`). Manifest yang di-ship menyodorkan
+`limits` level dokumen berisi **3 limit** (hasil lokal MSVC/Flutter tidak deterministik
+karena `/Brepro` nonaktif; hosted CI/lintas-mesin/SLSA/installer/publikasi
+DEFERRED; signature & checksum bersifat lokal/self-signed) - dan **grup itu tidak punya
+pembaca sama sekali**. Konsekuensi nyata: nilai `limits` yang ada tapi tak terbaca
+dilewati diam-diam sementara gate menerbitkan `provenance_evaluation: pass`, dan
+note `limit: ...` yang dicetak berasal dari **daftar lain** dari yang diklaim header.
+
+**BATAS YANG DIPIN (tidak mengarang acceptance):** penolakan hanya untuk grup yang
+**HADIR dan tidak bisa dibaca** sebagai list of non-blank string - bentuk yang sudah
+diimplementasikan helper `_stringList` (117.43-12). Key **absen** dan `null` eksplisit
+tetap non-klaim (117.43-07). **TIDAK** ada syarat baru tentang **isi** limit, jumlahnya,
+atau hubungannya dengan `artifact_comparison.limits` bersarang - kosakata itu milik
+dokumen, jadi pembaca ini tidak menambah acceptance.
+
+**RED (diverifikasi ulang independen, gate BELUM diubah):** `flutter test
+test/release/sprint_117_ga_artifact_reproducibility_test.dart --plain-name 117.43-18`
+-> exit 1 dengan **TEPAT 1 test gagal**; **7 dari 7** bentuk tak terbaca
+(`limits` integer / string telanjang / object / list berisi integer / list berisi
+object / entry kosong / entry whitespace) semuanya mengembalikan `pass`. Dua kontrol
+tetap hijau: manifest yang di-ship tetap `pass` (grupnya memang bisa dibaca) dan
+absen/`null` tetap non-klaim.
+
+**GREEN:** file penuh **130/130 exit 0** (dari 127, +3 test baru).
+
+**GERBANG:** `dart format` 2 file - apply lalu **0 changed** idempotent exit 0;
+`dart analyze` 2 file **No issues found!** exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 **31,1 dtk**
+`Built build\windows\x64\runner\Debug\void_scriptor.exe`.
+
+**SHA (2-sisi, dari artefak TER-COMMIT sesuai klausul 1+2):** gate
+`10584b493de832c7ba130f8f22fa0b36410c52fd793b167192cb3ddf652f01f8`, test
+`c9bdab15fa716a3c73208d3a3b8ddb13cd067cf41e6108fd064bf5059e8a7585` -
+disk == `git show 7c295c8:<path>`, dan **kedua sisi CRLF-identik** (1581 / 3761),
+jadi tidak ada normalisasi yang perlu disamarkan.
+
+**REGRESI TERARAH (2 file, exit 1):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart` -> **+135 -2**.
+- **Slice 117 = 134/134 LULUS** di committed HEAD (termasuk ketiga test 117.43-18).
+- **2 GAGAL, keduanya `113.39`, signature PERSIS SAMA** dengan yang sudah
+  terdokumentasi (direproduksi ulang solo, bukan Faithful dari catatan run lalu):
+  `dependency lock evidence matches the live lockfile` (expected `c9a365e6…`,
+  actual record manifest `32e31fd3…`) dan `signed release artifact from 113.38
+  remains intact` (expected `73101e78…`, actual `c7a33055…`). Keduanya
+  **pre-existing**, akar `TODO-OPERATOR 117.43-02`.
+- **Tidak ada klaim suite penuh.** Sesuai jebakan `full_suite_trap` yang tercatat di
+  notepad, `flutter test` tanpa argumen tidak menghasilkan ringkasan tepercaya;
+  yang sah hanyalah regresi terarah di atas. `-2` itu **keduanya 113.39**, bukan
+  hitungan kegagalan seluruh repo.
+
+**COMMIT:** `7c295c8` (2 path eksplisit, 161 insertions, insert-only). **PUSH:** tidak.
+
+**KEADAAN REPOSITORI:** dirty 97 -> 98 selama slice (selisih tepat 2 file slice).
+Commit slice menyentuh tepat 2 file (gate + test 117); commit docs menyentuh tepat 2
+file (ledger + state). Manifest 117.43 TIDAK diubah, 0 byte. 2 proses
+`flutter_tester.exe` yatim (parent 15512 sudah mati, CPU beku di dua sampel
+berjeda 14 dtk) dibersihkan sebelum menjalankan toolchain, supaya invarian
+satu-proses-Flutter berlaku lagi.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak
+ditutup karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih
+INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah - pilihan
+(a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum,
+atau (b) nyatakan drift sebagai limitasi GA yang diterima + persempit acceptance
+117.43. Cron tidak mengarang pilihan.

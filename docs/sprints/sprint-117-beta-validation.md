@@ -476,3 +476,79 @@ INCOMPLETE. **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah - piliha
 (a) re-sign kandidat rc.1 (`flutter clean` + build `--release`) lalu refresh checksum,
 atau (b) nyatakan drift sebagai limitasi GA yang diterima + persempit acceptance
 117.43. Cron tidak mengarang pilihan.
+
+### Slice 117.43-19 - `version` dokumen level yang tidak pernah dibuka (defect ke-14 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Tidak ada WIP yang perlu diadopsi: `git status --porcelain` untuk kedua file slice
+KOSONG sebelum mutasi, dan SHA pra-mutasi **PERSIS sama** dengan yang tercatat di
+ledger 117.43-18 - gate `10584b493de832c7ba130f8f22fa0b36410c52fd793b167192cb3ddf652f01f8`,
+test `c9bdab15fa716a3c73208d3a3b8ddb13cd067cf41e6108fd064bf5059e8a7585`. Snapshot
+recoverable di `cache/scratch/slice-117-43-19-20261004/` (`gate.before`/`test.before`).
+Dirty 96 saat snapshot.
+
+**DEFECT:** manifest provenance `docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json`
+mempunyai field `version` (`1.2.0-rc.1`) pada level dokumen yang sama dengan `status`/`decision`
+(header dibuka 117.43-17) dan `limits` (dibuka 117.43-18). **TIDAK ADA pembaca di `lib/`** yang
+membuka field itu - dibuktikan independen dengan dump seluruh 36 kunci distinct manifest lalu
+pencocokan tiap kunci terhadap literal string di gate (`dart` reader), bukan asumsi. Lebih
+tajam: gate justru **menyvets** `deriveApplicationVersion()` yang membaca
+`VoidProjectFormat.applicationVersion`, tetapi fungsi itu **tidak pernah dipanggil dari mana pun
+di repo** (`git grep` mengembalikan tepat 1 hit = definisinya sendiri). Jadi dokumen yang
+menyatakan versi yang tidak bisa dibaca tetap mendapat `provenance_evaluation: pass`.
+
+Bukti ketiadaan pembaca (independen, bukan inferred): `version`, `title`, dan
+`signed_snapshot_restore` satu-satunya kunci non-artifact tanpa pembaca; `title` dan
+`signed_snapshot_restore` memang **sengaja** non-diklaim (117.43-16/17/18 mengikat keduanya sebagai
+prose/vocab di luar acceptance), sedangkan `version` **bukan** - tidak ada catatan yang
+membebaskannya dan tidak ada bentuk yang pernah dibaca.
+
+**BATAS (tidak mengarang acceptance):** identik dengan 117.43-16/-17/-18. Field `version` yang
+hadir dan **tidak terbaca sebagai string non-blank** = unevaluable (fail-closed). Key absen dan
+`null` eksplisit tetap non-klaim (117.43-07). **Tidak ada syarat tentang versi apa yang
+dinyatakan** - kosakata itu milik dokumen, jadi pembaca ini tidak menambah acceptance sendiri.
+
+**RED (independen, gate belum diubah):** exit 1, **TEPAT 1** test gagal, 2 kontrol hijau.
+Kasus 5/5 salah 모두 `pass` (integer, list, object, string blank, string whitespace-only).
+
+**GREEN:** `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart`
+-> **133/133 exit 0** (dari 130, +3). Ketiga test slice 117.43-19 hijau.
+
+**GERBANG:** `dart format` 2 file - apply lalu **0 changed** idempotent exit 0;
+`dart analyze` 2 file **No issues found!** exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 **25 dtk**, `Built build\windows\x64\runner\Debug\void_scriptor.exe`.
+`dart run tool/roadmap_guard.dart` **PASS** pre-commit dan post-commit,
+`canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6` TIDAK berubah,
+`recommended_step 117.43`.
+
+**SHA (2-sisi, dari artefak TER-COMMIT sesuai klausul 1+2 policy 2026-10-02):** gate
+`9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d`, test
+`cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5` -
+`disk == git show 3981e2d:<path>` untuk keduanya, dan **kedua sisi LF-murni** (0 CRLF),
+jadi tanpa normalisasi yang perlu disamarkan.
+
+**REGRESI TERARAH (2 file, exit 1):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart` -> **+138 -2**.
+- **Slice 117 = 135/135 LULUS** di committed HEAD (termasuk ketiga test 117.43-19).
+- **2 GAGAL, keduanya `113.39`, signature PERSIS SAMA** dengan yang sudah terdokumentasi,
+  dan **direproduksi ulang SOLO** (bukan Faithful dari catatan run lalu):
+  `dependency lock evidence matches the live lockfile` (expected `c9a365e6…`, actual record
+  manifest `32e31fd3…`) dan `signed release artifact from 113.38 remains intact`
+  (expected `73101e78…`, actual `c7a33055…`). Keduanya **pre-existing**, akar
+  `TODO-OPERATOR 117.43-02`.
+- **Tidak ada klaim suite penuh.** Sesuai jebakan `full_suite_trap` di notepad,
+  `flutter test` tanpa argumen tidak menghasilkan ringkasan tepercaya; yang sah hanyalah
+  regresi terarah di atas. `-2` itu **keduanya 113.39**, bukan hitungan kegagalan seluruh repo.
+
+**COMMIT:** `3981e2d` (2 path eksplisit, 133 insertions, insert-only). **PUSH:** tidak.
+
+**KEADAAN REPOSITORI:** dirty 96 -> 99 selama slice (selisih tepat 2 file slice; +1 file dirty lain
+milik worker paralel yang tidak disentuh). Manifest 117.43 TIDAK diubah. Tidak ada proses
+Flutter/Dart lain yang berjalan saat preflight (CIM Win32_Process: 0 dart/flutter_tester/msbuild/java),
+jadi invarian satu-proses-Flutter terjaga tanpa perlu membersihkan yatim.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup karena
+`_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah - pilihan (a) re-sign kandidat
+rc.1 (`flutter clean` + build `--release`) lalu refresh checksum, atau (b) nyatakan drift
+sebagai limitasi GA yang diterima + persempit acceptance 117.43. Cron tidak mengarang pilihan.

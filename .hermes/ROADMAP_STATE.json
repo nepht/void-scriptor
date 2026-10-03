@@ -32,10 +32,10 @@
   "next_step": "117.43",
   "stability_gate": {
     "status": "PASS",
-    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-18 fixed - the document-level `limits` group is the last level above the header, and the document's own `decision` token names it (VERIFIED_LOCAL_PROVENANCE_DOCUMENTED_REPRO_LIMITS), yet the only limits this gate ever decoded was the NESTED artifact_comparison.limits (sprint_117_ga_artifact_reproducibility.dart:1111). The group the verdict rests on therefore had no reader at all: seven present-but-unreadable shapes (integer, bare string, object, list holding an integer, list holding an object, blank entry, whitespace entry) all reported provenance_evaluation: pass, and the `limit: ...` notes came from a different list than the header claimed. Proven before the fix: RED re-verified independently against the unmodified gate - exactly 1 failing test, 7/7 shapes passing, 2 controls green. Both ends fixed in the same fail-closed shape as 117.43-16/-17: the gate decodes the document group through the existing _stringList reader (117.43-12) and refuses one it cannot read; an absent key and an explicit null stay non-claims (117.43-07). Nothing is required about what the limits say or how they relate to the nested comparison limits - that vocabulary belongs to the document, so no acceptance was invented. The shipped manifest still passes because its header is honest; the fix changes no real status. Gates: full file 130/130 exit 0 (was 127, +3), analyzer clean, format idempotent after apply, diff --check clean, windows --debug build exit 0 in 31.1s, directed regression +135 -2 (slice 117 at 134/134; the 2 failures are the pre-existing 113.39 pair, signatures reproduced solo and unchanged, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still an open item awaiting an operator decision, so the guard pointer remains on 117.43.",
-    "verified_commit": "7c295c8",
+    "note": "117.43 GA Artifact & Reproducibility: defect 117.43-19 fixed - the document-level `version` field sits on the same level the header (117.43-17) and the limits group (117.43-18) opened, and NO reader in lib/ had ever opened it; the gate even ships deriveApplicationVersion() yet nothing ever called it. Proven before the fix by dumping all 36 distinct manifest keys and matching each against gate literals, not by assumption: five present-but-unreadable shapes (integer, list, object, blank string, whitespace-only) all reported provenance_evaluation: pass. Fixed in the same fail-closed shape as 117.43-16/-17/-18: a present version that is not a non-blank string is unevaluable, an absent key and an explicit null stay non-claims (117.43-07), and nothing is required about WHICH version the document states. title and signed_snapshot_restore also have no reader but stay deliberately unmeasured - both were already bound as prose outside acceptance. Gates: focused file 133/133 exit 0 (was 130, +3), analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 25s, guard PASS pre+post (canonical_sha256 b7ef2d35... unchanged). Directed regression +138 -2 (slice 117 at 135/135; the 2 failures are the pre-existing 113.39 pair, signatures reproduced solo and unchanged, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still open awaiting an operator decision, so the guard pointer remains on 117.43.",
+    "verified_commit": "3981e2d",
     "focused_tests": "130/130",
-    "regression": "sprint_113 provenance + sprint_117 gate: +135 -2 (slice 117 = 134/134 pass); 2 FAIL pre-existing 113.39, signatures unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02. No full-suite claim: per the full_suite_trap note an argument-less flutter test yields no trustworthy summary, so only the directed regression is asserted.",
+    "regression": "sprint_113 provenance + sprint_117 gate: +138 -2 (slice 117 = 135/135 pass); 2 FAIL pre-existing 113.39, signatures unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02. No full-suite claim.",
     "analyzer": "No issues found!",
     "build": "flutter build windows --debug exit 0 in 31.1s"
   },
@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T04:20:00+07:00",
-  "updated_by": "cron b0c2c7d744d9 slice 117.43-18",
+  "updated_at": "2026-10-04T05:05:00+07:00",
+  "updated_by": "cron b0c2c7d744d9 slice 117.43-19",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3158,7 +3158,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-03T10:55:00+07:00",
+    "updated_at": "2026-10-04T05:05:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3180,7 +3180,7 @@
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
     "defects_fixed_count": 13,
-    "slice_commit": "7267ebb",
+    "slice_commit": "3981e2d",
     "last_slice_files": [
       {
         "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
@@ -3334,16 +3334,34 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "id": "117.43-16",
-      "defect": "rebuild_run group restated facts no lib/ reader ever decoded; pass published for documents contradicting their own records",
-      "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
-      "gate_sha256": "701c32a24b8cfe2da80aaafe1569eafe8bcbed53bf63e16adf42d079b59fde78",
-      "test_sha256": "00ff4b3c0ce7da53a65a9f7ce324001ea391e1bd6cd2c548312666f2901a71d4",
-      "sha_source": "hashed from committed blobs via `git show cfcba26:<path>` (policy clause 1), after commit",
-      "focused_tests": "123/123 PASS exit 0 (from 117, +6)",
-      "red": "121 pass / 2 fail, exactly the two new 117.43-16 tests",
-      "full_suite": "+9654 ~1 -11 EXIT=1 41:29; 11 failures audited one by one, none touch this slice (6x sprint_113 release-tree/lock drift = same root as TODO-OPERATOR 117.43-02, 1x login golden 0.01% pixel diff, 2x untracked a11y focus-order tests owned by the parallel worker, 2x gitignored scratch probes); gate 117 itself passed inside the full suite",
-      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0; roadmap_guard PASS post-commit",
+      "id": "117.43-19",
+      "defect": "document-level `version` restated facts no lib/ reader ever decoded; deriveApplicationVersion() shipped but never called; pass published for documents naming an unreadable version",
+      "commit": "3981e2d",
+      "gate_sha256": "9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d",
+      "test_sha256": "cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5",
+      "sha_source": "hashed from committed blobs via `git show 3981e2d:<path>` (policy clause 1), after commit",
+      "focused_tests": "133/133 PASS exit 0 (from 130, +3)",
+      "red": "exactly 1 failing test, 5/5 unreadable shapes wrongly pass, 2 controls green",
+      "full_suite": "NOT CLAIMED - an argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed 2-file regression is asserted (+138 -2)",
+      "gates": "dart format 0 changed; dart analyze No issues found!; git diff --check 0; flutter build windows --debug exit 0 in 25s; roadmap_guard PASS post-commit",
+      "verified_on": "2026-10-04"
+    },
+    "defect_117_43_19": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-19",
+      "hunt": "unmeasured-claim / fail-open, fourteenth slice of the family",
+      "family_closed_so_far": 14,
+      "shape": "document-level `version` had no reader in lib/ at all, while the gate SHIPS deriveApplicationVersion() and never calls it",
+      "symptom": "the provenance document names the application version it measured (version: 1.2.0-rc.1) on the same level the header (117.43-17) and the limits group (117.43-18) already opened. Nothing decoded it, so a document stating a version in any shape - integer, list, object, blank string, whitespace-only - still received provenance_evaluation: pass.",
+      "empirical_before_fix": "RED re-verified independently against the unmodified gate: exit 1 with EXACTLY 1 failing test, all 5 unreadable shapes reported pass, 2 controls green. Absence of a reader was proven by dumping all 36 distinct keys of the manifest tree and matching each against gate string literals - not by assumption.",
+      "bounds": "identical to 117.43-16/-17/-18, so no acceptance was invented: a present `version` that is not a non-blank string is unevaluable (fail-closed); an absent key and an explicit null stay non-claims (117.43-07); nothing is required about WHICH version the document states - that vocabulary belongs to the document.",
+      "non_claims_confirmed": "`title` and `signed_snapshot_restore` also have no reader, but both were already bound as prose/vocabulary outside acceptance by 117.43-16/-17/-18, so they stay deliberately unmeasured.",
+      "gates": "focused suite 133/133 exit 0 (was 130, +3); format 0 changed idempotent; analyze No issues found! exit 0; git diff --check 0; flutter build windows --debug exit 0 in 25s; roadmap_guard PASS pre and post commit, canonical_sha256 b7ef2d35... unchanged",
+      "regression": "directed 2-file +138 -2 (slice 117 = 135/135 pass); 2 FAIL pre-existing 113.39, signatures reproduced solo and unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02. No full-suite claim per full_suite_trap.",
+      "slice_commit": "3981e2d",
+      "gate_sha256": "9396891901a75e17bb9bdff354436dda75eb8cdbdc4c43ef7ee51390b5d2fb4d",
+      "test_sha256": "cf823f040da3377117b51985ac3d6b9b68ad791494b85105490ef7befc4a2bb5",
+      "sha_source": "hashed from committed blobs via `git show 3981e2d:<path>` (policy 2026-10-02 clause 1), after commit; both sides LF-pure (0 CRLF), disk == blob",
       "verified_on": "2026-10-04"
     }
   },
@@ -3579,5 +3597,5 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "cfcba2671872dc8012a9e14f2a087f1eb9ff321e",
-  "ahead": 11
+  "ahead": 19
 }

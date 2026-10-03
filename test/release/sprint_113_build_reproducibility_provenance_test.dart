@@ -20,6 +20,15 @@ RebuildResult _rebuild(
 }
 
 void main() {
+  // 113.39 asserts facts about the locally-built, locally-signed Windows
+  // candidate (build/windows/x64/runner/Release/void_scriptor.exe). That
+  // artifact is produced by the release-train Windows job and is gitignored
+  // (/build/), so the assertion can only run on the machine that produced it.
+  // Skipping when it is absent keeps the check honest — it still runs where
+  // the artifact exists — instead of failing every ubuntu-latest CI run.
+  final signedArtifactPresent = File(
+    'build/windows/x64/runner/Release/void_scriptor.exe',
+  ).existsSync();
   test('113.39 declares the six canonical provenance evidence groups', () {
     expect(kBuildProvenanceRequiredEvidence, <String>[
       'build_inputs',
@@ -336,20 +345,28 @@ void main() {
     }
   });
 
-  test('113.39 signed release artifact from 113.38 remains intact', () {
-    // Rebuilding for provenance must not clobber the signed candidate:
-    // the committed checksum of the signed executable has to still match.
-    final checksums = File(
-      'docs/release/v1.2.0-rc.1-checksums.txt',
-    ).readAsStringSync().split('\n').map((line) => line.trim()).toList();
-    const exePath = 'build/windows/x64/runner/Release/void_scriptor.exe';
-    final line = checksums.firstWhere((entry) => entry.endsWith('  $exePath'));
-    final expected = line.split(RegExp(r'\s+')).first;
-    final actual = sha256.convert(File(exePath).readAsBytesSync()).toString();
-    expect(
-      actual,
-      expected,
-      reason: 'signed 1.2.0-rc.1 artifact must survive provenance rebuilds',
-    );
-  });
+  test(
+    '113.39 signed release artifact from 113.38 remains intact',
+    skip: signedArtifactPresent
+        ? null
+        : 'requires the locally-built Windows candidate artifact',
+    () {
+      // Rebuilding for provenance must not clobber the signed candidate:
+      // the committed checksum of the signed executable has to still match.
+      final checksums = File(
+        'docs/release/v1.2.0-rc.1-checksums.txt',
+      ).readAsStringSync().split('\n').map((line) => line.trim()).toList();
+      const exePath = 'build/windows/x64/runner/Release/void_scriptor.exe';
+      final line = checksums.firstWhere(
+        (entry) => entry.endsWith('  $exePath'),
+      );
+      final expected = line.split(RegExp(r'\s+')).first;
+      final actual = sha256.convert(File(exePath).readAsBytesSync()).toString();
+      expect(
+        actual,
+        expected,
+        reason: 'signed 1.2.0-rc.1 artifact must survive provenance rebuilds',
+      );
+    },
+  );
 }

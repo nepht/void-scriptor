@@ -24,6 +24,13 @@ const String _kProvenanceManifest =
     'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json';
 const String _kChecksums = 'docs/release/v1.2.0-rc.1-checksums.txt';
 
+/// The shipped checksums describe the signed release tree under `build/`. A
+/// clean checkout (CI) has no such tree, so the live-digest measurement cannot
+/// be taken there. Mirrors the sprint_113 signed-artifact guards.
+final bool _signedBuildTreePresent = File(
+  'build/windows/x64/runner/Release/void_scriptor.exe',
+).existsSync();
+
 Map<String, Object?> _manifest(String path) =>
     Sprint117GaArtifactGate.readManifest(path) ?? <String, Object?>{};
 
@@ -580,7 +587,13 @@ void main() {
       );
       expect(File(_kChecksums).readAsBytesSync(), before);
       expect(check.outputId, 'checksums');
-      if (drifting.isNotEmpty) {
+      if (!_signedBuildTreePresent) {
+        // A clean checkout carries none of the signed artifacts the committed
+        // checksums describe, so every recorded path reads as uncovered. That
+        // is the honest verdict here — not a skip and not a pass.
+        expect(check.status, Sprint117GaArtifactStatus.violation);
+        expect(check.note, contains('uncovered:'));
+      } else if (drifting.isNotEmpty) {
         expect(check.status, Sprint117GaArtifactStatus.violation);
         expect(check.note, contains('drifting:'));
       } else {
@@ -3164,8 +3177,8 @@ void main() {
       // carrying a 64-hex placeholder, so a "must be 40 hex" rule refuses an
       // honest document. Inventing a criterion the evidence never stated is
       // the same overclaim this gate exists to catch, so no rule was kept.
-      final real = '30dda0c3389a8bd9e3cae705abd51eaecbca2630';
-      final fabricated = 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
+      const real = '30dda0c3389a8bd9e3cae705abd51eaecbca2630';
+      const fabricated = 'deadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
       for (final value in <String>[real, fabricated]) {
         expect(value.length, 40);
         expect(RegExp(r'^[0-9a-f]{40}$').hasMatch(value), isTrue);

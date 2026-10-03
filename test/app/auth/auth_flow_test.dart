@@ -82,7 +82,13 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ACCOUNT & CLOUD CENTER'), findsOneWidget);
-    await tester.tap(find.text('Sign in or connect account'));
+    // 115.36: aksi sign-in kartu AUTHENTICATION kini "+ Add Another Method"
+    // (mockup dua kolom), bukan lagi "Sign in or connect account". Kontrak test
+    // tidak berubah: aksi itu tetap membuka layar Login. Panel metode bisa
+    // berada di luar viewport tier mobile, jadi digulir dulu.
+    await tester.ensureVisible(find.text('+ Add Another Method'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('+ Add Another Method'));
     await tester.pumpAndSettle();
 
     expect(find.text('Welcome back'), findsOneWidget);

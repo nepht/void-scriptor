@@ -639,3 +639,71 @@ disentuh; 2 file slice dan 2 file docs slice semuanya BERSIH (`git status --porc
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup karena
 `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+
+### Slice 117.43-21 - satu path yang direstatement di dua grup dengan digest berbeda (defect ke-16 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Penomoran slice diverifikasi dulu sesuai jebakan `slice_numbering`: `117.43-01`..`-20` sudah
+terpakai di ledger dan state, hunt ke-16 ini memakai `-21`. **Nomor urut hunt (16) != nomor
+slice (21)** karena repo sudah punya defect 117.43-14 yang bertabrakan dengan urutan hunt ke-14.
+
+Tidak ada WIP yang perlu diadopsi: kedua file slice KOSONG di `git status --porcelain`
+sebelum mutasi. Snapshot recoverable di `cache/scratch/slice-117-43-21-20261004/`
+(`gate.dart.pre`/`test.dart.pre`, plus `domain.dart.fixed` dan `domain.dart.formatted` untuk
+restore byte-identik saat prove batas RED). Preflight CIM Win32_Process: 0 proses
+dart/flutter_tester/msbuild/java, jadi invarian satu-proses-Flutter terjaga tanpa membersihkan yatim.
+
+**DEFECT:** 117.43-11 Teach layer provenance bahwa baris yang menyebut digest harus
+membawa digest sungguhan, tetapi ia memeriksa **setiap grup secara terpisah**:
+`_hasWellFormedDigestClaims` hanya bertanya "apakah ini 64 hex?". **Tidak ada pembaca di
+`lib/` yang pernah bertanya apakah `build_inputs` dan `dependency_lock` SEPAK satu sama
+lain.** Dokumen 113.39 yang di-ship menyatakan `pubspec.lock sha256 <hex>` **dua kali** -
+sekali di `build_inputs`, sekali di `dependency_lock` - sehingga dokumen yang memberi satu
+file dua digest berbeda lolos KEDUA pemeriksaan, `missingEvidence` mengembalikan `[]`, dan
+evaluasi mengembalikan `pass`, sementara gate mencetak `dependency_lock: 2 item` seolah
+lock sudah diverifikasi dua kali. Verified secara struktural: kedua grup pada manifest
+saat ini memang identik, jadi dokumen jujur tidak tersentuh.
+
+Ini pasangan lintas-grup dari 117.43-15 (yang menahan baris ringkasan `provenance_record`
+pada catatan rebuild yang direstatementnya). Hash satu file tidak bisa berubah di bawah
+satu evaluasi.
+
+**RED (independen, exit 1 TEPAT 1 test gagal):** dua digest 64-hex yang well-formed untuk
+path yang sama, satu per grup, saling berbeda -> `missingEvidence` `[]`, evaluasi `pass`.
+Tiga kontrol hijau: (1) kedua grup menyepakai digest yang sama - kasus jujur manifest yang di-ship, tetap
+`pass`; (2) baris yang hanya MENYEBUT kata `sha256` tanpa nilai (`hosted dependencies
+hash-pinned sha256; 0 git/path source`) adalah non-claim, bukan kontradiksi (117.43-11);
+(3) path yang hanya disebut SATU grup tidak punya apa pun untuk dikontradiksi.
+
+**BATAS RED KEDUA (wajib untuk defect keluarga ini):** implementasi dikembalikan ke HEAD
+sementara (`git show HEAD:<path>`) sementara test tetap ada -> **mengulang TEPAT 1 kegagalan
+yang sama di baris yang sama tanpa compile error**, membuktikan kegagalan milik pembaca baru
+bukan efek samping. Restore diverifikasi `cmp` byte-identik terhadap snapshot.
+
+**GREEN 7/7 pada file 113 (dari 6, +1 test baru):** test baru hijau; 2 kegagalan 113.39
+proven pre-existing (lihat regresi). `dart format` diterapkan lalu idempoten (0 changed,
+exit 0), `dart analyze` 2 file `No issues found!` exit 0, `git diff --check` 0,
+`flutter build windows --debug` exit 0 (67,0 dtk).
+
+**SHA 2-SISI dari blob ter-commit `git show 855e325:<path>`:** domain
+`ced490ecaf452df630eda438db050932bb32bc274ac27605aa456961c905c4fb` (30270 B), test
+`c42762b0a739cb6543607dc3b1cc8361b64db889caabb5f05eca0be513b5a960` (17738 B) -
+kedua sisi LF-murni (0 CRLF).
+
+**COMMIT:** `855e325` (2 path eksplisit, 157 insertions, insert-only). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file +142 -2:** slice 117 = **136/136 LULUS** seluruhnya (termasuk
+ketiga test 117.43-20 dan seluruh keluarga 117.43-18/-19/-20), 2 kegagalan **keduanya
+113.39 pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
+`dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
+`c9a365e6…`, `sha256sum pubspec.lock` = `c9a365e6…` diverifikasi ulang, file tidak berubah)
+dan `signed release artifact from 113.38 remains intact` (expected `73101e78…`, actual
+`c7a33055…`). Yang kedua **direproduksi ulang dengan implementasi slice ini DIHAPUS**
+(`git show HEAD:` ke domain), signature identik - membuktikan tidak terkait dengan slice ini.
+Tidak ada satupun meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan
+`full_suite_trap`); `-2` itu hanya hitungan 2 file terarah ini, bukan seluruh repo.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah.

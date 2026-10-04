@@ -123,6 +123,58 @@ const Set<String> _kNonSha256Algorithms = <String>{
   'djb2',
 };
 
+/// A `toolchain_versions` line, split into the tool it names and the version it
+/// states for it.
+final class _ToolchainLine {
+  const _ToolchainLine(this.name, this.version);
+
+  final String name;
+  final String version;
+}
+
+_ToolchainLine? _readToolchainLine(String line) {
+  final tokens = line
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((token) => token.isNotEmpty)
+      .toList();
+  final name = <String>[];
+  for (final raw in tokens) {
+    final token = raw.replaceAll(RegExp(r'^[^0-9A-Za-z]+|[^0-9A-Za-z]+$'), '');
+    if (token.isEmpty) continue;
+    // The first token carrying a digit ends the name. A bare integer (`2026`,
+    // `10`) or a date-shaped token (`2026-07-08`) is the product year or the
+    // build date, so it ends the name without ever being a version.
+    if (RegExp(r'[0-9]').hasMatch(token)) break;
+    name.add(token.toLowerCase());
+  }
+  if (name.isEmpty) return null;
+  // The first DOTTED number after the name is the tool's own version; the ones
+  // after it are its qualifiers (`18.9.0 version 18.9.12105.275` states the
+  // tool at one precision and the installed build at another). A line with no
+  // dotted number at all states no version.
+  final version = tokens
+      .map(
+        (raw) => raw.replaceAll(RegExp(r'^[^0-9A-Za-z]+|[^0-9A-Za-z]+$'), ''),
+      )
+      .firstWhere(
+        (token) => RegExp(r'^\d+(\.\d+)+$').hasMatch(token),
+        orElse: () => '',
+      );
+  if (version.isEmpty) return null;
+  return _ToolchainLine(name.join(' '), version);
+}
+
+/// Whether two spellings of a version say the same number.
+///
+/// `18.9` and `18.9.0` are one version written twice. Compared component by
+/// component rather than as text, so `18.9` is a prefix of `18.9.0` without
+/// `18` and `180` matching.
+bool _sameVersion(String left, String right) {
+  if (left == right) return true;
+  return left.startsWith('$right.') || right.startsWith('$left.');
+}
+
 /// Verdict of comparing two clean rebuilds.
 enum RebuildVerdict {
   /// Both rebuilds produced byte-identical artifact hashes.
@@ -401,6 +453,9 @@ class BuildProvenanceEvidence {
     if (!_hasContent(evidence.toolchainVersions)) {
       missing.add('toolchain_versions');
     }
+    if (!_toolVersionsAgree(evidence.toolchainVersions)) {
+      missing.add('toolchain_versions');
+    }
     if (!_hasContent(evidence.dependencyLock)) missing.add('dependency_lock');
     if (!_hasWellFormedDigestClaims(evidence.dependencyLock)) {
       missing.add('dependency_lock');
@@ -643,6 +698,60 @@ class BuildProvenanceEvidence {
     RebuildVerdict.bitIdentical => 'BIT_IDENTICAL',
     RebuildVerdict.notBitIdentical => 'NOT_BIT_IDENTICAL',
   };
+
+  /// Whether the versions one tool is given in two lines agree.
+  ///
+  /// Sprint 117.43-23 (fail-open, fixed). `toolchain_versions` was read by
+  /// `_hasContent` alone — the group was checked for holding non-blank strings
+  /// and nothing else — then the verdict printed `toolchain_versions: N item`
+  /// as though N versions had been compared against anything. It is the one
+  /// group that says WHICH SDK produced the build, and the comparison's own
+  /// method rests on "the same tree and machine" while its limits explicitly
+  /// disclaim cross-SDK reproducibility, so a document naming the same tool
+  /// under two different versions contradicts the claim the whole step makes.
+  ///
+  /// This is the cross-line counterpart to 117.43-21, which held one path's
+  /// digest to the same value in two groups: the same kind of restatement, at
+  /// the same layer, one axis further out.
+  ///
+  /// Bounds, all pinned by the 117.43-23 test:
+  ///
+  ///  * a line stating NO dotted version makes no version claim — a pinned
+  ///    engine revision and a prose host line are left alone (117.43-07);
+  ///  * a tool named by only ONE line has nothing to contradict;
+  ///  * a bare integer (`2026`) and a date-shaped token (`2026-07-08`) are the
+  ///    product year and the build date, never the version, so they are read
+  ///    as the end of the name rather than as a second version;
+  ///  * less precise and more precise spellings of ONE version
+  ///    (`18.9` beside `18.9.0`) are the same version, so a document that
+  ///    states a tool once in detail and once tersely stays honest;
+  ///  * nothing is required about WHICH tools a document chooses to record, or
+  ///    how many.
+  static bool _toolVersionsAgree(List<String>? lines) {
+    if (lines == null) return true;
+    final claims = <_ToolchainLine>[];
+    for (final line in lines) {
+      final parsed = _readToolchainLine(line);
+      if (parsed != null) claims.add(parsed);
+    }
+    // Group by tool NAME, then refuse a tool whose lines cannot all be told
+    // the same version. The rule is pairwise because one line can carry
+    // several numbers — `18.9.0 version 18.9.12105.275` states the tool at one
+    // precision and the installed build at another — and only the FIRST dotted
+    // number of a line is read as the version, so a document that records a
+    // tool in detail on one line and tersely on the next stays honest. What is
+    // refused is a document that names the same tool under two versions that
+    // differ in a component both spell out.
+    for (var i = 0; i < claims.length; i++) {
+      for (var j = i + 1; j < claims.length; j++) {
+        final left = claims[i];
+        final right = claims[j];
+        if (left.name != right.name) continue;
+        if (!_sameVersion(left.version, right.version)) return false;
+      }
+    }
+    return true;
+  }
 
   static bool _hasContent(List<String>? items) {
     if (items == null || items.isEmpty) return false;

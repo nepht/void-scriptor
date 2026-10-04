@@ -353,6 +353,106 @@ void main() {
     );
   });
 
+  test('117.43-23 one tool recorded with two versions contradicts itself', () {
+    final a = 'a' * 64;
+    final b = 'b' * 64;
+
+    BuildProvenanceEvidence withToolchain(List<String> versions) =>
+        BuildProvenanceEvidence(
+          buildInputs: <String>['pubspec.yaml sha256 $a'],
+          toolchainVersions: versions,
+          dependencyLock: <String>['pubspec.lock sha256 $a'],
+          rebuildResults: <RebuildResult>[
+            _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': a}),
+            _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': b}),
+          ],
+          artifactComparison: ArtifactComparison(
+            method: 'SHA-256 over exe+dll set',
+            rebuildA: _rebuild('rebuild_a', <String, String>{
+              'void_scriptor.exe': a,
+            }),
+            rebuildB: _rebuild('rebuild_b', <String, String>{
+              'void_scriptor.exe': b,
+            }),
+            verdict: RebuildVerdict.notBitIdentical,
+            limits: <String>['fixture: digests deliberately differ'],
+          ),
+          provenanceRecord: <String>['source_revision $a'],
+        );
+
+    // Control 1: the toolchain lines the SHIPPED document actually records.
+    // Each tool is named once, so the group states one version per tool and
+    // must stay a pass — this is the honest case this rule must not refuse.
+    final shipped = File(
+      'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',
+    ).readAsStringSync();
+    final shippedLines =
+        (jsonDecode(shipped) as Map<String, dynamic>)['required_evidence']
+            as Map<String, dynamic>;
+    final shippedToolchain =
+        (shippedLines['toolchain_versions'] as List<dynamic>).cast<String>();
+    expect(shippedToolchain, hasLength(greaterThan(3)));
+    expect(
+      BuildProvenanceEvidence.missingEvidence(withToolchain(shippedToolchain)),
+      isEmpty,
+      reason: 'the shipped document records one version per tool',
+    );
+
+    // Control 2: a line that records NO version number is a non-claim, not a
+    // contradiction (117.43-07). `Engine hash <40 hex>` pins a revision, which
+    // is a stronger statement than a version number, and a prose line states
+    // nothing to agree with.
+    expect(
+      BuildProvenanceEvidence.missingEvidence(
+        withToolchain(<String>[
+          'Engine hash d3a3293399556a85388faf8c6f0723a7a5597aa8 '
+              '(revision 83675ed276)',
+          'Host Windows x64 (MSYS bash runner)',
+        ]),
+      ),
+      isEmpty,
+      reason: 'a line carrying no version number contradicts nothing',
+    );
+
+    // Control 3: the same tool written with LESS detail is a refinement, not a
+    // second version. `Visual Studio Build Tools 2026 18.9.0 ...` and
+    // `Visual Studio Build Tools 18.9.0` state the same tool and the same
+    // version, one of them with more detail, so refusing that would punish an
+    // honest document for being verbose on one line and terse on another.
+    expect(
+      BuildProvenanceEvidence.missingEvidence(
+        withToolchain(<String>[
+          'Visual Studio Build Tools 2026 18.9.0 version 18.9.12105.275',
+          'Visual Studio Build Tools 18.9.0',
+        ]),
+      ),
+      isEmpty,
+      reason: 'one record refining another is not a second version',
+    );
+
+    // The defect: `toolchain_versions` was read by `_hasContent` alone, which
+    // asks whether each line is a non-blank string and nothing more. A document
+    // listing the SAME tool under two different versions therefore printed
+    // `toolchain_versions: N item` as though N versions had been checked, while
+    // the comparison's whole premise — "same tree and machine", with
+    // cross-SDK reproducibility explicitly disclaimed in its own limits —
+    // was contradicted by the group that is supposed to say which SDK ran.
+    final twoVersions = withToolchain(<String>[
+      'Flutter 3.44.6 channel stable revision ee80f08bbf (2026-07-08)',
+      'Flutter 3.44.9 channel stable revision ee80f08bbf (2026-07-08)',
+      'Dart 3.12.2',
+    ]);
+    expect(
+      BuildProvenanceEvidence.missingEvidence(twoVersions),
+      contains('toolchain_versions'),
+      reason: 'one build cannot have been produced by two SDK versions',
+    );
+    expect(
+      BuildProvenanceEvidence.evaluate(twoVersions).state,
+      isNot(BuildProvenanceState.pass),
+    );
+  });
+
   test('113.39 provenance manifest records all six evidence groups', () {
     final file = File(
       'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',

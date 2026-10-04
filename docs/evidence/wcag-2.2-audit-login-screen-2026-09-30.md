@@ -4311,6 +4311,47 @@ Interpretasi: **4 stop unik + wrap**. Urutan Tab membaca **baris demi baris di s
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 78. Fase 78 — Focus Order di OptionalTourScreen (2.4.3)
+
+**Layar**: `lib/features/platform/presentation/optional_tour_screen.dart:12` (`OptionalTourScreen`, `ConsumerWidget`) — layar tur opsional (Step 50.118): AppBar berjudul `Tour`, lima kartu `_TourStop` (`ListTile` tanpa `onTap`, jadi tidak focusable), dan SATU aksi `FilledButton('Start Tour')` dengan `onPressed: onStartTour` (null -> disabled -> tidak focusable). Tanpa fixture database, file system, atau network: cukup callback `_noOp`.
+
+**Pemilihan layar (evidence, bukan asumsi)**: pemindaian file-level atas 89 file `lib/features/*/presentation/*_screen.dart` vs seluruh isi `test/**/*focus*test.dart` menyisakan 29 file tanpa kontrak. Hitung handler non-null (`onPressed|onTap|onChanged|onSubmitted|onEditingComplete|onLongPress|onDoubleTap|onSelected`) per file: **maksimum tersisa = 1** (`level_editor_screen.dart`, `environment_workspace_screen.dart`, `optional_tour_screen.dart`, dan sekitarnya), **0 file dengan >=2 handler**. Artinya kolam kandidat ber-ambang ">=2 elemen interaktif dalam kode layar" sudah KOSONG setelah fase 76-77 (probe `ProductionValidationCenterScreen` bahkan cuma 1 stop karena `ListTile` tanpa `onTap` tidak focusable). Karena itu run ini menaikkan ambang ke **stop fokus hasil render pada rute nyata**: layar dipush lewat `MaterialPageRoute` (cara aplikasi membuka layar) sehingga affordance back AppBar ikut teraudit, menghasilkan 2 stop nyata. Deviasi dari ambang "2 handler di kode" dicatat sebagai temuan kebijakan untuk run berikutnya, bukan disembunyikan.
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/platform/presentation/_probe_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, loop `LogicalKeyboardKey.tab` maks 20, berhenti saat rect+label berulang. Output live:
+
+```
+PROBE[pushed] stops=2 | widget:Focus @(8,8) 40x40 | Start Tour @(20,487) 1496x40
+PROBE[pushed] takeException=null
+PROBE[home] stops=1 | Start Tour @(20,487) 1496x40
+PROBE[home] takeException=null
+```
+
+Interpretasi: **2 stop unik** pada rute yang dipush; labeler probe sederhana membaca stop pertama sebagai `widget:Focus` (probe tidak membaca `Tooltip`), sedangkan labeler kanonik kontrak membaca `Tooltip.message` = **`Back`**. Urutan Tab **atas-ke-bawah**: back di AppBar (top 8) -> aksi utama di badan layar (top 487), tanpa lompat kolom. Jalur tanpa rute induk hanya **1 stop**, membuktikan stop tambahan berasal dari affordance back rute, bukan widget lain; `takeException = null` pada keduanya (tidak ada RenderFlex overflow).
+
+**Kontrak**: `test/features/platform/presentation/optional_tour_focus_order_test.dart` (2 `testWidgets`) mengunci:
+1. Rute dipush: jumlah stop = 2, label persis `['Back', 'Start Tour']`, `tester.takeException()` null.
+2. Area fokus non-zero dan dalam viewport (`0 < width <= 1536`, `0 < height <= 1024`) di tiap stop.
+3. Properti posisi vertikal (atas-ke-bawah): `top` stop 0 < `top` stop 1; stop 0 (back) `left <= 16` dan `top <= 16`.
+4. Properti posisi tombol aksi: `left <= 20`, `right <= 1536`, `width >= 1496` (tombol full-width dalam padding `VoidSpacing.lg`), `top > 400` (di bawah lima kartu tur).
+5. Tanpa rute induk: tepat 1 stop ber-label `Start Tour`, area non-zero, `left <= 20`, `right <= 1536`, `takeException` null.
+
+**Gate (jalur langsung)**:
+- `dart format test/features/platform/presentation/optional_tour_focus_order_test.dart` -> 1 file berubah (sekali), ulang -> stabil (exit 0).
+- `dart analyze <file>` -> `No issues found!` (exit 0). `dart analyze` penuh repo = `210 issues found` (exit 2), semuanya di luar scope run ini (`lib/app/routing/app_router.dart` 61, `test/release/scratch_*` ~79, `test/core/selection/*`, `test/automation/*`) — grep `optional_tour_focus_order` = 0 issue.
+- `flutter test <file>` -> `00:01 +2: All tests passed!` (exit 0).
+- Gate suite `flutter test test/features/platform/` -> `00:16 +75: All tests passed!` (exit 0).
+
+**Negative control WAJIB**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/optional_tour_focus_order_test.dart.bak`, lalu tukar urutan ekspektasi label menjadi `['Start Tour', 'Back']`. Hasil: exit **1**, `Some tests failed.` -> test rute dipush gagal (1 gagal, 1 lolos). Restore dari backup -> `All tests passed!` (exit 0); backup dihapus dan keberadaannya diverifikasi hilang (`backup_exists=no`). Kontrak TERBUKTI punya gigi.
+
+**Tidak ada perubahan kode produksi**: probe membuktikan urutan Tab sudah benar (back -> aksi utama, atas-ke-bawah, sesuai urutan baca), sehingga tidak ada sentuhan pada `lib/`.
+
+**Counter (diukur ulang dari live, metode = nama kelas `*Screen` pada file layar vs seluruh isi `test/**/*focus*test.dart`)**: `git ls-files test | grep -c focus_order` = **68 file ter-commit** sebelum run ini; kontrak fase ini menambah 1 sehingga setelah commit menjadi **69 (68 + 1)**. Cakupan union per-file: 60 -> **61 dari 89 file tercakup, sisa 28**; basis kelas: 62 -> **63 dari 93 kelas tercakup**. Angka ini 1 lebih tinggi dari counter fase 77 (59/59->60) karena basis deteksi run ini menangkap kelas layar yang disebut kontrak lintas-fitur (mis. `CreatureWorkspaceScreen` disebut `explorer_creature_header_focus_test.dart`). Sisa 28 file **semuanya 0-1 handler non-null** -> tidak ada lagi kandidat yang memenuhi ambang lama; run berikutnya harus memakai ambang stop-ter-render (rut seperti run ini), memilih layar dengan handler >0 plus affordance rute, atau menandai DEFERRED.
+
+**Catatan format**: report ini terbaca **LF-only (0 CRLF)** — dibaca/tulis dengan `newline=''`, sisipan section ditulis dengan `\n` agar konsisten dengan isi file (sama seperti fase 69/71/72/73/74/75/76/77); instruksi "pertahankan CRLF" tidak berlaku karena file ini memang tidak memakai CRLF. Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

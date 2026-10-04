@@ -5618,4 +5618,104 @@ void main() {
       );
     });
   });
+
+  // 117.43-37: the rebuild restatement reader demanded a parseable window
+  // before it would look at the exit code and the duration sitting right
+  // beside it. Both are numbers the gate already measures on the record, so a
+  // line that restated them wrongly and then carried a window nobody can read
+  // — or no window at all — was reclassified as prose and never compared,
+  // while `provenance_record: 6 item` still counted the line. The record side
+  // of the same claim fails closed on an unreadable window (117.43-09), so
+  // the two readers of one restatement disagreed about what the restatement
+  // says.
+  group('117.43-37 a restatement is read for the numbers it states, whatever '
+      'the window behind them does', () {
+    /// The shipped document with rebuild_a's summary line replaced verbatim.
+    Map<String, Object?> withRebuildALine(String replacement) {
+      final manifest =
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+      final evidence = manifest['required_evidence']! as Map<String, Object?>;
+      final lines = (evidence['provenance_record']! as List<dynamic>)
+          .cast<String>();
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = replacement;
+      return manifest;
+    }
+
+    Sprint117GaArtifactStatus statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status;
+
+    test('117.43-37 a restatement whose window cannot be read still states '
+        'its exit code and duration', () {
+      expect(
+        statusOf(
+          withRebuildALine(
+            'rebuild_a exit_code 1 duration_seconds 999 '
+            '(not-a-timestamp .. still-not-a-timestamp)',
+          ),
+        ),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the line states two numbers this gate measures on the record '
+            '(exit code 0, 145 seconds) and restates them as 1 and 999; a '
+            'window nobody can read must not turn those claims into prose — '
+            'the record side of the same window fails closed (117.43-09)',
+      );
+    });
+
+    test('117.43-37 a restatement that states no window still states its '
+        'exit code', () {
+      expect(
+        statusOf(
+          withRebuildALine('rebuild_a exit_code 1 duration_seconds 145'),
+        ),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a window the record may itself omit is a non-claim (117.43-07), '
+            'so an absent window cannot be what decides whether the exit '
+            'code sitting next to it is compared at all',
+      );
+    });
+
+    test('117.43-37 a restatement whose window cannot be read is refused even '
+        'when its numbers agree', () {
+      expect(
+        statusOf(
+          withRebuildALine(
+            'rebuild_a exit_code 0 duration_seconds 145 '
+            '(not-a-timestamp .. still-not-a-timestamp)',
+          ),
+        ),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'a window present in a shape nobody can read makes the evidence '
+            'unevaluable, the same rule 117.43-13 applies to any other field '
+            'the document states but does not make readable',
+      );
+    });
+
+    test('117.43-37 an agreeing restatement with no window at all still '
+        'passes', () {
+      expect(
+        statusOf(
+          withRebuildALine('rebuild_a exit_code 0 duration_seconds 145'),
+        ),
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'the control: reading a window-less restatement must measure the '
+            'numbers it does state without inventing a window claim it never '
+            'made',
+      );
+    });
+  });
 }

@@ -34,19 +34,31 @@ const String _kLogSummaryPrefix = 'provenance_logs ';
 const String _kCitationPrefix = 'signed_candidate ';
 
 /// The grammar a `provenance_record` line uses to restate a rebuild's
-/// measurements: label, exit code, duration, and both ends of its window.
+/// measurements: label, exit code, duration, and an optional window.
 ///
 /// The grammar is deliberately NOT anchored at either end of the line: a claim
 /// may sit behind a heading or carry a note after it, and a line may state more
 /// than one claim. Sprint 117.43-30: anchoring `^...$` made the reader skip
 /// every such line, so the restatement written on it was never compared.
 ///
+/// Sprint 117.43-37 (fail-open, fixed): the window was REQUIRED by this
+/// pattern, so it decided whether the exit code and the duration sitting next
+/// to it were read at all. A line stating both numbers and no window matched
+/// nothing and became prose; a line stating both and a window nobody can
+/// parse matched and was then dropped by two `continue`s. Either way the
+/// restated numbers were never compared while the group still printed
+/// `provenance_record: 6 item` and counted the line. The window is one of
+/// three facts this line restates, not the price of admitting the other two:
+/// it is optional here exactly as it is optional on the record (117.43-07),
+/// and a window the line DOES state but cannot read fails closed like any
+/// other present-but-unreadable field (117.43-13).
+///
 /// A 40-hex source revision is deliberately NOT part of this pattern — whether
 /// such a revision names a real tree is not decidable without resolving a git
 /// object, which this layer does not do.
 final RegExp _kRebuildSummaryPattern = RegExp(
-  r'(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)\s+'
-  r'\((.+?)\s+\.\.\s+(.+?)\)',
+  r'(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)'
+  r'(?:\s+\((.+?)\s+\.\.\s+(.+?)\))?',
 );
 
 /// A `provenance_logs` line and the paths it names.
@@ -57,6 +69,10 @@ final class _LogSummary {
 }
 
 /// One `rebuild_<label> ...` restatement, decoded.
+///
+/// [start] and [finish] are null when the line states no window at all. A
+/// window the line DOES state but nobody can parse is never decoded: 117.43-37
+/// refuses the whole line instead of dropping the claims beside it.
 final class _RebuildSummary {
   const _RebuildSummary(
     this.label,
@@ -69,8 +85,8 @@ final class _RebuildSummary {
   final String label;
   final int exitCode;
   final int duration;
-  final DateTime start;
-  final DateTime finish;
+  final DateTime? start;
+  final DateTime? finish;
 }
 
 /// Whether a recorded comparison method names a digest algorithm whose output
@@ -770,6 +786,9 @@ class BuildProvenanceEvidence {
       // readers rather than handed to whichever ran first.
       if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
       final summaries = _rebuildSummariesIn(line.trim());
+      // Sprint 117.43-37: a restatement whose numbers or window cannot be
+      // read is unevaluable evidence, not prose that happens to sit there.
+      if (summaries == null) return false;
 
       // Sprint 117.43-30: a line may state more than one restatement, and each
       // of them is held to the record it names. Reading only the first would
@@ -967,7 +986,18 @@ class BuildProvenanceEvidence {
   /// and a duration still have to be present, and the label still has to name a
   /// rebuild. `rebuild_a rebuilt cleanly after ...` matches nothing, exactly as
   /// 117.43-15 pinned it.
-  static List<_RebuildSummary> _rebuildSummariesIn(String line) {
+  /// Null when the line states a restatement this reader cannot decode: a
+  /// number or a window it gives in a shape nobody can read. The caller then
+  /// treats the evidence as unevaluable rather than treating the line as
+  /// prose, which is what the two `continue`s below used to do.
+  ///
+  /// Sprint 117.43-37 (fail-open, fixed): dropping a claim by `continue` is
+  /// the same omission 117.43-13 closed for group decoding, seen here from
+  /// inside one line. The exit code and the duration are numbers this file
+  /// already measures on the record, so comparing the restatement invents no
+  /// acceptance; only an ABSENT window stays a non-claim (117.43-07), and it
+  /// now costs the line nothing.
+  static List<_RebuildSummary>? _rebuildSummariesIn(String line) {
     final summaries = <_RebuildSummary>[];
     for (final match in _kRebuildSummaryPattern.allMatches(line)) {
       final label = match.group(1)!;
@@ -977,10 +1007,14 @@ class BuildProvenanceEvidence {
       if (!label.startsWith('rebuild_')) continue;
       final exitCode = int.tryParse(match.group(2)!);
       final duration = int.tryParse(match.group(3)!);
-      if (exitCode == null || duration == null) continue;
-      final start = DateTime.tryParse(match.group(4)!);
-      final finish = DateTime.tryParse(match.group(5)!);
-      if (start == null || finish == null) continue;
+      if (exitCode == null || duration == null) return null;
+      DateTime? start;
+      DateTime? finish;
+      if (match.group(4) != null) {
+        start = DateTime.tryParse(match.group(4)!);
+        finish = DateTime.tryParse(match.group(5)!);
+        if (start == null || finish == null) return null;
+      }
       summaries.add(_RebuildSummary(label, exitCode, duration, start, finish));
     }
     return summaries;
@@ -1038,6 +1072,12 @@ class BuildProvenanceEvidence {
   ) {
     final recorded = rebuild.durationSeconds;
     if (recorded != null && recorded != summary.duration) return false;
+    // Sprint 117.43-37: a restatement that gives no window makes no window
+    // claim, so the two numbers above are all it can be held to. The window
+    // must not decide whether those numbers are read at all.
+    final summaryStart = summary.start;
+    final summaryFinish = summary.finish;
+    if (summaryStart == null || summaryFinish == null) return true;
     final start = rebuild.startedAt == null
         ? null
         : DateTime.tryParse(rebuild.startedAt!.trim());
@@ -1045,8 +1085,8 @@ class BuildProvenanceEvidence {
         ? null
         : DateTime.tryParse(rebuild.finishedAt!.trim());
     if (start == null || finish == null) return true;
-    if (!start.isAtSameMomentAs(summary.start)) return false;
-    if (!finish.isAtSameMomentAs(summary.finish)) return false;
+    if (!start.isAtSameMomentAs(summaryStart)) return false;
+    if (!finish.isAtSameMomentAs(summaryFinish)) return false;
     // With a window present the summary is held to the interval itself, not
     // copied from the record: a summary restating a correct duration while
     // the record disagrees with its own window is still caught, because the

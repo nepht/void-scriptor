@@ -4137,5 +4137,42 @@
       "directed_regression": "gate file 163/163 exit 0; 113 provenance file 10 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over 8442 bytes of added lines = 0 hits, 0 trailing whitespace"
     }
+  },
+  "defect_117_43_34": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 29,
+    "slice": "117.43-34",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open first-claim-only reader: _parseLogSummary for provenance_logs was the last provenance_record claim reader still using firstMatch, and it also cut the claim's tokens at the first rebuild restatement behind it, so both halves failed in opposite directions from one point. (1) Fail-open: a SECOND provenance_logs claim written behind that restatement was cut away with it, so a wrong log set restated behind an honest front claim was never compared while the group still printed 'provenance_record: N item'. (2) Fail-closed: with no restatement to cut at, the first claim ran into the second prefix and the marker token 'provenance_logs' itself was read as a path, so an honest document restating its cited logs twice on one line stopped naming the cited set and was refused. Same first-claim-only family as hunt #27/#28 with a truncation half bolted on, and the residue 117.43-32 left when it split the line per READER but kept firstMatch for the CLAIM.",
+    "proven_before_fix": "Official tests added first, no probe file: baseline gate file '163: All tests passed' exit 0 on the untouched tree, then four tests in the new 117.43-34 group (wrong second log restatement behind a rebuild restatement; two honest log restatements on one line; a wrong first beside an honest one; two honest claims around a rebuild restatement). Library still HEAD, no swap needed: '165 pass -2 fail' exit 1 - defect cases actual 'pass' vs expected 'unmet' and actual 'unmet' vs expected 'pass', both controls 'pass'. Exactly two failures in the right place.",
+    "red": "exit 1 with two failures: '117.43-34 a wrong second log restatement behind a rebuild restatement is refused' expected 'unmet' actual 'pass', and '117.43-34 two honest log restatements on one line still pass' expected 'pass' actual 'unmet'; post-fix exit 0.",
+    "fix": "_parseLogSummary replaced by _logSummariesIn: the prefix is matched at a word boundary ((?:^|\\s)<prefix>(?=\\s) via allMatches - position-independent, and the lookahead stops a prefix from eating the whitespace the next claim's own boundary needs), and every claim gets ITS OWN segment running from the end of its prefix to whichever comes first - the next prefix, the line's rebuild restatement, or end of line - the same segmentation _citationsIn already gives citations. _logSummaryNamesUnknownLogs then compares every segment with the cited set and refuses on the first mismatch; the doc comment that pointed at _parseLogSummary was amended. Nothing new becomes a claim: the segment is still the whitespace-separated token run after the prefix, an empty segment still names no log, a line without the prefix still claims nothing, 'rebuild_a rebuilt cleanly' still states no measurement, 117.43-32 still applies (a claim in front of the rebuild restatement still stops there), and the shipped manifest passes unchanged.",
+    "green": "gate file 167/167 All tests passed exit 0 (163 baseline + 4 new), repeated after dart format; directed two-file regression '+177 -2' exit 1 = gate 167/167 plus 113 provenance file 8 pass / 2 fail with both pre-existing 113.39 signatures unchanged (lock d500c1c5... vs manifest 32e31fd3...; artifact 73101e78... vs c7a33055...) and BOTH NOW PROVEN pre-existing at clean HEAD ac58323 in an isolated worktree (flutter pub get exit 0; --plain-name 113.39 = 5 pass / 1 fail with the identical dependency lock evidence message / 1 skip because the exe is absent there). No full-suite claim.",
+    "bounds_pinned_by_test": "Two honest log restatements on one line still pass (the reader must not refuse what a document may honestly state), two honest claims around a rebuild restatement still pass, a wrong first claim beside an honest one stays refused (no laundering), a lone honest claim in front of a rebuild restatement still passes (117.43-32), and the shipped manifest passes unchanged. firstMatch is gone from every claim reader of provenance_record.",
+    "evidence": {
+      "commit": "819a470",
+      "ledger_commit": "753a805",
+      "domain_sha256": "c37e2ec8f3c845e12dc77b8236012b7d3d644be9d9afdbb10c7dfbd91ca72163",
+      "domain_bytes": 66517,
+      "test_sha256": "05f2039207f32ff89d3df9525dc3aee879272e1cdc611412d1c42da5975224c2",
+      "test_bytes": 218674,
+      "sha_source": "blob of commit 819a470 via git show, equals sha256sum of disk (both verified after commit, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "probe": "no probe file: the RED witness was written directly as the official 117.43-34 group against the pre-fix library (baseline 163/163 taken first on the untouched tree), so no git show swap was needed.",
+      "numstat": "domain 64/45, test 159/0 (commit 819a470); ledger 75/0 (commit 753a805)",
+      "patch_trap": "none: no patch tool used this run - the test block was appended and the lib replacement applied by exact byte replace with count==1 anchors; the test insert verified pure (159/0, diff -U0 with no '-' lines)",
+      "isolation_proof": "the two 113.39 failures were reproduced WITHOUT this change in an isolated worktree D:\\d\\VoidScriptor\\_verify_11743_34 at clean HEAD ac58323: --plain-name 113.39 = exit 1 with the identical 'dependency lock evidence matches the live lockfile' failure while 'signed release artifact' is skipped (exe absent). Both failing inputs (manifest d150973, pubspec.lock, docs/release/v1.2.0-rc.1-checksums.txt, local exe mtime 2026-10-02 sha c7a33055...) lie outside this slice's diff. Worktree cleanup FAILED with 'Permission denied' - leftover awaits manual removal."
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 36.5s, fresh evidence build/windows/x64/runner/Debug/data/flutter_assets mtime 2026-10-04_18:01:50 (static runner exe mtime not counted)",
+      "roadmap_guard": "PASS pre-run at session start (exit 0); post-state run recorded in the run report",
+      "directed_regression": "combined run +177 -2 exit 1: gate file 167/167 pass; 113 provenance file 8 pass / 2 fail, both pre-existing 113.39 failures proven at clean HEAD in the isolated worktree. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the 223 added lines of commit 819a470 (9725 bytes) and the 75 added ledger lines = 0 hits, 0 trailing whitespace"
+    }
   }
 }

@@ -1006,3 +1006,116 @@ kosong), jadi tidak ada tabrakan writer. Manifest, `pubspec.lock` dan
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
 verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-25 - `provenance_record` yang menyitasi dokumen yang tak seorang pun bisa buka (defect ke-20 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Penomoran slice diverifikasi dulu sesuai jebakan `slice_numbering`: `117.43-01`..`-24` sudah
+terpakai di ledger DAN state, hunt ke-20 ini memakai `-25`. Nomor urut hunt (20) != nomor
+slice (25) karena repo sudah punya defect 117.43-14 yang bertabrakan dengan urutan hunt ke-14.
+
+Tidak ada WIP yang perlu diadopsi: kedua file slice KOSONG di `git status --porcelain`
+sebelum mutasi (HEAD awal `74f0f64`, snapshot pra-mutasi di
+`cache/scratch/slice-117-43-25-20261004/head.txt`). Preflight CIM Win32_Process 0 proses
+dart/flutter_tester/msbuild/java/cmake; jumlah proses toolchain juga dicek 0 tepat sebelum
+`flutter build windows`.
+
+**DEFECT:** satu baris `provenance_record` pada dokumen yang di-ship **menyebut dokumen
+terkirim** lalu mengklaim file itu sudah diverifikasi -
+
+```
+signed_candidate docs/release/v1.2.0-rc.1-checksums.txt sha256 verified intact after restore
+```
+
+- dan tidak ada satu pun pembaca di `lib/` yang membuka path yang ia sitasi. Bentuk ini
+adalah restatement ketiga yang tidak terjangkau `_summaryAgreesWithRebuilds`: `rebuild_*`
+sudah dibaca (117.43-15) dan `provenance_logs` sudah dibaca (117.43-10 + 117.43-15), tapi
+`provenance_record` **tidak me-restate angka apa pun** - ia hanya menyebut dokumen dan
+menyertakan keterangan verifikasi atasnya. Akibatnya `missingEvidence` mengembalikan `[]`,
+`evaluate` mengembalikan `pass`, dan gate mencetak `provenance_evaluation: pass` untuk
+dokumen yang membantah catatannya sendiri: ia mengklaim sebuah berkas checksum sudah
+diverifikasi utuh sementara sitasi itu menunjuk pohon yang tidak bisa dibuka siapa pun.
+
+**KLARIFIKASI YANG WAJIB (hasil koreksi klaim di tengah run):** file checksums itu
+**memang dibaca** di repo ini - oleh seam gate yang lain,
+`sprint_117_provider_rollback_drill.dart` (117.8 rollback drill), yang membuka path-nya
+sendiri. Jadi defect ini **bukan** "nol pembaca terhadap file tersebut", melainkan lebih
+sempit dan harus disebut jujur: **seam `measureProvenance` sendiri tidak pernah membuka path
+yang ia sitasi**. Pembaca di seam lain tidak membuat klaim seam ini terbukti, persis seperti
+117.43-16: reader 113 tidak menjangkau `rebuild_run` meski data rebuild sudah dibaca.
+
+**BATAS ATURAN (semuanya dipin test 117.43-25):**
+
+1. baris yang **tidak menyebut dokumen apa pun** adalah non-claim dan dibiarkan - aturan yang
+   sama dengan 117.43-07 (termasuk `signed_candidate` tanpa path: tidak mengklaim apa pun);
+2. **hanya reachability yang diukur, tidak pernah digest.** Meng-hash ulang file yang
+   disitasi terhadap record akan mengarang acceptance yang tak pernah dinyatakan evidence -
+   overclaim yang persis sama yang ditolak 117.43-11 saat menolak me-hash ulang digest yang
+   sudah dinyatakan terhadap working tree;
+3. arah sebaliknya **tidak diwajibkan**: tidak ada yang menjanjikan setiap rebuild
+   direstat dalam prosa, dan fixture yang di-ship tidak me-restate satu pun rebuild -
+   mewajibkannya berarti mengarang acceptance criterion;
+4. **sitasi yang terjangkau tidak bisa-menolong-buyback** pass yang tidak didukung
+   pengukuran: evidence yang rusak tetap ditolak.
+
+**RED independen:** exit 1 dengan **TEPAT 1** kegagalan (test baru), signature
+`Expected: not contains 'pass'` / `Actual: ['pass','pass','pass','pass']` - keempat kasus
+negative (checksum file yang tidak ada di pohon ini, direktori sebagai ganti berkas, path
+di luar repositori, sitasi tanpa path) semuanya luluskan gate. Dua kontrol hijau, termasuk
+kontrol yang memuat kalimat NYATA dari disk - `docs/release/v1.2.0-rc.1-checksums.txt`
+dibaca di test dan `File(...).existsSync()` True - sehingga kegagalan berarti dokumen jujur
+ditolak, bukan kasus buatan. Batas negatif terkonfirmasi beforehand: path negative
+`docs/release/v0.0.0-not-a-shipped-checksums.txt` benar-benar tidak ada di working tree,
+path positif benar-benar ada (`git ls-files --error-unmatch` exit 0), jadi fixture positif
+bukan kebetulan.
+
+**KEBOCORAN SEMENTARA (tertangkap dan ditutup di dalam run ini):** RED pertama gagal pada
+helper test, bukan pada defect - `jsonDecode` menghasilkan `List<dynamic>` sementara helper
+menulis `as List<String>`, jadi test gagal total alih-alih menunjukkan gate yang fail-open.
+Menyebut RED pertama itu sebagai bukti defect akan jadi sinyal palsu; helper diperbaiki,
+lalu RED kedua benar-benar TEPAT 1 gagal di signature yang sama seperti di atas.
+
+**GATES:** `dart format` 2 file `Formatted 2 files (1 changed)` exit 0, lalu
+`dart format --output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten - jebakan
+`format_idempotency_jebakan`: mode itu tidak pernah menulis, dua kali exit 1 bukan bukti
+formatter rusak); GREEN **diulang setelah format** (`+139 All tests passed!` exit 0) karena
+formatter menyentuh file test; `dart analyze` 3 file **No issues found!** exit 0;
+`git diff --check` exit 0; `flutter build windows --debug` exit 0 **23,3 dtk**,
+`Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe`;
+`dart run tool/roadmap_guard.dart` PASS pre dan post slice,
+`canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`
+TIDAK berubah, `recommended_step 117.43`.
+
+**SHA 2-SISI dari artefak TER-COMMIT `git show 3d6d200:<path>`** (pathspec forward slash;
+sesuai klausul 1+2 policy 2026-10-02): domain
+`574ddbbc4bd31a64c67ccbda6e9f1f499a00902ed8380c3d53715e50748c7ad3` (46689 B), test
+`b4a741427d21eb80badb88cc562621498721dc0df57242e398f556298983e10d` (159760 B) -
+`disk == git show <commit>:<path>` untuk keduanya (match=True keduanya).
+Manifest `docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json` TIDAK
+disentuh run ini: sha disk tetap
+`b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d` (6750 B) dan commit
+terakhir yang menyentuhnya tetap `d150973`. `pubspec.lock` dan
+`docs/release/v1.2.0-rc.1-checksums.txt` juga tidak disentuh.
+
+**COMMIT:** `3d6d200` (2 path eksplisit, 218 insertions). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +148 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **139/139 LULUS**
+seluruhnya (termasuk seluruh keluarga 117.43-14..-25), 2 kegagalan **keduanya 113.39
+pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
+`dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
+lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+**Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
+terarah ini, bukan seluruh repo.
+
+**KEADAAN REPOSITORI:** dirty 97 -> 96 (selisih tepat 2 file slice keluar dari working tree
+saat commit, sisanya milik worker lain). HEAD masuk `aea2015 -> f913e8e -> 3d6d200`,
+ahead 44 -> 46; satu commit sibling `f913e8e test(a11y): audit focus order RuleEditorScreen`
+masuk di tengah run dan **tidak menyentuh** kedua file slice (dibuktikan
+`git log aea2015..HEAD~1 -- <2 path>` kosong), jadi tidak ada tabrakan writer.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
+verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

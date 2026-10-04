@@ -4466,6 +4466,43 @@ Interpretasi: **2 stop unik** pada rute yang dipush — `Back` (Tooltip AppBar, 
 
 **Rekomendasi run berikutnya**: (a) hentikan pemilihan layar in-glob sampai ada `*_screen.dart` interaktif baru di `lib/features/*/presentation/`; (b) bila audit tetap jalan, gunakan ambang ">=2 stop terukur di layar `lib/**/*_screen.dart` mana pun" seperti run ini, dengan deviasi dicatat; (c) audit afordansi rute/back per layar hanya bila Choirudin menyetujui kontrak 1-stop.
 
+## 82. Fase 82 — Focus Order di Collaboration Comments Screen (2.4.3)
+
+**Status: SELESAI — kontrak 3 test, negative control membuktikan gagal, gate hijau. Deviasi scope terdokumentasi.**
+
+**Pemilihan layar (evidence, bukan asumsi)**: rerun pemindaian live atas 89 file `lib/features/*/presentation/*_screen.dart` terhadap isi focus test on-disk menyisakan **28 file tanpa kontrak** — semua sudah terbukti 0-1 stop terukur pada fase 80/81, sehingga kolam kandidat in-glob tetap KOSONG. Mengikuti rekomendasi (b) fase 81 (ambang ">= 2 stop terukur di layar `lib/**/*_screen.dart` mana pun", deviasi dicatat), pemindaian diperluas ke seluruh `lib/**/*_screen.dart` (95 file): sisa kandidat non-glob yang punya token handler adalah `lib/core/jobs/task_center_screen.dart` (1 `IconButton.onPressed`, butuh fixture `BackgroundJobController`) dan **`lib/app/shell/desktop/collaboration_comments_screen.dart` (1.398 B)** — dipilih karena paling kecil, mandiri, tanpa database maupun jaringan.
+
+**Dua elemen interaktif nyata** ada di panel yang dipakai layar ini, `lib/features/collaboration/presentation/project_comments_panel.dart`: `TextField(controller: _controller, decoration.hintText: 'Add a comment…')` dan `IconButton(icon: Icon(Icons.send), onPressed: …)`. Konstruktor layar `CollaborationCommentsScreen({super.key, this.initialComments = const []})` — fixture cukup daftar komentar kosong/berisi, tanpa penyimpanan. `ProjectCommentsPanel` sudah punya test perilaku (`test/features/collaboration/presentation/project_comments_panel_test.dart`) tetapi belum ada kontrak urutan fokus; tidak ada focus test mana pun yang mengimpor layar ini.
+
+**Probe (hasil terukur, viewport 1536x1024, dpr 1.0, berhenti saat Rect berulang)**:
+- Rute dipush: **3 stop** — `Back@8,8 40x40` -> `Add a comment…@8,980 1472x24` -> kirim `@1484,972 40x40`.
+- Tanpa rute induk (layar jadi `home`): **2 stop** — `Add a comment…` -> kirim (kiri-ke-kanan, baris bawah).
+
+**Kontrak**: `test/app/shell/desktop/collaboration_comments_screen_focus_order_test.dart` — 3 `testWidgets`:
+1. rute dipush = 3 stop, daftar label `['Back','Add a comment…','<icon-button>']`; `Back` rata kiri-atas (left/top <= 16); top menaik dari stop ke stop; input di kiri tombol kirim (`input.left < button.left` dan `input.right <= button.left`); input melebar sampai `>= viewportWidth - 64`; tombol kirim menyentuh margin kanan `>= viewportWidth - 16`; baris input dan tombol segaris vertikal (`closeTo(button.top, input.top - 8, 16)`); area tiap stop non-zero dan <= viewport.
+2. tanpa rute induk = 2 stop dengan urutan dan relasi kiri-ke-kanan sama.
+3. dengan satu komentar existing = **tetap 3 stop** — membuktikan baris `ListTile` komentar (tanpa `onTap`) tidak menambah tab stop, sambil mengunci `find.text('Draf bab 1 sudah rilis.')` tetap ter-render.
+
+Ketiganya mengunci `tester.takeException()` isNull. Label `<icon-button>` diturunkan dari widget tree (ancestor `IconButton` tanpa `tooltip`), bukan teks karangan.
+
+**Gate (output nyata)**:
+- `dart format test/app/shell/desktop/collaboration_comments_screen_focus_order_test.dart` -> `Formatted 1 file (1 changed)`, EXIT=0.
+- `dart analyze test/app/shell/desktop/collaboration_comments_screen_focus_order_test.dart` -> `No issues found!`, EXIT=0.
+- `flutter test test/app/shell/desktop/collaboration_comments_screen_focus_order_test.dart` -> `+3 All tests passed`, EXIT=0.
+- Suite gate `flutter test test/app/shell/` -> **`+50 All tests passed`, EXIT=0** (14 file, termasuk tetangga shell).
+
+**Negative control WAJIB (dijalankan, angka dicatat)**: backup `cp` ke `C:\Users\nepht\AppData\Local\Temp\collaboration_comments_focus_order_test.dart.bak`, mutasi = tukar dua label pertama menjadi `['Add a comment…','Back','<icon-button>']`, jalankan `flutter test` file kontrak -> **GAGAL**: `Some tests failed`, `EXIT_CODE=1`, 1 dari 3 test gagal pada baris 116 (`at location [0] is 'Back' instead of 'Add a comment…'`). Restore dari backup (sha256 sama persis `769d72e6b21dc239076514cd64cffd90cc604603b282d10957ba13c4f44e7ada`), jalankan ulang -> `+3 All tests passed`, EXIT=0. Backup dihapus dan diverifikasi hilang (`No such file or directory`).
+
+**Full analyzer (di luar scope — dilaporkan, bukan diperbaiki)**: `flutter analyze` penuh di HEAD = `210 issues found`, EXIT=1 — identik dengan angka fase 81 sebelum run ini; grep atas output penuh untuk `collaboration_comments_screen_focus_order` = **0 issue**, jadi file kontrak tidak menambah apa pun. Tidak ada file `lib/` yang disentuh run ini.
+
+**Counter**: `git ls-files test | grep -c focus` = **77 sebelum run**, kontrak ini menambah 1 -> **78 setelah commit**; file `*_focus_order_test.dart` ter-commit = **70 -> 71** (di disk 72 sebelum commit: 71 ter-commit + 1 WIP `project_lock` milik eksekutor lain yang tak disentuh). Union per-file (kelas `*Screen` dari 89 file glob yang disebut isi focus test on-disk) = **60 dari 89, sisa 29 — tidak naik**, karena layar yang diaudit berada di luar glob (dasar kelas non-glob bertambah 1: `CollaborationCommentsScreen`, setelah `SecuritySettingsScreen` fase 81).
+
+**Tidak ada perubahan kode produksi.** File dirty milik sibling tidak disentuh: `docs/evidence/sprint-117-35-manifest-20261002.json`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`. Probe sekali pakai yang dihapus setelah kontrak dibuat: `test/app/shell/_probe_focus_test.dart`.
+
+**Scan CJK/Cyrillic** pada kontrak, section ini, dan pesan commit: `none`.
+
+**Rekomendasi run berikutnya**: (a) pemindaian non-glob berikutnya menyisakan `lib/core/jobs/task_center_screen.dart` (butuh fixture `BackgroundJobController` dengan job `running` agar `IconButton` cancel aktif) dan layar display-only sisa — semua di bawah ambang kecuali yang berfixture; (b) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -32,6 +32,15 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
 
+# Reproducible builds (sprint 113.39 re-verification, 2026-10-04):
+# MSVC/clang link timestamps otherwise differ between clean-rebuild cycles,
+# which is why the 113.39 artifact comparison came out NOT_BIT_IDENTICAL.
+# Applied here (before runner/ and generated_plugins.cmake) so every target in
+# this tree - runner, flutter-managed code, and all Windows plugins - links
+# reproducibly.
+add_compile_options(/Brepro)
+add_link_options(/Brepro /PDBALTPATH:%_PDB%)
+
 # Compilation settings that should be applied to most targets.
 #
 # Be cautious about adding new options here, as plugins use this function by

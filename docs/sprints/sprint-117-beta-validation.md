@@ -1644,3 +1644,63 @@ menyentuh slice. ahead 71 -> 73, dirty tetap 96. Tidak ada push pada run ini.
 Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, step_closed false,
 verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02
 masih BLOCKER. Hunt berikutnya: ke-27.
+
+### Slice 117.43-32 - restatement `provenance_logs` yang berbagi baris dengan
+restatement rebuild tidak pernah dibandingkan (defect ke-27 fail-open hunt)
+
+Tipe = FEATURE WORK slice 117.43-32 (defect ke-27, hunt fail-open). HEAD awal
+118ac44 -> sibling `fb1c76f` (a11y focus order Supporting Asset Workspace
+Screen) -> fix `85566d6` (2 path eksplisit). DEFECT:
+`_summaryAgreesWithRebuilds` menjalankan dua pembaca `provenance_record` secara
+EITHER/OR — baris yang menghasilkan rebuild summary hanya melewati pembanding
+summary, baris yang tidak menghasilkannya hanya melewati pembanding
+`provenance_logs`. Jadi klaim log hanya dibandingkan pada baris yang pembaca
+saudaranya tinggalkan, sementara group tetap mencetak `provenance_record: 6
+item`. Ukuran nyata pada dokumen ter-commit: klaim log yang salah = `unmet` di
+barisnya sendiri (kontrol 117.43-15) tetapi `pass` begitu restatement
+`rebuild_a` dipindahkan ke baris yang sama — isi enam klaim identik, yang
+berbeda hanya garis barisnya. Probe kedua dilakukan setelah kedua pembaca
+dijalankan di setiap baris: pembaca log ternyata juga menuntut prefix di posisi
+0 (klaim di BELAKANG restatement tidak pernah cocok dan lolos tak terbaca) dan
+membaca sampai akhir baris (klaim JUJUR di depan menelan token restatement
+rebuild sebagai path lalu menolak dokumen jujur) — dua sisi satu pembaca, jadi
+keduanya diperbaiki dalam slice ini, bukan ditunda ke run berikutnya. RED tanpa
+file probe: gate resmi baseline 154/154 pass exit 0, lalu 4 test baru; run
+terhadap lib di HEAD `fb1c76f` (lib sementara diganti `git show HEAD:path`,
+lalu dikembalikan dari snapshot dengan sha balik identik `c688ef4fcacfb074`)
+= +2 -2 exit 1: dua defect case keluar Actual `pass` padahal Expected `unmet`,
+dua kontrol tetap `pass` — persis 2 gagal, bukan gagal di tempat yang salah.
+FIX: pembanding log kini dijalankan untuk setiap baris (loop tanpa `continue`),
+dan `_parseLogSummary` mencari `_kLogSummaryPrefix` pada batas kata di mana pun
+posisinya lalu memotong klaim tepat di awal restatement rebuild
+(`_kRebuildSummaryPattern` dengan label `rebuild_`), sehingga dua pembaca
+membagi baris menjadi segmennya masing-masing; konstanta `_kLogSummaryPrefix`
+tetap dipakai sehingga tidak muncul `unused_element`. GREEN: gate 158/158 All
+tests passed exit 0, diulang setelah format (0 changed). GATES: format write 1
+changed exit 0 -> `--output=none --set-exit-if-changed` 0 changed exit 0;
+analyze 2 file No issues found! exit 0; git diff --check exit 0; regresi
+terarah `test/release/sprint_113_build_reproducibility_provenance_test.dart`
++10 -2 exit 1, dua gagalan 113.39 pre-existing dengan signature PERSIS sama
+(artefak `73101e78` vs `c7a33055`; expected kini `d500c1c5…` vs manifest
+`32e31fd3…` — nilai lock hidup bergeser dari `c9a365e6…`, bukan akibat slice
+ini, dan tidak ada yang meng-import gate 117); `flutter build windows --debug`
+exit 0 (101,6 dtk) dengan bukti segar `Debug/data/flutter_assets` mtime
+`2026-10-04_15:49:29` (mtime `void_scriptor.exe` statis tidak dihitung); guard
+PASS pre-run dan post-state, `canonical_sha256`
+`b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6` tidak
+berubah; scan non-Latin Python `re` (CJK/kana/hangul/fullwidth) pada 206 added
+lines = 0 hit, 0 trailing whitespace. Numstat fix: domain 64/9, test 142/0
+(total 206/9). SHA-256 dari blob commit `85566d6` (identik dengan `sha256sum`
+disk): domain
+`369b75873e42174f249d2bb0c2afd353ce4ae2a3afd1da08bfd314b8a469954f` (63774 B),
+test `63af36051e2160c069cd4af7b85191d8d605316bd0570f034de2a152e45fb251`
+(206686 B). Manifest 113 tidak disentuh (commit terakhir tetap `d150973`).
+Commit `85566d6` memakai 2 path eksplisit. Sibling `fb1c76f` masuk di tengah
+run; `git log 715e30b..HEAD -- <2 path slice>` hanya memuat `85566d6`, jadi
+sibling tidak menyentuh slice. ahead 2 -> 4, dirty tetap 2
+(`ROADMAP_STATE.json.slice11743_29.bak` + `cache/`, dipreserve). Tidak ada push
+pada run ini. Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`,
+step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR
+117.43-02 masih BLOCKER. Sisa keluarga posisi yang sama: pembaca
+`signed_candidate` (117.43-25) masih front-anchored dan hanya mengambil token
+pertama. Hunt berikutnya: ke-28.

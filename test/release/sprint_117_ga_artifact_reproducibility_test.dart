@@ -4968,6 +4968,148 @@ void main() {
     });
   });
 
+  // RED-first for defect 117.43-32: `provenance_record` carries two readers.
+  // `_rebuildSummariesIn` takes every rebuild restatement it finds anywhere on
+  // a line (117.43-30 un-anchored it), and `_logSummaryNamesUnknownLogs` reads
+  // a `provenance_logs ...` claim from the front of the line, which is where
+  // 117.43-30 documented that reader as sitting. The caller ran them as an
+  // either/or: a line that produced a summary skipped the log comparison
+  // entirely, and a line that produced none skipped the summary loop. The log
+  // claim was therefore compared only on the lines its sibling reader left
+  // alone, while the group kept printing `provenance_record: 6 item`.
+  //
+  // Measured on the shipped document BEFORE the fix (probe, then moved here):
+  // the 117.43-15 control — a wrong log set on a line of its own — is `unmet`;
+  // the identical wrong log set written in front of the shipped `rebuild_a`
+  // restatement, with `rebuild_a` moved off its own line so the record still
+  // holds the same six claims, is `pass`. Nothing but the line break differs.
+  //
+  // Running both readers on every line exposed a second half of the same
+  // defect, so it is pinned here rather than left for the next run: the log
+  // reader both STARTED at position 0 — a claim written behind a rebuild
+  // restatement still matched nothing — and RAN to the end of the line, which
+  // would read a shared line's rebuild tokens as log paths and refuse a
+  // document that names the right logs. The reader therefore moved with the
+  // claim: it starts wherever `provenance_logs` sits at a word boundary and
+  // stops where the rebuild restatement begins, so the four cases below are
+  // two defects and two controls — wrong claim in front of the pair, wrong
+  // claim behind it, honest claim in front, honest claim behind.
+  group('117.43-32 a log restatement is compared even when a rebuild '
+      'restatement shares its line', () {
+    Map<String, Object?> shipped() => _manifest(_kProvenanceManifest);
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> recordOf(Map<String, Object?> manifest) => [
+      for (final line
+          in (manifest['required_evidence']!
+                  as Map<String, Object?>)['provenance_record']!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeRecord(Map<String, Object?> manifest, List<String> lines) =>
+        (manifest['required_evidence']!
+                as Map<String, Object?>)['provenance_record'] =
+            lines;
+
+    /// The shipped record with the `provenance_logs` claim rewritten to
+    /// [logs] and restated beside the shipped `rebuild_a` restatement instead
+    /// of on a line of its own: [logsFirst] writes the log claim in front of
+    /// the rebuild claim, otherwise behind it. Either way one line disappears
+    /// and every claim survives, so the record states the same six claims in
+    /// every case.
+    Map<String, Object?> withLogsBesideRebuild(
+      String logs, {
+      required bool logsFirst,
+    }) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final rebuildA = lines.firstWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      final merged = <String>[];
+      for (final line in lines) {
+        if (line.startsWith('rebuild_a exit_code')) {
+          if (!logsFirst) merged.add('$rebuildA provenance_logs $logs');
+          continue;
+        }
+        if (line.startsWith('provenance_logs')) {
+          if (logsFirst) merged.add('provenance_logs $logs $rebuildA');
+          continue;
+        }
+        merged.add(line);
+      }
+      expect(
+        merged.length,
+        lines.length - 1,
+        reason:
+            'the merge moves one claim onto the other line, so one line '
+            'disappears while every claim survives',
+      );
+      writeRecord(manifest, merged);
+      return manifest;
+    }
+
+    const String citedLogs =
+        'docs/evidence/sprint-113-39-rebuild-a.log '
+        'docs/evidence/sprint-113-39-rebuild-b.log';
+    const String wrongLog = 'docs/evidence/never-existed.log';
+
+    test('117.43-32 a wrong log restatement in front of a rebuild '
+        'restatement is refused', () {
+      expect(
+        outcome(withLogsBesideRebuild(wrongLog, logsFirst: true)),
+        'unmet',
+        reason:
+            '117.43-15 refuses this claim on a line of its own; a rebuild '
+            'restatement sharing the line must not silence the log reader',
+      );
+    });
+
+    test('117.43-32 a wrong log restatement behind a rebuild restatement is '
+        'refused', () {
+      // The claim sits after the restatement, which is where a front-anchored
+      // reader looked straight past it: the group printed `provenance_record:
+      // 5 item` over a line whose log claim no reader had found.
+      expect(
+        outcome(withLogsBesideRebuild(wrongLog, logsFirst: false)),
+        'unmet',
+        reason:
+            'the position of a restatement inside its own line is not '
+            'part of whether it gets compared',
+      );
+    });
+
+    test('117.43-32 an honest log restatement in front of a rebuild '
+        'restatement still passes', () {
+      // Comparing every line must not refuse a document whose two claims both
+      // agree with their records, and the shared line must not make the log
+      // reader take the rebuild restatement's tokens for paths.
+      expect(
+        outcome(withLogsBesideRebuild(citedLogs, logsFirst: true)),
+        'pass',
+        reason:
+            'the same six claims with the cited logs named are an honest '
+            'record, and 117.43-15 holds only lines written to agree',
+      );
+    });
+
+    test('117.43-32 an honest log restatement behind a rebuild restatement '
+        'still passes', () {
+      expect(
+        outcome(withLogsBesideRebuild(citedLogs, logsFirst: false)),
+        'pass',
+        reason:
+            'moving a claim that is already compared must not change the '
+            'verdict of a document that states its evidence correctly',
+      );
+    });
+  });
+
   // RED-first for defect 117.43-31: `measureChecksums` measured the DIGEST of
   // every SIGNED artifact line but only the PATH of every other line the
   // inventory names, while this gate's own contract promises "every checksum

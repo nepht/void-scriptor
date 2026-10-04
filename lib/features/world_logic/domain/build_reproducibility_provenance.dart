@@ -683,6 +683,20 @@ class BuildProvenanceEvidence {
   /// different set of logs is contradicted by the records it summarises. The
   /// named set must equal the set the rebuild records cite.
   ///
+  /// Sprint 117.43-32 (fail-open, fixed): those two restatements were read by
+  /// an either/or — a line that produced a rebuild summary ran only the
+  /// summary comparison, and a line that produced none ran only the log one.
+  /// The log claim was therefore compared only on the lines its sibling reader
+  /// happened to leave alone, so a `provenance_logs ...` claim written in
+  /// front of a rebuild restatement was still counted among the group's items
+  /// and never measured; the same wrong log set is `unmet` on a line of its
+  /// own (117.43-15) and was `pass` once a rebuild restatement shared the
+  /// line. Both readers now run for every line, and the log reader's span
+  /// follows the claim rather than the line: it starts wherever
+  /// `provenance_logs` appears and ends where the rebuild restatement begins,
+  /// so a line carrying both claims gives each reader its own segment
+  /// (`_parseLogSummary`). A line carrying no log claim still claims no log.
+  ///
   /// Two lines are deliberately NOT compared, and the boundaries are pinned by
   /// the 117.43-15 tests:
   ///
@@ -713,11 +727,16 @@ class BuildProvenanceEvidence {
     if (lines == null || rebuilds == null) return true;
 
     for (final line in lines) {
+      // Sprint 117.43-32: both readers of this group run for every line.
+      // Either/or here meant the log claim was compared only on the lines its
+      // sibling reader left alone, so a `provenance_logs ...` restatement
+      // sharing a line with a rebuild restatement was counted as an item and
+      // never measured. The log reader's own claim is untouched: a line that
+      // carries no `provenance_logs` parses to nothing and claims nothing,
+      // while a line that carries both claims is split between the two
+      // readers rather than handed to whichever ran first.
+      if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
       final summaries = _rebuildSummariesIn(line.trim());
-      if (summaries.isEmpty) {
-        if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
-        continue;
-      }
 
       // Sprint 117.43-30: a line may state more than one restatement, and each
       // of them is held to the record it names. Reading only the first would
@@ -799,11 +818,45 @@ class BuildProvenanceEvidence {
     return token.isEmpty ? null : token;
   }
 
-  /// A `provenance_logs <paths...>` line, or null when [line] is not one.
+  /// A `provenance_logs <paths...>` claim stated on [line], or null when the
+  /// line states none.
+  ///
+  /// Sprint 117.43-32 (fail-open, fixed), two halves of one reader:
+  ///
+  ///  * it demanded the prefix at position 0, so a log restatement written
+  ///    behind another restatement matched nothing and was never compared —
+  ///    the position-as-grammar shape 117.43-30 already closed for the reader
+  ///    beside it. The prefix is now found wherever the line puts it, at a
+  ///    word boundary, and
+  ///  * it read to the end of the line, so once its sibling reader was run
+  ///    against every line too, a rebuild restatement sharing the line was
+  ///    swallowed as paths and an honest document was refused. The claim now
+  ///    stops where the line's rebuild restatement begins, so the two readers
+  ///    split the line instead of one consuming the other.
+  ///
+  /// Nothing new becomes a claim: the claim is still the run of
+  /// whitespace-separated tokens the prefix introduces, a line without the
+  /// prefix still names no log, and `rebuild_a rebuilt cleanly` still states
+  /// no measurement. The only lines whose reading changes are the ones that
+  /// carry BOTH claims, which is where the two readers used to overlap.
   static _LogSummary? _parseLogSummary(String line) {
-    if (!line.startsWith(_kLogSummaryPrefix)) return null;
-    final paths = line
-        .substring(_kLogSummaryPrefix.length)
+    // The prefix still names the claim; only its POSITION on the line stops
+    // being part of the rule.
+    final claim = _kLogSummaryPrefix.trimRight();
+    final boundary = RegExp(
+      '(?:^|\\s)${RegExp.escape(claim)}\\s',
+    ).firstMatch(line);
+    if (boundary == null) return null;
+    var body = line.substring(boundary.end);
+    // Hand the line over to the rebuild reader at the point where it starts
+    // restating a rebuild, so what follows is not read as this reader's paths.
+    for (final match in _kRebuildSummaryPattern.allMatches(body)) {
+      if (match.group(1)!.startsWith('rebuild_')) {
+        body = body.substring(0, match.start);
+        break;
+      }
+    }
+    final paths = body
         .split(RegExp(r'\s+'))
         .where((path) => path.isNotEmpty)
         .toList();
@@ -829,7 +882,9 @@ class BuildProvenanceEvidence {
   /// lines — one claim per line read by a reader, several claims written — only
   /// here it is the third reader of `provenance_record` that lagged the other
   /// two: `provenance_logs` and `signed_candidate` both read their claim from
-  /// the front of the line and ignore whatever follows it.
+  /// the front of the line and ignore whatever follows it — 117.43-32 moved
+  /// the first of those two off position zero and gave the pair a shared line
+  /// a segment each, leaving `signed_candidate` where this comment found it.
   ///
   /// The claim grammar itself is unchanged, so nothing new becomes a claim: the
   /// window still has to parse as the pair of timestamps it is, an exit code

@@ -46,7 +46,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T15:20:00+07:00",
+  "updated_at": "2026-10-05T02:40:00+07:00",
   "updated_by": "core_worker_cron_slice_117_43_28",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -3160,7 +3160,7 @@
       "commit": "0ce8c5f"
     },
     "gates_reverified_on": "2026-10-04",
-    "updated_at": "2026-10-04T13:10:00+07:00",
+    "updated_at": "2026-10-05T02:40:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3334,12 +3334,12 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "slice": "117.43-26",
-      "hunt_number": 21,
-      "commit": "c2f224b",
-      "on": "2026-10-04",
+      "slice": "117.43-36",
+      "hunt_number": 31,
+      "commit": "0a7859b",
+      "on": "2026-10-05",
       "status": "FIXED-LOCAL",
-      "gate_result": "142/142 PASS"
+      "gate_result": "182/182 directed regression exit 0 (13 + 169); new tests +2 exit 0"
     },
     "defect_117_43_19": {
       "status": "FIXED-LOCAL",
@@ -3555,7 +3555,7 @@
       "guard": "roadmap_guard.dart PASS pre and post; canonical_sha256 b7ef2d35... UNCHANGED",
       "full_suite_claimed": false
     },
-    "last_run_summary": "Slice 117.43-26 (defect ke-21 fail-open hunt) SELESAI + COMMIT. HEAD 972b4d3 -> 90be06e (sibling a11y, tidak menyentuh 2 file slice) -> c2f224b, ahead 48 -> 50, dirty 95 -> 97. DEFECT: 117.43-21 membandingkan build_inputs vs dependency_lock lewat Map<String,String> yang tidak mampu menampung kontradiksi - declared[path]=digest menimpa baris pertama, sehingga sumbu intra-grup dari restatement yang sama tidak pernah diperiksa; windows/CMakeLists.txt hanya disebut di build_inputs sehingga reader cross-group tidak punya apa pun untuk dibandingkan, dan dokumen yang memberi satu file itu dua digest berbeda di dalam satu grup tetap dievaluasi pass sambil mencetak 'build_inputs: 5 item'. RED exit 1 TEPAT 1 gagal signature Expected not contains 'pass' / Actual ['pass','pass','unmet'] -> GREEN 142/142 (+3). DUA RED PALSU DIBUANG: patch pertama merusak struktur file (dipulihkan dari snapshot byte-identik dengan HEAD, tidak ada kerja hilang) dan konstanta digest karangan 63/65 char sehingga semua kasus ditolak sebagai MALFORMED bukan kontradiksi (diganti sha256 64 hex asli). GATES: format 1 changed lalu 0 changed exit 0, analyze No issues found! exit 0, diff --check 0, build windows --debug exit 0 44,9 dtk, guard PASS pre+post canonical_sha256 b7ef2d35 TIDAK berubah. SHA 4-SISI dari blob ter-commit c2f224b: domain f32264139501651a..., test 15ef45432c267b50..., blob==disk==ledger==state semua True; manifest 113 tidak disentuh b4f8739b71cc999f. REGRESI TERARIH 2 file exit 1 +151 -2: gate 117 142/142 LULUS, 2 fail KEDUA 113.39 pre-existing signature PERSIS sama (tidak ada yang meng-import gate 117); TIDAK ada klaim suite penuh. STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. PUSH: tidak. TODO-OPERATOR 117.43-02 tetap BLOCKER.",
+    "last_run_summary": "Slice 117.43-36 (defect ke-31, hunt ke-31) SELESAI + COMMIT. HEAD awal 7954544 (ahead 27) -> sibling a11y dfb6063 di tengah run (ahead 28, tidak menyentuh 3 path slice) -> fix 0a7859b -> ledger 18a0c45 -> state commit. DEFECT: durasi yang dibacakan _summaryDurationAgrees hanya lewat jendela rekaman; rekaman yang menyebut durasi tanpa stempel waktu membuat baris provenance_record yang merestatement durasi itu tak pernah diukur terhadap rekamannya, sementara RebuildResult tak punya field duration_seconds (sisa -09). RED +0 -1 exit 1, GREEN +2 exit 0, regresi 2 file +182 All tests passed! exit 0 (hijau penuh, pertama kali sejak keluarga 113.39 berubah hijau di HEAD ini via sibling 5bd8f82), build windows --debug exit 0, guard PASS. Status TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 tidak diubah. Patch tool 0 pemakaian; tidak ada push.",
     "defect_117_43_25": {
       "status": "FIXED-LOCAL",
       "slice": "117.43-25",
@@ -3651,7 +3651,19 @@
       "slice": "117.43-26",
       "result": "all slice gates green, see defect_117_43_26.gates"
     },
-    "ledger_commit": "b16f187"
+    "ledger_commit": "18a0c45",
+    "gates_reverified_run18_2026_10_05": {
+      "slice": "117.43-36",
+      "red": "--plain-name 117.43-36 pre-fix exit 1 +0 -1 (Expected unmet / Actual pass), control green",
+      "green": "same command post-fix +2 All tests passed! exit 0",
+      "directed_regression": "2 files (only importers of both gate sources) +182 All tests passed! exit 0 - first fully green run since the 113.39 family turned green at this HEAD",
+      "analyzer": "No issues found! exit 0 on the 3 slice files",
+      "format": "1 written then 0 changed exit 0; 38 pre-existing lines reflowed (HEAD blob of the test file is not format-clean in-repo, reproduced on a HEAD copy inside cache/)",
+      "diff_check": "exit 0",
+      "nonlatin_scan": "0 CJK/kana/hangul/fullwidth hits and 0 trailing whitespace across 172 added lines",
+      "build": "flutter build windows --debug exit 0, 122.4s, flutter_assets mtime 2026-10-05 02:22:58",
+      "guard": "PASS before the run"
+    }
   },
   "sprint_117_step_11744": {
     "status": "NOT_STARTED",
@@ -4211,5 +4223,28 @@
       "directed_regression": "combined run +178 -2 exit 1: gate 117 = 167/167 pass, 113 provenance file 11 pass / 2 fail with both failures the pre-existing 113.39 signatures proven at clean HEAD in slice -34's isolated worktree. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the 147 added lines of commit 5e8f765 (6372 bytes) and the 74 added ledger lines = 0 hits, 0 trailing whitespace"
     }
+  },
+  "defect_117_43_36": {
+    "date": "2026-10-05",
+    "hunt_ordinal": 31,
+    "slice": "117.43-36",
+    "status": "FIXED-LOCAL",
+    "defect_number": 31,
+    "family": "fail-open / restated claim never compared (sibling of -21, -30, leftover of -09)",
+    "summary": "_summaryDurationAgrees in build_reproducibility_provenance.dart measured a rebuild duration only THROUGH its window: a record stating how long it took but placing no timestamps (accepted by _decodeWindow, called no-window-claim by hasWellFormedWindow per 117.43-07) returned true before any number was read, because RebuildResult had no field for duration_seconds at all - _rebuildFrom decoded it and dropped it, the residue of 117.43-09 which returned only the two timestamps. Three copies of one claim were free to disagree: the record number was compared with rebuild_run by the gate and the window was compared everywhere, while the provenance_record summary line restating that duration was never measured against the record it names. A document stating rebuild_a = 999 seconds beside a summary stating 145 published provenance_evaluation: pass with provenance_record: 6 item.",
+    "proven_before_fix": "Two official tests written first and run against unmodified lib: flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart --plain-name \"117.43-36\" -> exit 1, +0 -1, defect case Expected unmet / Actual pass, control (+1) green. Both tests derive the manifest from the shipped provenance document (record timestamps removed, record duration and rebuild_run.rebuild_a_duration_seconds both set to 999, only the summary line left at the shipped 145) so nothing but the seam under test can decide the verdict.",
+    "red": "exit 1 with exactly 1 named failure (the contradiction accepted); the control with the agreeing number passed in the same pre-fix run, so the refusal is about the disagreement and not about the timeline-less shape.",
+    "fix": "RebuildResult gains nullable durationSeconds; _rebuildFrom forwards window.durationSeconds; the rebuild() copy in _evaluateShippedProvenance copies the field (without this line the fix never reaches the gate path, since the seam receives a copy); _summaryDurationAgrees now compares the summary duration against the record stated duration first, keeping the window rules for documents that state a window and keeping an absent duration a non-claim.",
+    "gates": "RED +0 -1 exit 1 -> GREEN +2 exit 0 on the same command; dart format wrote 1 file then --output=none --set-exit-if-changed 0 changed exit 0 (the HEAD blob of this test file is NOT format-clean in-repo - copying the HEAD blob into cache/ and formatting it reproduces the same 4 hunks 642/976/3164/3180 - so 38 pre-existing lines were reflowed, textual delta verified whitespace-insensitive as `},);` -> `});` plus indentation); dart analyze 3 files No issues found! exit 0; git diff --check exit 0; non-Latin scan of added lines (34/5/133) 0 CJK/kana/hangul/fullwidth hits and 0 trailing whitespace; directed regression of the ONLY two test files importing these two sources -> +182 All tests passed! exit 0 (13 + 169); flutter build windows --debug exit 0 in 122.4s with flutter_assets mtime 2026-10-05 02:22:58; roadmap_guard PASS before the run.",
+    "sha256_blobs_0a7859b": {
+      "lib/features/world_logic/domain/build_reproducibility_provenance.dart": "00b8f08da3a948df1462c9828e122095d2020e11e308b867b3fb3cfdb03537a0",
+      "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart": "f30e33a86f477445a4f75d6107273a0d47de62a536dc9cdb3319f0db3d7e2367",
+      "test/release/sprint_117_ga_artifact_reproducibility_test.dart": "fab9e6939624f524e833729f5be014c5c2af5580d8f90093ae55c3b57eb7d5b5"
+    },
+    "sha_note": "blob of commit 0a7859b (policy clause 1); test file disk equals the blob after CRLF->LF normalisation, raw disk sha a036026a2d29d9d18ace5b139c3b3fc541465679534b820f5ec7dd818fb21b01 because the test file is CRLF while lib files are LF",
+    "numstat_commit": "34/8, 5/0, 133/41 (172 added / 49 deleted), patch tool 0 uses, byte-exact anchor insertion only",
+    "ledger_commit": "18a0c45",
+    "sibling_finding": "the two long-standing pre-existing 113.39 failures are GREEN at this HEAD: file 113 alone 13/13 exit 0 including the dependency lock and signed artifact tests; pubspec.lock sha256 d500c1c5... now equals the manifest record, sibling commit 5bd8f82 \"test(113.39): anchor reproducibility evidence to measured rebuild + re-signed candidate\". Not claimed as this slice result, and TODO-OPERATOR 117.43-02 left untouched.",
+    "next_hunt": "ke-32. parseDigest at sprint_117_ga_artifact_reproducibility.dart:450 has 0 callers (dead code, not fail-open - wire it or drop it under its own scope); summarised.firstMatch(member.key) at :1671 silently skips rebuild_run members not matching ^rebuild_.+_duration_seconds$ and no item counter exists for that group, so probe before claiming."
   }
 }

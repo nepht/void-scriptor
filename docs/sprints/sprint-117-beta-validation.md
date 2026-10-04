@@ -1914,3 +1914,98 @@ kini tertutup; kandidat sisa hasil probe slice -34 yang belum diklaim: `parseDig
 di `sprint_117_ga_artifact_reproducibility.dart:450` (0 pemanggil) dan
 `summarised.firstMatch(member.key)` di
 `sprint_117_ga_artifact_reproducibility.dart:1671`. Hunt berikutnya: ke-31.
+
+### Slice 117.43-36 - durasi yang direstate baris `provenance_record` tidak
+pernah dibandingkan dengan durasi rekamannya (defect ke-31 fail-open hunt)
+
+Tanggal 2026-10-05. HEAD awal 7954544 (ahead 27); sibling a11y `dfb6063`
+mendarat di tengah run tanpa menyentuh 3 path slice (ahead 28); commit fix
+`0a7859b` (ahead 29); commit ledger+state menambah satu. Tidak ada push pada
+run ini.
+
+DEFECT. `_summaryDurationAgrees`
+(`build_reproducibility_provenance.dart`) hanya pernah mengukur durasi sebuah
+rekaman MELALUI jendelanya: kalau rekaman menyebut lamanya tetapi tidak
+menaruh stempel waktu - bentuk yang `_decodeWindow` terima dan
+`hasWellFormedWindow` sebut tidak ada klaim jendela (117.43-07) - fungsi itu
+kembali `true` sebelum melihat angka mana pun, karena `RebuildResult` memang
+tidak punya tempat menyimpan `duration_seconds`: `_rebuildFrom` membacanya
+lalu membuangnya, sisa 117.43-09 yang hanya mengembalikan dua stempel waktu.
+Akibatnya tiga salinan satu klaim didiarkan berbeda - angka rekaman dibandingkan
+dengan `rebuild_run` oleh gate, jendela dibandingkan di mana-mana, tetapi baris
+`provenance_record` yang merestatement durasi itu tidak pernah diukur terhadap
+rekaman yang ia sebut. Dokumen yang menyatakan rebuild_a = 999 detik sementara
+baris ringkasnya menyatakan 145 detik tetap dipublikasikan
+`provenance_evaluation: pass` dengan `provenance_record: 6 item`. Ini keluarga
+sama dengan -21 (dua salinan boleh beda), -30 (baris multi-klaim tidak
+terbaca), dan sisa -09 yang belum tertutup penuh.
+
+RED. Dua test resmi ditulis lebih dulu ke file gate, lalu dijalankan terhadap
+lib yang belum diubah:
+`flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart
+--plain-name "117.43-36"` -> exit 1, `+0 -1`: test cacat gagal dengan
+Expected `unmet` / Actual `pass` (persis cacatnya), test kontrol dengan angka
+yang sama (999) lulus `+1`. Kedua test membentuk manifest dari salinan dalam
+dokumen provenance yang dikirim (timestamp rekaman dihapus, durasi rekaman dan
+`rebuild_run.rebuild_a_duration_seconds` disamakan ke 999, hanya baris
+ringkas yang berbeda), jadi satu-satunya yang bisa memutus hasil adalah seam
+yang diuji.
+
+FIX. (1) `RebuildResult` menerima `durationSeconds` (named, nullable).
+(2) `_rebuildFrom` meneruskannya dari `_decodeWindow` (klaim yang selama ini
+hanya hidup di peta mentah gate). (3) `rebuild()` di
+`_evaluateShippedProvenance` ikut menyalinnya - tanpa baris ini perbaikan tidak
+sampai ke jalur gate karena objek yang dikirim ke seam adalah salinan. (4)
+`_summaryDurationAgrees` kini membandingkan durasi ringkasan dengan durasi yang
+disebut rekaman terlebih dahulu; aturan lama terhadap jendela tetap berjalan
+untuk dokumen yang punya jendela, dan rekaman tanpa durasi tetap non-klaim.
+
+GATES. RED di atas -> sesudah fix perintah yang sama -> `+2 All tests passed!`
+exit 0. Format: `dart format` menulis 1 file (test) lalu
+`--output=none --set-exit-if-changed` -> 0 changed exit 0; catatan jujur, blob
+HEAD file test itu sendiri TIDAK format-clean di dalam repo - disalin ke
+`cache/` lalu diformat di dalam repo menghasilkan hunk yang sama persis
+(642/976/3164/3180) - jadi 38 baris lama ikut ter-reflow, dan perbedaan
+teksnya hanya `},);` -> `});` plus indentasi (diverifikasi tanpa spasi, bukan
+dugaan). `dart analyze` 3 file -> No issues found! exit 0.
+`git diff --check` exit 0. Pemindaian non-Latin pada baris added (34/5/133) ->
+0 hit CJK/kana/hangul/fullwidth dan 0 trailing whitespace. Regresi terarah 2
+file - hanya dua file test itu yang mengimpor kedua sumber gate:
+`flutter test test/release/sprint_113_build_reproducibility_provenance_test.dart
+test/release/sprint_117_ga_artifact_reproducibility_test.dart` -> `+182 All
+tests passed!` exit 0 (13 di file 113, 169 di file 117). Windows evidence:
+`flutter build windows --debug` exit 0 (122,4 dtk), `flutter_assets` mtime
+2026-10-05 02:22:58 (exe statis tidak dihitung). Guard PASS sebelum run.
+
+TEMUAN SIBLING (bukan hasil slice ini). Dua failure lama keluarga 113.39 kini
+HIJAU di HEAD ini: file 113 dijalankan sendiri = 13/13 exit 0, termasuk
+`113.39 dependency lock evidence matches the live lockfile` dan
+`113.39 signed release artifact from 113.38 remains intact`. Penyebabnya
+bukan perubahan kita: `pubspec.lock` kini sha256 d500c1c5... yang sama dengan
+yang tertulis di manifest provenance, dan commit sibling `5bd8f82`
+"test(113.39): anchor reproducibility evidence to measured rebuild + re-signed
+candidate". Karena itu regresi dua file run ini keluar exit 0, bukan exit 1
+seperti empat run sebelumnya.
+
+SHA empat sisi dari blob commit `0a7859b` (klausul 1+4): domain
+`00b8f08da3a948df1462c9828e122095d2020e11e308b867b3fb3cfdb03537a0` (68939 B),
+gate `f30e33a86f477445a4f75d6107273a0d47de62a536dc9cdb3319f0db3d7e2367`
+(77903 B), test
+`fab9e6939624f524e833729f5be014c5c2af5580d8f90093ae55c3b57eb7d5b5` (223467 B)
+== disk ketika baris akhir dinormalkan CRLF -> LF (file test memang CRLF;
+sha mentah disk `a036026a...`). Numstat commit: 34/8, 5/0, 133/41 (172
+added / 49 deleted). Patch tool 0 pemakaian; sisip blok test dan seluruh edit
+lib dilakukan dengan penggantian byte-eksak Python ber-anchor unik.
+
+Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 tidak
+saya ubah: dua kegagalan pengukurannya kini hijau (lihat Temuan Sibling),
+tetapi keputusan menerima sisa drift sebagai limitasi GA atau menandatangani
+ulang kandidat rilis tetap milik operator, dan acceptance langkah bukan milik
+run ini. Kandidat hunt berikutnya ke-32: `parseDigest`
+(`sprint_117_ga_artifact_reproducibility.dart:450`, 0 pemanggil - mati, bukan
+fail-open, jadi disarankan disambung atau dihapus oleh pemilik skop); dan
+`summarised.firstMatch(member.key)` pada pembaca `rebuild_run` (`:1671`) yang
+melewatkan member yang tidak cocok `^rebuild_.+_duration_seconds$` - belum ada
+pencetak jumlah member untuk grup itu, jadi wajib diprobe dulu sebelum diklaim
+sebagai defect.

@@ -4029,5 +4029,41 @@
       "directed_regression": "113 provenance file: exit 1 with 12 pass / 2 fail, both pre-existing 113.39 signatures unchanged; 117 gate file: exit 0, 152/152. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files and the new ledger row: 0 hits"
     }
+  },
+  "defect_117_43_31": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 26,
+    "slice": "117.43-31",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open HALF-CLAIM reader in measureChecksums: one checksum line states one claim pairing a path with a digest, but only a line whose path is declared in signed_artifacts had that digest hashed against the bytes. Every other line had its PATH checked (the phantom direction added by 117.43-03) and its digest ignored, while the gate contract itself promises 'every checksum line matches the bytes on disk' and the vocabulary already defines checksum_digest_drift for exactly this mismatch. A document that kept all six signed digests correct and recorded a wrong digest for any other path it names - readable, well formed, never repeated - returned pass while printing its artifact agreement. Measured on the committed inventory: 493 index lines, 492 paths present, 485 match, 7 mismatch: the 6 signed ones (known 113.39 drift) plus build/windows/x64/runner/Release/data/app.so, non-signed, whose mismatch no check reports. Reversal of hunts #19/#23/#25: what controlled WHICH claims are comparable was the signed set, so a document controlled the measurement surface by choosing what it declares signed.",
+    "proven_before_fix": "Official tests added first, no probe file: baseline gate file '152: All tests passed' exit 0, then two tests in the new 117.43-31 group. The control (correct digest for a non-signed readable path) passed; the defect case (correct signed digest, non-signed line recorded as 64 'b' hex) returned pass instead of violation -> '+152 -1' exit 1 with exactly one failing test, the defect case. That pass is the defect: nothing ever compared that line's digest with the bytes.",
+    "red": "exit 1 with one failure at 117.43-31 a wrong digest for a non-signed path is a violation (expected violation, actual pass); post-fix exit 0.",
+    "fix": "In measureChecksums the non-signed loop keeps phantom for absent paths and now hashes every present path with sha256, comparing it with the recorded digest and adding a mismatch to the existing drifting category - no new vocabulary, because checksum_digest_drift already means this. The signed set now decides which artifacts must be COVERED, not which claims may be compared. declared now reads 'N artifact / M checksum line' and the pass observed reads 'M checksum line digest match', so the printed number equals the measured claim. The old committed-inventory control was not touched and stays green: same branch (non-empty signed drift -> violation + drifting:), only its local count of drift paths moves 6 -> 7. evaluate and isVacuous never compare declared with observed text, so no other seam reacts to the label change.",
+    "green": "gate file 154/154 All tests passed exit 0 (152 baseline + 2 new); after dart format the directed two-file regression gave '+164 -2' exit 1 with both failures the pre-existing 113.39 pair, identical signature (lock 32e31fd3 vs c9a365e6, artifact 73101e78 vs c7a33055). No full-suite claim.",
+    "bounds_pinned_by_test": "A correct digest for a non-signed readable path still passes: measuring every line does not widen what counts as drift. The phantom direction from 117.43-03 (absent non-signed path) is untouched, malformed and conflicting lines keep their existing failures, and a pass now requires zero drift over every line, so all earlier families stay fail-closed.",
+    "evidence": {
+      "commit": "d2da703",
+      "ledger_commit": "01e12fa",
+      "domain_sha256": "79f454cfdbc1a4e357b9a7e631833d253292935e347c39b912878b0528eb9922",
+      "domain_bytes": 77589,
+      "test_sha256": "24e1b8ce04a28000b12087b8cb2b18e4b6e4462f3eccf26baf05e6f7c45af2fc",
+      "test_bytes": 200460,
+      "sha_source": "blob of commit d2da703 via git show, equals sha256sum of disk (both verified after commit, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "probe": "no probe file: the RED witness was written directly as the official 117.43-31 group, so nothing to delete",
+      "sibling": "59132ee test(a11y): audit focus order Publishing Dashboard Screen landed mid-run; git log 3ddc24b..HEAD on the 2 slice paths only lists d2da703",
+      "push": "none this run (ahead 73); push deferred per run policy"
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 72.2s, fresh evidence build/windows/x64/runner/Debug/data/flutter_assets mtime 2026-10-04_14:14:04 (static runner exe mtime not counted)",
+      "roadmap_guard": "PASS pre-commit, canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 unchanged",
+      "directed_regression": "gate file 154/154 exit 0; 113 provenance file 12 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files and the new ledger row: 0 hits, 0 trailing whitespace"
+    }
   }
 }

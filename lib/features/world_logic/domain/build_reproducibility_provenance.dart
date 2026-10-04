@@ -13,6 +13,8 @@
 /// limits on a non-identical verdict is incomplete, never a pass.
 library;
 
+import 'dart:io';
+
 /// Canonical evidence names, in roadmap order.
 const List<String> kBuildProvenanceRequiredEvidence = <String>[
   'build_inputs',
@@ -26,6 +28,10 @@ const List<String> kBuildProvenanceRequiredEvidence = <String>[
 /// Prefix of the `provenance_record` line that names the logs the rebuild
 /// records are supposed to cite.
 const String _kLogSummaryPrefix = 'provenance_logs ';
+
+/// Prefix of the `provenance_record` line that cites a shipped document the
+/// document claims was verified.
+const String _kCitationPrefix = 'signed_candidate ';
 
 /// The grammar a `provenance_record` line uses to restate a rebuild's
 /// measurements: label, exit code, duration, and both ends of its window.
@@ -639,6 +645,27 @@ class BuildProvenanceEvidence {
         if (!_summaryDurationAgrees(rebuild, summary)) return false;
       }
     }
+    // Sprint 117.43-25 (unmeasured-claim, fixed): a `signed_candidate <path>`
+    // line is the second restatement this group could not reach. Unlike
+    // `rebuild_*` and `provenance_logs`, it restates no number — it names a
+    // shipped document and asserts it was verified — and nothing in `lib/` ever
+    // opened the path it cites. 117.43-10 made a rebuild's own `log` readable
+    // and 117.43-15 made the `provenance_logs` summary match it, so a document
+    // whose log citations name nothing was already refused; the one remaining
+    // citation shape had no reader at all, and the gate published
+    // `provenance_evaluation: pass` for a document asserting a checksum file
+    // was verified intact while that citation named a tree nothing could open.
+    //
+    // The scope is deliberately narrow, mirroring what is already measured:
+    // reachability only, never the digest. Re-hashing the cited file against
+    // the record would invent an acceptance the evidence never stated — the
+    // same overclaim 117.43-11 refused when it declined to re-hash a stated
+    // digest against the working tree. The shipped citation names a file this
+    // tree can open, so the check agrees with what ships; a citation naming
+    // anything else is evidence about nothing and fails closed.
+    for (final line in lines) {
+      if (!_citationIsReadable(line)) return false;
+    }
     // The reverse direction is deliberately NOT required. Nothing in the
     // document promises that every rebuild is restated in prose, and the
     // shipped fixtures restate none of them — requiring it would invent an
@@ -646,6 +673,35 @@ class BuildProvenanceEvidence {
     // overclaim this gate exists to refuse. Only lines that ARE written are
     // held to agree.
     return true;
+  }
+
+  /// Whether a `signed_candidate <path>` line cites a document this tree can
+  /// open, or states no citation at all.
+  ///
+  /// Sprint 117.43-25: only the shipped citation grammar is read. A line that
+  /// names no document — including a `signed_candidate` line whose path is
+  /// blank — makes no claim, the same non-claim rule 117.43-07 settled for an
+  /// absent verdict. Nothing is required about how many such lines there are,
+  /// or about the rest of the line: the reachability of the cited path is the
+  /// whole claim, and measuring anything else would demand an acceptance
+  /// criterion the document never stated.
+  static bool _citationIsReadable(String line) {
+    final citation = _parseCitation(line.trim());
+    if (citation == null) return true;
+    return File(citation).existsSync();
+  }
+
+  /// The path one `signed_candidate` line cites, or null when [line] is not
+  /// that shape or states no path.
+  static String? _parseCitation(String line) {
+    if (!line.startsWith(_kCitationPrefix)) return null;
+    final path = line.substring(_kCitationPrefix.length).trim();
+    if (path.isEmpty) return null;
+    // A citation names one document. Stop at the first whitespace so a line
+    // that goes on to state an algorithm and an outcome is read for the path
+    // alone, exactly as `provenance_logs` reads its own trailing prose.
+    final token = path.split(RegExp(r'\s+')).first;
+    return token.isEmpty ? null : token;
   }
 
   /// A `provenance_logs <paths...>` line, or null when [line] is not one.

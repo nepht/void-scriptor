@@ -24,6 +24,10 @@ const String _kProvenanceManifest =
     'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json';
 const String _kChecksums = 'docs/release/v1.2.0-rc.1-checksums.txt';
 
+/// The grammar one `provenance_record` line uses to cite a shipped document it
+/// claims was verified.
+const String _kCitationPrefix = 'signed_candidate ';
+
 /// The shipped checksums describe the signed release tree under `build/`. A
 /// clean checkout (CI) has no such tree, so the live-digest measurement cannot
 /// be taken there. Mirrors the sprint_113 signed-artifact guards.
@@ -3954,6 +3958,164 @@ void main() {
       final broken = shipped();
       (broken['required_evidence']! as Map<String, Object?>).remove(
         'provenance_record',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
+
+  group('117.43-25 provenance_record must not cite a document nobody can '
+      'open', () {
+    // Sprint 117.43-25 (unmeasured-claim, fixed): one line of the shipped
+    // `provenance_record` names a FILE and claims it was verified —
+    //
+    //   signed_candidate docs/release/v1.2.0-rc.1-checksums.txt sha256
+    //   verified intact after restore
+    //
+    // — and no reader in `lib/` ever opened it. The line is not a rebuild
+    // restatement, so 117.43-15's grammar skipped it, and `provenance_logs` is
+    // the only other line shape 117.43-15 understood, so it skipped this one
+    // too. The gate therefore published `provenance_evaluation: pass` for a
+    // document claiming a checksum file was verified intact while that file
+    // names a tree nothing can open — evidence about nothing.
+    //
+    // This is the same rule 117.43-13 already applies to a rebuild's `log`: a
+    // cited document that cannot be opened is a claim with nothing behind it.
+    // Reachability there is measured through `File(...).existsSync()`; this
+    // slice measures the citation the summary group makes.
+    //
+    // Bounds mirror 117.43-15/-16/-19/-20 so no acceptance is invented:
+    //
+    //  * a line that names NO document makes no citation claim (117.43-07);
+    //  * only the shipped `signed_candidate <path>` grammar is read — nothing
+    //    is required about how many such lines there are, or what the rest of
+    //    the line says;
+    //  * `source_revision` deliberately stays unmeasured: whether a 40-hex
+    //    revision names a real tree needs a git seam this layer does not have,
+    //    which 117.43-15 already recorded and this run does not reopen;
+    //  * a reachable citation cannot rescue failing evidence.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> recordOf(Map<String, Object?> manifest) => [
+      for (final line
+          in (manifest['required_evidence']!
+                  as Map<String, Object?>)['provenance_record']!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeRecord(Map<String, Object?> manifest, List<String> lines) =>
+        (manifest['required_evidence']!
+                as Map<String, Object?>)['provenance_record'] =
+            lines;
+
+    /// Shipped manifest whose `signed_candidate` citation names [path].
+    Map<String, Object?> citing(String path) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final index = lines.indexWhere(
+        (line) => line.startsWith(_kCitationPrefix),
+      );
+      expect(
+        index,
+        isNonNegative,
+        reason:
+            'the shipped document cites a signed candidate, so this rule has '
+            'a real claim to measure rather than an invented one',
+      );
+      writeRecord(manifest, <String>[
+        for (var i = 0; i < lines.length; i++)
+          if (i == index)
+            '$_kCitationPrefix$path sha256 verified intact'
+          else
+            lines[i],
+      ]);
+      return manifest;
+    }
+
+    test('117.43-25 a provenance_record line citing a document nobody can '
+        'open is refused while the evidence passes', () {
+      final cases = <String, String>{
+        'a checksum file this tree does not contain': outcome(
+          citing('docs/release/v0.0.0-not-a-shipped-checksums.txt'),
+        ),
+        'a directory instead of the cited file': outcome(
+          citing('docs/release'),
+        ),
+        'a path outside the repository': outcome(
+          citing('../outside-the-tree-checksums.txt'),
+        ),
+        'a citation with no path at all': outcome(citing('')),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose own provenance_record claims it verified a file that cannot '
+            'be opened: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-25 the shipped document cites a checksum file this tree can '
+        'open', () {
+      // Without a shipped citation to a readable file, every refusal above
+      // would prove nothing: a gate that refused everything would pass them
+      // all and refuse the honest document too. The shipped state is what
+      // makes this a measurement — and it must not change the verdict, which
+      // stays `pass` as 117.43-20 measured.
+      final lines = recordOf(shipped());
+      final citation = lines.firstWhere(
+        (line) => line.startsWith(_kCitationPrefix),
+        orElse: () => '',
+      );
+      expect(citation, isNotEmpty, reason: 'the shipped document cites one');
+      final path = citation.split(RegExp(r'\s+'))[1];
+      expect(
+        File(path).existsSync(),
+        isTrue,
+        reason:
+            'the document the gate opens at provenanceManifestPath claims a '
+            'file was verified intact, and this tree can open that file, so '
+            'the check agrees with what ships',
+      );
+      expect(outcome(shipped()), 'pass');
+    });
+
+    test('117.43-25 a document that cites nothing claims nothing, and a '
+        'reachable citation cannot rescue failing evidence', () {
+      final withoutCitation = shipped();
+      writeRecord(withoutCitation, <String>[
+        for (final line in recordOf(withoutCitation))
+          if (line.startsWith(_kCitationPrefix))
+            line.split(' ').first
+          else
+            line,
+      ]);
+      expect(
+        outcome(withoutCitation),
+        'pass',
+        reason:
+            'a line that names no document is a non-claim, the same rule '
+            '117.43-15 applies to prose that restates no measurement',
+      );
+      // The shipped document already cites a reachable file: breaking the
+      // evidence under it must still refuse, so the citation can never buy
+      // back a pass the measurement does not support.
+      final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'artifact_comparison',
       );
       expect(outcome(broken), isNot('pass'));
     });

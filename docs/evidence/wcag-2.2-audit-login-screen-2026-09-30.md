@@ -3680,6 +3680,134 @@ kembali `00:02 +3: All tests passed!`.
 
 `none` pada file kontrak, section ini, dan pesan commit.
 
+
+## 66. Fase 66 — Focus Order di Workspace Export Options Dialog (2.4.3)
+
+**Layar:** `lib/features/workspaces/presentation/workspace_export_options_dialog.dart` — `WorkspaceExportOptionsDialog`
+**Kontrak:** `test/features/workspaces/presentation/workspace_export_options_dialog_focus_order_test.dart`
+**Viewpoint:** 1536 x 1024 logical, dpr 1.0, desktop, dialog dibuka lewat `showDialog` di atas `MaterialApp`.
+
+### Permukaan fokus
+
+`AlertDialog` dengan satu blok pilihan tunggal berisi tiga `RadioListTile`
+(`Reference manifest`, `Embedded snapshot`, `Fork`) lalu baris aksi berisi
+`Cancel` dan `Export`. Dialog ini independen: tidak menyentuh database, jaringan,
+Riverpod, maupun state global, sehingga aman diaudit tanpa fixture.
+
+### Hasil probe (fakta yang dikunci kontrak)
+
+Probe sementara `test/features/workspaces/presentation/_probe_focus_test.dart`
+menekan Tab berulang pada viewport di atas dan mencatat label serta Rect fokus
+setiap stop. Temuan yang menentukan bentuk kontrak:
+
+**Sebelum memilih representasi** (`Export` masih terkunci):
+
+| Tab | Label | L | T | W | H |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `Reference manifest` (grup) | 504.0 | 380.0 | 528.0 | 100.0 |
+| 2 | `Cancel` | 782.8 | 688.0 | 108.6 | 40.0 |
+| 3 | kembali ke grup | 504.0 | 380.0 | 528.0 | 100.0 |
+
+Cincin fokus menutup di 2 stop. `Export` **tidak pernah** menjadi stop selama
+terkunci — tombol disabled tidak memakan slot Tab.
+
+**Setelah `arrowDown` memilih `Embedded snapshot`**, cincin bertambah satu stop
+dan urutan menjadi tiga:
+
+| Tab | Label | L | T | W | H |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `Embedded snapshot` | 504.0 | 480.0 | 528.0 | 80.0 |
+| 2 | `Cancel` | 782.8 | 688.0 | 108.6 | 40.0 |
+| 3 | `Export` | 899.4 | 688.0 | 132.6 | 40.0 |
+
+Saat cincin dimasuki ulang, fokus kembali **ke tile yang sedang dipilih**, bukan
+ke tile pertama — dicatat karena itu perilaku yang benar dan mudah regresi.
+
+`Shift+Tab` berjalan mundur pada cincin yang sama: `Cancel` → grup → `Cancel`.
+Tiga representasi dijangkau lewat panah di dalam grup
+(`Reference manifest` → `Embedded snapshot` → `Fork` → kembali ke
+`Reference manifest`), bukan lewat Tab. Untuk kontrol pilihan tunggal, satu stop
+Tab dengan navigasi panah di dalamnya adalah bentuk 2.4.3 yang benar.
+
+### Koreksi asumsi probe
+
+Dua asumsi awal salah dan dikoreksi oleh probe, bukan oleh tebakan:
+
+1. Asumsi "3 radio = 3 stop Tab" salah. `RadioGroup` menggabungkan ketiganya
+   menjadi satu stop; mengunci tiga label akan mengunci perilaku yang salah.
+2. Asumsi "panah hanya mengubah seleksi tanpa memindahkan fokus" salah. Probe
+   menunjukkan Rect berpindah `T=380` → `T=480` → `T=560`, jadi panah memang
+   memindahkan fokus antar-tile sambil mengubah seleksi. Kontrak ditulis ulang
+   untuk mengunci urutan label hasil navigasi panah, bukan asumsi "in-place".
+
+Satu asumsi ketiga juga dikoreksi saat drafting kontrak: `action.rect.top ==
+content.rect.bottom` ternyata tidak berlaku karena ada celah 128 px
+(`T=560` → `T=688`); invarian yang benar adalah baris aksi mulai di bawah
+grup, yaitu `greaterThanOrEqualTo`.
+
+### Bukti
+
+```
+dart format test/features/workspaces/presentation/workspace_export_options_dialog_focus_order_test.dart
+  -> Formatted 1 file (1 changed)
+
+dart analyze test/features/workspaces/presentation/
+  -> No issues found!
+
+flutter test test/features/workspaces/presentation/workspace_export_options_dialog_focus_order_test.dart
+  -> 00:02 +9: All tests passed!
+```
+
+Sembilan test mengunci: jumlah stop sebelum dan sesudah memilih, urutan label
+persis, `Export` tidak menjadi stop saat terkunci, panah mengaktifkan konfirmasi
+dan wrap ke representasi pertama, `Shift+Tab` mundur pada cincin yang sama,
+grup berada di atas baris aksi, baris aksi kiri-ke-kanan, setiap stop punya
+Rect fokus non-nol, dan fokus tidak pernah jatuh ke `null`.
+
+### Negative control
+
+Urutan `Reference manifest`/`Cancel` ditukar sementara pada daftar ekspektasi
+pada test "Tab order before a choice is radio group then Cancel" (backup disalin
+ke `%LOCALAPPDATA%\Temp\wcag243_negctl_backup.dart`, 11054 byte).
+
+```
+  -> 00:02 +8 -1: Some tests failed.
+  -> Expected: ['Cancel', 'Reference manifest']
+     Actual: ['Reference manifest', 'Cancel']
+  -> exit 1
+```
+
+Setelah restore dari backup dan `rm` backup, suite kembali
+`00:02 +9: All tests passed!` dengan exit 0.
+
+### Scan CJK/Cyrillic
+
+`none` pada file kontrak, section ini, dan pesan commit. Tidak ada credential di
+kontrak.
+
+### Production code
+
+Tidak ada perubahan pada `workspace_export_options_dialog.dart`. Probe tidak
+menunjukkan defect runtime: urutan fokus mengikuti urutan visual (grup di atas,
+baris aksi di bawah, `Cancel` sebelum `Export` kiri-ke-kanan), tombol terkunci
+tidak memakan stop, dan panah menjangkau seluruh representasi. Karena itu tidak
+ada file produksi yang di-commit.
+
+### Status
+
+**VERIFIED** untuk focus order `WorkspaceExportOptionsDialog` pada 1536x1024
+dpr 1.0 di codebase saat commit. Bukti deterministik (widget tree statis,
+tanpa I/O), bukan screenshot.
+
+Kumulatif: **57 kontrak** focus order terpasang di `test/**/*_focus_order_test.dart`
+(56 tracked sebelum fase ini, + kontrak ini). Terhadap inventaris **89 target**
+`*_screen.dart`, distinct layar yang ter-cover lewat import nyata tetap **48** —
+fase ini menambah permukaan **dialog**, bukan `_screen.dart`, jadi counter layar
+tidak naik; 41 `_screen.dart` live masih belum punya kontrak.
+
+Catatan koreksi counter: angka "51 kontrak" di section 61 dan "46 dari 89" di
+section 62 sudah usang terhadap worktree saat ini. Penghitungan ulang dilakukan
+langsung dari `git ls-files` plus `find`, bukan menyalin counter lama.
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

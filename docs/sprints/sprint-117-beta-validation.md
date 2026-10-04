@@ -2009,3 +2009,90 @@ fail-open, jadi disarankan disambung atau dihapus oleh pemilik skop); dan
 melewatkan member yang tidak cocok `^rebuild_.+_duration_seconds$` - belum ada
 pencetak jumlah member untuk grup itu, jadi wajib diprobe dulu sebelum diklaim
 sebagai defect.
+
+### Slice 117.43-37 - jendela yang tidak terbaca memutus apakah exit code dan
+durasi di sebelahnya ikut terbaca (defect ke-32 fail-open hunt)
+
+Tanggal 2026-10-05. HEAD awal 2f439b9 (ahead 32); commit fix `6131457`
+(ahead 33); commit ledger+state menambah satu. Tidak ada push pada run ini.
+Sibling a11y menambah 2 path dirty di tengah run
+(`docs/evidence/wcag-2.2-audit-login-screen-2026-09-30.md` dan
+`test/core/security/security_settings_focus_order_test.dart`) - tidak
+disentuh dan tidak ikut commit slice. Nomor slice (117.43-37) diverifikasi
+belum terpakai sebelum diberikan, sesuai pelajaran penomoran.
+
+DEFECT. `_kRebuildSummaryPattern`
+(`build_reproducibility_provenance.dart:47`) mensyaratkan jendela
+`\(... .. ...\)` bagian dari pola itu sendiri, dan dua `continue` di
+`_rebuildSummariesIn` lalu menjatuhkan baris yang jendelanya tidak bisa
+diparse. Akibatnya jendela - bukan angka - yang memutus apakah exit code dan
+durasi di sebelahnya terbaca sama sekali. Dua bentuk yang lolos keduanya
+menyebut dua angka yang memang sudah diukur gate pada rekaman: (a)
+`rebuild_a exit_code 1 duration_seconds 999 (not-a-timestamp ..
+still-not-a-timestamp)` -> jendela gagal diparse -> seluruh baris jatuh ke
+prosa, padahal rekaman menyatakan exit code 0 dan 145 detik; (b)
+`rebuild_a exit_code 1 duration_seconds 145` tanpa jendela -> pola tidak
+cocok sama sekali -> juga prosa. `provenance_record: 6 item` tetap tercetak
+penuh, jadi tidak ada angka yang menunjukkan satu baris tidak dibandingkan.
+Ini sisi keluarga yang sama dengan -19/-23/-25/-29/-30: pembaca menuntut
+sesuatu yang bukan milik klaim. Sisi rekaman justru sebaliknya - jendela yang
+terpasang tapi tidak terbaca bikin `hasWellFormedWindow` `false` lalu gagal
+(117.43-09), jadi dua pembaca satu restatement punya aturan berbeda.
+
+RED. Empat test resmi ditulis lebih dulu (blok lewat file terpisah lalu
+disisip dengan substitusi byte-eksak, anchor unik, `assert count==1`), lalu
+dijalankan terhadap lib yang belum diubah:
+`flutter test .../sprint_117_ga_artifact_reproducibility_test.dart
+--plain-name "117.43-37"` -> exit 1, `+1 -3`: tiga test cacat gagal dengan
+Expected `unmet` / Actual `pass` (persis cacatnya), satu test kontrol
+(restatement jujur tanpa jendela) lulus `+1`. Keempatnya membangun manifest
+dari salinan dokumen provenance yang dikirim dengan baris `rebuild_a` ditukar
+verbatim, jadi cuma seam itu yang bisa memutus.
+
+FIX. (1) Jendela dibuat opsional di pola:
+`(-?\d+)(?:\s+\((.+?)\s+\.\.\s+(.+?)\))?`. (2) `_RebuildSummary.start` dan
+`finish` jadi nullable - `null` berarti baris tidak menyebut jendela sama
+sekali, bentuk yang memang bukan klaim di sisi rekaman (117.43-07).
+(3) `_rebuildSummariesIn` balik `List<_RebuildSummary>?`: angka yang tidak
+terbaca atau jendela yang terpasang tapi tidak terbaca -> `return null`, dan
+pemanggil (`_summaryAgreesWithRebuilds`) balik `false`. Empat `continue` yang
+sebelumnya membuang klaim jadi dua penolakan fail-closed, aturan yang sama
+dengan 117.43-13 untuk bidang yang disebut tapi tidak dibuat terbaca.
+(4) `_summaryDurationAgrees` mengembalikan `true` setelah durasi cocok kalau
+barisnya tidak menyebut jendela - jendela tidak lagi menentukan apakah angka
+di sebelahnya dibaca. Tidak ada penerimaan baru: exit code dan durasi yang
+kini dibandingkan semuanya sudah diukur pada rekaman; satu-satunya perubahan
+batas klaim adalah jendela tak-terbaca berhenti menjadi prosa.
+
+GATES. Baseline sebelum perubahan: file gate 169/169 exit 0. Format
+`dart.bat format --output=none --set-exit-if-changed` pada 2 file ->
+`0 changed` exit 0 (format write pada file test hanya menyentuh blok baru:
+numstat tetap 100/0, satu hunk `@@ -5620,0 +5621,100 @@`). `dart analyze`
+2 file -> `No issues found!` exit 0. `git diff --check` exit 0. Scan non-Latin
+(kelas CJK/kana/hangul/fullwidth) pada 152 baris added -> 0 hit, 0 trailing
+whitespace. GREEN: `--plain-name "117.43-37"` -> `+4` All tests passed exit 0.
+Regresi terarah 2 file (hanya dua file test yang mengimpor kedua sumber gate)
+-> `+186` All tests passed! exit 0 (173 file 117 + 13 file 113).
+`flutter build windows --debug` exit 0, 29,4 detik, `data/flutter_assets`
+mtime 2026-10-05 03:28 (exe statis 02:22 tidak dihitung). Guard PASS pre-run.
+
+BUKTI SHA (blob commit `6131457`):
+`build_reproducibility_provenance.dart` =
+`a44fa9bd70c0628a94e223d59e524d1572d92bb25818cd23c08684c707222c77`
+(71345 B); `sprint_117_ga_artifact_reproducibility_test.dart` =
+`2c226e1e9b732b93925d774421e954334be7368c10f4a39d25fee8a67d9e5dea`
+(227450 B). Numstat: domain 52/12, test 100/0 (murni insert). Kedua path
+bersih di working tree setelah commit. Patch tool 0 pemakaian.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, `next_step` 117.43, `step_closed`
+false, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`, TODO-OPERATOR
+117.43-02 tetap menunggu keputusan drift manifest. Tidak ada push.
+
+Kandidat hunt berikutnya ke-33: `parseDigest`
+(`sprint_117_ga_artifact_reproducibility.dart:450`, 0 pemanggil - mati,
+bukan fail-open) dan `summarised.firstMatch(member.key)` (`:1671`) yang
+melewatkan member di luar `^rebuild_.+_duration_seconds$` - grup itu masih
+tanpa pencetak jumlah member, jadi wajib diprobe dulu. Catatan metode:
+dari ke-32 ini, pola `firstMatch`/wajib-versi-opsional pada pembaca klaim
+layak dicek berbarengan dengan pertanyaan lama "siapa yang mencetak
+jumlahnya".

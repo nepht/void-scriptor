@@ -3184,6 +3184,124 @@ Dua asumsi awal salah dan digigit test, bukan diperbaiki oleh probe baru:
 
 Kumulatif: **46 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 45); 43 layar tersisa. Layar clean namun butuh fixture Drift/project session tetap **DEFERRED**.
 
+## 61. Fase 61 — Focus Order di Share Project Dialog (2.4.3)
+
+**Target:** `lib/features/collaboration/presentation/share_project_dialog.dart`
+**Kontrak:** `test/features/collaboration/presentation/share_project_dialog_focus_order_test.dart`
+**Viewport probe:** 1536x1024, dpr 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)`
+
+### Why this target
+
+Sweep `_screen.dart` yang clean dan belum punya kontrak sudah habis: empat kandidat tersisa
+(`optional_tour_screen`, `merge_preview_screen`, `level_editor_screen`,
+`publishing_dashboard_screen`) ternyata hanya menghasilkan **satu** focus stop efektif, karena
+`ListTile` tanpa `onTap`/`onLongPress` tidak masuk traversal fokus, dan `Slider` tanpa
+`onChanged` non-null diabaikan. Probe `optional_tour_screen` membuktikannya langsung:
+
+```
+PROBE_OUT STOP 0: label=Start Tour rect=Rect.fromLTRB(20.0, 487.0, 1516.0, 527.0)
+PROBE_OUT STOP 1: WRAP label=Start Tour rect=Rect.fromLTRB(20.0, 487.0, 1516.0, 527.0)
+```
+
+Satu stop tidak memenuhi ambang minimal dua elemen interaktif, jadi kedua probe itu dibuang
+(tidak dipakai sebagai bukti, file probe dihapus). Layar yang tersisa di `lib/features` juga
+semua `DIRTY` milik Core Worker, jadi tidak disentuh.
+
+`ShareProjectDialog` dipilih sebagai permukaan dialog pertama yang punya rantai fokus nyata.
+Hanya butuh `CollaboratorRole` domain enum, tanpa database, network, plugin platform, atau
+project session.
+
+### Measured stops (4)
+
+| Stop | Label | Rect |
+|---|---|---|
+| 0 | `Email` | `Rect.fromLTRB(612.0, 462.0, 924.0, 486.0)` |
+| 1 | `owner` | `Rect.fromLTRB(612.0, 506.0, 924.0, 562.0)` |
+| 2 | `Cancel` | `Rect.fromLTRB(674.8, 590.0, 783.4, 630.0)` |
+| 3 | `Invite` | `Rect.fromLTRB(791.4, 590.0, 924.0, 630.0)` |
+| 4 | WRAP (back to stop 0) | - |
+
+Probe awal memberi label stop 0 sebagai `widget:Focus`, karena `TextField` me-render
+`labelText` di dalam `InputDecorator` yang berada **di luar** subtree focus node.
+`_labelOf` pada kontrak final memakai urutan: (1) `Text` non-`Icon` pertama di subtree,
+(2) `TextField.decoration.labelText` dari `visitAncestorElements` terdekat, (3) runtime type.
+Dengan itu stop 0 terbaca `Email` dan kontrak mengunci label yang bisa dibaca pengguna,
+ bukan token internal widget.
+
+### Locked contract
+
+- jumlah stop tepat 4 (`hasLength(4)`);
+- urutan label `['Email', 'owner', 'Cancel', 'Invite']`;
+- `stops[0].top < stops[1].top` (field email di atas dropdown role);
+- `stops[1].top < stops[2].top` (dropdown role di atas baris aksi);
+- `stops[2].left < stops[3].left` (Cancel kiri, Invite kanan);
+- `stops[2].top` `closeTo` `stops[3].top` dalam 1 px (satu baris horizontal);
+- setiap stop punya area fokus non-zero;
+- `stops[1].label` harus sama dengan `CollaboratorRole.owner.name`, yaitu nilai awal dropdown,
+  supaya pengguna keyboard tahu role aktif sebelum mengubahnya;
+- `tester.takeException()` null.
+
+### Gates
+
+- `dart format test/features/collaboration/presentation/share_project_dialog_focus_order_test.dart`
+  -> `Formatted 1 file (0 changed)` pada run final.
+- `dart analyze <kontrak>` -> `No issues found!`.
+  Revisi pertama gagal dengan 2 error (`unchecked_use_of_nullable_value` pada
+  `decoration.labelText`, `undefined_getter` pada `Element.parent`) dan 1 warning
+  (`unnecessary_cast`); `Element` tidak punya `parent`, harus pakai
+  `visitAncestorElements`, dan `decoration` sudah nullable di Flutter 3.44.
+- `flutter test <kontrak>` -> `00:01 +1: All tests passed!` (`GREEN_EXIT_CODE=0`).
+- Gate suite `flutter test test/features/collaboration/` -> `00:15 +94: All tests passed!`,
+  `GATE_EXIT_CODE=0`.
+
+### Negative control
+
+- **#1 (urutan label)**: tukar `'Email'` dan `'owner'` via `cp` backup ke
+  `/c/Users/nepht/AppData/Local/Temp/fo_share_dialog_backup.dart`.
+  Hasil `NEG_EXIT_CODE=1`, `Some tests failed.`:
+  ```
+  Expected: ['owner', 'Email', 'Cancel', 'Invite']
+    Actual: ['Email', 'owner', 'Cancel', 'Invite']
+     Which: at location [0] is 'Email' instead of 'owner'
+  ```
+- **#2 (jumlah stop)**: restore dari backup, lalu `hasLength(4)` -> `hasLength(5)`.
+  Hasil `NEG2_EXIT_CODE=1`, `Some tests failed.`:
+  ```
+  Expected: an object with length of <5>
+    Actual: [ ... ]
+     Which: has length of <4>
+  ```
+- Percobaan negative control pertama **tidak dihitung sebagai bukti**: anchor multi-baris tidak
+  cocok karena `dart format` telah merapikan list `_expectedLabels` menjadi satu baris, sehingga
+  mutasi tidak pernah diterapkan dan test tetap hijau. Diulang dengan anchor satu-baris yang
+  sesuai isi file setelah format.
+- Setelah restore: `GREEN_EXIT_CODE=0`, `All tests passed!`; backup dihapus (diverifikasi
+  `ls` -> tidak ada).
+
+### Scan CJK/Cyrillic
+
+`share_project_dialog_focus_order_test.dart` -> `none` (135 baris). Tidak ada credential di
+kontrak; `onInvite` adalah no-op lokal tanpa data sensitif.
+
+### Production code
+
+Tidak ada perubahan pada `share_project_dialog.dart`. Probe tidak menunjukkan defect runtime:
+urutan fokus mengikuti urutan visual (field, dropdown, baris aksi) dan setiap kontrol punya area
+fokus nyata. Tidak ada temuan yang warrant perbaikan produksi, jadi tidak ada file produksi
+yang di-commit.
+
+### Status
+
+**VERIFIED** untuk focus order `ShareProjectDialog` pada 1536x1024 dpr 1.0 di codebase saat
+commit. Bukti bersifat deterministik (enum statis, tanpa I/O), bukan screenshot.
+
+Kumulatif: **51 kontrak** focus order terpasang di `test/**/*_focus_order_test.dart`
+(50 tracked sebelum fase ini, + kontrak ini). Terhadap inventaris **89 target** yang dipakai
+fase-fase sebelumnya, distinct `*_screen.dart` yang ter-cover tetap **45** — fase ini menambah
+permukaan **dialog**, bukan `_screen.dart`, jadi counter layar tidak naik. 50 `_screen.dart`
+live masih belum punya kontrak; yang clean namun butuh fixture Drift/project session tetap
+**DEFERRED**.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

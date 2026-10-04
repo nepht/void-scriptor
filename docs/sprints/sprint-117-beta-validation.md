@@ -1490,3 +1490,86 @@ slice kosong); tidak ada push pada run ini. Status TIDAK BERUBAH:
 PARTIAL-LOCAL, `next_step 117.43`, `step_closed false`, verdict
 GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih
 BLOCKER. Hunt berikutnya: ke-25.
+
+### Slice 117.43-30 - restatement `provenance_record` yang tidak berdiri sendiri di baris tidak pernah dibandingkan (defect ke-25 fail-open hunt)
+
+DEFECT: pembaca ketiga untuk `provenance_record` memakai pola ber-anchor
+`^...$` dan `firstMatch`, sehingga ia hanya menjawab untuk baris yang isinya
+TEPAT klaim itu. Sebuah restatement yang ditulis di belakang heading, di
+belakang catatan, atau DUA restatement di atas satu baris tidak cocok dengan
+pola, dibaca sebagai prosa, dan tidak pernah dibandingkan dengan rekaman yang
+ia ringkas — sementara group tetap mencetak `provenance_record: 6 item` seolah
+semua baris sudah ditimbang. Dua pembaca lain untuk grup yang sama,
+`provenance_logs` dan `signed_candidate`, membaca klaimnya dari depan baris dan
+mengabaikan sisa barisnya, jadi di sini posisi klaim di dalam baris justru
+menjadi bagian grammar bagi pembaca ketiganya. Bentuknya sama dengan ke-22/ke-23
+(pembaca beda tata bahasa) dan ke-27/ke-28/ke-29 (pembaca hanya klaim pertama),
+kali ini pada satu grup yang sama dengan dua pembaca yang sudah lurus: cukup
+memindahkan restatement yang salah ke baris yang "berpakaian" prosa, dan ia
+lolos tanpa dibandingkan.
+
+Bukti RED: probe `test/release/zz_probe_11743_30_test.dart` dijalankan SEBELUM
+patch pada manifest shipped: baseline `pass`, kontrol satu baris dengan
+exit_code salah `unmet` (ini 117.43-15), restatement salah dengan catatan
+dibelakangnya `pass`, dua restatement dalam satu baris `pass`, restatement salah
+di belakang heading `pass`, dan restatement jujur dengan catatan `pass`. Tiga
+`pass` pertama adalah defect - masing-masing menyebut exit code, durasi, dan
+jendela yang rekaman sangkal, tetapi dihitung sebagai item tanpa pernah
+diukur. Setelah patch, probe yang sama mengembalikan ketiga defect `unmet`
+dan kedua kontrol tetap `pass`. Probes dihapus setelah temuannya dipindah ke
+test resmi (tercatat di sini).
+
+Test resmi: grup `117.43-30` pada
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` berisi enam
+tes - empat assertion defect (catatan setelah statement; heading sebelum
+statement; dua statement berlawanan di satu baris; statement untuk rebuild
+yang tak dicatat di belakang catatan) dan dua kontrol yang mengunci batas:
+restatement jujur yang ber-hias tetap `pass`, dan membuka anchor tidak
+memperluas apa yang dihitung klaim (label yang tidak diawali `rebuild_`
+dengan grammar penuh tetap prosa; prosa yang menyebut rebuild tanpa angka tetap
+non-claim 117.43-07).
+
+GREEN: file gate `sprint_117_ga_artifact_reproducibility_test.dart`
+`152/152 All tests passed` (146 sebelumnya + 6), tanpa regresi keluarga
+117.43-14..-29; file `sprint_113_build_reproducibility_provenance_test.dart`
+`12 pass / 2 fail` dengan dua kegagalan pasangan pre-existing 113.39 ber-signature
+sama (lock `32e31fd3` vs `c9a365e6`, artefak `73101e78` vs `c7a33055`); tidak
+ada klaim suite penuh.
+
+Perbaikan: `_kRebuildSummaryPattern` dilepas anchor `^`/`$` sehingga klaim
+dicari di mana pun dalam baris, `_parseRebuildSummary` diganti
+`_rebuildSummariesIn` yang mengembalikan SEMUA klaim baris secara berurutan,
+dan loop `_summaryAgreesWithRebuilds` membandingkan tiap klaim dengan rekaman
+yang ia sebut. Grammar klaimnya sendiri tidak berubah - label, exit code,
+durasi, dan jendela harus tetap utuh, jendela harus tetap parse sebagai dua
+timestamp - sehingga posisi klaim saja yang diubah, bukan definisi klaim;
+baris yang tidak menyatakan klaim lengkap tetap prosa, dan label yang tidak
+diawali `rebuild_` tetap dilewati seperti sebelumnya.
+
+Dokumen juga dikoreksi: komentar pada pembaca `provenance_record` mengklaim
+"Only its weaker shape claim is enforced" untuk `source_revision`, padahal
+pencarian di `lib/` tidak menemukan satu pun pemeriksa 40-hex untuk baris itu,
+sementara test 117.43-15 justru membenarkan
+`source_revision not-a-revision-at-all` sebagai non-claim - bentuk yang aturan
+lama akan tolak. Klaim penegakan yang tidak ada itu diganti dengan uraian apa
+adanya: hanya keberadaan string non-kosong yang ditahan grup ini.
+
+Gerbang: `dart format` write `1 changed` exit 0 lalu
+`--output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten);
+`dart analyze` 2 file `No issues found!` exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 (59,4 dtk) dengan
+`build\windows\x64\runner\Debug\void_scriptor.exe` terbangun; roadmap guard
+PASS pre-commit `canonical_sha256`
+`b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6` tidak
+berubah; scan non-Latin Python `re` (CJK/kana/hangul/fullwidth) pada added lines
+kedua file = 0 hit. Numstat fix: domain 75/36, test 200/0. SHA-256 dari blob
+commit `b44d393` (sama dengan sha256sum disk): domain
+`733c9588d32d1c419413d2929f29e8989c1d5998815db290f87a889085dfb622` (60295 B),
+test `96c8d63be5ecc5f357ea1f93dc96cd5cdf852aed5885d67a7f06a6298ed15b44`
+(196334 B). Manifest 113 tidak disentuh (commit terakhir tetap `d150973`).
+Commit memakai 2 path eksplisit. Sibling `321937f` (a11y audit focus order
+Scene Workspace Screen) masuk di tengah run dan tidak menyentuh path slice
+(`git log 3bce40b..HEAD -- <2 path>` kosong). Tidak ada push pada run ini.
+Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, verdict
+GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih
+BLOCKER. Hunt berikutnya: ke-26.

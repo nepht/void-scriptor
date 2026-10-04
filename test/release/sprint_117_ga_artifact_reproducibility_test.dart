@@ -4967,4 +4967,108 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-31: `measureChecksums` measured the DIGEST of
+  // every SIGNED artifact line but only the PATH of every other line the
+  // inventory names, while this gate's own contract promises "every checksum
+  // line matches the bytes on disk". The non-signed walk checked existence
+  // alone (defect 117.43-03's `phantom` direction), so one line states one
+  // claim pairing a path with a digest and only half of that claim was read
+  // for lines outside the signed set: an inventory that kept all six signed
+  // digests correct and recorded a wrong digest for any other path it names —
+  // a path that exists, so not phantom, well formed, never repeated — returned
+  // pass while printing `${signedArtifacts.length} artifact digest match`.
+  // Root cause: the signed set decided WHICH claims are comparable, so a
+  // document controlled the measurement surface by choosing what it declared
+  // signed. Fix direction: every readable line is digest-compared against the
+  // bytes it names, which is the same measurement already performed for the
+  // signed six, extended to the rest of the file the contract already claims
+  // to verify.
+  group('117.43-31 every checksum line is digest-checked, not just the signed '
+      'ones', () {
+    late Directory tempDir;
+
+    setUp(
+      () => tempDir = Directory.systemTemp.createTempSync('void_117_43_31'),
+    );
+    tearDown(() {
+      if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
+    });
+
+    String writeFile(String name, Object content) {
+      final file = File('${tempDir.path}${Platform.pathSeparator}$name')
+        ..createSync(recursive: true);
+      if (content is String) {
+        file.writeAsStringSync(content);
+      } else {
+        file.writeAsBytesSync(content as List<int>);
+      }
+      return file.path;
+    }
+
+    test('117.43-31 a wrong digest for a non-signed path is a violation', () {
+      final signedBytes = <int>[1, 2, 3];
+      final otherBytes = <int>[4, 5, 6];
+      final signed = writeFile('signed.bin', signedBytes);
+      final other = writeFile('other.bin', otherBytes);
+      final checksumFile = writeFile(
+        'checksums.txt',
+        <String>[
+          // The signed line is correct: nothing about the signed set
+          // contradicts the bytes, so the only failing claim is the one
+          // this check never read.
+          '${sha256.convert(signedBytes).toString()}  $signed',
+          '${'b' * 64}  $other',
+        ].join('\n'),
+      );
+
+      final check = Sprint117GaArtifactGate.measureChecksums(
+        signedArtifacts: <String>[signed],
+        checksumFile: File(checksumFile),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.violation,
+        reason:
+            'a line naming a readable artifact with a wrong digest '
+            'contradicts the bytes it names; 117.43-03 measured only '
+            'whether the path exists, so the digest half of the same '
+            'claim stayed unverified',
+      );
+      expect(check.note, contains('drifting:'));
+      expect(
+        check.note,
+        contains(other),
+        reason: 'the drifting path must be named, not only counted',
+      );
+    });
+
+    test('117.43-31 a correct digest for a non-signed path still passes', () {
+      final signedBytes = <int>[1, 2, 3];
+      final otherBytes = <int>[4, 5, 6];
+      final signed = writeFile('signed.bin', signedBytes);
+      final other = writeFile('other.bin', otherBytes);
+      final checksumFile = writeFile(
+        'checksums.txt',
+        <String>[
+          '${sha256.convert(signedBytes).toString()}  $signed',
+          '${sha256.convert(otherBytes).toString()}  $other',
+        ].join('\n'),
+      );
+
+      final check = Sprint117GaArtifactGate.measureChecksums(
+        signedArtifacts: <String>[signed],
+        checksumFile: File(checksumFile),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'measuring every line must not widen what counts as drift; '
+            'an agreement is still an agreement',
+      );
+    });
+  });
 }

@@ -629,7 +629,7 @@ abstract final class Sprint117GaArtifactGate {
     );
   }
 
-  /// Measures the checksum file against the signed artifacts on disk.
+  /// Measures the checksum file against the artifacts it names on disk.
   ///
   /// Returns a check plus the drift list, so the caller can decide how to
   /// report it. This never rewrites a checksum: a drifting digest is evidence
@@ -673,12 +673,36 @@ abstract final class Sprint117GaArtifactGate {
     // no readable artifact is a claim about nothing. This direction was never
     // walked before defect 117.43-03, so an inventory could name artifacts
     // the tree does not contain and still report a clean agreement.
+    //
+    // Defect 117.43-31 walks the remaining direction of the SAME line: a line
+    // states one claim pairing a path with a digest, and only the signed six
+    // were ever hashed against their bytes. A line whose path exists but is
+    // not declared signed had its path measured and its digest ignored, so a
+    // document kept every signed digest correct and recorded a wrong digest
+    // for any other path it named — readable, well formed, never repeated —
+    // and the check returned pass while the contract above promises "every
+    // checksum line matches the bytes on disk". The signed set now decides
+    // which artifacts must be COVERED, not which claims are COMPARABLE: every
+    // readable line is hashed against the bytes it names, the measurement the
+    // signed loop already performs.
     final declaredSet = signedArtifacts.map((p) => p.trim()).toSet();
     for (final path in index.keys) {
       if (declaredSet.contains(path.trim())) continue;
-      if (!File(path).existsSync()) phantom.add(path);
+      final file = File(path);
+      if (!file.existsSync()) {
+        phantom.add(path);
+        continue;
+      }
+      final actual = sha256.convert(file.readAsBytesSync()).toString();
+      if (actual != index[path]) {
+        drifting.add(path);
+      }
     }
-    final declared = '${signedArtifacts.length} artifact';
+    // `declared` reports both halves of what this check measures: the
+    // signed set the packaging manifest declares, and every line the
+    // inventory itself states, since both are digest-compared now.
+    final declared =
+        '${signedArtifacts.length} artifact / ${index.length} checksum line';
     if (uncovered.isNotEmpty ||
         drifting.isNotEmpty ||
         phantom.isNotEmpty ||
@@ -707,7 +731,7 @@ abstract final class Sprint117GaArtifactGate {
       outputId: 'checksums',
       check: 'artifact_checksum_agreement',
       declared: declared,
-      observed: '${signedArtifacts.length} artifact digest match',
+      observed: '${index.length} checksum line digest match',
     );
   }
 

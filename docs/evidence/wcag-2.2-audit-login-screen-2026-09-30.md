@@ -3378,6 +3378,115 @@ Tidak ada perubahan di `lib/`. Temuan probe: urutan focus sudah sesuai urutan ba
 inspector, jadi tidak ada defect yang perlu diperbaiki. File probe `_probe_focus_test.dart`
 dihapus setelah kontrak ditulis.
 
+
+## 63. Fase 63 — Focus Order di ProjectBibleWorkspaceScreen (2.4.3)
+
+Layar: `lib/features/bible/presentation/project_bible_workspace_screen.dart`
+(`ProjectBibleWorkspaceScreen`, `ConsumerStatefulWidget` tanpa argumen constructor).
+Kontrak: `test/features/bible/presentation/project_bible_workspace_screen_focus_order_test.dart`.
+
+### Sasaran
+
+Workspace kanon ini punya dua kelompok kontrol: enam tab navigasi section di kepala dan dua
+aksi tulis di kolom kanan. Rantai fokus harus melewati keduanya dalam urutan baca yang
+dij_expectasi_, dan harus tetap stabil tanpa bergantung pada state database.
+
+### Probe
+
+Probe sementara `test/features/_probe_focus_test.dart` (dihapus setelah kontrak ditulis)
+mempompa layar pada viewport 1536x1024, dpr 1.0, override
+`projectSessionProvider` dengan controller palsu, lalu menekan `LogicalKeyboardKey.tab`
+berulang sambil mencatat label `Text` pertama dan `Rect` fokus tiap stop.
+
+Dua mode dijalankan:
+
+- **Session null** (`ProjectSessionController.build() -> null`): 8 stop.
+- **Session Drift nyata** (paket `ProjectPackageService.create` + `ProjectSessionManager.open`
+  di dalam `tester.runAsync`): 8 stop.
+
+Hasil kedua mode identik pada label dan pada koordinat (kecuali `top` dua aksi kanan
+selisih 16 px karena tinggi section data). Kesimpulan probe: rantai fokus ini
+**tidak bergantung pada IO database**, jadi kontrak dapat mengunci Urutan dengan
+`projectSessionProvider` null — tanpa fixture temp-dir, tanpa `runAsync`.
+
+Rantai siklis 8 stop + wrap ke stop pertama:
+
+| # | Label | Rect (L, T, W, H) |
+|---|-------|-------------------|
+| 1 | Universe Overview | 128.0, 97.0, 293.7, 38.0 |
+| 2 | Canon Rules | 429.7, 97.0, 189.1, 38.0 |
+| 3 | Worldbuilding | 626.8, 97.0, 217.3, 38.0 |
+| 4 | Factions | 852.1, 97.0, 146.8, 38.0 |
+| 5 | Timeline / Eras | 1006.9, 97.0, 245.5, 38.0 |
+| 6 | Canon Conflicts | 128.0, 153.0, 245.5, 38.0 |
+| 7 | Faksi Baru | 1181.0, 646.0, 207.0, 40.0 |
+| 8 | Add Relation | 1152.8, 781.0, 235.2, 40.0 |
+| 9 | Universe Overview | 128.0, 97.0, 293.7, 38.0 (wrap) |
+
+### Temuan probe yang menolak asumsi awal
+
+Kontrak pertama sempat menyatakan enam tab navigasi berbagi satu baris. Probe &&
+test merah membuktikan asumsi itu salah: hanya **lima** tab (`Universe Overview`
+sampai `Timeline / Eras`) yang sebaris pada `top = 97.0`; `Canon Conflicts` melompat ke
+baris kedua pada `top = 153.0` dengan `left = 128.0` (selaras dengan kolom pertama).
+Kontrak dikoreksi menjadi ekspektasi lima-tab; ini perilaku UI yang disengaja
+(header membungkus), bukan defect yang perlu diperbaiki di `lib/`.
+
+### Yang dikunci kontrak
+
+- urutan label lengkap 8 stop + wrap: `['Universe Overview', 'Canon Rules',
+  'Worldbuilding', 'Factions', 'Timeline / Eras', 'Canon Conflicts', 'Faksi Baru',
+  'Add Relation', 'Universe Overview']`;
+- setiap stop punya `width > 0` dan `height > 0`;
+- lima tab navigasi: `top` identik (satu `.toSet().length == 1`), `left` naik strictly,
+  dan tidak tumpang tindih (`left[i] >= right[i-1]`);
+- `Canon Conflicts` di baris kedua: `top` lebih besar dari tab terakhir baris pertama dan
+  `left` sama dengan tab pertama (toleransi 1.0 px);
+- dua aksi tulis di kolom kanan (`left >= 1100.0`) dan urut ke bawah
+  (`Add Relation.top > Faksi Baru.top`);
+- semua stop di dalam viewport 1536x1024 (tidak ada fokus yang terpotong tepi);
+- `tester.takeException()` null.
+
+### Gates
+
+- `dart format <kontrak>` -> `Formatted 1 file (1 changed)`.
+- `dart analyze <kontrak>` -> `No issues found!`.
+- `flutter test <kontrak>` -> `00:01 +1: All tests passed!` (`EXIT=0`).
+- `flutter test test/features/bible/` -> `01:21 +60: All tests passed!` (`EXIT=0`, gate suite
+  feature, 60 test termasuk kontrak baru).
+
+### Negative control
+
+Tukar urutan dua label tab (`'Worldbuilding'` dan `'Factions'`) via `cp` backup ke
+`/c/Users/nepht/AppData/Local/Temp/bible243_backup.dart`, jalankan kontrak.
+
+Hasil `NEG_EXIT=1` dengan `Some tests failed.` dan mismatch eksplisit:
+
+```
+Expected: [ 'Universe Overview', 'Canon Rules', 'Factions', 'Worldbuilding', ... ]
+Actual:   [ 'Universe Overview', 'Canon Rules', 'Worldbuilding', 'Factions', ... ]
+```
+
+Setelah restore: `grep` mengembalikan urutan label asli, `flutter test <kontrak>` kembali
+`00:01 +1: All tests passed!` (`EXIT=0`), backup dihapus (`ls` -> `No such file`).
+
+### Scan CJK/Cyrillic
+
+`project_bible_workspace_screen_focus_order_test.dart` -> `none`. Tidak ada credential di
+kontrak; tidak ada fixture database (session provider dikembalikan `null`).
+
+### Production code
+
+Tidak ada perubahan di `lib/`. Probe menunjukkan urutan fokus sudah mengikuti urutan baca
+(header kiri-ke-kanan, aksi kanan ke bawah) dan tidak ada focus stop berukuran nol atau
+di luar viewport. File probe `_probe_focus_test.dart` dihapus sebelum commit.
+
+### Catatan penomoran section
+
+Dokumen ini memakai line ending LF (0 CRLF / 3511 LF saat pemeriksaan), bukan CRLF seperti
+asumsi awal. Penyisipan section dilakukan dengan `newline=''` pada mode baca dan tulis sehingga
+line ending file tidak dikonversi.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -4352,6 +4352,48 @@ Interpretasi: **2 stop unik** pada rute yang dipush; labeler probe sederhana mem
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
 
+## 79. Fase 79 — Focus Order di LevelEditorScreen (2.4.3)
+
+**Layar**: `lib/features/game/presentation/level_editor_screen.dart:11` (`LevelEditorScreen`, `ConsumerWidget`) — editor level 3 panel (Step 47.9): AppBar berjudul `Level Editor` dengan `actions` berisi `FilledButton.icon('Play')` yang `onPressed: onPlay` (nullable -> null saat `onPlay` tidak diisi, disabled -> tidak focusable), badan `LayoutBuilder` (panel Assets / 3D World / Inspector) tanpa satu pun handler interaktif. Tanpa fixture database, network, atau filesystem: cukup callback `_noOp` untuk `onPlay`. Constructor: `LevelEditorScreen({super.key, this.onPlay})`.
+
+**Pemilihan layar (evidence, bukan asumsi)**: pemindaian ulang 89 file `lib/features/*/presentation/*_screen.dart` terhadap 78 file `test/**/*focus*test.dart` menyisakan **27 file** tanpa kontrak (fase 78 menyisakan 28; `level_editor_screen.dart` adalah satu-satunya yang masih tersisa dengan handler non-null). Hitung handler non-null (`onPressed|onTap|onChanged|onSubmitted|onEditingComplete|onLongPress|onDoubleTap|onSelected`) di seluruh kolam sisa: **maksimum = 1**, dan `level_editor_screen.dart` (`onPressed: onPlay`) bersama `environment_workspace_screen.dart` (`onPressed` di IconButton) adalah dua-satunya kandidat ber-handler. `environment_workspace_screen` membutuhkan `environmentId` + repository (fixture tidak stabil) -> DEFERRED; `level_editor_screen` mandiri -> dipakai. Ambang tetap **stop fokus hasil render pada rute nyata** (warisan kebijakan fase 78): layar dipush lewat `MaterialPageRoute` sehingga affordance back AppBar ikut teraudit -> 2 stop nyata.
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/game/presentation/_probe_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, loop `LogicalKeyboardKey.tab` maks 20, berhenti saat rect+label berulang. Output live:
+
+```
+PROBE[pushed] Back @(8.0,8.0) 40.0x40.0
+PROBE[pushed] Play @(1397.599998474121,8.0) 122.4000015258789x40.0
+PROBE[pushed] stops=2
+PROBE[home] Play @(1397.599998474121,8.0) 122.4000015258789x40.0
+PROBE[home] stops=1
+```
+
+Interpretasi: **2 stop unik** pada rute yang dipush — `Back` (Tooltip AppBar, 40x40 di kiri-atas) lalu `Play` (FilledButton di `actions`, 122.4x40 di kanan-atas). Urutan Tab **kiri-ke-kanan dalam bar yang sama** (kedua `top = 8`, bukan atas-ke-bawah) — khas layar yang seluruh affordancenya berada di AppBar. Tanpa rute induk hanya **1 stop** (`Play`), membuktikan stop tambahan berasal dari affordance back rute.
+
+**Temuan harness (bukan defect produksi, dilaporkan apa adanya)**: probe memunculkan 2 pesan `A RenderFlex overflowed` dari `Row` di `level_editor_screen.dart:53` (baris aset panel kiri, `BoxConstraints(0<=w<=148)`, overflow 10px dan 39px). Analisis: `Container width: 180` - `padding VoidSpacing.md (16)*2` = 148px, berisi `Icon 18 + SizedBox sm 12 + Text`; sisa 118px untuk teks. Font uji Flutter menghasilkan glyph lebih lebar dari Space Grotesk/Roboto produksi sehingga 'Character'/'Environment' melebar 10-39px. Kontrak **mengunci pesan ini secara eksplisit** (`layoutMessages` harus tepat 2 dan semuanya mengandung `RenderFlex overflowed`, sisanya `isEmpty`) supaya overflow baru/non-overflow tetap gagal, dan `tester.takeException()` tetap `isNull`. Tidak ada perbaikan kode produksi: probe tidak membuktikan defect pada font produksi (ukuran font identik `VoidTypography.body` fontSize 14; hanya metrik glyph uji yang beda). Jika native build memunculkan overflow yang sama, itu defect terpisah yang harus dibuktikan lewat screenshot native.
+
+**Kontrak**: `test/features/game/presentation/level_editor_focus_order_test.dart` (2 `testWidgets`) mengunci:
+1. Rute dipush: jumlah stop = 2, label persis `['Back', 'Play']`.
+2. Area fokus non-zero dan dalam viewport (`0 < width <= 1536`, `0 < height <= 1024`) di tiap stop.
+3. Properti posisi **kiri-ke-kanan**: `top` kedua stop <= 16 (satu bar AppBar), `left` stop 0 <= 16 (back di kiri), `right` stop 1 >= 1376 (Play di kanan), dan `left[0] < left[1]`.
+4. Pesan layout: tepat 2, semuanya `RenderFlex overflowed` (artefak harness terkunci), non-overflow kosong, `takeException` null.
+5. Tanpa rute induk: tepat 1 stop ber-label `Play`, area non-zero, `top <= 16`, `right >= 1376`, pesan layout non-overflow kosong, `takeException` null.
+
+**Gate (jalur langsung)**:
+- `dart format test/features/game/presentation/level_editor_focus_order_test.dart` -> 1 file berubah (sekali, saat penulisan awal), ulang -> `0 changed` (exit 0, stabil).
+- `dart analyze <file>` -> `No issues found!` (exit 0).
+- `flutter test <file>` -> `00:01 +2: All tests passed!` (exit 0).
+
+**Negative control WAJIB**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/level_editor_focus_order_test.dart.bak`, lalu ubah ekspektasi menjadi `hasLength(3)` + label `['Play', 'Back']`. Hasil: exit **1**, `Some tests failed.` -> test rute dipush gagal di baris 123 (`Expected: <3> Actual: <2>`), test kedua lolos (1 gagal, 1 lolos). Restore dari backup -> `All tests passed!` (exit 0); backup dihapus dan keberadaannya diverifikasi hilang (`backup_exists=no`). Catatan: percobaan mutasi pertama lewat anchor multiline GAGAL ditemukan (`AssertionError: anchor not found`) karena `dart format` sudah merapikan list ke satu baris — mutasi diulang dengan anchor hasil format, barulah kontrol negatif membuktikan gigi.
+
+**Tidak ada perubahan kode produksi**: probe membuktikan urutan Tab sudah benar (back -> Play, kiri-ke-kanan di AppBar, sesuai urutan baca), sehingga tidak ada sentuhan pada `lib/`. File sibling Core Worker yang dirty (`lib/features/world_logic/domain/*`, `test/release/sprint_117_ga_artifact_reproducibility_test.dart`, `docs/evidence/sprint-117-35-manifest-20261002.json`) tidak disentuh.
+
+**Counter (diukur ulang dari live, metode identik fase 78: nama kelas `*Screen` vs seluruh isi `test/**/*focus*test.dart`)**: `git ls-files test | grep -c focus_order` = **69 ter-commit** sebelum run ini; kontrak fase ini menambah 1 -> **70 setelah commit**. Cakupan union per-file: 61 -> **62 dari 89 file tercakup, sisa 27**; basis kelas (kelas `*Screen` yang muncul di manapun di `test/**/*focus*test.dart`): 64 -> **65 dari 93 kelas tercakup** (kelas `LevelEditorScreen` baru masuk lewat kontrak fase ini — sebelumnya hanya disebut test non-focus `level_editor_screen_test.dart` yang tidak dihitung metode ini; angka fase 78 = 63 memakai deteksi lintas-fitur yang sedikit berbeda, angka live metode seragam run ini yang dipakai di sini). Sisa 27 file: 26 ber-handler 0, 1 (`environment_workspace_screen`) ber-handler 1 tetapi butuh fixture repository -> DEFERRED. **Tidak ada lagi kandidat ber-handler >= 1 yang mandiri**; run berikutnya harus memakai ambang stop-ter-render (rut seperti run ini), memilih layar dengan fixture sederhana, atau menandai DEFERRED.
+
+**Catatan format**: report ini LF-only (0 CRLF); sisipan ditulis dengan `\n` lewat pembacaan `newline=''`, konsisten dengan fase 69/71/72/73/74/75/76/77/78. Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

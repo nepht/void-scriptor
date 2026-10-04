@@ -951,22 +951,35 @@ class BuildProvenanceEvidence {
   /// the digest recorded for it; a line that only mentions the algorithm
   /// (`hosted dependencies hash-pinned sha256; 0 git/path source`) states
   /// nothing and is skipped here exactly as 117.43-11 skips it.
+  ///
+  /// Sprint 117.43-28 (fail-open, fixed): this reader used to match the
+  /// anchored `^(\S+)\s+sha-?256\s+(\S+)\s*$` itself, so it could see only a
+  /// line stating exactly one claim and read every other line as prose — while
+  /// its sibling `_digestsAgreeWithinGroup` had already been widened by
+  /// 117.43-27 to read a line as the sequence of claims it is. The two readers
+  /// then disagreed about what a line says, and the seam behind 117.43-21
+  /// could be blinded by writing the restatement on a line carrying two
+  /// claims: nothing contradicted inside either group, so nothing was compared
+  /// across them. Proven before the fix: four such documents reported `pass`.
+  ///
+  /// It now reads claims with the same `_digestClaimsIn` tokenizer, so both
+  /// readers agree on the grammar and the restatement rule sees every path a
+  /// line states.
   static Map<String, String>? _digestsByPath(List<String>? items) {
     if (items == null) return null;
     final declared = <String, String>{};
-    final claim = RegExp(
-      r'^(\S+)\s+sha-?256\s+(\S+)\s*$',
-      caseSensitive: false,
-    );
     for (final item in items) {
-      final match = claim.firstMatch(item.trim());
-      // Not a path-plus-digest claim: prose, or a line already refused by
-      // `_hasWellFormedDigestClaims`. Neither is a restatement to compare.
-      if (match == null) continue;
-      // A half-written claim was already reported missing; do not invent a
-      // second, different reason for the same defect here.
-      if (!_digestPattern.hasMatch(match.group(2)!)) continue;
-      declared[match.group(1)!] = match.group(2)!;
+      for (final claim in _digestClaimsIn(item)) {
+        final path = claim.key;
+        final digest = claim.value;
+        // The FIRST digest claimed for a path is the one this restatement rule
+        // compares. A path stated twice inside ONE group with two different
+        // digests is already reported by `_digestsAgreeWithinGroup`
+        // (117.43-26/27); reading the first here keeps that one defect
+        // attributed to the rule that owns it instead of inventing a second,
+        // different reason for the same contradiction here (117.43-21).
+        declared.putIfAbsent(path, () => digest);
+      }
     }
     return declared;
   }

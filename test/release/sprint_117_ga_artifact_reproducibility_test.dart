@@ -4508,4 +4508,263 @@ void main() {
       expect(outcome(broken), isNot('pass'));
     });
   });
+
+  group('117.43-28 the cross-group reader must read every claim a line states, '
+      'not just the first', () {
+    // Sprint 117.43-28 (fail-open, fixed): 117.43-27 replaced the anchored
+    // `^(\S+)\s+sha-?256\s+(\S+)\s*$` reader with `_digestClaimsIn`, so ONE line
+    // stating several `<path> sha256 <digest>` claims is now read as the
+    // sequence of claims it is. It wired that reader into
+    // `_digestsAgreeWithinGroup` — the INTRA-group rule 117.43-26 introduced —
+    // and left its sibling `_digestsByPath` untouched.
+    //
+    // `_digestsByPath` is the seam behind 117.43-21, the rule holding a path
+    // hashed in `build_inputs` and restated in `dependency_lock` to ONE digest,
+    // and it still matched the anchored pattern with `firstMatch`. So the two
+    // readers disagreed about what a line says: the intra-group rule could see
+    // every claim on a line, while the cross-group rule could see only a line
+    // stating exactly one claim and skipped every other line as prose.
+    //
+    // A document therefore needed only to write its restatement on a line that
+    // states two claims for the contradiction to reach the verdict unexamined:
+    // the intra-group rule found no contradiction (each path is given one
+    // digest) and the cross-group rule found nothing to compare (the line did
+    // not parse as a claim at all), so `missingEvidence` returned no missing
+    // group, `evaluate` returned `pass`, and the gate printed
+    // `build_inputs: 6 item` / `dependency_lock: 3 item` as though every
+    // recorded input had been cross-checked.
+    //
+    // Proven before the fix, with digests taken from the SHIPPED document so
+    // each case fails only because the two groups DISAGREE — never because a
+    // digest is malformed, which is the RED-in-the-wrong-place trap the
+    // 117.43-26 run already hit once. Probes B, B2 and B3 each reported `pass`
+    // — the first path of a one-line claim restated, the SECOND path of that
+    // same line restated, and both groups stating two claims in one line —
+    // while the honest document and both non-claim controls passed too, so the
+    // cross-group rule was blind in exactly one direction.
+    //
+    // Bounds, all pinned by test, so the fix cannot over-refuse:
+    //
+    //  * one line naming SEVERAL DIFFERENT paths is several claims, not a
+    //    contradiction — a document may hash a whole build on one line, and the
+    //    rule then holds each of those paths to its restatement;
+    //  * the SAME digest restated on one line, or across the two groups, is an
+    //    idempotent restatement (117.43-26, 117.43-27);
+    //  * a line that merely NAMES the algorithm states no digest and stays a
+    //    non-claim (117.43-07, 117.43-11);
+    //  * a reachable path cannot rescue failing evidence (117.43-25/26).
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> linesOf(Map<String, Object?> manifest, String group) => [
+      for (final line
+          in (manifest['required_evidence']! as Map<String, Object?>)[group]!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeGroup(
+      Map<String, Object?> manifest,
+      String group,
+      List<String> lines,
+    ) =>
+        (manifest['required_evidence']! as Map<String, Object?>)[group] = lines;
+
+    /// The digest the shipped document states for `windows/CMakeLists.txt`. A
+    /// multi-claim line below repeats it so every claim in it is well formed
+    /// and the case fails only on the DISAGREEMENT between the two groups.
+    const shippedCmakeDigest =
+        '65149b3d9e9b6992c261143d5343a48f884b23bff255b1284296f8818747817d';
+
+    /// The digest the shipped document states for `pubspec.lock` in BOTH
+    /// groups, so contradicting it is a restatement nothing else explains.
+    const shippedLockDigest =
+        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+
+    /// Two paths the shipped document never states, so a restatement naming
+    /// either one cannot be credited to a claim some other line already made.
+    const unstatedOne = 'windows/runner/not-shipped.cpp';
+    const unstatedTwo = 'windows/runner/also-not-shipped.cpp';
+
+    test('117.43-28 a restatement written on a line that states two claims is '
+        'compared, whichever path it contradicts', () {
+      final cases = <String, String>{};
+
+      // The defect: one line hashing TWO files, the first of them restated in
+      // `dependency_lock` with a different digest.
+      final first = shipped();
+      writeGroup(first, 'build_inputs', <String>[
+        ...linesOf(first, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$_kOnlyInputsPath sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(first, 'dependency_lock', <String>[
+        ...linesOf(first, 'dependency_lock'),
+        '$unstatedOne sha256 $_kOtherDigest',
+      ]);
+      cases['first path of a one-line claim restated'] = outcome(first);
+
+      // The same line with its SECOND path restated instead — a rule that read
+      // only the first claim on the line would pass this one.
+      final second = shipped();
+      writeGroup(second, 'build_inputs', <String>[
+        ...linesOf(second, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$unstatedTwo sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(second, 'dependency_lock', <String>[
+        ...linesOf(second, 'dependency_lock'),
+        '$unstatedTwo sha256 $_kOtherDigest',
+      ]);
+      cases['second path of a one-line claim restated'] = outcome(second);
+
+      // Both sides of the contradiction written as multi-claim lines, so
+      // neither group is legible to the anchored reader.
+      final both = shipped();
+      writeGroup(both, 'build_inputs', <String>[
+        ...linesOf(both, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$unstatedTwo sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(both, 'dependency_lock', <String>[
+        ...linesOf(both, 'dependency_lock'),
+        '$unstatedOne sha256 $_kOtherDigest '
+            '$unstatedTwo sha256 $shippedCmakeDigest',
+      ]);
+      cases['both groups state two claims in one line'] = outcome(both);
+
+      // A contradiction against `pubspec.lock` — the one path the shipped
+      // document genuinely restates — raised from a multi-claim line. Both
+      // shipped single-claim lines are REPLACED so the existing restatement
+      // cannot be what refuses the case.
+      final shippedPath = shipped();
+      writeGroup(shippedPath, 'build_inputs', <String>[
+        for (final line in linesOf(shippedPath, 'build_inputs'))
+          if (!line.startsWith('pubspec.lock ')) line,
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            'pubspec.lock sha256 $shippedLockDigest',
+      ]);
+      writeGroup(shippedPath, 'dependency_lock', <String>[
+        for (final line in linesOf(shippedPath, 'dependency_lock'))
+          if (!line.startsWith('pubspec.lock ')) line,
+        'pubspec.lock sha256 $_kOtherDigest',
+      ]);
+      cases['shipped restated path contradicted from a one-line claim'] =
+          outcome(shippedPath);
+
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose build_inputs and dependency_lock disagree about a path, '
+            'because the restatement is written on a line the cross-group '
+            'reader cannot parse as a claim — the same tokenizer defect '
+            '117.43-27 fixed for the intra-group reader: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-28 a line may state several claims, and agreeing restatements '
+        'stay honest', () {
+      // Without these controls the rule above would prove nothing: refusing
+      // every multi-claim line would pass all four cases and refuse the honest
+      // document with them.
+      expect(
+        outcome(shipped()),
+        'pass',
+        reason: 'the shipped document states one claim per line',
+      );
+
+      // The shape the fix makes readable, with an AGREEING restatement: naming
+      // several files on one line is a list, not a contradiction.
+      final agreeing = shipped();
+      writeGroup(agreeing, 'build_inputs', <String>[
+        ...linesOf(agreeing, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$_kOnlyInputsPath sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(agreeing, 'dependency_lock', <String>[
+        ...linesOf(agreeing, 'dependency_lock'),
+        '$unstatedOne sha256 $shippedCmakeDigest',
+      ]);
+      expect(
+        outcome(agreeing),
+        'pass',
+        reason:
+            'one line naming two files, each given one digest and each '
+            'restated with that same digest, states two facts and repeats '
+            'neither inconsistently',
+      );
+
+      // The same digest twice on one line is an idempotent restatement, within
+      // the line (117.43-27) and across the two groups (117.43-21).
+      final repeated = shipped();
+      writeGroup(repeated, 'build_inputs', <String>[
+        ...linesOf(repeated, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$unstatedOne sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(repeated, 'dependency_lock', <String>[
+        ...linesOf(repeated, 'dependency_lock'),
+        '$unstatedOne sha256 $shippedCmakeDigest',
+      ]);
+      expect(
+        outcome(repeated),
+        'pass',
+        reason:
+            'a path restated with the digest it already had states the same '
+            'fact twice, which must stay idempotent on one line as well as '
+            'across two',
+      );
+
+      // Merely naming the algorithm supplies no digest to agree or disagree
+      // about, which keeps the shipped `dependency_lock` prose honest.
+      final prose = shipped();
+      writeGroup(prose, 'build_inputs', <String>[
+        ...linesOf(prose, 'build_inputs'),
+        'two build inputs sha256; re-hashed after the toolchain upgrade',
+      ]);
+      writeGroup(prose, 'dependency_lock', <String>[
+        ...linesOf(prose, 'dependency_lock'),
+        '$unstatedOne sha256; pinned by the 113.26 dependency scan',
+      ]);
+      expect(
+        outcome(prose),
+        'pass',
+        reason:
+            'mentioning sha256 without a value is a description, not a digest '
+            'claim (117.43-07, 117.43-11)',
+      );
+
+      // A reachable path cannot buy back a pass the measurement does not
+      // support — the bound 117.43-25 pinned for a cited document and
+      // 117.43-26/27 pinned for a build input.
+      expect(File(_kOnlyInputsPath).existsSync(), isTrue);
+      final broken = shipped();
+      writeGroup(broken, 'build_inputs', <String>[
+        ...linesOf(broken, 'build_inputs'),
+        '$unstatedOne sha256 $shippedCmakeDigest '
+            '$_kOnlyInputsPath sha256 $shippedCmakeDigest',
+      ]);
+      writeGroup(broken, 'dependency_lock', <String>[
+        ...linesOf(broken, 'dependency_lock'),
+        '$unstatedOne sha256 $_kOtherDigest',
+      ]);
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'artifact_comparison',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
 }

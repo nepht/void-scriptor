@@ -3575,6 +3575,111 @@ Keduanya diperbaiki di generator probe; hasil akhir bukan artefak harness.
 - 42 layar belum diaudit; 40 di antaranya terbukti satu focus stop (shell demo)
   dan tidak layak jadi target kontrak 2.4.3 tanpa perubahan UI lebih dulu.
 
+## 65. Fase 65 — Focus Order di Reference Import Dialog (2.4.3)
+
+**Layar:** `lib/features/references/presentation/reference_import_dialog.dart` — `ReferenceImportDialog`
+**Kontrak:** `test/features/references/reference_import_dialog_focus_order_test.dart`
+**Viewpoint:** 1536 x 1024 logical, dpr 1.0, desktop, `showDialog` di atas `MaterialApp`.
+
+### Permukaan fokus
+
+`AlertDialog` dengan content `SingleChildScrollView` berisi enam field, satu
+dropdown, satu `SwitchListTile`, dan dua aksi. Dialog ini independen: tidak
+menyentuh database, jaringan, Riverpod, maupun state global, sehingga aman
+diaudit tanpa fixture.
+
+### Hasil probe
+
+Traversi `LogicalKeyboardKey.tab` berulang sampai rect berulang menghasilkan
+**9 stop**, lalu siklus kembali ke stop pertama:
+
+| # | Label ter-resolve | L | T | W x H |
+|---|---|---|---|---|
+| 0 | `Source file path` | 538.0 | 328.0 | 460.0 x 24.0 |
+| 1 | `Name` | 538.0 | 384.0 | 460.0 x 24.0 |
+| 2 | `Owner asset ID (optional)` | 538.0 | 440.0 | 460.0 x 24.0 |
+| 3 | `face` | 538.0 | 472.0 | 460.0 x 56.0 |
+| 4 | `Priority` | 538.0 | 552.0 | 460.0 x 24.0 |
+| 5 | `Description` | 538.0 | 608.0 | 460.0 x 24.0 |
+| 6 | `Set as primary` | 538.0 | 640.0 | 460.0 x 56.0 |
+| 7 | `Cancel` | 748.8 | 724.0 | 108.6 x 40.0 |
+| 8 | `Import` | 865.4 | 724.0 | 132.6 x 40.0 |
+
+Catatan pelabelan: stop 3 merender **nilai terpilih** (`face`), bukan
+`Reference type` dari `InputDecoration`. `DropdownButtonFormField` menaruh
+label dekorasi di luar subtree fokus, jadi `_labelOf` memverifikasi label dari
+subtree lebih dulu. Stop 6 adalah `SwitchListTile` yang title-nya ikut terbaca
+karena switch-nya sendiri tidak menyimpan `Text`.
+
+### Temuan: TIDAK ADA DEFECT
+
+Tidak ditemukan pelanggaran 2.4.3 pada layar ini.
+
+- Rantai fokus mengikuti urutan deklarasi di tree: isi form satu kolom dibaca
+  atas ke bawah, lalu baris aksi `Cancel` -> `Import` dibaca kiri ke kanan.
+- Tujuh kontrol form berbagi tepi kiri (`left = 538.0`) dan `top` selalu naik.
+- `Cancel` dan `Import` berbagi baris (`top = 724.0`, selisih < 0.5 px) dengan
+  `Cancel` di kiri.
+- Semua stop punya area fokus non-zero; tidak ada stop berukuran nol yang
+  regained invisible.
+- Fokus masuk ke dialog, tidak pernah jatuh ke latar, dan `tester.takeException()`
+  null di seluruh skenario.
+
+### Yang dikunci kontrak
+
+Tiga test, semuanya melalui UI nyata:
+
+1. `form dibaca atas ke bawah lalu aksi kiri ke kanan` — mengunci 9 stop, urutan
+   label persis, satu-kolom (set `left` berukuran 1), `top` naik monoton per
+   stop form, `Cancel` kiri dari `Import` pada baris yang sama, dan area fokus
+   non-zero untuk semua stop.
+2. `dropdown tipe terbuka dan dapat dipilih lewat keyboard` — 4x Tab mendarat di
+   dropdown tipe; `Enter` membuka item `face` tanpa exception.
+3. `tombol Import menolak payload kosong tanpa menutup dialog` — validasi gagal
+   menahan dialog terbuka, menampilkan `Source file path is required.` dan
+   `Name is required.`, dan rantai fokus tetap utuh sesudah pesan error muncul.
+
+### Pelajaran traversal siklis
+
+Percobaan pertama gagal pada test 3: setelah `tester.tap(find.text('Import'))`
+fokus berada di tengah rantai, sehingga stmt Tab berikutnya mulai dari node
+sesudahnya dan daftar label terrotasi. Kontrak yang benar mengunci *rantai*
+urutan, bukan node yang kebetulan memegang fokus. Helper `_rotatedTo`
+menyelaraskan daftar ke label pertama yang diketahui sebelum dibandingkan.
+Tanpa helper ini, kontrak akan salahmenggeser pada perubahan fokus yang sah.
+
+### Bukti
+
+```
+dart format test/features/references/reference_import_dialog_focus_order_test.dart
+  -> Formatted 1 file (0 changed)
+
+dart analyze test/features/references/reference_import_dialog_focus_order_test.dart
+  -> No issues found!
+
+flutter test test/features/references/reference_import_dialog_focus_order_test.dart
+  -> 00:02 +3: All tests passed!
+```
+
+Negative control: urutan `Cancel`/`Import` ditukar sementara pada daftar
+ekspektasi, lalu `flutter test` dijalankan lagi.
+
+```
+  -> 00:03 +1 -2: Some tests failed.
+  -> Failing tests: ... form dibaca atas ke bawah ...
+                       ... tombol Import menolak payload kosong ...
+  -> exit 1
+```
+
+Dua test gagal, bukan satu, karena daftar ekspektasi dipakai bersama oleh test 1
+dan test 3 — bukti ekspektasi itu benar-benar mengunci urutan, bukan hanya
+menghitung panjang daftar. Setelah restore dari backup dan `rm` backup, suite
+kembali `00:02 +3: All tests passed!`.
+
+### Scan CJK/Cyrillic
+
+`none` pada file kontrak, section ini, dan pesan commit.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

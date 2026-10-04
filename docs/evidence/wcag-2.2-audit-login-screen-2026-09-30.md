@@ -4231,6 +4231,46 @@ Interpretasi: **2 stop unik**, Tab ke-3 mengulang rect stop 0 (wrap terbukti, bu
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 76. Fase 76 — Focus Order di ProjectResilienceWorkspaceScreen (2.4.3)
+
+**Layar**: `lib/features/project_resilience/presentation/project_resilience_center_screen.dart:115` (`ProjectResilienceWorkspaceScreen`, `ConsumerStatefulWidget`) — workspace Project Resilience. File ini memuat dua kelas layar: `ProjectResilienceCenterScreen` (sudah diaudit sejak fase lama) dan `ProjectResilienceWorkspaceScreen` yang **belum punya kontrak**; kontrak lama hanya membangun kelas pertama sehingga kelas kedua tidak pernah terbukti urutan Tab-nya. Konfigurasi yang diaudit: `ProjectResilienceWorkspaceScreen(view: ProjectResilienceView.backups, session: session)` dengan `session` Drift nyata, karena tab Backups adalah view yang menghasilkan aksi paling banyak (`Scan Again`, `Create Backup`, `Restore Latest Backup`).
+
+**Pemilihan layar (evidence, bukan asumsi)**: survei per-kelas atas 33 kelas `*Screen` di `lib/features/*/presentation/*_screen.dart` tanpa kontrak focus order membuktikan **tidak ada satu pun** yang punya >=2 handler non-null di body kelasnya sendiri (semua kelas kaya handler ternyata sudah diaudit); karenanya pemindai dinaikkan ke level file. `project_resilience_center_screen.dart` menonjol dengan 16 handler non-null di file dan, krusialnya, **fixture-nya sudah terbukti di repo**: `test/features/project_resilience/backup_restore_screen_wiring_test.dart` sudah menunjuk pola package nyata di temp dir + `ProjectSessionManager().open()` + override `projectSessionProvider` detached, sehingga tidak ada jaringan dan tidak ada platform channel. Dua pesaing dari fase sebelumnya tetap gugur (probe `ProductionValidationCenterScreen` menghasilkan 1 stop karena `ListTile` tanpa `onTap` tidak focusable).
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/project_resilience/presentation/_probe_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, `pumpUntil` (event-loop nyata via `tester.runAsync`) sampai kartu `Available backups: 1` muncul — tanpa ini tab Backups berhenti di `Scanning…` dan `Restore Latest Backup` masih disabled. Loop `LogicalKeyboardKey.tab` maks 8, berhenti saat rect berulang. Output live:
+
+```
+STOP i=0 label=Scan Again rect=Rect.fromLTRB(24.0, 373.8, 211.0, 421.8)
+STOP i=1 label=Create Backup rect=Rect.fromLTRB(243.0, 373.8, 492.3, 421.8)
+STOP i=2 label=Restore Latest Backup rect=Rect.fromLTRB(504.3, 373.8, 803.7, 421.8)
+```
+
+Interpretasi: **3 stop unik** dalam SATU baris `Wrap` (top identik 373.8, left naik 24 -> 243 -> 504.3) — urutan Tab = kiri-ke-kanan, persis urutan visual tombol aksi. `LinearProgressIndicator` busy dan elemen teks kartu bukan focusable, jadi tidak menambah stop. Probe berhenti setelah stop ke-3 karena loop habis; kontrak di bawah membuktikan wrap dengan menekan Tab sekali lagi dan mengunci rect-nya kembali ke stop pertama.
+
+**Kontrak**: `test/features/project_resilience/presentation/project_resilience_workspace_focus_order_test.dart` (1 testWidgets) mengunci 5 hal:
+1. Jumlah stop = 3 unik + wrap (`['Scan Again', 'Create Backup', 'Restore Latest Backup', 'Scan Again']`).
+2. Urutan label persis seperti di atas.
+3. Properti posisi: `top` ketiga stop identik (satu baris) dan `left` naik berurutan (kiri-ke-kanan, 24 < 243 < 504.3).
+4. Area fokus non-zero di tiap stop + stop ke-4 (wrap) berrect sama dengan stop pertama.
+5. `tester.takeException()` null.
+
+**Gate (jalur langsung)**:
+- `dart format <file>` -> `Formatted 1 file` (exit 0).
+- `dart analyze <file>` -> `No issues found!` (exit 0).
+- `flutter test <file>` -> `00:08 +1: All tests passed!` (exit 0).
+
+**Negative control WAJIB**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/wcag243_neg.bak`, lalu tukar urutan `_expectedLabels` menjadi `['Scan Again', 'Restore Latest Backup', 'Create Backup']`. Hasil: `Some tests failed.` dengan `Expected: ['Scan Again', 'Restore Latest Backup', 'Create Backup', ...]` / `Actual: ['Scan Again', 'Create Backup', 'Restore Latest Backup', 'Scan Again']` — kontrak TERBUKTI punya gigi. Restore dari backup -> `All tests passed!`, backup dihapus dan keberadaannya diverifikasi (`RESTORED_OK` + grep anchor kembali).
+
+**Perbaikan kontrak di tengah run (jujur)**: versi pertama `_stops` mendeteksi siklus dengan membandingkan rect hanya terhadap stop sebelumnya sehingga loop berhenti setelah 3 iterasi ketika menembus `expect` ke-4 (gagal di `test/...:141:5` karena daftar pendek satu wrap). Diperbaiki ke pola saudara (fase 75): loop tetap `jumlah stop + 1` tanpa break, wrap dibuktikan oleh assert `stops[3].rect == stops[0].rect`, lalu GREEN.
+
+**Tidak ada perubahan kode produksi**: probe menunjukkan urutan Tab sudah benar secara visual (tombol aksi kiri-ke-kanan pada satu baris, urutan Tab identik dengan urutan baca), jadi tidak ada sentuhan pada `lib/`.
+
+**Counter (dihitung ulang dari live)**: `git ls-files 'test/**/*focus_order*'` = **66 file ter-commit** sebelum run ini; kontrak fase ini menambah 1 file sehingga setelah commit menjadi **67 (66 + 1)**. Cakupan union per-file (nama kelas `*Screen` dari 89 file `lib/features/*/presentation/*_screen.dart` yang disebut kontrak focus order on-disk, file kontrak ini dikecualikan saat menghitung "sebelum") 57 -> **58 file tercakup, sisa 31 dari 89**; basis kelas 93: 58 -> 59 tercakup. Sisa kandidat mayoritas = 1 stop (scroll view / tanpa kontrol fokus) atau fixture session/Drift yang belum terbukti.
+
+**Catatan format**: report ini terbaca **LF-only (0 CRLF)** — dibaca/tulis dengan `newline=''`, sisipan section ditulis dengan `\n` agar konsisten dengan isi file (sama seperti fase 69/71/72/73/74/75). Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

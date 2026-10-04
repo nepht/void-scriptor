@@ -28,6 +28,19 @@ const String _kChecksums = 'docs/release/v1.2.0-rc.1-checksums.txt';
 /// claims was verified.
 const String _kCitationPrefix = 'signed_candidate ';
 
+/// A build input the shipped document names in `build_inputs` and in no other
+/// group, so nothing restates it elsewhere and only an intra-group
+/// contradiction can make it disagree with itself (117.43-26).
+const String _kOnlyInputsPath = 'windows/CMakeLists.txt';
+
+/// Two 64-hex digests that are valid in form but that no shipped file can have
+/// hashed to — they exist only to contradict the shipped statement of
+/// [_kOnlyInputsPath] and of `pubspec.lock`.
+const String _kOtherDigest =
+    '774e3326ee7cea799886a381cc3af19f14d136e115e1d43e186410bce7a343af';
+const String _kThirdDigest =
+    '240949bd18990c2ad7eb54ab92622ae8f0b7557ed06b78c78de6ef03f04637d3';
+
 /// The shipped checksums describe the signed release tree under `build/`. A
 /// clean checkout (CI) has no such tree, so the live-digest measurement cannot
 /// be taken there. Mirrors the sprint_113 signed-artifact guards.
@@ -4114,6 +4127,191 @@ void main() {
       // evidence under it must still refuse, so the citation can never buy
       // back a pass the measurement does not support.
       final broken = shipped();
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'artifact_comparison',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
+
+  group('117.43-26 a path must not be given two different digests inside one '
+      'group', () {
+    // Sprint 117.43-26 (fail-open, fixed): 117.43-21 taught this layer that a
+    // path hashed in TWO groups must hash the same in both. It compared
+    // `build_inputs` against `dependency_lock` by parsing each group into a
+    // `Map<String, String>` and matching the paths across the two maps — but
+    // the map itself could not hold a contradiction: a second line naming the
+    // same path overwrote the first (`declared[path] = digest`, last wins).
+    // So the OTHER axis of the same restatement went unchecked. The shipped
+    // document names `windows/CMakeLists.txt` in `build_inputs` ONLY — nothing
+    // restates it in `dependency_lock` — so the cross-group reader had nothing
+    // to compare it against, and a document that gave that one file two
+    // different digests inside `build_inputs` reported no missing evidence and
+    // evaluated to `pass`, with the gate printing `build_inputs: 5 item` as
+    // though five mutually consistent files had been hashed.
+    //
+    // Proven before the fix: `windows/CMakeLists.txt` stated twice in
+    // `build_inputs` with different digests → `pass`.
+    //
+    // This is the intra-group counterpart to 117.43-21. A build's recorded
+    // inputs cannot change under a single evaluation, whichever direction the
+    // restatement is read in.
+    //
+    // Bounds, all pinned by test, so no acceptance is invented:
+    //
+    //  * a path named by only ONE group has nothing to contradict (117.43-21);
+    //  * the SAME path restated with the SAME digest is an idempotent
+    //    restatement, not a contradiction — a document may repeat itself;
+    //  * a line that merely mentions the algorithm states no digest and is not
+    //    a claim (117.43-07, 117.43-11);
+    //  * nothing is required about which paths a document chooses to restate,
+    //    or how many;
+    //  * a reachable path cannot rescue failing evidence.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> linesOf(Map<String, Object?> manifest, String group) => [
+      for (final line
+          in (manifest['required_evidence']! as Map<String, Object?>)[group]!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeGroup(
+      Map<String, Object?> manifest,
+      String group,
+      List<String> lines,
+    ) =>
+        (manifest['required_evidence']! as Map<String, Object?>)[group] = lines;
+
+    /// The shipped lines of [group], asserting [_kOnlyInputsPath] is stated
+    /// exactly once there — which is what gives this rule a contradiction.
+    List<String> withOneStatementOf(
+      Map<String, Object?> manifest,
+      String group,
+    ) {
+      final lines = linesOf(manifest, group);
+      expect(
+        lines.where((line) => line.startsWith(_kOnlyInputsPath)).length,
+        1,
+        reason:
+            '$_kOnlyInputsPath is stated once in $group in the shipped '
+            'document, so it has a digest to contradict',
+      );
+      return lines;
+    }
+
+    test('117.43-26 one path, two different digests, inside a single group '
+        'is refused while the evidence passes', () {
+      final cases = <String, String>{};
+
+      final two = shipped();
+      writeGroup(two, 'build_inputs', <String>[
+        ...withOneStatementOf(two, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $_kOtherDigest',
+      ]);
+      cases['two digests for one path in build_inputs'] = outcome(two);
+
+      // Three lines whose FIRST and LAST agree leave the middle contradicting;
+      // a rule comparing only neighbours would pass this.
+      final three = shipped();
+      writeGroup(three, 'build_inputs', <String>[
+        ...withOneStatementOf(three, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $_kOtherDigest',
+        '$_kOnlyInputsPath sha256 $_kThirdDigest',
+        '$_kOnlyInputsPath sha256 $_kOtherDigest',
+      ]);
+      cases['three lines, first and last agreeing'] = outcome(three);
+
+      // The same contradiction inside the OTHER group must also refuse.
+      final lock = shipped();
+      writeGroup(lock, 'dependency_lock', <String>[
+        ...linesOf(lock, 'dependency_lock'),
+        'pubspec.lock sha256 $_kThirdDigest',
+      ]);
+      cases['two digests for the lock in dependency_lock'] = outcome(lock);
+
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'that gives one recorded input two different digests inside a '
+            'single group: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-26 the shipped document hashes each path once, and a path '
+        'restated with the same digest is not a contradiction', () {
+      // Without a single-statement shipped path the rule above would prove
+      // nothing: a gate refusing every repeated line would pass all of them
+      // and refuse the honest document too.
+      expect(outcome(shipped()), 'pass');
+
+      // Repeating a line verbatim is a document restating itself, not
+      // contradicting itself. `_restatedDigestsAgree` already accepts the same
+      // file across two groups; this pins that one group is no stricter.
+      final repeated = shipped();
+      final inputs = withOneStatementOf(repeated, 'build_inputs');
+      writeGroup(repeated, 'build_inputs', <String>[
+        ...inputs,
+        inputs.firstWhere((line) => line.startsWith(_kOnlyInputsPath)),
+      ]);
+      expect(
+        outcome(repeated),
+        'pass',
+        reason:
+            'a path restated with the digest it already had states the same '
+            'fact twice, which is not a contradiction',
+      );
+
+      // Distinct paths, each stated once, add no contradiction.
+      final wider = shipped();
+      writeGroup(wider, 'build_inputs', <String>[
+        ...withOneStatementOf(wider, 'build_inputs'),
+        'windows/runner/not-shipped.cpp sha256 $_kThirdDigest',
+      ]);
+      expect(outcome(wider), 'pass');
+    });
+
+    test('117.43-26 a line that names no digest claims nothing, and a '
+        'reachable path cannot rescue failing evidence', () {
+      // The shipped `dependency_lock` already carries prose naming the
+      // algorithm without supplying one. Repeating that shape inside
+      // `build_inputs` must stay a non-claim (117.43-07, 117.43-11).
+      final prose = shipped();
+      writeGroup(prose, 'build_inputs', <String>[
+        ...withOneStatementOf(prose, 'build_inputs'),
+        '$_kOnlyInputsPath sha256; re-hashed after the toolchain upgrade',
+      ]);
+      expect(
+        outcome(prose),
+        'pass',
+        reason:
+            'mentioning sha256 without a value is a description, not a digest '
+            'claim, so it can neither satisfy nor contradict a digest',
+      );
+
+      // That path IS reachable here. Reachability must not buy back a pass the
+      // measurement does not support — the bound 117.43-25 pinned for a cited
+      // document.
+      expect(File(_kOnlyInputsPath).existsSync(), isTrue);
+      final broken = shipped();
+      writeGroup(broken, 'build_inputs', <String>[
+        ...withOneStatementOf(broken, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $_kOtherDigest',
+      ]);
       (broken['required_evidence']! as Map<String, Object?>).remove(
         'artifact_comparison',
       );

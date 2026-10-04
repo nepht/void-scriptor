@@ -538,6 +538,9 @@ class BuildProvenanceEvidence {
     if (!_hasWellFormedDigestClaims(evidence.buildInputs)) {
       missing.add('build_inputs');
     }
+    if (!_digestsAgreeWithinGroup(evidence.buildInputs)) {
+      missing.add('build_inputs');
+    }
     if (!_hasContent(evidence.toolchainVersions)) {
       missing.add('toolchain_versions');
     }
@@ -546,6 +549,9 @@ class BuildProvenanceEvidence {
     }
     if (!_hasContent(evidence.dependencyLock)) missing.add('dependency_lock');
     if (!_hasWellFormedDigestClaims(evidence.dependencyLock)) {
+      missing.add('dependency_lock');
+    }
+    if (!_digestsAgreeWithinGroup(evidence.dependencyLock)) {
       missing.add('dependency_lock');
     }
     if (!_restatedDigestsAgree(evidence)) {
@@ -963,6 +969,60 @@ class BuildProvenanceEvidence {
       declared[match.group(1)!] = match.group(2)!;
     }
     return declared;
+  }
+
+  /// Whether one group ever gives the same path two different digests.
+  ///
+  /// Sprint 117.43-26 (fail-open, fixed). 117.43-21 held a path hashed in two
+  /// DIFFERENT groups to one value, but it compared the groups by parsing each
+  /// into a `Map<String, String>` — and that map cannot hold a contradiction:
+  /// `_digestsByPath` assigns `declared[path] = digest`, so a second line
+  /// naming the same path silently overwrites the first (last wins). A document
+  /// that stated one path twice inside `build_inputs` with two different
+  /// digests therefore had one of them discarded before anything compared them,
+  /// and the gate reported no missing evidence and evaluated to `pass` while
+  /// printing `build_inputs: 5 item` as though five mutually consistent files
+  /// had been hashed. Proven before the fix: `windows/CMakeLists.txt` — a path
+  /// the shipped document names in `build_inputs` and NOWHERE ELSE, so
+  /// 117.43-21's cross-group reader had nothing to compare it against — stated
+  /// twice with different digests, `pass`.
+  ///
+  /// This is the intra-group counterpart to 117.43-21, and it is what makes
+  /// that rule sound: a restatement whose copies are already allowed to
+  /// disagree with each other cannot be evidence of agreement. A build's
+  /// recorded inputs cannot change under a single evaluation, whichever
+  /// direction the restatement is read in.
+  ///
+  /// Bounds, so the rule does not over-refuse:
+  ///
+  ///  * the SAME path restated with the SAME digest is an idempotent
+  ///    restatement — a document may repeat itself, and no value is claimed
+  ///    about how many times a path may appear;
+  ///  * a line that merely mentions the algorithm states no digest and is not a
+  ///    claim (117.43-07, 117.43-11), so prose cannot contradict a digest;
+  ///  * a half-written digest is already reported missing by
+  ///    `_hasWellFormedDigestClaims`; inventing a second reason for the same
+  ///    defect here would misattribute it;
+  ///  * a reachable path cannot rescue failing evidence.
+  static bool _digestsAgreeWithinGroup(List<String>? items) {
+    if (items == null) return true;
+    final claim = RegExp(
+      r'^(\S+)\s+sha-?256\s+(\S+)\s*$',
+      caseSensitive: false,
+    );
+    final declared = <String, String>{};
+    for (final item in items) {
+      final match = claim.firstMatch(item.trim());
+      if (match == null) continue;
+      final digest = match.group(2)!;
+      // Same non-claim and same already-reported defect as `_digestsByPath`:
+      // only a well-formed digest can contradict another one.
+      if (!_digestPattern.hasMatch(digest)) continue;
+      final path = match.group(1)!;
+      final first = declared.putIfAbsent(path, () => digest);
+      if (first != digest) return false;
+    }
+    return true;
   }
 
   /// Whether the digests one path is given in two different groups agree.

@@ -4618,6 +4618,31 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 **Catatan batas (jujur):** ambang minimal 2 elemen interaktif live tidak terpenuhi oleh manapun layar in-glob yang tersisa - layar ini punya 2 widget interaktif sintaktis tetapi hanya 1 yang hidup (1 disabled). Opsi lanjutan tetap seperti fase 84: (a) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (b) layar non-glob tersisa hanya `foundation_route_screen` (0 handler), `plugin_manager_screen` (0 handler), dan `project_lock_screen` yang sudah diambil alih test untracked milik eksekutor lain.
 
 
+## 86. Fase 86 - Focus Order: kolam kandidat in-glob kosong (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar yang memenuhi kriteria pemilihan (in-glob + tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Fase ini **tidak membuat test kontrak, tidak mengubah kode produksi**; yang dicatat hanya hasil pemindaian ulang independen.
+
+**Pemindaian ulang (perintah nyata, bukan klaim lama):**
+
+- `lib/features/*/presentation/*_screen.dart` = **89 file**; diperluas `lib/**/*_screen.dart` = **95 file**. File `test/**` yang mengandung `focus_order` = **76 file**.
+- In-glob dengan kontrak fokus *genuine* (test mem-import/mem-`invoke` kelas layarnya, bukan sekadar menyebut nama) = **62/89**; tanpa kontrak = **27 file**, dan ke-27 file itu memiliki **0 token handler interaktif** (`onTap`, `onPressed`, `onChanged`, `onSubmitted`, `onSelected`, `InkWell`, `GestureDetector`, `Switch`, `Checkbox`, `TextField`, `*Button`) - seluruhnya layar display-only (`ListTile` tanpa `onTap`, mis. `about_screen.dart`, `event_feed_screen.dart`, `multiverse_workspace_screen.dart`).
+- Layar in-glob yang punya **>=2 token handler = 51 file, semuanya sudah punya kontrak** -> kandidat eligible = **0**. Skan non-glob menyisakan `lib/app/routing/foundation_route_screen.dart` dan `lib/core/plugin/presentation/plugin_manager_screen.dart`, keduanya 0 handler.
+- Empat strategi regex berbeda + skan widget child eksternal (kelas yang direferensikan tiap layar sisa) semuanya menghasilkan 0 kandidat. Satu-satunya "hit" dari grep kasar adalah `CreatureWorkspaceScreen` yang cocok hanya karena `ref.watch(...)` dan `IconData`, bukan handler.
+- `MultiverseWorkspaceScreen` disebut di `test/features/multiverse/presentation/universe_switcher_focus_order_test.dart:12-15` **hanya sebagai komentar** sehingga tidak terhitung kontrak; layarnya sendiri tetap 0 handler dan tetap tidak eligible.
+
+**Status kolam (sudah dicatat sebelumnya, diulang independen):** bagian 84 menutup dengan "kolam in-glob kini terkonfirmasi kosong lima kali berturut-turut" dan bagian 85 mengulanginya; run ini mengulang dengan metode berbeda (4 strategi regex + skan widget child eksternal) dan hasilnya sama - **0 kandidat**.
+- Survei probe fase sebelumnya (pemilihan layar di bagian 73) sudah memompa 23 layar sisa in-glob: semuanya **1 stop** (hanya scroll container / satu tombol) atau placeholder yang butuh session aktif - di bawah ambang 2 elemen, jadi hasilnya konsisten dengan pemindaian statis run ini.
+
+**Pool pengganti terukur (belum dikerjakan, butuh keputusan Choirudin):** **24 file** widget non-`*_screen.dart` di `lib/features/*/presentation/` punya >=2 handler dan belum punya kontrak fokus. Kandidat paling kecil/mandiri: `workspace_layout/presentation/detachable_window_button.dart` (2 handler, 31 baris), `scene_assets/presentation/scene_asset_panel.dart` (2, 51), `workspace_layout/presentation/split_editor.dart` (2, 63).
+
+**Opsi lanjutan (satu keputusan, boleh dijawab inline):**
+
+1. (Rekomendasi) Setujui perluasan audit ke widget non-`*_screen.dart` (panel/dialog/tombol) di `lib/features/*/presentation/` - pool 24 file, kandidat kecil tidak butuh fixture database/network. Contoh yang sudah terbukti jalan: `project_comments_panel` -> kontrak `test/app/shell/desktop/collaboration_comments_screen_focus_order_test.dart`.
+2. Setujui kontrak afordansi rute/back 1-stop per layar (deviasi dicatat seperti fase 84).
+3. Hentikan audit 2.4.3 sampai ada `*_screen.dart` interaktif baru.
+
+**Gate & negative control:** tidak dijalankan - tidak ada test kontrak yang dibuat karena tidak ada layar sasaran (bukan pass, bukan fail).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

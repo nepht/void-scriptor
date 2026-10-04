@@ -4115,6 +4115,46 @@ Interpretasi: **2 stop unik + 1 iterasi wrap** (Tab ke-3 mengulang rect pertama,
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 73. Fase 73 — Focus Order di Wardrobe Workspace Screen (2.4.3)
+
+**Layar**: `lib/features/wardrobe/presentation/wardrobe_workspace_screen.dart` — widget `WardrobeWorkspaceScreen` (286 baris, `ConsumerWidget`), membawa `WardrobeHeader` (`lib/features/wardrobe/presentation/widgets/wardrobe_header.dart`) yang memuat dua `IconButton` aksi (history, menu overflow) di atas badan read-only (kartu spesifikasi/galeri referensi, tanpa kontrol fokusable).
+
+**Pemilihan layar (evidence, bukan asumsi)**: disaring dari 89 file `lib/features/**/*_screen.dart` yang nama kelasnya belum muncul di kontrak manapun (union coverage fase sebelumnya = 53). Kandidat tersisa dipompa satu per satu lewat probe survey pada viewport 1536x1024 / dpr 1.0 dan hasilnya: `AboutScreen`, `MarketplaceHomeScreen`, `CinematicContinuityCheckerScreen`, `EnvironmentWorkspaceScreen`, `MultiverseWorkspaceScreen`, `SplashScreen`, `AutomationCenterScreen`, `AiStudioScreen`, `DonationScreen`, `PortfolioBuilderScreen`, `CreatorStoreScreen`, `SellerCenterScreen`, `DiscoveryHomeScreen`, `PublishingWorkspaceScreen`, `RevenueDashboardScreen`, `KeyboardNavigationScreen`, `DashboardMetricsScreen`, `EventFeedScreen`, `SimulationInspectorScreen`, `WorldHealthDashboardScreen`, `AnimaticPreviewScreen`, `BranchPreviewScreen`, `ShotStatusDashboardScreen` = **1 stop** (hanya scroll view / satu tombol, tidak memenuhi ambang 2 elemen); `CharacterWorkspaceScreen`/`CreatureWorkspaceScreen` = placeholder "not found" (butuh session aktif) -> **DEFERRED**; `OptionalTourScreen` (`Start Tour`), `LevelEditorScreen` (`Play`), `ProjectAiGenerationGalleryScreen` (state kosong, tanpa output Drift) = **1 stop** -> **DEFERRED**. Hanya dua layar yang memberi **2 stop**: `WardrobeWorkspaceScreen` dan saudara kembarnya `WeaponWorkspaceScreen`. Karena ketentuan satu layar per run, fase ini memakai **Wardrobe**; Weapon tetap tersisa untuk fase berikutnya. Control harness: `WelcomeScreen` pada survey yang sama melapor 3 stop (`Create Project`, `Open Project`, `Explore Demo`) sehingga alat ukurnya terbukti tidak pelit.
+
+**Probe** (`test/features/wardrobe/presentation/_probe_focus_test.dart`, dihapus setelah kontrak dibuat): `pumpWidget(ProviderScope(child: MaterialApp(home: WardrobeWorkspaceScreen(wardrobeId: 'ward-1'))))`, viewport fisik **1536x1024**, `devicePixelRatio 1.0`; loop `sendKeyEvent(LogicalKeyboardKey.tab)` maksimal 12 iterasi, berhenti begitu rect focus mengulang. Label = `Text` non-Icon pertama di sub-tree focus; karena kedua tombol header hanya ikon, probe juga membaca rantai ancestor dan `IconData` terdekat.
+
+Output probe (exit 0, `All tests passed`):
+
+```
+STOP 0 focus=Focus rect=Rect.fromLTRB(1426.0, 36.0, 1466.0, 76.0) up=[_ActionsScope, Actions, _ParentInkResponseProvider, _InkResponseStateWidget, InkWell, DefaultSelectionStyle] texts=[]
+STOP 1 focus=Focus rect=Rect.fromLTRB(1474.0, 36.0, 1514.0, 76.0) up=[_ActionsScope, Actions, _ParentInkResponseProvider, _InkResponseStateWidget, InkWell, DefaultSelectionStyle] texts=[]
+00:01 +1: All tests passed!
+```
+
+Interpretasi: **2 stop unik**; Tab ke-3 mengulang rect stop 0 (terbukti dari collector kontrak yang melapor `ended == 'repeat'`, bukan `max-stops`), jadi traversal tertutup dan daftarnya lengkap. Kedua stop berada di baris header yang sama (y = 36, tinggi 40) dan berurutan kiri-ke-kanan: `1426..1466` = `IconButton(Icons.history)`, `1474..1514` = `IconButton(Icons.more_horiz)` (`wardrobe_header.dart:50-63`; keduanya `onPressed` non-null -> fokusable). Badan layar (kartu spesifikasi, galeri referensi, `AssetThumbnailCard`) tidak menambah satu pun stop: teks statis memang tidak boleh mengambil fokus, dan kartu body tidak punya kontrol yang ter-traversal.
+
+**Kontrak**: `test/features/wardrobe/presentation/wardrobe_workspace_focus_order_test.dart` (1 testWidgets) mengunci:
+1. **Jumlah stop** = 2, plus `walk.ended == 'repeat'` (wrap-around terbukti, bukan terpotong limit iterasi).
+2. **Urutan label** = `['icon:0xe314' (Icons.history), 'icon:0xe402' (Icons.more_horiz)]` — diekspresikan lewat `Icons.<ikon>.codePoint` agar tetap terbaca sebagai nama ikon.
+3. **Properti posisi**: `first.left < second.left` (kiri-ke-kanan), `first.top` ≈ `second.top` (satu baris header), dan `first.top` di rentang `0..160` (pita header atas).
+4. **Area focus non-zero**: `rect.width * rect.height > 0` untuk tiap stop.
+5. `tester.takeException()` null sepanjang test.
+
+**Gate (jalur langsung, bukan ad-hoc)**:
+- `dart format test/features/wardrobe/presentation/wardrobe_workspace_focus_order_test.dart` -> `Formatted 1 file (1 changed)` pada putaran pertama, `Formatted 1 file (0 changed)` setelah ekspektasi ikon dirapikan; exit 0.
+- `dart analyze test/features/wardrobe/presentation/wardrobe_workspace_focus_order_test.dart` -> `No issues found!`, exit 0.
+- `flutter test test/features/wardrobe/presentation/wardrobe_workspace_focus_order_test.dart` -> `00:01 +1: All tests passed!`, exit 0.
+
+**Negative control (wajib, dijalankan dua kali untuk bukti yang bisa dikutip)**: backup dengan `cp` ke `C:/Users/nepht/AppData/Local/Temp/wcag243_wardrobe_focus.bak`, lalu mutasi ekspektasi urutan label menjadi `['icon:0xe402', 'icon:0xe314']` (menukar history dan more_horiz). Putaran 1: `flutter test <kontrak>` -> **GAGAL**, `Some tests failed.`, 1 test `[E]`, `+0 -1`, `NEG_CTRL_EXIT=1`. Putaran 2 (backup `C:/Users/nepht/AppData/Local/Temp/wcag243_nc2.bak`, untuk mengambil nomor assertion): `Expected: ['icon:0xe402', 'icon:0xe314']` / `Actual: ['icon:0xe314', 'icon:0xe402']`, assertion jatuh di **baris 106**, `00:01 +0 -1: ... [E]`, `Some tests failed.`, `NC2_EXIT=1`. Kedua backup di-`cp` balik lalu dihapus (verifikasi `ls: cannot access ... No such file or directory`), dan run setelah restore kembali `00:01 +1: All tests passed!`. Kontrak terbukti punya daya tangkap, bukan test yang selalu hijau.
+
+**Tidak ada perubahan kode produksi**: probe tidak menemukan defect urutan fokus (history -> more_horiz persis mengikuti urutan visual kiri-ke-kanan di header), jadi tidak ada sentuhan pada `lib/`. Satu catatan jujur: dua tombol header header ini **hanya ikon tanpa `Tooltip` dan tanpa `Semantics` label** — layar terbaca oleh pembaca layar hanya sebagai "button" generik. Itu temuan 4.1.2/2.4.6 di luar cakupan 2.4.3 run ini, tidak diperbaiki di sini, dan tidak diklaim sebagai defect fokus.
+
+**Counter (dihitung ulang dari live setelah kontrak dibuat)**: `git ls-files 'test/**/*focus_order*'` = **63 file ter-commit** (62 berakhiran `_focus_order_test.dart` + `test/features/authentication/focus_order_test.dart`); kontrak fase ini menambah 1 file sehingga setelah commit menjadi **64 (63 + 1)**. Cakupan union (penyebutan nama kelas `*Screen` di seluruh kontrak focus order terhadap 89 file `lib/features/**/*_screen.dart`) 53 -> **54 layar tercakup, sisa 35 dari 89**.
+
+**Catatan format**: report ini terbaca LF-only (0 CRLF, dibaca/tulis dengan `newline=''`), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file dan diff tetap terbatas pada section ini — sama seperti fase 69/71/72. Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -628,8 +628,8 @@
   },
   "current_step": "117.43",
   "current_step_status": "PARTIAL-LOCAL",
-  "last_run_summary": "117.43-35 defect #30 fail-open hunt FIXED-LOCAL and committed. _statedArtifactScope read the artifact totals of a method sentence with firstMatch, so only the first total was compared with the recorded inventory and a second, contradicting total behind it was never measured while the group still printed the recorded count. Every total is now collected with allMatches and any total that differs from the inventory length refuses. RED on the pre-fix blob +10 -3 exit 1; GREEN 113 file +11 -2 (2 pre-existing 113.39); directed two-file regression +178 -2 with gate 117 at 167/167; format/analyze/diff-check/build green. STATUS UNCHANGED: PARTIAL-LOCAL, next_step 117.43, step not closed, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 remains the blocker. Next hunt: #31 (leftover probe candidates: parseDigest with 0 callers at sprint_117_ga:450, summarised.firstMatch(member.key) at sprint_117_ga:1671).",
-  "last_commit": "a318bd0",
+  "last_run_summary": "117.43-37 defect #32 fail-open hunt FIXED-LOCAL and committed. _kRebuildSummaryPattern required the restatement window, so an unreadable or absent window - not the numbers - decided whether the exit code and duration beside it were read: `rebuild_a exit_code 1 duration_seconds 999 (not-a-timestamp .. still-not-a-timestamp)` and `rebuild_a exit_code 1 duration_seconds 145` were both read as prose while provenance_record: 6 item still counted the line. Window now optional, unreadable stated number or window refuses instead of continuing, and a window-less restatement is held to its two numbers. RED +1 -3 exit 1 on pre-fix lib, GREEN +4, directed two-file regression +186 All tests passed exit 0, format/analyze/diff-check/non-Latin scan/build green. STATUS UNCHANGED: PARTIAL-LOCAL, next_step 117.43, step not closed, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 remains the blocker. Next hunt: #33 (parseDigest 0 callers; summarised.firstMatch still unprobed).",
+  "last_commit": "a5d07e5",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -3796,7 +3796,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "5e8f765",
+  "last_slice_commit": "6131457",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -4246,5 +4246,28 @@
     "ledger_commit": "18a0c45",
     "sibling_finding": "the two long-standing pre-existing 113.39 failures are GREEN at this HEAD: file 113 alone 13/13 exit 0 including the dependency lock and signed artifact tests; pubspec.lock sha256 d500c1c5... now equals the manifest record, sibling commit 5bd8f82 \"test(113.39): anchor reproducibility evidence to measured rebuild + re-signed candidate\". Not claimed as this slice result, and TODO-OPERATOR 117.43-02 left untouched.",
     "next_hunt": "ke-32. parseDigest at sprint_117_ga_artifact_reproducibility.dart:450 has 0 callers (dead code, not fail-open - wire it or drop it under its own scope); summarised.firstMatch(member.key) at :1671 silently skips rebuild_run members not matching ^rebuild_.+_duration_seconds$ and no item counter exists for that group, so probe before claiming."
+  },
+  "defect_117_43_37": {
+    "date": "2026-10-05",
+    "hunt_ordinal": 32,
+    "slice": "117.43-37",
+    "status": "FIXED-LOCAL",
+    "defect_number": 32,
+    "family": "fail-open / restatement whose window decides whether its numbers are read (sibling of -19, -23, -25, -29, -30)",
+    "summary": "_kRebuildSummaryPattern in build_reproducibility_provenance.dart REQUIRED the `(... .. ...)` window as part of the pattern itself, and _rebuildSummariesIn then dropped with `continue` any line whose window would not parse. The window - not the numbers - therefore decided whether the exit code and the duration sitting beside it were read at all. Both escapes state two numbers the gate already measures on the record: `rebuild_a exit_code 1 duration_seconds 999 (not-a-timestamp .. still-not-a-timestamp)` matched and was dropped (record says 0 and 145), and `rebuild_a exit_code 1 duration_seconds 145` matched nothing at all. Both were read as prose while `provenance_record: 6 item` still counted the line, so no printed count disclosed it. The record side of the same window fails closed instead (hasWellFormedWindow false, 117.43-09), so the two readers of one restatement disagreed about what the restatement says.",
+    "proven_before_fix": "Four official tests written first (block built in a separate file, inserted byte-exactly with a unique anchor and assert count==1) and run against unmodified lib: flutter test .../sprint_117_ga_artifact_reproducibility_test.dart --plain-name \"117.43-37\" -> exit 1, +1 -3: the three defect cases failed with Expected unmet / Actual pass, the control (agreeing restatement with no window) passed +1. Each test swaps the shipped provenance document's `rebuild_a` summary line verbatim, so nothing but the seam can decide the verdict.",
+    "red": "exit 1 with exactly 3 named failures; the passing control proves the refusal is about the unreadable or absent window, not about the restatement itself.",
+    "fix": "(1) the window group became optional in _kRebuildSummaryPattern; (2) _RebuildSummary.start/finish are nullable, null meaning the line states no window - a non-claim on the record side too (117.43-07); (3) _rebuildSummariesIn now returns List<_RebuildSummary>? and returns null when a stated number or a stated window cannot be read, and _summaryAgreesWithRebuilds answers false on null, replacing two fail-open `continue`s with the same fail-closed rule 117.43-13 applies to any other field; (4) _summaryDurationAgrees returns true after the duration check when the line states no window. No acceptance invented: exit code and duration are already measured on the record; the only boundary moved is that an unreadable window stops being prose.",
+    "gates": "baseline gate file 169/169 exit 0 before the change; dart format --output=none --set-exit-if-changed on 2 files -> 0 changed exit 0 (format write on the test file touched only the new block: numstat stayed 100/0, single hunk @@ -5620,0 +5621,100 @@); dart analyze 2 files No issues found! exit 0; git diff --check exit 0; non-Latin scan of 152 added lines -> 0 CJK/kana/hangul/fullwidth hits, 0 trailing whitespace; GREEN --plain-name \"117.43-37\" -> +4 All tests passed exit 0; directed regression of the ONLY two test files importing these two sources -> +186 All tests passed! exit 0 (173 + 13); flutter build windows --debug exit 0 in 29.4s with flutter_assets mtime 2026-10-05 03:28 (static exe 02:22 not counted); roadmap_guard PASS before the run.",
+    "sha256_blobs_6131457": {
+      "lib/features/world_logic/domain/build_reproducibility_provenance.dart": "a44fa9bd70c0628a94e223d59e524d1572d92bb25818cd23c08684c707222c77",
+      "test/release/sprint_117_ga_artifact_reproducibility_test.dart": "2c226e1e9b732b93925d774421e954334be7368c10f4a39d25fee8a67d9e5dea"
+    },
+    "sha_note": "blob of fix commit 6131457 (policy clause 1); test file disk is CRLF while the lib file is LF, so the test blob is verified from git show and the disk file normalised CRLF->LF before comparison",
+    "numstat_commit": "52/12 (lib) + 100/0 (test), patch tool 0 uses, byte-exact Python replacement only",
+    "ledger_commit": "a5d07e5",
+    "ahead_measured": "git rev-list --count origin/master..HEAD = 35 at ledger commit a5d07e5 and 36 after this state commit (HEAD started 2f439b9 ahead 32; sibling a11y added 531c8a9 during the run). The top-level `ahead`/`commit` pair (57 / 83c7d64) was already stale before this run and is left untouched - do not read it as this run's position.",
+    "status_unchanged": "PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 still the operator's blocker; no push this run.",
+    "next_hunt": "ke-33. parseDigest at sprint_117_ga_artifact_reproducibility.dart:450 still has 0 callers (dead code, not fail-open - wire or drop under its own scope); summarised.firstMatch(member.key) at :1671 still skips rebuild_run members outside ^rebuild_.+_duration_seconds$ with no item counter for that group - probe before claiming. New method note from this hunt: check 'mandatory vs optional part of the reader grammar' alongside 'who prints the count'."
   }
 }

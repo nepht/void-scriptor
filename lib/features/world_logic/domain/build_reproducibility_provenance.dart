@@ -112,23 +112,33 @@ bool _namesOtherDigestAlgorithm(String method) {
   return tokens.any(_kNonSha256Algorithms.contains);
 }
 
-/// The artifacts a [method] sentence claims to have covered, as a count and a
-/// name set, or `null` when the sentence makes no scope claim at all.
+/// The artifacts a [method] sentence claims to have covered, as every count it
+/// states and a name set, or `null` when the sentence makes no scope claim at
+/// all.
 ///
 /// Both shapes are returned together because they are one claim read two ways:
-/// a count with no names still states how much was covered, and names with no
+/// counts with no names still state how much was covered, and names with no
 /// count still state which artifacts. Either alone would under-read the
 /// sentence.
-({int? count, Set<String>? names})? _statedArtifactScope(String method) {
-  // The count. `the 6 exe/dll artifacts`, `6 exe/dll artifacts`, and `over 12
+({List<int> counts, Set<String>? names})? _statedArtifactScope(String method) {
+  // The counts. `the 6 exe/dll artifacts`, `6 exe/dll artifacts`, and `over 12
   // artifacts` all state how many were covered. Anchoring on `artifacts` keeps
   // unrelated numbers out: `SHA-256` has a number but names no artifact scope,
   // and `dartjni.dll` is named without ever stating a total.
-  final countMatch = RegExp(
-    r'\b(\d+)\s+(?:[a-zA-Z/]*\s+)?artifacts?\b',
-    caseSensitive: false,
-  ).firstMatch(method);
-  final count = countMatch == null ? null : int.tryParse(countMatch.group(1)!);
+  //
+  // Every total in the sentence is collected, not only the first (defect
+  // 117.43-35). A method that restates its scope behind the first total makes
+  // a second coverage claim, and `firstMatch` compared only the leading one,
+  // so a document could claim six up front and twelve behind it and be judged
+  // on six alone. Repeats stay in the list so the caller meets each total; an
+  // unchanged repeat agrees on every occurrence, which is the same benign
+  // repeat rule `readChecksumIndex` applies to digests.
+  final counts =
+      RegExp(r'\b(\d+)\s+(?:[a-zA-Z/]*\s+)?artifacts?\b', caseSensitive: false)
+          .allMatches(method)
+          .map((match) => int.tryParse(match.group(1)!))
+          .whereType<int>()
+          .toList();
 
   // The enumeration, when the sentence offers one: a parenthetical, or a
   // trailing `+`/`and` list. `SHA-256 over the 6 exe/dll artifacts` has neither
@@ -148,8 +158,10 @@ bool _namesOtherDigestAlgorithm(String method) {
   for (final match in joined) {
     names.addAll(_artifactNamesIn(match.group(1)!));
   }
-  if (names.isEmpty) return count == null ? null : (count: count, names: null);
-  return (count: count, names: names);
+  if (names.isEmpty) {
+    return counts.isEmpty ? null : (counts: counts, names: null);
+  }
+  return (counts: counts, names: names);
 }
 
 /// Artifact file names mentioned in one clause of a method sentence.
@@ -545,7 +557,11 @@ class ArtifactComparison {
     final scope = _statedArtifactScope(statedMethod);
     if (scope != null) {
       final recorded = keysA;
-      if (scope.count != null && scope.count != recorded.length) return false;
+      // Every total the sentence states is measured against the inventory, so
+      // a second total the records do not match contradicts this comparison
+      // exactly as the leading one does (117.43-35). A total restated
+      // unchanged matches on each occurrence and stays benign.
+      if (scope.counts.any((stated) => stated != recorded.length)) return false;
       if (scope.names != null && !recorded.containsAll(scope.names!)) {
         return false;
       }

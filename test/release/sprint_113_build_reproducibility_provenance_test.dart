@@ -931,4 +931,122 @@ void main() {
       reason: 'the shipped method agrees with the six artifacts recorded',
     );
   });
+
+  test('117.43-35 a method stating two artifact counts is compared on both', () {
+    final a = 'a' * 64;
+    final b = 'b' * 64;
+    const recorded = <String>[
+      'void_scriptor.exe',
+      'dartjni.dll',
+      'file_selector_windows_plugin.dll',
+      'flutter_secure_storage_windows_plugin.dll',
+      'flutter_windows.dll',
+      'sqlite3.dll',
+    ];
+
+    ArtifactComparison comparedWith(String method) => ArtifactComparison(
+      method: method,
+      rebuildA: _rebuild('rebuild_a', <String, String>{
+        for (final name in recorded) name: a,
+      }),
+      rebuildB: _rebuild('rebuild_b', <String, String>{
+        for (final name in recorded) name: name == 'dartjni.dll' ? b : a,
+      }),
+      verdict: RebuildVerdict.notBitIdentical,
+      limits: <String>['fixture: digests deliberately differ'],
+    );
+
+    // Defect 117.43-35: the artifact scope of `method` was read with
+    // firstMatch, so only the FIRST total in the sentence was ever
+    // compared with the recorded inventory. The sentence below agrees
+    // with the six recorded artifacts up front and then claims twelve
+    // behind it. The second total is a coverage claim the records do not
+    // support, and before this slice the comparison passed anyway.
+    const twoTotals =
+        'SHA-256 over the 6 exe/dll artifacts, a scope restated as 12 '
+        'artifacts after the second pass';
+    expect(
+      comparedWith(twoTotals).isWellFormed,
+      isFalse,
+      reason:
+          'a second total the recorded inventory does not match is a scope '
+          'claim too; reading only the first lets a document disagree with '
+          'itself and still pass',
+    );
+
+    // The same claim has to reach the group verdict, not just the
+    // comparison object: the gate printed `artifact_comparison: ... (6
+    // artifact)` for a method it measured against only its first total.
+    BuildProvenanceEvidence withMethod(String method) =>
+        BuildProvenanceEvidence(
+          buildInputs: <String>['pubspec.yaml sha256 $a'],
+          toolchainVersions: <String>['Flutter 3.x', 'Dart 3.x'],
+          dependencyLock: <String>['pubspec.lock sha256 $a'],
+          rebuildResults: <RebuildResult>[
+            _rebuild('rebuild_a', <String, String>{
+              for (final name in recorded) name: a,
+            }),
+            _rebuild('rebuild_b', <String, String>{
+              for (final name in recorded) name: name == 'dartjni.dll' ? b : a,
+            }),
+          ],
+          artifactComparison: comparedWith(method),
+          provenanceRecord: <String>['source_revision $a'],
+        );
+    expect(
+      BuildProvenanceEvidence.missingEvidence(withMethod(twoTotals)),
+      contains('artifact_comparison'),
+      reason:
+          'the contradiction has to reach the group verdict, not only the '
+          'comparison object',
+    );
+
+    // Boundary pinned so the rule cannot over-refuse: the same total
+    // stated twice is one claim recorded twice, which stays benign, the
+    // way a path repeated with the same digest stays benign in
+    // readChecksumIndex.
+    expect(
+      comparedWith(
+        'SHA-256 over the 6 exe/dll artifacts, restated as 6 artifacts '
+        'after the second pass',
+      ).isWellFormed,
+      isTrue,
+      reason:
+          'a repeated count that still matches the records states nothing '
+          'new to contradict',
+    );
+
+    // A number that never names an artifact scope is still not a claim.
+    expect(
+      comparedWith(
+        'SHA-256 over the 6 exe/dll artifacts after two independent '
+        'flutter clean + flutter build windows --release cycles',
+      ).isWellFormed,
+      isTrue,
+      reason: 'a number that never names artifacts states no count',
+    );
+
+    // The shipped document states one total, so reading every total
+    // changes nothing for the honest document.
+    final shipped =
+        jsonDecode(
+              File(
+                'docs/planning/v1.2/sprint_113_build_reproducibility_provenance'
+                '.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final shippedMethod =
+        ((shipped['required_evidence']
+                    as Map<String, dynamic>)['artifact_comparison']
+                as Map<String, dynamic>)['method']
+            as String;
+    expect(
+      comparedWith(shippedMethod).isWellFormed,
+      isTrue,
+      reason:
+          'the shipped method states a single total, so comparing every '
+          'total leaves the honest document well formed',
+    );
+  });
 }

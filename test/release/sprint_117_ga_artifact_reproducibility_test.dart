@@ -5213,4 +5213,154 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-33: the `signed_candidate` reader is the last
+  // of the three `provenance_record` readers to keep its position inside the
+  // grammar. 117.43-30 un-anchored the rebuild restatement, 117.43-32 moved
+  // `provenance_logs` off position zero, and this one still demanded its
+  // prefix at index 0 while opening only the FIRST citation the line states.
+  // Both halves fail open in the same place, so both are pinned here:
+  //
+  //  * a citation written behind any other text on the line matched nothing,
+  //    so a ghost path parked behind a note passed while the identical
+  //    citation at the front of the line was refused (117.43-25);
+  //  * a line stating two citations opened only the first, so a ghost path
+  //    behind an honest one was never opened.
+  //
+  // Bounds, so no acceptance is invented: the claim is still the single
+  // token after the prefix (`sha256 verified intact` stays unread,
+  // 117.43-25), a prefix that introduces no token still cites nothing
+  // (117.43-07), and reading every citation must not change the verdict of a
+  // document that states them honestly.
+  group('117.43-33 a citation is opened wherever the line puts it, and every '
+      'citation on the line is opened', () {
+    Map<String, Object?> shipped() => _manifest(_kProvenanceManifest);
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> recordOf(Map<String, Object?> manifest) => [
+      for (final line
+          in (manifest['required_evidence']!
+                  as Map<String, Object?>)['provenance_record']!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeRecord(Map<String, Object?> manifest, List<String> lines) =>
+        (manifest['required_evidence']!
+                as Map<String, Object?>)['provenance_record'] =
+            lines;
+
+    const String honestPath = 'docs/release/v1.2.0-rc.1-checksums.txt';
+    const String ghostPath = 'docs/release/v0.0.0-not-a-shipped-checksums.txt';
+
+    /// The shipped record with its citation line replaced by [line].
+    Map<String, Object?> withCitationLine(String line) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final index = lines.indexWhere((row) => row.startsWith(_kCitationPrefix));
+      expect(
+        index,
+        isNonNegative,
+        reason:
+            'the shipped document cites a signed candidate, so this rule '
+            'measures a claim the record really states',
+      );
+      writeRecord(manifest, <String>[
+        for (var i = 0; i < lines.length; i++)
+          if (i == index) line else lines[i],
+      ]);
+      return manifest;
+    }
+
+    test('117.43-33 a ghost citation behind a note on its line is refused', () {
+      // The same ghost path is refused at the front of the line by
+      // 117.43-25; only a note in front of the prefix differs, and no reader
+      // should treat position as part of whether the citation gets opened.
+      expect(
+        outcome(
+          withCitationLine('restored intact: $_kCitationPrefix$ghostPath'),
+        ),
+        'unmet',
+        reason:
+            'a citation is a claim wherever the line puts it; a note in '
+            'front of the prefix must not turn an unreadable path into prose '
+            'no reader opens',
+      );
+    });
+
+    test('117.43-33 a ghost citation behind an honest citation on the same '
+        'line is refused', () {
+      expect(
+        outcome(
+          withCitationLine(
+            '$_kCitationPrefix$honestPath $_kCitationPrefix$ghostPath',
+          ),
+        ),
+        'unmet',
+        reason:
+            'the line states two citations and both are claims; opening '
+            'only the first leaves a ghost path behind an honest one',
+      );
+    });
+
+    test(
+      '117.43-33 an honest citation behind a note on its line still passes',
+      () {
+        expect(
+          outcome(
+            withCitationLine(
+              'restored intact: $_kCitationPrefix$honestPath sha256 verified '
+              'intact after restore',
+            ),
+          ),
+          'pass',
+          reason:
+              'moving the claim off index 0 must not change the verdict of '
+              'a document whose citation names a file this tree can open',
+        );
+      },
+    );
+
+    test('117.43-33 an honest citation behind a rebuild restatement still '
+        'passes', () {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final rebuildA = lines.firstWhere(
+        (row) => row.startsWith('rebuild_a exit_code'),
+      );
+      final citation = lines.firstWhere(
+        (row) => row.startsWith(_kCitationPrefix),
+      );
+      writeRecord(manifest, <String>[
+        for (final row in lines)
+          if (row == citation) '$rebuildA $citation' else row,
+      ]);
+      expect(
+        outcome(manifest),
+        'pass',
+        reason:
+            'a shared line must keep both honest claims: the rebuild '
+            'restatement still agrees with its record and the citation still '
+            'names a file this tree can open',
+      );
+    });
+
+    test('117.43-33 two honest citations on one line still pass', () {
+      expect(
+        outcome(
+          withCitationLine(
+            '$_kCitationPrefix$honestPath $_kCitationPrefix$honestPath',
+          ),
+        ),
+        'pass',
+        reason:
+            'reading every citation on the line must not refuse a '
+            'document that states them honestly',
+      );
+    });
+  });
 }

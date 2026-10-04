@@ -789,8 +789,8 @@ class BuildProvenanceEvidence {
     return true;
   }
 
-  /// Whether a `signed_candidate <path>` line cites a document this tree can
-  /// open, or states no citation at all.
+  /// Whether every `signed_candidate <path>` citation a line states names a
+  /// document this tree can open, or whether the line states no citation.
   ///
   /// Sprint 117.43-25: only the shipped citation grammar is read. A line that
   /// names no document — including a `signed_candidate` line whose path is
@@ -799,23 +799,53 @@ class BuildProvenanceEvidence {
   /// or about the rest of the line: the reachability of the cited path is the
   /// whole claim, and measuring anything else would demand an acceptance
   /// criterion the document never stated.
+  ///
+  /// Sprint 117.43-33 (fail-open, fixed), two halves of one reader — the same
+  /// pair 117.43-32 found in the log reader beside it:
+  ///
+  ///  * it demanded the prefix at index 0, so a citation written behind a
+  ///    note matched nothing and was never opened: a ghost path behind a note
+  ///    passed while the identical citation at the front of the line was
+  ///    refused, and
+  ///  * it read only the FIRST citation a line states, so a line stating two
+  ///    citations opened the first and never the second, leaving a ghost path
+  ///    behind an honest one unopened.
+  ///
+  /// The prefix is now found wherever the line puts it, at a word boundary,
+  /// and every occurrence states its own citation, so none may name a file
+  /// this tree cannot open. Nothing new becomes a claim: the claim is still
+  /// the single whitespace-delimited token the prefix introduces, so trailing
+  /// prose (`sha256 verified intact`) stays unread exactly as 117.43-25
+  /// pinned it, and a prefix that introduces no token still cites nothing
+  /// (117.43-07).
   static bool _citationIsReadable(String line) {
-    final citation = _parseCitation(line.trim());
-    if (citation == null) return true;
-    return File(citation).existsSync();
+    for (final citation in _citationsIn(line)) {
+      if (!File(citation).existsSync()) return false;
+    }
+    return true;
   }
 
-  /// The path one `signed_candidate` line cites, or null when [line] is not
-  /// that shape or states no path.
-  static String? _parseCitation(String line) {
-    if (!line.startsWith(_kCitationPrefix)) return null;
-    final path = line.substring(_kCitationPrefix.length).trim();
-    if (path.isEmpty) return null;
-    // A citation names one document. Stop at the first whitespace so a line
-    // that goes on to state an algorithm and an outcome is read for the path
-    // alone, exactly as `provenance_logs` reads its own trailing prose.
-    final token = path.split(RegExp(r'\s+')).first;
-    return token.isEmpty ? null : token;
+  /// Every path a line's `signed_candidate` claims cite, in the order the
+  /// line states them; empty when the line states no citation.
+  ///
+  /// The prefix is matched at a word boundary rather than at index 0, so a
+  /// note in front of it cannot hide the claim, and the boundary is a
+  /// lookahead so a prefix cannot consume the whitespace a second citation
+  /// standing later on the same line needs.
+  static List<String> _citationsIn(String line) {
+    final claim = _kCitationPrefix.trimRight();
+    final boundary = RegExp('(?:^|\\s)${RegExp.escape(claim)}(?=\\s)');
+    final citations = <String>[];
+    for (final match in boundary.allMatches(line)) {
+      final body = line.substring(match.end).trim();
+      if (body.isEmpty) continue;
+      // A citation names one document. Stop at the first whitespace so a line
+      // that goes on to state an algorithm and an outcome is read for the path
+      // alone, exactly as `provenance_logs` reads its own trailing prose.
+      final token = body.split(RegExp(r'\s+')).first;
+      if (token.isNotEmpty) citations.add(token);
+    }
+    return citations;
   }
 
   /// A `provenance_logs <paths...>` claim stated on [line], or null when the
@@ -884,7 +914,8 @@ class BuildProvenanceEvidence {
   /// two: `provenance_logs` and `signed_candidate` both read their claim from
   /// the front of the line and ignore whatever follows it — 117.43-32 moved
   /// the first of those two off position zero and gave the pair a shared line
-  /// a segment each, leaving `signed_candidate` where this comment found it.
+  /// a segment each; 117.43-33 then moved `signed_candidate` off index 0 and
+  /// gave every citation on a shared line its own segment.
   ///
   /// The claim grammar itself is unchanged, so nothing new becomes a claim: the
   /// window still has to parse as the pair of timestamps it is, an exit code

@@ -4193,6 +4193,44 @@ Kedua stop berasal dari `WeaponHeader` (`lib/features/weapon/presentation/widget
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 75. Fase 75 — Focus Order di CharacterWorkspaceScreen (2.4.3)
+
+**Layar**: `lib/features/character/presentation/character_workspace_screen.dart` (440 baris, `ConsumerStatefulWidget`) — workspace karakter desktop. Konfigurasi yang diaudit: `CharacterWorkspaceScreen(characterId: 'qowner-1', activeSection: 'Relations')`, yaitu panel `RelationSection` (header beraksi) di atas dan `CharacterModeSection` kosong (empty state beraksi) di bawahnya.
+
+**Pemilihan layar (evidence, bukan asumsi)**: fase 73 menyebut `CharacterWorkspaceScreen` sebagai kandidat **DEFERRED** dengan alasan "placeholder not found (butuh session aktif)". Run ini membuktikan alasan itu bisa dilepas tanpa database: `characterWorkspaceProvider('qowner-1')` cukup di-override dengan satu `CharacterModel` in-memory (pola yang sama dipakai `test/features/character/character_workspace_test.dart` yang sudah ter-commit), `projectSessionProvider` dibiarkan default — nol Drift, nol file system, nol network. Survei probe terhadap sisa kandidat `lib/features/*/presentation/*_screen.dart` yang belum pernah dikonstruksi kontrak manapun (33 kelas) memilih layar ini karena hanya dia (bersama `ProjectAiGenerationGalleryScreen` dan `AutomationCenterScreen`) yang punya >=2 handler interaktif non-null di source; dua pesaing itu gugur lagi di probe: `ProjectAiGenerationGalleryScreen` state kosong tanpa output Drift = 1 stop root, `AutomationCenterScreen` `Switch(onChanged: null)` + `ListTile` tanpa `onTap` = 1 stop root. Probe seksi `CharacterWorkspaceScreen`: `Wardrobe`=2 (label ikon kosong), `Notes`=2, `Weapons`=2, `Relations`=2 dengan label teks lengkap -> seksi `Relations` dipakai untuk kontrak.
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/character/_probe3.._probe5_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, pump provider async 300ms x2, loop `LogicalKeyboardKey.tab` maks 16, berhenti saat rect berulang. Output live `_probe5`:
+
+```
+R5 STOP 0 label=Add Relation rect=Rect.fromLTRB(1307.8, 172.0, 1528.0, 212.0) repeat=false
+R5 STOP 1 label=Create Mode rect=Rect.fromLTRB(1296.9, 372.0, 1500.0, 412.0) repeat=false
+R5 STOP 2 label=Add Relation rect=Rect.fromLTRB(1307.8, 172.0, 1528.0, 212.0) repeat=true
+```
+
+Interpretasi: **2 stop unik**, Tab ke-3 mengulang rect stop 0 (wrap terbukti, bukan cap iterasi). Stop 0 = `TextButton.icon('Add Relation')` di header `RelationSection` (`lib/features/inspector/presentation/widgets/relation_section.dart:74`); stop 1 = `FilledButton('Create Mode')` di empty state `CharacterModeSection` (`lib/features/character_mode/presentation/widgets/character_mode_section.dart:477`). Urutan Tab = atas-ke-bawah (y 172 -> 372), keduanya menempel di sisi kanan (x ~1300) — konsisten dengan aksi header yang rata kanan. Kartu tanpa aksi (Character Scope Status, Support Relationship) tidak menambah satu pun stop.
+
+**Kontrak**: `test/features/character/character_workspace_focus_order_test.dart` (1 testWidgets) mengunci 5 hal:
+1. Jumlah stop = 2 unik + wrap (`['Add Relation', 'Create Mode', 'Add Relation']`).
+2. Urutan label = `Add Relation` lalu `Create Mode`.
+3. Properti posisi: `first.top < second.top` (atas-ke-bawah, 172 < 372) dan `left` keduanya `> 1000` (sisi kanan desktop).
+4. Area fokus non-zero + di dalam viewport 1536x1024, dan rect tiap stop terkandung penuh di affordance-nya (`find.widgetWithText(TextButton, 'Add Relation')` / `find.widgetWithText(FilledButton, 'Create Mode')`).
+5. `tester.takeException()` null.
+
+**Gate (jalur langsung)**:
+- `dart format test/features/character/character_workspace_focus_order_test.dart` -> `Formatted 1 file (1 changed)` (exit 0).
+- `dart analyze test/features/character/character_workspace_focus_order_test.dart` -> `No issues found!` (exit 0).
+- `flutter test test/features/character/character_workspace_focus_order_test.dart` -> `00:01 +1: All tests passed!` (exit 0).
+
+**Negative control WAJIB**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/wcag243_nc.bak`, lalu tukar urutan `_expectedLabels` menjadi `['Create Mode', 'Add Relation']`. Hasil: `NC_EXIT=1`, `Some tests failed.`, `Expected: ['Create Mode', 'Add Relation', 'Create Mode']` / `Actual: ['Add Relation', 'Create Mode', 'Add Relation']` / `at location [0] is 'Add Relation' instead of 'Create Mode'` — kontrak TERBUKTI punya gigi. Restore dari backup -> `All tests passed!` (exit 0), backup dihapus dan keberadaannya diverifikasi (`ls: cannot access ... No such file or directory`).
+
+**Tidak ada perubahan kode produksi**: probe tidak menemukan urutan fokus yang cacat (header aksi teratas terbaca sebelum panel aksi di bawahnya, persis urutan visual), jadi tidak ada sentuhan pada `lib/`.
+
+**Counter (dihitung ulang dari live)**: `git ls-files 'test/**/*focus_order*'` = **65 file ter-commit** sebelum run ini; kontrak fase ini menambah 1 file sehingga setelah commit menjadi **66 (65 + 1)**. Cakupan union (penyebutan nama kelas `*Screen` dari 89 file `lib/features/*/presentation/*_screen.dart` di seluruh kontrak focus order, on-disk) 56 -> **57 layar tercakup, sisa 32 dari 89**. Kandidat sisa mayoritas terprobe = 1 stop (hanya scroll view / tanpa kontrol) atau `0` handler; `CharacterWorkspaceScreen`/`CreatureWorkspaceScreen` tanpa override provider tetap "not found" (DEFERRED bila fixture dianggap terlalu dalam).
+
+**Catatan format**: report ini terbaca **LF-only (0 CRLF)** — dibaca/tulis dengan `newline=''`, sisipan section ditulis dengan `\n` agar konsisten dengan isi file dan diff tetap terbatas pada section ini (sama seperti fase 69/71/72/73/74). Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

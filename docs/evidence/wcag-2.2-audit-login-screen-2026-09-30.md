@@ -4428,6 +4428,44 @@ Interpretasi: **2 stop unik** pada rute yang dipush — `Back` (Tooltip AppBar, 
 
 **Status: DEFERRED (pool habis) — bukti terukur di atas, tanpa klaim audit baru.**
 
+## 81. Fase 81 — Focus Order di Security Settings Screen (2.4.3)
+
+**Status: SELESAI — kontrak 3 test, negative control membuktikan gagal, gate hijau. Deviasi scope terdokumentasi (lihat bawah).**
+
+**Pemilihan layar (evidence, bukan asumsi)**: rerun pemindaian live atas 89 file `lib/features/*/presentation/*_screen.dart` terhadap isi 76 file focus test ter-commit menyisakan **28 file tanpa kontrak**. Hitung token handler non-null (`onPressed|onTap|onChanged|onSubmitted|onSelected|...`) di seluruh 28 file: maksimum = 4 (`automation_center_screen.dart`, sudah terbukti display-only pada fase 80), lalu 1 (`environment_workspace_screen.dart`, satu-satunya `IconButton` bernilai `onPressed: null` = disabled), sisanya 0. Probe terhadap **26 dari 28** kandidat dipompa pada viewport 1536x1024, dpr 1.0, dengan push `MaterialPageRoute` (cara rute aplikasi membuka layar) dan 20x `LogicalKeyboardKey.tab` per layar:
+- 20 layar = **1 stop** (`Back@8,8 40x40` — affordance AppBar, tanpa kontrol isi yang fokusable);
+- 6 layar = **0 stop** (`DonationScreen`, `CreatorSidebarScreen`, `AiStudioScreen`, `CreatorDashboardScreen`, `DonationDashboardScreen`, `EnvironmentWorkspaceScreen` — tanpa affordance rute yang fokusable);
+- 2 layar tidak dipompa di run ini: `splash_screen` (navigasi ber-timer, fixture tidak stabil) dan `world_simulation_workspace_screen` (overflow standalone, sudah dicatat fase 80) — keduanya 0 token handler, jadi tidak mungkin lolos ambang.
+
+**Kesimpulan pemilihan**: kolam kandidat in-glob dengan "minimal 2 elemen interaktif / >=2 stop terukur" **KOSONG** (konfirmasi ulang atas temuan fase 80). Probe sekali pakai yang dihapus setelah kontrak dibuat: `test/_probe_focus_run81_test.dart` (18 layar), `test/_probe_focus_run81b_test.dart` (8 layar), `test/core/security/_probe_focus_test.dart` (3 varian layar terpilih).
+
+**Deviasi scope (kebijakan, dicatat terbuka mengikuti preseden fase 79/80)**: pemilihan jatuh ke layar di luar glob tetap di dalam repo yang memenuhi ambang nyata — `SecuritySettingsScreen` (`lib/core/security/presentation/security_settings_screen.dart`, 101 baris, konstruktor semua-opsional, tanpa jaringan). Dua elemen interaktif: `SwitchListTile.onChanged` aktif bila ada store (`_hasStore && !_busy`) dan `ListTile(onTap: widget.onChangePassphrase)`. Fixture minimal = `ProjectDatabase(NativeDatabase.memory())` (drift in-memory, tanpa file, tanpa derivasi kunci). Pemilihan ini mengikuti rekomendasi (c) fase 80 (perluas scope di luar `lib/features/*/presentation/*_screen.dart`) yang belum dieksekusi run mana pun. **Kontrak tetap dalam `test/core/security/` (flat), bukan di `test/core/security/presentation/` yang berisi WIP focus-order milik eksekutor lain.**
+
+**Probe (hasil terukur, viewport 1536x1024, dpr 1.0, berhenti saat Rect berulang)**:
+- Rute dipush + database: **3 stop** — `Back@8,8 40x40` -> `Enkripsi Proyek@16,72 1504x72` -> `Ubah Passphrase@16,160 1504x56`.
+- Tanpa rute induk + database: **2 stop** — `Enkripsi Proyek` -> `Ubah Passphrase` (atas-ke-bawah, rata kiri 16).
+- Tanpa database (switch disabled): **1 stop** — `Ubah Passphrase` (disabled control keluar dari tab order).
+
+**Kontrak**: `test/core/security/security_settings_focus_order_test.dart` — 3 `testWidgets`: (1) rute dipush = 3 stop, daftar label `['Back','Enkripsi Proyek','Ubah Passphrase']`, proporsi posisi atas-ke-bawah, area non-zero, kedua baris melebar ke padding kanan viewport; (2) tanpa database = 1 stop `'Ubah Passphrase'`; (3) tanpa rute induk = 2 stop dengan urutan dan rata kiri sama. Ketiganya mengunci `tester.takeException()` isNull.
+
+**Gate (output nyata)**:
+- `dart format test/core/security/security_settings_focus_order_test.dart` -> `Formatted 1 file (1 changed)`.
+- `dart analyze test/core/security/security_settings_focus_order_test.dart` -> `No issues found!`.
+- `flutter test test/core/security/security_settings_focus_order_test.dart` -> `+3 All tests passed`, EXIT=0.
+- Suite gate `flutter test test/core/security/` -> `+65 All tests passed`, EXIT=0 (termasuk test focus-order milik WIP eksekutor lain yang ikut berjalan dan lulus).
+
+**Negative control WAJIB (dijalankan, angka dicatat)**: backup `cp` ke `C:\Users\nepht\AppData\Local\Temp\security_settings_focus_order_test.dart.bak`, mutasi = tukar dua label pertama menjadi `['Enkripsi Proyek','Back','Ubah Passphrase']`, jalankan `flutter test` file kontrak -> **GAGAL**: `Some tests failed`, `EXIT_CODE=1`, 1 dari 3 test gagal pada baris 114 (expectation urutan label). Restore dari backup, jalankan ulang -> `+3 All tests passed`, EXIT=0. Backup dihapus dan diverifikasi hilang (`ls: No such file or directory`).
+
+**Full analyzer (di luar scope — dilaporkan, bukan diperbaiki)**: `flutter analyze` penuh di HEAD = `210 issues found`, EXIT=1 sebelum maupun sesudah perubahan run ini; rincian: **95 issue dari file scratch ter-gitignore** `test/release/scratch_*` (pola di `.gitignore:68`), 97 issue pada `lib/**`, 18 issue test lainnya. File kontrak fase ini = **0 issue** (scoped analyze `No issues found!`). Run ini tidak menyentuh `lib/` sama sekali sehingga blocker itu bukan regresi run ini; tidak ada file milik owner lain yang diubah.
+
+**Counter**: `git ls-files test | grep -c focus` (file focus test ter-commit) = **76 sebelum run**, kontrak ini menambah 1 -> **77 setelah commit**. Union per-file (kelas `*Screen` dari 89 file glob yang disebut isi focus test on-disk) = **61 dari 89, sisa 28 — tidak naik**, karena layar yang diaudit berada di luar glob (dasar kelas non-glob bertambah 1: `SecuritySettingsScreen`). Sisa 28 in-glob: 27 dengan 0 token handler + 1 (`environment_workspace_screen`) handler-nya disabled/fixture -> semua di bawah ambang stop-terukur.
+
+**Tidak ada perubahan kode produksi.** File dirty milik sibling tidak disentuh: `docs/evidence/sprint-117-35-manifest-20261002.json`, `test/release/sprint_117_ga_artifact_reproducibility_test.dart` (muncul baru di tengah run — Core Worker aktif), `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/` (WIP focus-order `project_lock` milik eksekutor lain).
+
+**Scan CJK/Cyrillic** pada kontrak, section ini, dan pesan commit: `none`.
+
+**Rekomendasi run berikutnya**: (a) hentikan pemilihan layar in-glob sampai ada `*_screen.dart` interaktif baru di `lib/features/*/presentation/`; (b) bila audit tetap jalan, gunakan ambang ">=2 stop terukur di layar `lib/**/*_screen.dart` mana pun" seperti run ini, dengan deviasi dicatat; (c) audit afordansi rute/back per layar hanya bila Choirudin menyetujui kontrak 1-stop.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -3034,7 +3034,7 @@
   },
   "sprint_117_step_11743": {
     "status": "PARTIAL-LOCAL",
-    "verified_on": "2026-10-03",
+    "verified_on": "2026-10-04",
     "commit": "ea27041",
     "canonical_step": "117.43",
     "title": "GA Artifact & Reproducibility",
@@ -3148,7 +3148,7 @@
       "regression_113_x": "sprint_113_build_reproducibility_provenance_test.dart + sprint_113_ga_artifact_packaging_test.dart exit 1 with 17 pass / 3 FAIL - the SAME 3 failures as the two previous runs (113.39 signed release artifact remains intact; 113.38 checksums match the signed artifacts byte for byte; 113.38 signed artifacts exist and signing evidence verifies locally). Root cause 117.43-02, NOT a regression of this slice: commit 0ce8c5f touches only the provenance verdict logic and its test, never build/ or the checksum file.",
       "claim_honesty_check": "The provenance this repo SHIPS still passes, and that is correct: sprint_113_build_reproducibility_provenance.json records verdict NOT_BIT_IDENTICAL with 4 of 6 signed artifacts genuinely differing (void_scriptor.exe, dartjni.dll, file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll; flutter_windows.dll and sqlite3.dll are identical). The fix does not change that status - one test now pins that the pass is earned by a real recorded difference, so a later edit that erased the difference cannot silently leave provenance passing on an unevidenced claim."
     },
-    "reconciled_on": "2026-10-03",
+    "reconciled_on": "2026-10-04",
     "blind_spot_117_43_06": {
       "measured_on": "2026-10-03",
       "direction": "mirror of 117.43-01, opposite direction",
@@ -3157,8 +3157,8 @@
       "note": "This closes a trust-boundary path that is NOT currently exercised by the shipped data, exactly like 117.43-05: the shipped provenance manifest does record a real difference, so the gate verdict is unchanged. The open drift numbers stay 117.43-02's and are not moved by this fix.",
       "commit": "0ce8c5f"
     },
-    "gates_reverified_on": "2026-10-03",
-    "updated_at": "2026-10-04T07:35:00+07:00",
+    "gates_reverified_on": "2026-10-04",
+    "updated_at": "2026-10-04T09:05:00+07:00",
     "blind_spot_117_43_08": {
       "measured_on": "2026-10-03",
       "direction": "per-artifact, where 117.43-01/-06/-07 were all aggregate",
@@ -3180,21 +3180,21 @@
       "manifest_untouched": "docs/evidence/sprint-117-43-manifest-20261002.json NOT modified: b2a7787c... 7592 bytes, verified 4-side (git show HEAD == disk raw == disk EOL-normalized == state record). The fix closes a claim-parsing path; it does not re-measure a committed document."
     },
     "defects_fixed_count": 13,
-    "slice_commit": "4b65d46",
+    "slice_commit": "f0bcd5a",
     "last_slice_files": [
       {
         "path": "lib/features/world_logic/domain/build_reproducibility_provenance.dart",
-        "sha256": "47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff",
-        "sha256_lf_canonical": "47b674e3",
-        "source": "git show 4b65d46:lib/features/world_logic/domain/build_reproducibility_provenance.dart",
-        "bytes": 34375
+        "sha256": "d5e244b97b49e8cbf376969a930bb762765e2ec82ec2b1c80d3628ff4e54145e",
+        "sha256_lf_canonical": "d5e244b9",
+        "source": "git show f0bcd5a:lib/features/world_logic/domain/build_reproducibility_provenance.dart",
+        "bytes": 39291
       },
       {
         "path": "test/release/sprint_113_build_reproducibility_provenance_test.dart",
-        "sha256": "444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13",
-        "sha256_lf_canonical": "444d929d",
-        "source": "git show 4b65d46:test/release/sprint_113_build_reproducibility_provenance_test.dart",
-        "bytes": 21089
+        "sha256": "2e75366e20ba126ec53296b71ef9efdf1f48c160dd62810c130488f603a29367",
+        "sha256_lf_canonical": "2e75366e",
+        "source": "git show f0bcd5a:test/release/sprint_113_build_reproducibility_provenance_test.dart",
+        "bytes": 25480
       }
     ],
     "gates_reverified_run9_2026_10_03": {
@@ -3240,7 +3240,7 @@
       "commit": "4283ebd",
       "pushed": false
     },
-    "ledger_sha256_lf_canonical": "62e199f1784ea9c2999de9e45ce2185f38617381debda2d19ada037af99f5bbf",
+    "ledger_sha256_lf_canonical": "674e853d5afab31fbc4b224cfe99cbb7d5b4bc8b4e14ea54efa04d2653318e7f",
     "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally.",
     "defect_117_43_14": {
       "status": "FIXED-LOCAL",
@@ -3334,17 +3334,12 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "id": "117.43-22",
-      "defect": "ArtifactComparison.method restates WHICH digest algorithm produced the recorded values and no lib/ reader ever decoded it; pass published for a comparison naming an algorithm that cannot emit 64-hex digests, while the gate printed the artifact count as though the hashing had been checked",
-      "commit": "4b65d46",
-      "gate_sha256": "47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff",
-      "test_sha256": "444d929d0470116bf6a492d1eef6ab55d754caa760e5d803a5e36ddbe5564f13",
-      "sha_source": "hashed from committed blobs via `git show 4b65d46:<path>` (policy clause 1+2), after commit; disk == blob, both LF-pure",
-      "focused_tests": "113 file: slice assertions green (7/7 file, +1 new); directed two-file regression +143 -2, both failures 113.39 pre-existing",
-      "red": "exactly 1 failing test, 4 impossible methods wrongly pass, 3 controls green; second RED boundary (implementation reverted to HEAD alone) reproduced exactly 1 failure at the same line with no compile error",
-      "full_suite": "NOT CLAIMED - argument-less flutter test yields no trustworthy summary (full_suite_trap); only the directed two-file run is claimed",
-      "status": "PARTIAL-LOCAL (unchanged)",
-      "next_step": "117.43 (unchanged)"
+      "id": "117.43-23",
+      "defect": "required_evidence.toolchain_versions - the group naming WHICH SDK produced the build - was read by _hasContent alone ('is every line a non-blank string?') and the verdict printed the item count as though the versions had been checked; a document naming the same tool under two versions received provenance_evaluation: pass while the comparison's method rests on 'the same tree and machine' and its own limits disclaim cross-SDK reproducibility",
+      "commit": "f0bcd5a",
+      "gate_sha256": "d5e244b97b49e8cbf376969a930bb762765e2ec82ec2b1c80d3628ff4e54145e",
+      "test_sha256": "2e75366e20ba126ec53296b71ef9efdf1f48c160dd62810c130488f603a29367",
+      "sha_source": "git show f0bcd5a:<path> (policy 2026-10-02 clause 1+2)"
     },
     "defect_117_43_19": {
       "status": "FIXED-LOCAL",
@@ -3465,6 +3460,54 @@
       "guard": "PASS pre and post slice, canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 unchanged",
       "full_suite": "NOT CLAIMED (full_suite_trap)",
       "sha_4_side": "disk == git show <commit>:<path> == this state == ledger, for both slice files"
+    },
+    "defect_117_43_23": {
+      "status": "FIXED-LOCAL",
+      "slice": "117.43-23",
+      "hunt": "unmeasured-claim / fail-open, eighteenth slice of the family",
+      "family_closed_so_far": 18,
+      "shape": "required_evidence.toolchain_versions - the group that says WHICH SDK produced the build - was read by _hasContent alone, i.e. 'does every line hold a non-blank string?', and the verdict then printed 'toolchain_versions: N item' as though N versions had been checked against anything. Compare artifact_hashes, validated to be exactly 64 hex: this group had no shape reader at all.",
+      "symptom": "a document listing 'Flutter 3.44.6 ...' and 'Flutter 3.44.9 ...' in the same group states two different SDKs produced one build, while ArtifactComparison.method rests on 'the same tree and machine' and the group's own limits explicitly disclaim cross-SDK reproducibility. missingEvidence returned [], evaluate returned pass, and the gate printed 'toolchain_versions: 7 item'. Cross-line counterpart of 117.43-21: there two copies of ONE digest were never compared; here the group naming the toolchain is never read twice against itself.",
+      "why_worse_than_a_wrong_answer": "the whole premise of the step is that two clean rebuilds ran on the same machine with the same toolchain. A group that names two versions of its own SDK is not a wrong verdict, it is an unevidenced one - and the item count in the output implies the versions were checked.",
+      "empirical_before_fix": "RED verified independently: exit 1 with EXACTLY 1 failing test; 3 controls green - the SHIPPED document read from disk (7 toolchain_versions lines, hasLength(greaterThan(3))), a line stating no dotted version (pinned engine revision + prose host line), and one tool recorded at two precisions. Control 1 uses the real document, so a failure there would mean the honest document was being refused. RED boundary re-proven: with the implementation restored to HEAD (git show HEAD:<path>, sha256 47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff == the 117.43-22 committed blob, 34375 B) and the test kept, the SAME single failure returned at the SAME line (448) with no compile error and Actual: [], proving _hasContent never refused anything. Restore verified byte-identical (cmp) against the scratch snapshot.",
+      "bounds_pinned": [
+        "a line stating no dotted version makes no claim and is left alone (pinned engine revision 'Engine hash <40 hex> (revision ...)', prose host line) - non-claim rule, 117.43-07",
+        "a bare integer (2026) and a date-shaped token (2026-07-08) are the product year and the build date: they end the tool name and are NEVER read as a version, so 'Visual Studio Build Tools 2026 18.9.0' stays one group with 'Visual Studio Build Tools 18.9.0'",
+        "a tool named by only ONE line has nothing to contradict",
+        "two spellings of one version (18.9 beside 18.9.0) are not a second version",
+        "only the FIRST dotted number of a line is read as the tool's version, so '18.9.0 version 18.9.12105.275' (tool at one precision, installed build at another) is not refused as two versions",
+        "nothing is required about WHICH tools a document chooses to record, or how many"
+      ],
+      "shipped_document_unaffected": "the committed 113.39 manifest records 7 toolchain_versions lines with one version per tool (manifest sha256 b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d); the honest document still passes. No manifest, pubspec.lock or sign file was touched by this slice.",
+      "verified_on": "2026-10-04",
+      "commit": "f0bcd5a",
+      "committed_sha256": {
+        "source": "hashed from committed blobs via `git show f0bcd5a:<path>` (policy 2026-10-02 clause 1+2), AFTER commit; disk sha256sum == git show for both files; both sides LF-pure (0 CRLF)",
+        "lib/features/world_logic/domain/build_reproducibility_provenance.dart": "d5e244b97b49e8cbf376969a930bb762765e2ec82ec2b1c80d3628ff4e54145e",
+        "test/release/sprint_113_build_reproducibility_provenance_test.dart": "2e75366e20ba126ec53296b71ef9efdf1f48c160dd62810c130488f603a29367"
+      },
+      "gates": {
+        "format": "dart format 2 files: Formatted 2 files (2 changed) exit 0; re-check with --output=none --set-exit-if-changed: 0 changed exit 0 = idempotent (format_idempotency_jebakan: the writing pass runs first)",
+        "analyzer": "dart analyze 2 files: No issues found! exit 0",
+        "diff_check": "git diff --check exit 0",
+        "build": "flutter build windows --debug exit 0, 26,0 s, Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe",
+        "guard": "dart run tool/roadmap_guard.dart PASS before AND after the slice; canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 UNCHANGED, recommended_step 117.43",
+        "focused_suite": "117 gate file 136/136 PASS exit 0; 113 file exit 1 with +8 -2, the 2 remaining failures are pre-existing 113.39 (see regression)"
+      },
+      "regression": "directed two-file run (sprint_113_build_reproducibility_provenance_test.dart + sprint_117_ga_artifact_reproducibility_test.dart): exit 1, +144 -2 (from +143, +1 new test). Slice 117 = 136/136 PASS across the whole 117.43-14..-23 family. BOTH failures are 113.39 pre-existing with the exact same signature as the previous run: 'dependency lock evidence matches the live lockfile' (manifest records 32e31fd3..., live lock c9a365e6...) and 'signed release artifact from 113.38 remains intact' (expected 73101e78..., actual c7a33055...). Neither imports the 117 gate. FULL SUITE NOT CLAIMED (full_suite_trap): -2 is only these two directed files, not the whole repo.",
+      "mid_slice_trap": "the first helper compared EVERY dotted number of two lines pairwise, which would refuse the SHIPPED document: 18.9.0 and 18.9.12105.275 differ in components, so control 1 would go red - and red because the document is honest, not because the defect exists. Caught while reviewing the design, before running. Fixed by reading only the FIRST dotted number as the tool's version and treating the rest as build qualifiers; the pairwise rule is kept because it is the only decidable form without guessing.",
+      "pushed": false
+    },
+    "gates_reverified_run14_2026_10_04": {
+      "slice": "117.43-23",
+      "focused_suite": "117 gate file 136/136 PASS exit 0; 113 file exit 1 with +8 -2, both failures pre-existing 113.39",
+      "directed_regression": "2 files exit 1, +144 -2 (from +143); slice 117 136/136 PASS; both failures 113.39 pre-existing, signature identical to previous run",
+      "analyzer": "dart analyze 2 files: No issues found! exit 0",
+      "format": "dart format 2 files: 2 changed exit 0; --output=none --set-exit-if-changed 0 changed exit 0",
+      "diff_check": "git diff --check exit 0",
+      "build": "flutter build windows --debug exit 0, 26,0 s",
+      "guard": "roadmap_guard.dart PASS pre and post; canonical_sha256 b7ef2d35... UNCHANGED",
+      "full_suite_claimed": false
     }
   },
   "sprint_117_step_11744": {

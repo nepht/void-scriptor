@@ -221,7 +221,7 @@
     "full_suite": "NOT RUN AND NOT CLAIMED (full_suite_trap): the directed two-file run is the only regression evidence produced this run; no statement is made about the rest of the repo.",
     "sibling_commit_during_slice": "f913e8e test(a11y): audit focus order RuleEditorScreen landed between the pre-run HEAD (aea2015) and this commit; `git log aea2015..HEAD~1 -- <both slice paths>` is EMPTY, so no writer collision. dirty 97 -> 96."
   },
-  "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34. 2026-10-04 slice 117.43-28: hunt layer note - both claim readers now share _digestClaimsIn, so the 'reader whose tokenizer is narrower than the document language' layer is CLOSED for this family. Move to a different layer; do not re-hunt reader width.",
+  "note": "112.40 VERIFIED-LOCAL: Wave 1-3 frozen format/plugin contracts remain compatible; typed ws-events/v1 added additively with legacy ProjectMutationEvent constructors preserved. Pointer advanced to 112.41. 2026-10-01 pointer repair (Choi): current_step was stale at 117.24 while last_verified_step/last_resolved_step/current_step_status/last_run_summary/last_slice_commit all attest 117.32 (Security Assessment, commit 251d3fa, ledger row VERIFIED). next_step=117.33 (Privacy Assessment) was already correct and is unchanged. Records 117.33-117.48 are NOT_STARTED placeholders, so 117.32 is the correct completed step. 2026-10-02 run 117.33: slice commit c4ef323 was already present but unrecorded (ledger NOT_STARTED, state 117.32). Gates re-verified independently on that HEAD, then ledger+state recorded. next_step=117.34. 2026-10-04 slice 117.43-28: hunt layer note - both claim readers now share _digestClaimsIn, so the 'reader whose tokenizer is narrower than the document language' layer is CLOSED for this family. Move to a different layer; do not re-hunt reader width. 2026-10-04 slice 117.43-35: the first-claim family crossed readers again - the artifact-count claim of the method sentence (not a provenance_record claim) had the same firstMatch shape, so 'do not re-hunt reader width' applies per reader, not family-wide; check EVERY field that states a quantity against its own reader. Also: on Windows, subprocess shell=True runs cmd.exe and ^ in a git 'HEAD^:path' argument is eaten silently, returning HEAD's blob - use argv list with ~1.",
   "studio_hunt_2026_09_13_run289": {
     "status": "hunt COMPLETE + STU-BUG-01/02/08 fixed (08 run292); QUEUE: STU-BUG-03 Medium (butuh keputusan kontrak) + 06/07 Low",
     "hunt": "docs/evidence/vs-hunt-20260913-studio/ (13 file scope, sha256+HEAD 5780c6b, laporan on-disk referee_report_studio.md = otoritas)",
@@ -628,8 +628,8 @@
   },
   "current_step": "117.43",
   "current_step_status": "PARTIAL-LOCAL",
-  "last_run_summary": "117.43-28 defect #23 fail-open hunt VERIFIED-LOCAL and committed. _digestsByPath (cross-group restatement seam behind 117.43-21) still used the anchored one-claim-per-line RegExp after 117.43-27 widened only the intra-group reader, so a restatement written on a multi-claim line was never compared and the gate published pass. Both readers now share _digestClaimsIn. RED exit 1 exactly one failure; GREEN 146/146; format/analyze/diff-check/build all green; directed 2-file regression +155 -2 with both failures pre-existing 113.39. STATUS UNCHANGED: PARTIAL-LOCAL, next_step 117.43, step not closed, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 remains the blocker. Next hunt: #24.",
-  "last_commit": "b254177",
+  "last_run_summary": "117.43-35 defect #30 fail-open hunt FIXED-LOCAL and committed. _statedArtifactScope read the artifact totals of a method sentence with firstMatch, so only the first total was compared with the recorded inventory and a second, contradicting total behind it was never measured while the group still printed the recorded count. Every total is now collected with allMatches and any total that differs from the inventory length refuses. RED on the pre-fix blob +10 -3 exit 1; GREEN 113 file +11 -2 (2 pre-existing 113.39); directed two-file regression +178 -2 with gate 117 at 167/167; format/analyze/diff-check/build green. STATUS UNCHANGED: PARTIAL-LOCAL, next_step 117.43, step not closed, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 remains the blocker. Next hunt: #31 (leftover probe candidates: parseDigest with 0 callers at sprint_117_ga:450, summarised.firstMatch(member.key) at sprint_117_ga:1671).",
+  "last_commit": "a318bd0",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -3784,7 +3784,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "b254177",
+  "last_slice_commit": "5e8f765",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -4173,6 +4173,43 @@
       "roadmap_guard": "PASS pre-run at session start (exit 0); post-state run recorded in the run report",
       "directed_regression": "combined run +177 -2 exit 1: gate file 167/167 pass; 113 provenance file 8 pass / 2 fail, both pre-existing 113.39 failures proven at clean HEAD in the isolated worktree. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the 223 added lines of commit 819a470 (9725 bytes) and the 75 added ledger lines = 0 hits, 0 trailing whitespace"
+    }
+  },
+  "defect_117_43_35": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 30,
+    "slice": "117.43-35",
+    "status": "FIXED-LOCAL",
+    "summary": "first-claim-only reader on the artifact-count claim: _statedArtifactScope in build_reproducibility_provenance.dart read the artifact totals of a method sentence with RegExp.firstMatch, so only the FIRST total was compared with the recorded inventory. A method stating two totals (6 exe/dll artifacts up front, 12 artifacts in total behind) was judged on the leading total alone while the group still printed the recorded count, so a second total the records contradict was never measured. Same first-claim family as hunt #27/#29/#30 but on a different reader: the artifact-count claim of the method sentence instead of a provenance_record log claim.",
+    "proven_before_fix": "First candidate from the leftover probe list recorded by slice 117.43-34 (firstMatch artifact count on the method sentence). No probe file: the RED witness was written as the official 117.43-35 test, then the library file was swapped to the pre-fix blob git show 5e8f765~1 (sha c37e2ec8..., 66517 B) with a fix snapshot kept aside.",
+    "red": "Pre-fix run of sprint_113_build_reproducibility_provenance_test.dart = +10 -3 exit 1: '117.43-35 a method stating two artifact counts is compared on both' failed Expected: false / Actual: <true> (the contradictory two-total document was accepted), plus the two pre-existing 113.39 failures (lock d500c1c5... vs manifest 32e31fd3...; artifact 73101e78... vs c7a33055...). Restore from snapshot verified: disk sha e332b6d0... equals the committed blob and git status for that path was clean.",
+    "fix": "_statedArtifactScope now returns ({List<int> counts, Set<String>? names})? - every regex match is collected with allMatches + whereType<int> instead of firstMatch, and missingEvidence (build_reproducibility_provenance.dart:564) refuses as soon as ANY stated total differs from the recorded inventory length (scope.counts.any((stated) => stated != recorded.length)). A total restated identically still passes on every occurrence, matching the benign repeat rule readChecksumIndex applies to digests. The artifact-name reader, the null result for claim-free sentences, and the regex itself are untouched, so seam 117.43-24 still refuses a scope count the records do not match.",
+    "green": "113 provenance file +11 -2 exit 1 (11 pass including 117.43-35; the 2 failures are the pre-existing 113.39 pair). Directed two-file regression sprint_113 + sprint_117_ga = +178 -2 exit 1 with the gate file at 167/167 (178 minus the 11 passing tests of the 113 file) - counted per file, not from the combined counter. No full-suite claim.",
+    "bounds_pinned_by_test": "A method stating two artifact counts is compared on both; a correct single-total method still passes; the pre-existing 117.43-24 (scope count the records do not match stays refused) and the shipped manifest pass unchanged; the regex and the name reader were not widened, so a sentence without a total still yields no claim.",
+    "evidence": {
+      "commit": "5e8f765",
+      "ledger_commit": "a318bd0",
+      "domain_sha256": "e332b6d0319fce20e75d5b6bafc018f524444f9a9eae604fdfe3867d85768fb6",
+      "domain_bytes": 67399,
+      "test_sha256": "237d5c95bf18976ca07bc59dbc216c6fc8468d60a1be68affa9a956cad7d014c",
+      "test_bytes": 42822,
+      "test_file": "test/release/sprint_113_build_reproducibility_provenance_test.dart",
+      "sha_source": "blob of commit 5e8f765 via git show, equals sha256sum of disk (verified after commit and again after the RED swap restore, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "numstat": "domain 29/13, test 118/0 (commit 5e8f765); ledger 74/0 (commit a318bd0)",
+      "patch_trap": "no patch tool used: the test block was inserted and the lib edits applied by exact byte replace with count==1 anchors; the test insert verified pure (118/0, diff -U0 with no '-' lines). Real trap found instead on the RED swap: subprocess with shell=True on Windows runs cmd.exe, where ^ in '5e8f765^:path' is eaten as an escape and the command silently returned the FIXED blob (sha unchanged, swap no-op) - use argv list with '5e8f765~1:path'.",
+      "sibling_commits": "8a10d3b (weapon workspace focus order test) landed mid-run and does not touch the 2 slice paths; git log a8a3702..HEAD -- <paths> was empty at commit time."
+    },
+    "gates": {
+      "format_write": "2 files changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, fresh evidence build/windows/x64/runner/Debug/data/flutter_assets mtime 2026-10-04_18:50:55 (static runner exe mtime 2026-10-03_04:16 not counted)",
+      "roadmap_guard": "PASS pre-run at session start (exit 0); post-state run recorded in the run report",
+      "directed_regression": "combined run +178 -2 exit 1: gate 117 = 167/167 pass, 113 provenance file 11 pass / 2 fail with both failures the pre-existing 113.39 signatures proven at clean HEAD in slice -34's isolated worktree. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the 147 added lines of commit 5e8f765 (6372 bytes) and the 74 added ledger lines = 0 hits, 0 trailing whitespace"
     }
   }
 }

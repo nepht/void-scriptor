@@ -1697,10 +1697,13 @@ test `63af36051e2160c069cd4af7b85191d8d605316bd0570f034de2a152e45fb251`
 (206686 B). Manifest 113 tidak disentuh (commit terakhir tetap `d150973`).
 Commit `85566d6` memakai 2 path eksplisit. Sibling `fb1c76f` masuk di tengah
 run; `git log 715e30b..HEAD -- <2 path slice>` hanya memuat `85566d6`, jadi
-sibling tidak menyentuh slice. ahead 2 -> 4, dirty tetap 2
+sibling tidak menyentuh slice. ahead 2 -> 6 (dua commit antar-run sebelumnya + sibling `fb1c76f` + tiga commit
+run ini `85566d6`/`f62e0aa`/`77accef`), dirty tetap 2
 (`ROADMAP_STATE.json.slice11743_29.bak` + `cache/`, dipreserve). Tidak ada push
 pada run ini. Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`,
 step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR
 117.43-02 masih BLOCKER. Sisa keluarga posisi yang sama: pembaca
 `signed_candidate` (117.43-25) masih front-anchored dan hanya mengambil token
-pertama. Hunt berikutnya: ke-28.
+pertama. Koreksi nilai pada commit `docs(117.43-32)` terpisah: angka ahead di
+paragraf atas sempat ditulis 2 -> 4 karena hanya menghitung commit run ini;
+hitungan benar 2 -> 6. Hunt berikutnya: ke-28.

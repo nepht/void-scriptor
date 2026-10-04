@@ -4089,7 +4089,7 @@
       "manifest_113_last_commit": "d150973",
       "probe": "no probe file: the RED witness was written directly as the official 117.43-32 group, and the pre-fix measurement was taken by swapping the library from git show HEAD:path and restoring the snapshot (sha equal on both sides), so nothing to delete",
       "sibling": "fb1c76f test(a11y): audit focus order Supporting Asset Workspace Screen landed mid-run; git log 715e30b..HEAD on the 2 slice paths only lists 85566d6",
-      "push": "none this run (ahead 4: fb1c76f sibling + 85566d6 fix + f62e0aa ledger + this state commit); push deferred per run policy"
+      "push": "none this run (ahead 6 = 2 commits already unpushed before this run + sibling fb1c76f + this run's three commits 85566d6 fix, f62e0aa ledger, 77accef state); push deferred per run policy"
     },
     "gates": {
       "format_write": "1 changed exit 0",

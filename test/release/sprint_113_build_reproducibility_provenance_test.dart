@@ -453,6 +453,140 @@ void main() {
     );
   });
 
+  test('117.43-29 one line naming two tools must not discard the second '
+      'tool\'s version', () {
+    // Sprint 117.43-29 (fail-open, fixed): 117.43-23 taught this group that a
+    // tool recorded twice under two versions contradicts itself, and its rule
+    // is pairwise over `_ToolchainLine`. But `_readToolchainLine` returns ONE
+    // claim per line: the name is read until the first token carrying a digit,
+    // and the version is the FIRST dotted number anywhere on the line
+    // (`firstWhere` at the version step). So a line that names SEVERAL tools
+    // keeps the first tool's version and silently drops every other tool named
+    // beside it — exactly the shape 117.43-28 closed on the digest side, one
+    // group over: a document only has to put a restatement on a shared line for
+    // that claim to reach the verdict unexamined.
+    //
+    // The drop is not cosmetic. `toolchain_versions` is the group that says
+    // WHICH SDK produced the build, and the comparison's own premise is "same
+    // tree and machine" with cross-SDK reproducibility disclaimed in its
+    // limits. If `Flutter 3.44.6` and `Flutter 3.44.9` are stated on ONE line
+    // beside one another, the pairwise loop compares them against nothing and
+    // `missingEvidence` reports no missing group, so `evaluate` returns `pass`
+    // and the gate prints `toolchain_versions: N item` as though N versions had
+    // been compared against each other.
+    //
+    // Digest-shaped constants are deliberately NOT used as the contradicting
+    // values: the 117.43-26 run shipped one RED that failed for the wrong
+    // reason (63/65-character constants refused as MALFORMED, not as a
+    // contradiction). These are real SDK version strings, and the fixture's
+    // other groups carry real 64-hex digests so the ONLY thing each case turns
+    // on is the toolchain claim itself.
+    const dartSdk = 'Dart 3.12.2';
+
+    BuildProvenanceEvidence withToolchain(
+      List<String> versions,
+    ) => BuildProvenanceEvidence(
+      buildInputs: <String>['pubspec.yaml sha256 ${'a' * 64}'],
+      toolchainVersions: versions,
+      dependencyLock: <String>['pubspec.lock sha256 ${'b' * 64}'],
+      rebuildResults: <RebuildResult>[
+        _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': 'a' * 64}),
+        _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': 'b' * 64}),
+      ],
+      artifactComparison: ArtifactComparison(
+        method: 'SHA-256 over exe+dll set',
+        rebuildA: _rebuild('rebuild_a', <String, String>{
+          'void_scriptor.exe': 'a' * 64,
+        }),
+        rebuildB: _rebuild('rebuild_b', <String, String>{
+          'void_scriptor.exe': 'b' * 64,
+        }),
+        verdict: RebuildVerdict.notBitIdentical,
+        limits: <String>['fixture: digests deliberately differ'],
+      ),
+      provenanceRecord: <String>['source_revision ${'c' * 64}'],
+    );
+
+    // Control 1: the toolchain lines the SHIPPED document actually records.
+    // Each tool is named once, so the group states one version per tool and
+    // must stay a pass — this is the honest case this rule must not refuse.
+    final shipped =
+        jsonDecode(
+              File(
+                'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final shippedToolchain =
+        ((shipped['required_evidence']
+                    as Map<String, dynamic>)['toolchain_versions']
+                as List<dynamic>)
+            .cast<String>();
+    expect(shippedToolchain, hasLength(greaterThan(3)));
+    expect(
+      BuildProvenanceEvidence.missingEvidence(withToolchain(shippedToolchain)),
+      isEmpty,
+      reason: 'the shipped document records one version per tool',
+    );
+
+    // Control 2: TWO DIFFERENT tools on ONE line. A line may name several
+    // tools — that is several claims, not a contradiction — and this is the
+    // case the 117.43-23 bounds already allow across lines. Naming `Dart`
+    // beside `Flutter` states two tools at two versions, which no pairwise
+    // rule may refuse.
+    expect(
+      BuildProvenanceEvidence.missingEvidence(
+        withToolchain(<String>['Flutter 3.44.6 and Dart 3.12.2']),
+      ),
+      isEmpty,
+      reason: 'one line naming two different tools is two claims, not a clash',
+    );
+
+    // Control 3: the SAME tool and version restated on one line is an
+    // idempotent restatement (117.43-26/27/28's shape, one group over).
+    expect(
+      BuildProvenanceEvidence.missingEvidence(
+        withToolchain(<String>['Flutter 3.44.6, Flutter 3.44.6']),
+      ),
+      isEmpty,
+      reason: 'the same tool at the same version twice is a restatement',
+    );
+
+    // The defect: BOTH Flutter versions on ONE line. Pre-fix the reader keeps
+    // `Flutter 3.44.6` (the first dotted number) and drops `3.44.9`, so the
+    // pairwise loop compares a single claim against itself and the group
+    // reports `pass` while the document says the build used two SDKs.
+    final twoOnOneLine = withToolchain(<String>[
+      'Flutter 3.44.6 and Flutter 3.44.9',
+      dartSdk,
+    ]);
+    expect(
+      BuildProvenanceEvidence.missingEvidence(twoOnOneLine),
+      contains('toolchain_versions'),
+      reason:
+          'one build cannot have been produced by two SDK versions, '
+          'whether they are stated on one line or on two',
+    );
+    expect(
+      BuildProvenanceEvidence.evaluate(twoOnOneLine).state,
+      isNot(BuildProvenanceState.pass),
+    );
+
+    // The same contradiction reached the other way: the SHIPPED document's own
+    // multi-tool line shape must stay a pass, so the fix cannot simply refuse
+    // any line naming more than one dotted number.
+    expect(
+      BuildProvenanceEvidence.missingEvidence(
+        withToolchain(<String>[
+          'Flutter 3.44.6, Dart 3.12.2, '
+              'Visual Studio Build Tools 18.9.0 version 18.9.12105.275',
+        ]),
+      ),
+      isEmpty,
+      reason: 'the tools the shipped document names, at one version each',
+    );
+  });
+
   test('113.39 provenance manifest records all six evidence groups', () {
     final file = File(
       'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',

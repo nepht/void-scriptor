@@ -191,37 +191,111 @@ final class _ToolchainLine {
   final String version;
 }
 
-_ToolchainLine? _readToolchainLine(String line) {
+/// Words that join two records of the same tool on one line and never name a
+/// tool themselves. Stripped from the front of a parsed name so that
+/// `Flutter 3.44.6 and Flutter 3.44.9` files both claims under `flutter`.
+const _kToolchainConnectors = <String>{
+  'and',
+  'or',
+  'plus',
+  'with',
+  'then',
+  'also',
+  'alongside',
+  'versus',
+  'vs',
+  'followed',
+  'by',
+};
+
+/// The `toolchain_versions` claims ONE line states.
+///
+/// Sprint 117.43-29 (fail-open, fixed): this used to return a SINGLE claim per
+/// line — the first dotted number on the line, filed under the name read up to
+/// the first token carrying a digit. So a line naming the same tool twice kept
+/// the first version and dropped the second, and the pairwise rule 117.43-23
+/// put in place compared one claim against itself. `Flutter 3.44.6 and Flutter
+/// 3.44.9` on one line printed `toolchain_versions: 2 item` as though two
+/// versions had been weighed against each other.
+///
+/// This is the toolchain counterpart to 117.43-28, which found the digest
+/// reader discarding every claim on a line but the first. The document only has
+/// to put the restatement on a shared line for the contradiction to reach the
+/// verdict unexamined, and the group this feeds is the one that says WHICH SDK
+/// produced the build — while the comparison's own premise is "same tree and
+/// machine", with cross-SDK reproducibility disclaimed in its limits.
+///
+/// Bounds, all pinned by the 117.43-29 test:
+///
+///  * a line may name SEVERAL DIFFERENT tools — that is several claims, not a
+///    contradiction, and each tool is still compared against its own
+///    restatements wherever they appear, on this line or on another;
+///  * the leading connector is dropped, never the tool: `and Flutter` files
+///    under `flutter`, so a restatement lines up with its first statement both
+///    within a line and across lines;
+///  * a bare integer (`2026`) and a date-shaped token (`2026-07-08`) still end
+///    a name without being a version, and a line with no dotted number at all
+///    still states no version (117.43-07, 117.43-23);
+///  * `18.9` beside `18.9.0` is still one version written twice, so an
+///    idempotent restatement stays a pass;
+///  * this reads MORE claims than the single-claim reader did, and a claim can
+///    only add a pairwise comparison, never remove one — two names that were
+///    equal before stay equal after the same connector strip. So the fix cannot
+///    hide a contradiction; at worst it refuses a document that writes the SAME
+///    prose word twice with two different dotted numbers after it (nothing the
+///    shipped document records does, pinned by the shipped control).
+List<_ToolchainLine> _readToolchainLines(String line) {
   final tokens = line
       .trim()
       .split(RegExp(r'\s+'))
       .where((token) => token.isNotEmpty)
-      .toList();
-  final name = <String>[];
-  for (final raw in tokens) {
-    final token = raw.replaceAll(RegExp(r'^[^0-9A-Za-z]+|[^0-9A-Za-z]+$'), '');
-    if (token.isEmpty) continue;
-    // The first token carrying a digit ends the name. A bare integer (`2026`,
-    // `10`) or a date-shaped token (`2026-07-08`) is the product year or the
-    // build date, so it ends the name without ever being a version.
-    if (RegExp(r'[0-9]').hasMatch(token)) break;
-    name.add(token.toLowerCase());
-  }
-  if (name.isEmpty) return null;
-  // The first DOTTED number after the name is the tool's own version; the ones
-  // after it are its qualifiers (`18.9.0 version 18.9.12105.275` states the
-  // tool at one precision and the installed build at another). A line with no
-  // dotted number at all states no version.
-  final version = tokens
       .map(
         (raw) => raw.replaceAll(RegExp(r'^[^0-9A-Za-z]+|[^0-9A-Za-z]+$'), ''),
       )
-      .firstWhere(
-        (token) => RegExp(r'^\d+(\.\d+)+$').hasMatch(token),
-        orElse: () => '',
-      );
-  if (version.isEmpty) return null;
-  return _ToolchainLine(name.join(' '), version);
+      .where((token) => token.isNotEmpty)
+      .toList();
+  final claims = <_ToolchainLine>[];
+  var index = 0;
+  while (index < tokens.length) {
+    // A token carrying a digit cannot continue a name: it is a version, a bare
+    // product year (`2026`), a date (`2026-07-08`), or a pinned revision.
+    if (RegExp(r'[0-9]').hasMatch(tokens[index])) {
+      index++;
+      continue;
+    }
+    final name = <String>[];
+    while (index < tokens.length && !RegExp(r'[0-9]').hasMatch(tokens[index])) {
+      name.add(tokens[index].toLowerCase());
+      index++;
+    }
+    if (name.isEmpty) continue;
+    // The first DOTTED number after the name is the tool's own version; the
+    // ones after it are its qualifiers (`18.9.0 version 18.9.12105.275` states
+    // the tool at one precision and the installed build at another). A line
+    // with no dotted number at all states no version.
+    var version = '';
+    for (var scan = index; scan < tokens.length; scan++) {
+      if (RegExp(r'^\d+(\.\d+)+$').hasMatch(tokens[scan])) {
+        version = tokens[scan];
+        index = scan + 1;
+        break;
+      }
+    }
+    if (version.isEmpty) continue;
+    // A restatement arrives preceded by a connector: `Flutter 3.44.6 and
+    // Flutter 3.44.9` parses the second run as `and flutter`. Strip the
+    // leading connectors so the claim is filed under the tool's own name —
+    // that way the restatement lines up with its first statement, WITHIN the
+    // line and across lines, and a genuinely new tool on the same line is
+    // still recorded instead of dropped (dropping it is the fail-open this
+    // sprint's earlier shape hid behind).
+    while (name.isNotEmpty && _kToolchainConnectors.contains(name.first)) {
+      name.removeAt(0);
+    }
+    if (name.isEmpty) continue;
+    claims.add(_ToolchainLine(name.join(' '), version));
+  }
+  return claims;
 }
 
 /// Whether two spellings of a version say the same number.
@@ -875,8 +949,10 @@ class BuildProvenanceEvidence {
     if (lines == null) return true;
     final claims = <_ToolchainLine>[];
     for (final line in lines) {
-      final parsed = _readToolchainLine(line);
-      if (parsed != null) claims.add(parsed);
+      // Sprint 117.43-29: every claim the line states, not only the first. A
+      // line naming the same tool twice is the contradiction 117.43-23 already
+      // refused across lines, and it must be refused here too.
+      claims.addAll(_readToolchainLines(line));
     }
     // Group by tool NAME, then refuse a tool whose lines cannot all be told
     // the same version. The rule is pairwise because one line can carry

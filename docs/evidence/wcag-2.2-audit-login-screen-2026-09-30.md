@@ -4589,6 +4589,35 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 
 **Rekomendasi run berikutnya**: (a) kolam in-glob untuk kelas dengan >=2 handler kini terkonfirmasi kosong lima kali berturut-turut — kandidat sisa in-glob semuanya display-only (0 handler) atau ber-fixture berat (`world_simulation_workspace_screen` overflow standalone, `execution_monitor_screen` butuh `WorkflowMonitorSnapshot`); (b) perluas ke widget non-`*_screen.dart` (dialog/panel, mis. `project_comments_panel` yang sudah punya test perilaku tapi belum kontrak fokus) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
 
+## 85. Fase Lanjutan - Focus Order di Environment Workspace Screen (2.4.3)
+
+**Tanggal:** 2026-10-05. **Layar:** `lib/features/environment/presentation/environment_workspace_screen.dart` (`EnvironmentWorkspaceScreen`), di-host di `lib/features/workspace/presentation/workspace_resolver.dart:213`. **Kontrak:** `test/features/environment/environment_workspace_screen_focus_order_test.dart`.
+
+**Mengapa layar ini (pemindaian ulang, bukan klaim lama):** dari 89 file `lib/features/*/presentation/*_screen.dart`, 30 file berisi kelas `*Screen` yang belum disebut oleh manapun `test/**/*focus_order*`. Pemindaian seluruh file untuk handler interaktif non-null (`onTap/onPressed/onChanged/onSubmitted/onSelected`) hasilkan 0 pada 29 file; 3 hit di `automation_center_screen.dart` seluruhnya milik `RuleEditorScreen` dan `AutomationTemplatesScreen` yang sudah punya kontrak. Pemindaian child widget eksternal menemukan satu-satunya kontrol hidup pada kelas yang belum diaudit: `AssetThumbnailCard` memunculkan `OutlinedButton('Add Image')` hanya saat project session aktif (`lib/features/assets/presentation/widgets/asset_thumbnail_card.dart:126-141`), dipakai `EnvironmentWorkspaceScreen`.
+
+**DEFERRED fase 81 ditutup:** alasan lama `butuh fixture repository` tidak berlaku lagi - fixture di-reuse dari `test/features/environment/environment_workspace_thumbnail_test.dart` (jalur terpisah, `All tests passed` dalam 3 detik): `ProjectPackageService(rootDirectory: <temp>).create(...)` lalu `ProjectSessionManager().open(package)`, ditutup dengan `session.database.close` + hapus temp dir di `addTearDown`.
+
+**Hasil probe** (viewport 1536x1024, dpr 1.0, `LogicalKeyboardKey.tab` berulang sampai rect/node berulang, maks 25 kali):
+
+- Session aktif: **1 stop** - label `Add Image`, rect `Rect.fromLTRB(235.0, 463.9, 745.0, 503.9)` (510x40).
+- Tanpa session: **0 stop** - 5 kali Tab tidak memindahkan fokus sama sekali (node tetap `FocusScopeNode` root, rect penuh 1536x1024); `LOCATION PREVIEW` tetap render, `Add Image` tidak ada.
+- `IconButton('More environment actions (deferred)')` ada di kedua varian dengan `onPressed: null` dan **tidak pernah masuk traversal**; judul tooltip itu justru di-lock sebagai eksklusio.
+- Klasifikasi: satu-satunya stop adalah **kontrol konten**, bukan afordansi rute/back. Screen ini membangun `ColoredBox` tanpa `Scaffold`/`AppBar`, jadi push-route tidak menambah `Back` (berbeda dengan fase 84 yang memang mengukur afordansi `AppBar`).
+
+**Kontrak (2 test):**
+
+1. Session aktif: `labels == ['Add Image']`; title deferred tidak ada di daftar stop; `IconButton.onPressed` null; rect non-zero, `left >= 0`, `top >= 0`, `right <= 1536`, `bottom <= 1024`, `top > 96` (di bawah header 96px), `left < 768` (kolom kiri layout Row); `tester.takeException()` null.
+2. Tanpa session: daftar stop kosong; `LOCATION PREVIEW` tetap ada; `Add Image` tidak render; `tester.takeException()` null.
+
+**Gate:** `dart format` (1 file diubah), `dart analyze <file>` -> `No issues found!`, `flutter test <file>` -> `All tests passed!` (2/2).
+
+**Negative control:** ekspektasi disabotase menjadi `['Add Image', 'Back']` (backup ke `%LOCALAPPDATA%/Temp/env_focus_order_negctl.bak`) -> `Some tests failed`, skor `+1 -1`, `Expected: ['Add Image', 'Back']` vs `Actual: ['Add Image']`; restore dari backup, backup dihapus, run ulang pasca-restore -> `All tests passed!`.
+
+**CJK/Cyrillic:** `none` (test, section ini, dan pesan commit).
+
+**Catatan batas (jujur):** ambang minimal 2 elemen interaktif live tidak terpenuhi oleh manapun layar in-glob yang tersisa - layar ini punya 2 widget interaktif sintaktis tetapi hanya 1 yang hidup (1 disabled). Opsi lanjutan tetap seperti fase 84: (a) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (b) layar non-glob tersisa hanya `foundation_route_screen` (0 handler), `plugin_manager_screen` (0 handler), dan `project_lock_screen` yang sudah diambil alih test untracked milik eksekutor lain.
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

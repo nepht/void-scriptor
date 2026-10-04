@@ -3808,6 +3808,109 @@ tidak naik; 41 `_screen.dart` live masih belum punya kontrak.
 Catatan koreksi counter: angka "51 kontrak" di section 61 dan "46 dari 89" di
 section 62 sudah usang terhadap worktree saat ini. Penghitungan ulang dilakukan
 langsung dari `git ls-files` plus `find`, bukan menyalin counter lama.
+## 67. Fase 67 — Focus Order di Scene Workspace Screen (2.4.3)
+
+**Layar:** `lib/features/story/presentation/scene_workspace_screen.dart` — `SceneWorkspaceScreen`
+**Kontrak:** `test/features/story/scene_workspace_focus_order_test.dart`
+**Viewpoint:** 1536 x 1024 logical, dpr 1.0, `MaterialApp(home: SceneWorkspaceScreen(sceneId: 'probe-id'))` di dalam `ProviderScope` tanpa session override.
+
+### Permukaan fokus
+
+`SceneWorkspaceScreen` dengan `Scaffold` sendiri (AppBar `Scene Workspace`) dan
+state empty: tidak ada project session, jadi provider mengembalikan null dan
+tubuhnya hanya judul + blok kosong + tiga tombol aksi `onTap`
+(`Open Timeline`, `Add Asset`, `Add Beat`). Tidak ada query database, tidak ada
+jaringan, tidak ada dialog modal — aman diaudit tanpa fixture. Inilah alasan
+layar ini dipilih dari antara 40 `_screen.dart` yang belum terkontrak: kandidat
+bersih lain terukur hanya 0–1 stop.
+
+### Hasil probe (fakta yang dikunci kontrak)
+
+Probe sementara `test/features/story/_probe_focus_test.dart` menekan
+`LogicalKeyboardKey.tab` berulang dan mencatat label (`Text` non-Icon pertama)
+serta Rect fokus tiap stop, berhenti saat Rect berulang atau saat fokus jatuh ke
+`FocusScope`. Probe dihapus setelah kontrak dibuat.
+
+| Tab | Label | L | T | W | H | Area |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | `Open Timeline` | 20.0 | 103.0 | 249.3 | 40.0 | 9972.0 |
+| 2 | `Add Asset` | 1303.1 | 455.0 | 192.9 | 40.0 | 7716.0 |
+| 3 | `Add Beat` | 40.0 | 873.0 | 178.8 | 40.0 | 7152.0 |
+
+Cincin fokus menutup di **3 stop** dan tidak mengandung `FocusScope` — tidak ada
+stop "hantu" dari scope. `T` menaik monotonic (103 → 455 → 873), jadi urutan
+fokus sama dengan urutan baca atas-ke-bawah; stop pertama mulai di `T=103`,
+di bawah AppBar, bukan di belakangnya.
+
+### Yang dikunci kontrak
+
+1. Jumlah stop = 3 dan urutan label persis `['Open Timeline', 'Add Asset', 'Add Beat']`.
+2. Setiap stop punya area fokus non-zero (`w * h > 0`) dan berada di dalam viewport 1536 x 1024.
+3. `top` ketiga stop naik teratur, dan stop pertama `top >= 96` (di bawah app bar).
+4. `stops[0].left < stops[1].left` — aksi utama rata kiri, aksi sekunder rata kanan.
+5. Test kedua mengunci bahwa traversal berakhir pada node focusable yang valid
+   (`primaryFocus` non-null dan `hasFocus`), bukan jatuh ke scope.
+
+### Koreksi saat menulis kontrak
+
+Helper label awalnya dideklarasikan sebagai fungsi lokal di dalam `main()` dan
+test gagal loading dengan
+`Local variable '_firstLabel' can't be referenced before it is declared`
++ `Method not found: '_firstLabel'`. Ini jebakan yang sudah terdokumentasi
+(pitfall 6b): helper yang dipakai `testWidgets` harus top-level. Dipindah ke
+`String firstFocusLabel(BuildContext ctx)` di luar `main()`, lalu hijau.
+Tidak ada produksi yang berubah karenanya.
+
+### Negative control
+
+Satu ekspektasi diubah sementara (urutan label dibalik jadi
+`['Add Asset', 'Add Beat', 'Open Timeline']`) dengan `cp` backup ke
+`%LOCALAPPDATA%\Temp\scene_workspace_focus_order_test.bak`, lalu test dijalankan
+ulang:
+
+```
+  -> Expected: ['Add Asset', 'Add Beat', 'Open Timeline']
+     Actual: ['Open Timeline', 'Add Asset', 'Add Beat']
+  -> 00:01 +1 -1: Some tests failed.
+  -> NEGCTL_TEST_EXIT=1
+```
+
+Setelah `cp` kembali dari backup dan backup dihapus, suite kembali
+`00:01 +2: All tests passed!` dengan `RESTORE_TEST_EXIT=0`.
+
+### Gates
+
+- `dart format test/features/story/scene_workspace_focus_order_test.dart` → `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/story/scene_workspace_focus_order_test.dart` → `No issues found!`, exit 0.
+- Kontrak → `00:01 +2: All tests passed!`, exit 0.
+- Gate fitur `flutter test test/features/story/` → `01:55 +222: All tests passed!`, `GATE_EXIT=0`.
+
+### Scan CJK/Cyrillic
+
+`none` pada file kontrak, section ini, dan pesan commit. Tidak ada credential di
+kontrak.
+
+### Production code
+
+Tidak ada perubahan kode produksi. Catatan integritas: `scene_workspace_screen.dart`
+membawa diff **WIP milik Core Worker** yang belum ter-commit (migrasi
+`.valueOrNull` → `.value` di 8 titik). File itu tidak disentuh; kontrak dijalankan
+di worktree apa adanya dan commit hanya memuat report + test kontrak
+(pathspec-scoped).
+
+### Status
+
+**VERIFIED** untuk focus order `SceneWorkspaceScreen` pada 1536x1024 dpr 1.0 di
+codebase saat commit, dengan negative control yang benar-benar gagal. Bukti
+deterministik (widget tree statis, tanpa I/O), bukan screenshot.
+
+Kumulatif: **57 kontrak** focus order terpasang di `test/**/*_focus_order_test.dart`
+(56 tracked sebelum fase ini, + kontrak ini). Terhadap inventaris **89 target**
+`*_screen.dart` (top-level `lib/features/*/presentation/`), distinct layar ter-cover
+naik **48 → 49**; sisa **40** `_screen.dart` live belum punya kontrak. Counter dihitung
+ulang dari `git ls-files` + `find` dengan dua definisi (import `*_screen.dart` =
+47, referensi kelas penuh `*Screen` = 48, union = 49), bukan disalin dari counter lama.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -3911,6 +3911,37 @@ naik **48 → 49**; sisa **40** `_screen.dart` live belum punya kontrak. Counter
 ulang dari `git ls-files` + `find` dengan dua definisi (import `*_screen.dart` =
 47, referensi kelas penuh `*Screen` = 48, union = 49), bukan disalin dari counter lama.
 
+## 68. Fase 68 — Focus Order di Asset Browser Screen (2.4.3)
+
+- **Layar**: `lib/features/assets/presentation/asset_browser_screen.dart` -> `AssetBrowserScreen`.
+- **Kontrak**: `test/features/assets/asset_browser_focus_order_test.dart` (2 test widgets).
+- **Fixture probe**: `ProviderScope(MaterialApp(home: AssetBrowserScreen(assets: [...])))` dengan dua `SearchableAsset` (`Qowner` bertipe `character` + favorit, `Void Sword` bertipe `weapon`) diinjeksikan lewat konstruktor dan `InMemoryAssetRepository` bawaan; tanpa sesi proyek, database, maupun jaringan. Viewport 1536x1024 @ dpr 1.0, `pumpAndSettle(500ms)`, lalu `LogicalKeyboardKey.tab` berulang sampai rect fokus berulang.
+
+**Hasil probe (STOP) — 9 stop:**
+
+| # | label | Rect (left, top, w x h) |
+|---|---|---|
+| 0 | `Grid view` (Tooltip) | 1396, 8, 40x40 |
+| 1 | `List view` (Tooltip) | 1444, 8, 40x40 |
+| 2 | `Compact view` (Tooltip) | 1492, 8, 40x40 |
+| 3 | `Search everything...` (hint TextField) | 64, 84, 1049x24 |
+| 4 | `Favorites` | 1137, 77, 161x38 |
+| 5 | `All types` | 1306, 72, 218x48 |
+| 6 | `Qowner` (kartu) | 12, 148, 206x210 |
+| 7 | `Void Sword` (kartu) | 230, 148, 206x210 |
+| 8 | `Create stand-alone asset` (Tooltip) | 1283, 952, 237x56 |
+
+**Kontrak yang dikunci**: jumlah stop (9) dan urutan label; setiap area fokus `width*height > 0` dan berada dalam viewport; toolbar atas membaca kiri-ke-kanan (tombol tampilan `left` menaik 1396 < 1444 < 1492 pada `top` sama; baris filter `left` menaik 64 < 1137 < 1306 dan seluruhnya di bawah toolbar tampilan); kartu aset `top` sama (148) dengan `left` menaik 12 < 230 dan berada di bawah baris filter; aksi `Create stand-alone asset` adalah stop terakhir dengan `top` 952 di bawah kartu; `tester.takeException()` null (tanpa overflow).
+
+**Pemilihan sasaran (evidence, bukan tebakan)**: 30 layar kecil mandiri sudah diprobe lebih dulu lewat `test/_probe_focus_test.dart` (file sementara, sudah dihapus setelah kontrak dibuat) — probe 1: `OptionalTourScreen`, `MergePreviewScreen`, `LevelEditorScreen`, `AboutScreen`, `AutomationCenterScreen`, `PublishingDashboardScreen`; probe 2: 24 layar (`AnimaticPreview` s/d `WorldSimulationWorkspace`, mencakup cinema/creator/marketplace/multiverse/release/world). Ketigapuluh layar berhenti di `stops=1` dengan rect full-screen `(0, 0, 1536x1024)`, sehingga tidak ada urutan perintah-kunci yang bisa diukur pada layar itu di siklus ini — tidak satu pun dari mereka ditandai lulus. `AssetBrowserScreen` adalah layar pertama dari kelompok itu yang menghasilkan 9 stop nyata, dan fixture-nya sudah terbukti di `test/features/assets/asset_browser_screen_test.dart` (injeksi lewat konstruktor, tanpa DB).
+
+**Status file produksi**: `lib/features/assets/presentation/asset_browser_screen.dart` dalam kondisi dirty milik Core Worker (perubahan non-UI `.valueOrNull` -> `.value`, pola sama seperti yang dicatat di Fase 67); file ini hanya dibaca, tidak dimodifikasi, dan tidak ikut di-`git add`.
+
+**Negative control (WAJIB)**: dengan backup `cp` ke `%TEMP%`, dua ekspektasi urutan label pada daftar hasil ditukar (`'Qowner'` <-> `'Void Sword'`). Hasil: `00:03 +1 -1: Some tests failed.` (exit 1, 1 gagal / 1 lolos) — kontrak terbukti menolak perubahan urutan. Restore dari backup: `00:08 +2: All tests passed!`, backup dihapus. Dengan kontrak dipulihkan, ekspektasi asli kembali hijau.
+
+**Gate fitur**: `dart format` pada file kontrak -> 0 file berubah; `dart analyze test/features/assets/asset_browser_focus_order_test.dart` -> `No issues found!`; `flutter test test/features/assets/` -> exit 0 dengan `01:08 +62: All tests passed!` (reporter default). Reporter JSON terpisah pada direktori yang sama: 22 suite terdeteksi **termasuk** `asset_browser_focus_order_test.dart`, 84 `testDone` sukses, 0 kegagalan, `done.success=true`.
+
+**Counter (dihitung ulang dari live, bukan dari ingatan)**: `lib/features/*/presentation/*_screen.dart` = 89 kandidat; `git ls-files 'test/**/*focus_order*'` = 58 file kontrak, ditambah kontrak fase ini = 59; cakupan union (impor `*_screen.dart` + penyebutan nama kelas `*Screen`) = 49 -> **50 layar tercakup, sisa 39 dari 89**. Definisi kedua tetap sama dengan Fase 67: file yang menguji widget bagian (mis. `dialog`/`panel`) dihitung terhadap layar yang diimpor.
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

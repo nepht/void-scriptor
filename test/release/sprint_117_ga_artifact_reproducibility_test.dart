@@ -4767,4 +4767,204 @@ void main() {
       expect(outcome(broken), isNot('pass'));
     });
   });
+
+  group('117.43-30 a rebuild restatement is read wherever the line puts it '
+      '(the reader takes every claim on the line, not the whole line)', () {
+    // Sprint 117.43-30 (fail-open, fixed): the reader behind
+    // `provenance_record` used `firstMatch` of a pattern anchored `^...$`,
+    // so it answered only for a line that was NOTHING but the claim. The
+    // rest of `provenance_record` read its own claim from the front of the
+    // line and ignored the rest of it — `provenance_logs` and
+    // `signed_candidate` both do — so this was the one reader that made the
+    // claim's POSITION on the line part of its grammar.
+    //
+    // Measured on the shipped document BEFORE the fix (probe, then moved
+    // here): baseline `pass`; the same wrong restatement written as a whole
+    // line `unmet` (the 117.43-15 control); that exact wrong restatement
+    // with a note after it `pass`; two restatements on one line `pass`; a
+    // wrong restatement behind a heading `pass`. The three `pass`es are the
+    // defect — each is a statement of exit code, duration, and window that
+    // the group counted as an item and never compared.
+    //
+    // Bounds are not widened: the claim grammar is byte-for-byte what
+    // 117.43-15 pinned (label, exit code, duration, parseable window), a
+    // label that names no rebuild stays prose, and prose that names a
+    // rebuild without restating a measurement still claims nothing.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> recordOf(Map<String, Object?> manifest) => [
+      for (final line
+          in (manifest['required_evidence']!
+                  as Map<String, Object?>)['provenance_record']!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeRecord(Map<String, Object?> manifest, List<String> lines) =>
+        (manifest['required_evidence']!
+                as Map<String, Object?>)['provenance_record'] =
+            lines;
+
+    /// The shipped `rebuild_b` restatement, or [lines] with that one line
+    /// replaced by [replacement].
+    Map<String, Object?> withRebuildB(String replacement) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      writeRecord(manifest, <String>[
+        for (final line in lines)
+          if (line.startsWith('rebuild_b exit_code')) replacement else line,
+      ]);
+      return manifest;
+    }
+
+    test(
+      '117.43-30 a wrong restatement carrying a note after it is refused',
+      () {
+        expect(
+          outcome(
+            withRebuildB(
+              'rebuild_b exit_code 1 duration_seconds 900 '
+              '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00) '
+              'as recorded',
+            ),
+          ),
+          'unmet',
+          reason:
+              'the line still states an exit code, a duration, and a window '
+              'the record contradicts; a note after the statement is prose, '
+              'not a reason to skip the statement (117.43-15 measures the '
+              'same three numbers with no note on the line)',
+        );
+      },
+    );
+
+    test('117.43-30 a wrong restatement behind a heading is refused', () {
+      expect(
+        outcome(
+          withRebuildB(
+            'verified: rebuild_b exit_code 1 duration_seconds 115 '
+            '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)',
+          ),
+        ),
+        'unmet',
+        reason:
+            'a heading in front of the statement cannot make the statement '
+            'disappear, yet the anchored reader read the line as prose and '
+            'printed provenance_record: 6 item while comparing five',
+      );
+    });
+
+    test('117.43-30 both restatements sharing one line are compared', () {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      writeRecord(manifest, <String>[
+        for (final line in lines)
+          if (line.startsWith('rebuild_a exit_code'))
+            '$line rebuild_b exit_code 1 duration_seconds 900 '
+                '(2026-09-23T13:30:17+07:00 .. '
+                '2026-09-23T13:32:12+07:00)'
+          else if (!line.startsWith('rebuild_b exit_code'))
+            line,
+      ]);
+      expect(
+        outcome(manifest),
+        'unmet',
+        reason:
+            'the second statement on the line is a restatement of '
+            'rebuild_b and the record says exit_code 0; reading only the '
+            'first claim on a line is the split 117.43-27/-29 each found '
+            'in their own group',
+      );
+    });
+
+    test('117.43-30 a restatement of an unrecorded rebuild behind a note is '
+        'refused', () {
+      final manifest = shipped();
+      writeRecord(manifest, <String>[
+        ...recordOf(manifest),
+        'note: rebuild_z exit_code 0 duration_seconds 300 '
+            '(2026-09-25T10:00:00+07:00 .. 2026-09-25T10:05:00+07:00)',
+      ]);
+      expect(
+        outcome(manifest),
+        'unmet',
+        reason:
+            '117.43-15 refused this statement on a line of its own; adding '
+            'a note in front of it must not buy the claim back',
+      );
+    });
+
+    test('117.43-30 an agreeing restatement wearing a note still passes', () {
+      // Both positions the anchored reader rejected are now read, and
+      // reading them cannot refuse the honest document.
+      expect(
+        outcome(
+          withRebuildB(
+            'rebuild_b exit_code 0 duration_seconds 115 '
+            '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00) '
+            'as recorded',
+          ),
+        ),
+        'pass',
+        reason:
+            'the statement agrees with its record, and 117.43-15 '
+            'holds only lines that ARE written to agree',
+      );
+      expect(
+        outcome(
+          withRebuildB(
+            'verified: rebuild_b exit_code 0 '
+            'duration_seconds 115 '
+            '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)',
+          ),
+        ),
+        'pass',
+        reason: 'a heading changes where the claim sits, not what it says',
+      );
+    });
+
+    test('117.43-30 unanchoring the reader does not widen what counts as a '
+        'claim', () {
+      // A label that names no rebuild carries the full grammar and must
+      // stay prose — the position change must not make the gate read
+      // claims the document never made.
+      final foreign = withRebuildB(
+        'node exit_code 0 duration_seconds 115 '
+        '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)',
+      );
+      expect(
+        outcome(foreign),
+        'pass',
+        reason:
+            'a line naming no rebuild states no rebuild measurement '
+            '(117.43-15 pinned the label filter, not the anchors)',
+      );
+
+      // Prose naming a rebuild while stating nothing still claims
+      // nothing, and dropping the anchors must not turn it into a claim.
+      final prose = shipped();
+      writeRecord(prose, <String>[
+        ...recordOf(prose),
+        'rebuild_a rebuilt cleanly after the signed snapshot restore',
+      ]);
+      expect(
+        outcome(prose),
+        'pass',
+        reason:
+            'no exit code, duration, or window means no restatement to '
+            'compare (117.43-07 non-claim rule)',
+      );
+    });
+  });
 }

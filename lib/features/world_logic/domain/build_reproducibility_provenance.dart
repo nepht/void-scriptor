@@ -36,12 +36,17 @@ const String _kCitationPrefix = 'signed_candidate ';
 /// The grammar a `provenance_record` line uses to restate a rebuild's
 /// measurements: label, exit code, duration, and both ends of its window.
 ///
+/// The grammar is deliberately NOT anchored at either end of the line: a claim
+/// may sit behind a heading or carry a note after it, and a line may state more
+/// than one claim. Sprint 117.43-30: anchoring `^...$` made the reader skip
+/// every such line, so the restatement written on it was never compared.
+///
 /// A 40-hex source revision is deliberately NOT part of this pattern — whether
 /// such a revision names a real tree is not decidable without resolving a git
 /// object, which this layer does not do.
 final RegExp _kRebuildSummaryPattern = RegExp(
-  r'^(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)\s+'
-  r'\((.+?)\s+\.\.\s+(.+?)\)$',
+  r'(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)\s+'
+  r'\((.+?)\s+\.\.\s+(.+?)\)',
 );
 
 /// A `provenance_logs` line and the paths it names.
@@ -689,9 +694,12 @@ class BuildProvenanceEvidence {
   /// * `source_revision` names the tree, and this layer resolves no git
   ///   objects. A fabricated 40-hex revision is shape-identical to a real one,
   ///   so its existence is not decidable here without adding a process seam
-  ///   that would make the verdict depend on a live checkout. Only its weaker
-  ///   shape claim is enforced: a value that is not 40 hex characters at all
-  ///   names no tree.
+  ///   that would make the verdict depend on a live checkout. Neither is its
+  ///   shape: nothing in `lib/` checks this line for 40 hex characters, and
+  ///   refusing a value that is not would apply a rule the document never
+  ///   stated. The 117.43-15 test pins `source_revision not-a-revision-at-all`
+  ///   as a non-claim, which the earlier shape rule would have refused; the
+  ///   line's only enforcement is that the group holds a non-blank string.
   ///
   /// Everything else is prose. `rebuild_a rebuilt cleanly after ...` names a
   /// rebuild while stating no exit code, duration, or window, so it makes no
@@ -705,24 +713,31 @@ class BuildProvenanceEvidence {
     if (lines == null || rebuilds == null) return true;
 
     for (final line in lines) {
-      final summary = _parseRebuildSummary(line.trim());
-      if (summary == null) {
+      final summaries = _rebuildSummariesIn(line.trim());
+      if (summaries.isEmpty) {
         if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
         continue;
       }
 
-      final label = summary.label;
-      final matches = <RebuildResult>[];
-      for (final rebuild in rebuilds) {
-        if (rebuild.label == label) matches.add(rebuild);
-      }
-      // A summary naming a rebuild no record mentions is the inverse of the
-      // omission 117.43-14 closed: the gate once reported a rebuild count it
-      // had chosen rather than read, and this adds a count it never read.
-      if (matches.isEmpty) return false;
-      for (final rebuild in matches) {
-        if (rebuild.exitCode != summary.exitCode) return false;
-        if (!_summaryDurationAgrees(rebuild, summary)) return false;
+      // Sprint 117.43-30: a line may state more than one restatement, and each
+      // of them is held to the record it names. Reading only the first would
+      // let a contradiction be written beside an agreeing restatement and
+      // never compared — the reader/parser split 117.43-27 and 117.43-29 each
+      // found in their own group.
+      for (final summary in summaries) {
+        final label = summary.label;
+        final matches = <RebuildResult>[];
+        for (final rebuild in rebuilds) {
+          if (rebuild.label == label) matches.add(rebuild);
+        }
+        // A summary naming a rebuild no record mentions is the inverse of the
+        // omission 117.43-14 closed: the gate once reported a rebuild count it
+        // had chosen rather than read, and this adds a count it never read.
+        if (matches.isEmpty) return false;
+        for (final rebuild in matches) {
+          if (rebuild.exitCode != summary.exitCode) return false;
+          if (!_summaryDurationAgrees(rebuild, summary)) return false;
+        }
       }
     }
     // Sprint 117.43-25 (unmeasured-claim, fixed): a `signed_candidate <path>`
@@ -796,24 +811,48 @@ class BuildProvenanceEvidence {
     return _LogSummary(paths.toSet());
   }
 
-  /// A `rebuild_<label> exit_code <n> duration_seconds <n> (<a> .. <b>)` line.
+  /// Every `rebuild_<label> exit_code <n> duration_seconds <n> (<a> .. <b>)`
+  /// claim stated on [line], in the order the line states them.
   ///
-  /// Null for every other line, including prose that names a rebuild without
-  /// restating a measurement.
-  static _RebuildSummary? _parseRebuildSummary(String line) {
-    final match = _kRebuildSummaryPattern.firstMatch(line);
-    if (match == null) return null;
-    final label = match.group(1)!;
-    // Only the summary lines that name a rebuild are restatements. A line that
-    // merely starts with `rebuild_` but states no measurement is prose.
-    if (!label.startsWith('rebuild_')) return null;
-    final exitCode = int.tryParse(match.group(2)!);
-    final duration = int.tryParse(match.group(3)!);
-    if (exitCode == null || duration == null) return null;
-    final start = DateTime.tryParse(match.group(4)!);
-    final finish = DateTime.tryParse(match.group(5)!);
-    if (start == null || finish == null) return null;
-    return _RebuildSummary(label, exitCode, duration, start, finish);
+  /// Null-equivalent for a line that states none: prose that names a rebuild
+  /// without restating a measurement matches nothing and stays prose.
+  ///
+  /// Sprint 117.43-30 (fail-open, fixed): this reader took `firstMatch` of a
+  /// pattern anchored `^...$`, so it answered only for a line that was nothing
+  /// BUT the claim. A line carrying the claim anywhere else — a heading in
+  /// front of it, a note after it, or a second restatement beside the first —
+  /// matched nothing and was read as prose, and the restatement written on it
+  /// was never compared with the record it names. A document could therefore
+  /// move a wrong restatement onto such a line and the group would still print
+  /// `provenance_record: 6 item` while comparing five lines. That is the same
+  /// shape 117.43-27/-28 closed for digest lines and 117.43-29 for toolchain
+  /// lines — one claim per line read by a reader, several claims written — only
+  /// here it is the third reader of `provenance_record` that lagged the other
+  /// two: `provenance_logs` and `signed_candidate` both read their claim from
+  /// the front of the line and ignore whatever follows it.
+  ///
+  /// The claim grammar itself is unchanged, so nothing new becomes a claim: the
+  /// window still has to parse as the pair of timestamps it is, an exit code
+  /// and a duration still have to be present, and the label still has to name a
+  /// rebuild. `rebuild_a rebuilt cleanly after ...` matches nothing, exactly as
+  /// 117.43-15 pinned it.
+  static List<_RebuildSummary> _rebuildSummariesIn(String line) {
+    final summaries = <_RebuildSummary>[];
+    for (final match in _kRebuildSummaryPattern.allMatches(line)) {
+      final label = match.group(1)!;
+      // Only the summary lines that name a rebuild are restatements. A line
+      // that merely contains `rebuild_` somewhere and states no measurement is
+      // prose.
+      if (!label.startsWith('rebuild_')) continue;
+      final exitCode = int.tryParse(match.group(2)!);
+      final duration = int.tryParse(match.group(3)!);
+      if (exitCode == null || duration == null) continue;
+      final start = DateTime.tryParse(match.group(4)!);
+      final finish = DateTime.tryParse(match.group(5)!);
+      if (start == null || finish == null) continue;
+      summaries.add(_RebuildSummary(label, exitCode, duration, start, finish));
+    }
+    return summaries;
   }
 
   /// Whether a `provenance_logs` line contradicts the logs the rebuild records

@@ -632,4 +632,169 @@ void main() {
       );
     },
   );
+
+  test('117.43-24 a method stating an artifact scope the records do not match '
+      'contradicts the digests it names', () {
+    final a = 'a' * 64;
+    final b = 'b' * 64;
+
+    // The six artifacts the SHIPPED document records, in the order its
+    // method enumerates them. Rebuild B differs on exactly one, so the
+    // notBitIdentical verdict below is honest and the ONLY question these
+    // cases ask is whether the method's stated scope matches the records.
+    const recorded = <String>[
+      'void_scriptor.exe',
+      'dartjni.dll',
+      'file_selector_windows_plugin.dll',
+      'flutter_secure_storage_windows_plugin.dll',
+      'flutter_windows.dll',
+      'sqlite3.dll',
+    ];
+
+    ArtifactComparison comparedWith(String method) => ArtifactComparison(
+      method: method,
+      rebuildA: _rebuild('rebuild_a', <String, String>{
+        for (final name in recorded) name: a,
+      }),
+      rebuildB: _rebuild('rebuild_b', <String, String>{
+        for (final name in recorded) name: name == 'dartjni.dll' ? b : a,
+      }),
+      verdict: RebuildVerdict.notBitIdentical,
+      limits: <String>['fixture: digests deliberately differ'],
+    );
+
+    // Control 1: the method the SHIPPED document states, read from disk. It
+    // says "the 6 exe/dll artifacts" and enumerates six names, and six
+    // artifacts are recorded — so the honest document must stay well formed.
+    final shipped =
+        jsonDecode(
+              File(
+                'docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    final shippedMethod =
+        ((shipped['required_evidence']
+                    as Map<String, dynamic>)['artifact_comparison']
+                as Map<String, dynamic>)['method']
+            as String;
+    expect(shippedMethod, contains('the 6 exe/dll artifacts'));
+    expect(
+      comparedWith(shippedMethod).isWellFormed,
+      isTrue,
+      reason:
+          'the shipped method names six artifacts and six are recorded, so '
+          'its stated scope agrees with the digests it claims to cover',
+    );
+
+    // Control 2: a method stating no count and no enumeration makes no scope
+    // claim, so it is not measured — the same non-claim rule 117.43-07
+    // settled for windows, commands, logs, and verdict strings.
+    expect(
+      comparedWith('SHA-256 over exe+dll set').isWellFormed,
+      isTrue,
+      reason: 'a method that states no artifact count contradicts nothing',
+    );
+    expect(
+      comparedWith('cold rebuilds, cache dropped').isWellFormed,
+      isTrue,
+      reason:
+          'a method that names neither count nor scope contradicts '
+          'nothing',
+    );
+
+    // The defect, part 1: the count. `method` says HOW MANY artifacts the
+    // comparison covered, and 117.43-22 established that this same field is
+    // read for the ALGORITHM that produced the digests — but the count and
+    // the enumeration beside it were never read by anything. Six digests
+    // recorded under a method that claims to have covered four describe a
+    // comparison that was never performed as stated.
+    for (final method in <String>[
+      'SHA-256 over the 4 exe/dll artifacts',
+      'SHA-256 over the 7 exe/dll artifacts',
+      'SHA-256 over the 1 artifacts',
+      'SHA-256 over 12 artifacts',
+    ]) {
+      expect(
+        comparedWith(method).isWellFormed,
+        isFalse,
+        reason:
+            '"$method" states a scope six recorded artifacts do not match, '
+            'and a comparison that misstates what it covered is not evidence '
+            'about those digests',
+      );
+    }
+
+    // The defect, part 2: the enumeration. The method names an artifact that
+    // no record hashed, so it claims coverage of a digest the same document
+    // never recorded.
+    expect(
+      comparedWith(
+        'SHA-256 over the 6 exe/dll artifacts (void_scriptor.exe + '
+        'dartjni.dll, file_selector_windows_plugin.dll, '
+        'flutter_secure_storage_windows_plugin.dll, flutter_windows.dll, '
+        'sqlite3.dll, phantom_driver.dll)',
+      ).isWellFormed,
+      isFalse,
+      reason:
+          'a method naming an artifact no record hashed claims coverage of a '
+          'digest the document never recorded',
+    );
+
+    // Boundary, pinned so the rule cannot over-refuse: an enumeration that
+    // illustrates rather than exhausts makes no completeness claim, so a
+    // recorded artifact the method does not name is left alone. Requiring the
+    // list to be complete would invent an acceptance criterion the evidence
+    // never stated, which is the same overclaim this gate exists to refuse.
+    expect(
+      comparedWith(
+        'SHA-256 over the 6 exe/dll artifacts (void_scriptor.exe + '
+        'dartjni.dll)',
+      ).isWellFormed,
+      isTrue,
+      reason:
+          'an illustrative enumeration claims no completeness, so an artifact '
+          'the records hold but the method does not name is not a defect',
+    );
+
+    // The same contradiction has to reach the group verdict, not just the
+    // comparison object: the gate printed `artifact_comparison: ... (6
+    // artifact)` for a method it never read the scope of.
+    BuildProvenanceEvidence withMethod(String method) =>
+        BuildProvenanceEvidence(
+          buildInputs: <String>['pubspec.yaml sha256 $a'],
+          toolchainVersions: <String>['Flutter 3.x', 'Dart 3.x'],
+          dependencyLock: <String>['pubspec.lock sha256 $a'],
+          rebuildResults: <RebuildResult>[
+            _rebuild('rebuild_a', <String, String>{
+              for (final name in recorded) name: a,
+            }),
+            _rebuild('rebuild_b', <String, String>{
+              for (final name in recorded) name: name == 'dartjni.dll' ? b : a,
+            }),
+          ],
+          artifactComparison: comparedWith(method),
+          provenanceRecord: <String>['source_revision $a'],
+        );
+
+    final scopeMismatch = withMethod('SHA-256 over the 3 exe/dll artifacts');
+    expect(
+      BuildProvenanceEvidence.missingEvidence(scopeMismatch),
+      contains('artifact_comparison'),
+      reason:
+          'a comparison that misstates how many artifacts it covered is not '
+          'a comparison of those artifacts',
+    );
+    expect(
+      BuildProvenanceEvidence.evaluate(scopeMismatch).state,
+      isNot(BuildProvenanceState.pass),
+    );
+
+    // The honest document must still pass end to end at this layer.
+    expect(
+      BuildProvenanceEvidence.missingEvidence(withMethod(shippedMethod)),
+      isEmpty,
+      reason: 'the shipped method agrees with the six artifacts recorded',
+    );
+  });
 }

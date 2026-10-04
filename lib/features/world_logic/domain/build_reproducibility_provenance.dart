@@ -101,6 +101,59 @@ bool _namesOtherDigestAlgorithm(String method) {
   return tokens.any(_kNonSha256Algorithms.contains);
 }
 
+/// The artifacts a [method] sentence claims to have covered, as a count and a
+/// name set, or `null` when the sentence makes no scope claim at all.
+///
+/// Both shapes are returned together because they are one claim read two ways:
+/// a count with no names still states how much was covered, and names with no
+/// count still state which artifacts. Either alone would under-read the
+/// sentence.
+({int? count, Set<String>? names})? _statedArtifactScope(String method) {
+  // The count. `the 6 exe/dll artifacts`, `6 exe/dll artifacts`, and `over 12
+  // artifacts` all state how many were covered. Anchoring on `artifacts` keeps
+  // unrelated numbers out: `SHA-256` has a number but names no artifact scope,
+  // and `dartjni.dll` is named without ever stating a total.
+  final countMatch = RegExp(
+    r'\b(\d+)\s+(?:[a-zA-Z/]*\s+)?artifacts?\b',
+    caseSensitive: false,
+  ).firstMatch(method);
+  final count = countMatch == null ? null : int.tryParse(countMatch.group(1)!);
+
+  // The enumeration, when the sentence offers one: a parenthetical, or a
+  // trailing `+`/`and` list. `SHA-256 over the 6 exe/dll artifacts` has neither
+  // and claims no individual artifact, so there is nothing to cross-check.
+  final names = <String>{};
+  final parenthesised = RegExp(r'\(([^()]*)\)').allMatches(method);
+  for (final match in parenthesised) {
+    names.addAll(_artifactNamesIn(match.group(1)!));
+  }
+  // `void_scriptor.exe + dartjni.dll` and `a, b and c` both sit outside
+  // parentheses in a method sentence, so collect the names that appear after a
+  // `+` or `and` anywhere in the line.
+  final joined = RegExp(
+    r'(?:\+|,|\band\b)([^,]+?)(?=\s*(?:,|\+|\band\b|\)|$))',
+    caseSensitive: false,
+  ).allMatches(method);
+  for (final match in joined) {
+    names.addAll(_artifactNamesIn(match.group(1)!));
+  }
+  if (names.isEmpty) return count == null ? null : (count: count, names: null);
+  return (count: count, names: names);
+}
+
+/// Artifact file names mentioned in one clause of a method sentence.
+///
+/// Only names shaped like build output are collected, so a qualifier such as
+/// `two independent cycles` or `the same tree and machine` is not mistaken
+/// for an artifact: a name has to end in an extension, and the extensions
+/// accepted are the ones a Windows build actually emits.
+Iterable<String> _artifactNamesIn(String clause) sync* {
+  final pattern = RegExp(r'[\w.-]+\.(?:exe|dll|so|dylib|a|lib|dylib)');
+  for (final match in pattern.allMatches(clause)) {
+    yield match.group(0)!.toLowerCase();
+  }
+}
+
 /// Digest algorithms that cannot produce a 64-character hex value, spelled as
 /// the token forms a method line can carry (`SHA-1`, `sha1`, `MD5`, `crc32`).
 ///
@@ -383,6 +436,35 @@ class ArtifactComparison {
     final keysB = rebuildB!.artifactHashes.keys.toSet();
     final sameKeys = keysA.length == keysB.length && keysA.containsAll(keysB);
     if (!sameKeys) return false;
+    // Sprint 117.43-24 (fail-open, fixed): 117.43-22 read this same `method`
+    // sentence for the ALGORITHM that produced the digests and left the rest of
+    // it unread. But `method` also states the SCOPE of the comparison — the
+    // shipped document says "SHA-256 over the 6 exe/dll artifacts" and then
+    // enumerates six names — and a count or a name the recorded digests do not
+    // support means the comparison was never performed over what it claims.
+    // Nothing below compares the scope, so a document recording six digests
+    // under a method claiming four (or naming a seventh artifact no rebuild
+    // hashed) reported no missing group, `evaluate` returned `pass`, and the
+    // gate printed `artifact_comparison: ... (6 artifact)` as though the
+    // coverage had been checked.
+    //
+    // Narrow for the same reason 117.43-22 and 117.43-23 are narrow. A sentence
+    // that states no count and enumerates nothing makes no scope claim and is
+    // left alone. An enumeration that illustrates rather than exhausts claims no
+    // completeness, so an artifact the records hold but the sentence does not
+    // name is not a defect — requiring the list to be complete would invent an
+    // acceptance criterion the evidence never stated, the very overclaim this
+    // gate exists to refuse. What is refused is the affirmative claim: a total
+    // the recorded inventory does not match, and a named artifact that no
+    // rebuild in this same comparison ever hashed.
+    final scope = _statedArtifactScope(statedMethod);
+    if (scope != null) {
+      final recorded = keysA;
+      if (scope.count != null && scope.count != recorded.length) return false;
+      if (scope.names != null && !recorded.containsAll(scope.names!)) {
+        return false;
+      }
+    }
     // Sprint 117.43-01 (fail-open, fixed): the verdict is an assertion about
     // hash EQUALITY, so comparing only the artifact name sets accepted a
     // `bitIdentical` claim whose two rebuilds recorded different digests, and

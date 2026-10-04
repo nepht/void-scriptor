@@ -4071,6 +4071,50 @@ Iteration jujur: probe versi awal mencetak `widget:Focus` untuk stop 0 dan ketig
 
 **Catatan format**: file report ini terbaca LF-only (0 CRLF, `newline=''`), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file - sama seperti koreksi Fase 69.
 
+## 72. Fase 72 — Focus Order di Multiverse Graph Screen (2.4.3)
+
+**Layar**: `lib/features/multiverse/presentation/multiverse_graph_screen.dart` — widget `MultiverseGraphScreen` (112 baris, `StatelessWidget`, murni Material + `VoidThemeContext` yang punya fallback `VoidPalette.dark`; tanpa database, provider, atau network).
+
+**Pemilihan layar (evidence, bukan asumsi)**: disaring dari `lib/features/**/*_screen.dart` (89 file) yang nama kelasnya belum muncul di kontrak `test/**/*_focus_order_test.dart` manapun. Enam kandidat tersisa, dan hanya satu yang memenuhi syarat kecil+mandiri: `project_ai_generation_gallery_screen` butuh `projectSessionProvider` + output Drift (state kosongnya tidak punya stop sama sekali) -> **DEFERRED**; `character_workspace_screen` / `creature_workspace_screen` / `environment_workspace_screen` butuh session aktif dan hanya menyisakan `IconButton(onPressed: null)` (tidak fokusable); `automation_center_screen` hanya berisi `Switch(onChanged: null)` (disabled, tidak fokusable); `optional_tour_screen` dan `level_editor_screen` punya 1 kontrol isi. `MultiverseGraphScreen` dipakai karena dia mandiri dan memberi dua elemen interaktif nyata di viewport uji: tombol `Back` otomatis di AppBar + `Slider` zoom.
+
+**Probe** (`test/features/multiverse/presentation/_probe_focus_test.dart`, dihapus setelah kontrak dibuat): `pumpWidget(MaterialApp(navigatorKey, home: Scaffold(body: Text('seed'))))`, lalu `push(MaterialPageRoute(builder: (_) => MultiverseGraphScreen()))` agar `BackButton` AppBar ikut ter traversal; viewport fisik **1536x1024**, `devicePixelRatio 1.0`; loop `sendKeyEvent(LogicalKeyboardKey.tab)` maksimal 12 iterasi, berhenti begitu rect focus mengulang. Label = `Text` non-Icon pertama di sub-tree focus; bila tidak ada, `Tooltip.message` terdekat (descendant lalu ancestor — `IconButton` membungkus focus node-nya DI LUAR `Tooltip` miliknya), lalu tipe widget interaktif terdekat.
+
+Output probe (exit 0, `All tests passed`):
+
+```
+STOP 0: "Back" (8, 8, 40x40) FocusNode repeat=false
+STOP 1: "Slider" (105, 72, 1391x48) FocusNode repeat=false
+STOP 2: "Back" (8, 8, 40x40) FocusNode repeat=true
+TOTAL STOPS: 3
+RECT BackButton: Rect.fromLTRB(4.0, 4.0, 52.0, 52.0)
+RECT Slider: Rect.fromLTRB(105.0, 72.0, 1496.0, 120.0)
+RECT AppBar: Rect.fromLTRB(0.0, 0.0, 1536.0, 56.0) title=1
+```
+
+Interpretasi: **2 stop unik + 1 iterasi wrap** (Tab ke-3 mengulang rect pertama, membuktikan traversal tertutup). Stop 0 adalah tombol `Back` (rect focus `8,8,40x40` berada di dalam `BackButton` `4,4,52x52`); stop 1 adalah `Slider` zoom (rect focus `105,72,1391x48` identik dengan rect `Slider` `105,72..1496,120`). Judul `Multiverse Graph` dan label `Zoom` tidak punya focus node — teks statis memang tidak boleh mengambil fokus.
+
+**Kontrak**: `test/features/multiverse/presentation/multiverse_graph_focus_order_test.dart` (1 testWidgets) mengunci:
+1. **Jumlah stop** = 3, dengan `sublist(0, length-1)` berjumlah 2 dan `stops.last.rect == stops.first.rect` (wrap-around).
+2. **Urutan label** = `['Back', 'Slider']` — urutan tindakan yang terlihat, AppBar dulu baru body.
+3. **Area focus non-zero** (`rect != Rect.zero`, `width > 0`, `height > 0`) plus geometri terkunci: `(8, 8, 40x40)` untuk Back dan `(105, 72, 1391x48)` untuk Slider.
+4. **Properti posisi**: `top` Back < `top` Slider (atas-ke-bawah) dan `left` Back < `left` Slider (kiri-ke-kanan).
+5. **Pemetaan ke affordance nyata**: `find.byType(BackButton)` dan `find.byType(Slider)` masing-masing `findsOneWidget`, dan rect focus berada di dalam rect widget-nya. `tester.takeException()` null sepanjang test.
+
+**Gate (jalur langsung, bukan ad-hoc)**:
+- `dart format test/features/multiverse/presentation/multiverse_graph_focus_order_test.dart` -> `Formatted 1 file (1 changed)`, exit 0.
+- `dart analyze test/features/multiverse/presentation/multiverse_graph_focus_order_test.dart` -> `No issues found!`, exit 0.
+- `flutter test test/features/multiverse/presentation/multiverse_graph_focus_order_test.dart` -> `00:01 +1: All tests passed!`, exit 0.
+
+**Negative control (wajib)**: backup dengan `cp` ke `C:/Users/nepht/AppData/Local/Temp/multiverse_graph_focus_order_test.dart.bak`, lalu `sed -i` menukar ekspektasi urutan label menjadi `['Slider', 'Back']` (baris 20). `flutter test <kontrak>` -> **GAGAL**, `NC_EXIT=1`, keluaran `Some tests failed.`, 1 test `[E]`, assertion jatuh di **baris 143** (`Tab order must follow the visible action order.`), `+0 -1`. File dikembalikan dari backup, backup dihapus, urutan asli `'Back'` di baris 20 terverifikasi kembali. Kontrak terbukti punya daya tangkap, bukan test yang selalu hijau.
+
+**Tidak ada perubahan kode produksi**: probe tidak menemukan defect urutan fokus (Back -> Slider sudah sesuai urutan visual). Layar ini belum terpasang di `app_router.dart` (referensi hanya dari test-nya sendiri) — kontrak dipasang lebih dulu agar tertutup saat layar di-wire.
+
+**Counter (dihitung ulang dari live setelah kontrak dibuat)**: `git ls-files 'test/**/*focus_order*'` = **63 file ter-commit** — 62 berakhiran `_focus_order_test.dart` (61 sebelum kontrak fase ini) plus `test/features/authentication/focus_order_test.dart` yang tidak ber-prefix nama layar. Cakupan union (penyebutan nama kelas `*Screen` di seluruh kontrak focus order terhadap 89 file `lib/features/**/*_screen.dart`) 52 -> **53 layar tercakup, sisa 36 dari 89**. Catatan: penghitungan fase sebelumnya memakai pathspec yang sama tapi hanya melaporkan 61+1; angka live di atas yang benar.
+
+**Catatan format**: report ini terbaca LF-only (0 CRLF, dibaca/tulis dengan `newline=''`), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file dan diff tetap terbatas pada section ini — sama seperti koreksi Fase 69/71. Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -344,6 +344,7 @@ class RebuildResult {
     this.finishedAt,
     this.command,
     this.log,
+    this.durationSeconds,
   });
 
   /// Which rebuild this is (for example `rebuild_a`).
@@ -368,6 +369,19 @@ class RebuildResult {
 
   /// Path to the build log the record states supports this rebuild.
   final String? log;
+
+  /// How long the record says this rebuild took, or null when the record
+  /// states no duration.
+  ///
+  /// Sprint 117.43-36: `_rebuildFrom` decoded `duration_seconds` and then
+  /// dropped it on the floor the same way it once dropped the timestamps
+  /// (117.43-09), so the number a record states about its own length lived
+  /// only in the gate's raw map. The `provenance_record` summary line
+  /// restates it as a claim of its own, and that copy could be measured
+  /// only against a window the record may never state — a record saying
+  /// 999 seconds beside a summary saying 145 published as `pass`. Hold the
+  /// claim where the comparison that needs it runs.
+  final int? durationSeconds;
 
   bool get isWellFormed {
     if (label.trim().isEmpty || artifactHashes.isEmpty) return false;
@@ -1004,12 +1018,26 @@ class BuildProvenanceEvidence {
     return false;
   }
 
-  /// Whether the summary's window is the rebuild's own window, and the stated
-  /// duration is the window's own length.
+  /// Whether the summary restates the duration the record states, its window
+  /// is the rebuild's own window, and that duration is the window's own length.
+  ///
+  /// Sprint 117.43-36: the window was the ONLY measure this function made of
+  /// the duration. A record may state how long it ran and place no timestamps
+  /// — `_decodeWindow` accepts that shape and `hasWellFormedWindow` calls it
+  /// no window claim (117.43-07) — and then this returned true before it
+  /// looked at a number, because `RebuildResult` had no field to hold one.
+  /// The `rebuild_run` group is compared with the record in the gate while
+  /// this line restated the same duration unmeasured: two copies of one claim
+  /// free to disagree while the third agreed. Hold the summary to the record's
+  /// own duration first, so the comparison survives the missing window; the
+  /// window checks below still hold both copies to the interval when one is
+  /// stated.
   static bool _summaryDurationAgrees(
     RebuildResult rebuild,
     _RebuildSummary summary,
   ) {
+    final recorded = rebuild.durationSeconds;
+    if (recorded != null && recorded != summary.duration) return false;
     final start = rebuild.startedAt == null
         ? null
         : DateTime.tryParse(rebuild.startedAt!.trim());
@@ -1019,12 +1047,10 @@ class BuildProvenanceEvidence {
     if (start == null || finish == null) return true;
     if (!start.isAtSameMomentAs(summary.start)) return false;
     if (!finish.isAtSameMomentAs(summary.finish)) return false;
-    // The record's own duration is measured against its own window by the
-    // gate's `_durationAgrees`; here the summary is measured against that same
-    // window, so both numbers are held to the interval itself rather than to
-    // each other. A summary that restates a correct duration while the record
-    // disagrees with its own window is still caught, because the summary is
-    // compared to the window, not copied from the record.
+    // With a window present the summary is held to the interval itself, not
+    // copied from the record: a summary restating a correct duration while
+    // the record disagrees with its own window is still caught, because the
+    // gate measures the record against that same window separately.
     return summary.duration == finish.difference(start).inSeconds;
   }
 

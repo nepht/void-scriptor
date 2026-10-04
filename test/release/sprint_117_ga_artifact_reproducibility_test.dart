@@ -639,23 +639,20 @@ void main() {
   });
 
   group('117.43 provenance and packaging measurement', () {
-    test(
-      'the shipped provenance manifest evaluates through the 113.39 seam',
-      () {
-        final manifest = _manifest(_kProvenanceManifest);
-        expect(manifest['canonical_step'], '113.39');
-        final check = Sprint117GaArtifactGate.measureProvenance(
-          provenanceManifest: manifest,
-        );
-        expect(check.outputId, 'provenance');
-        // The shipped 113.39 evidence records BIT_IDENTICAL: two cold rebuilds
-        // hashed the same six artifacts once /Brepro linked them deterministically.
-        // 117.43-01 checks that identity claim against the recorded digests before
-        // it reaches here, so the pass is measured, never assumed.
-        expect(check.status, Sprint117GaArtifactStatus.pass);
-        expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
-      },
-    );
+    test('the shipped provenance manifest evaluates through the 113.39 seam', () {
+      final manifest = _manifest(_kProvenanceManifest);
+      expect(manifest['canonical_step'], '113.39');
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest,
+      );
+      expect(check.outputId, 'provenance');
+      // The shipped 113.39 evidence records BIT_IDENTICAL: two cold rebuilds
+      // hashed the same six artifacts once /Brepro linked them deterministically.
+      // 117.43-01 checks that identity claim against the recorded digests before
+      // it reaches here, so the pass is measured, never assumed.
+      expect(check.status, Sprint117GaArtifactStatus.pass);
+      expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
+    });
 
     test('a manifest with no evidence object is unmet', () {
       final check = Sprint117GaArtifactGate.measureProvenance(
@@ -973,7 +970,7 @@ void main() {
 
     test(
       'the shipped manifest passes provenance only because its identity claim '
-        'is backed by matching digests',
+      'is backed by matching digests',
       () {
         final manifest = Sprint117GaArtifactGate.readManifest(
           Sprint117GaPackagingContract.provenanceManifestPath,
@@ -3161,30 +3158,27 @@ void main() {
       );
     });
 
-    test(
-      '117.43-15 a summary line naming a log no rebuild cites is refused',
-      () {
-        expect(
-          statusOf(
-            withRecord(
-              (lines) => [
-                for (final line in lines)
-                  if (line.startsWith('provenance_logs'))
-                    'provenance_logs docs/evidence/sprint-113-39-reverify-20261004-a.log '
-                        'docs/evidence/never-existed.log'
-                  else
-                    line,
-              ],
-            ),
+    test('117.43-15 a summary line naming a log no rebuild cites is refused', () {
+      expect(
+        statusOf(
+          withRecord(
+            (lines) => [
+              for (final line in lines)
+                if (line.startsWith('provenance_logs'))
+                  'provenance_logs docs/evidence/sprint-113-39-reverify-20261004-a.log '
+                      'docs/evidence/never-existed.log'
+                else
+                  line,
+            ],
           ),
-          'unmet',
-          reason:
-              '117.43-10 and 117.43-14 made every rebuild log readable, so a '
-              'summary naming a different set of logs is contradicted by the '
-              'records it summarises',
-        );
-      },
-    );
+        ),
+        'unmet',
+        reason:
+            '117.43-10 and 117.43-14 made every rebuild log readable, so a '
+            'summary naming a different set of logs is contradicted by the '
+            'records it summarises',
+      );
+    });
 
     test('117.43-15 a source revision is left unmeasured, and that is deliberate', () {
       // Recorded as an explicit non-decision rather than a rule, because
@@ -5523,6 +5517,104 @@ void main() {
             'the same claims with the cited logs named are an honest record; '
             'opening the second claim must not change the verdict of a '
             'document that states both correctly',
+      );
+    });
+  });
+  // RED-first for defect 117.43-36: the only measure the file ever made of a
+  // record's own `duration_seconds` ran THROUGH its window — the pair helpers
+  // in the gate skip a record that places no timestamps, and `_summaryDurationAgrees`
+  // returns true before it looks at a number, because `RebuildResult` has no
+  // field that can hold one. So a duration that two copies of the SAME claim
+  // state differently is published as `provenance_evaluation: pass` as long as
+  // the record does not say when it ran: the copy in `rebuild_run` is compared
+  // with the record, and the copy in `provenance_record` — a full restatement
+  // with its own window — is compared with nothing at all.
+  group('117.43-36 a summary duration that contradicts the record it names '
+      'is refused', () {
+    /// The shipped document with rebuild_a's timeline removed and its duration
+    /// claim rewritten to 999 seconds — restated into `rebuild_run` as well, so
+    /// the two copies the gate already compares agree and the `provenance_record`
+    /// summary is the only copy left that can disagree. Nothing else in the
+    /// document changes, so only the seam under test can decide the verdict.
+    Map<String, Object?> manifestWithoutTimeline({
+      required String summaryLine,
+    }) {
+      final manifest =
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+      final evidence = manifest['required_evidence']! as Map<String, Object?>;
+      final records = (evidence['rebuild_results']! as List<dynamic>)
+          .cast<Map<String, Object?>>();
+      final first = records[0];
+      first.remove('started_at');
+      first.remove('finished_at');
+      first['duration_seconds'] = 999;
+      (manifest['rebuild_run']!
+              as Map<String, Object?>)['rebuild_a_duration_seconds'] =
+          999;
+      final lines = (evidence['provenance_record']! as List<dynamic>)
+          .cast<String>();
+      lines[2] = summaryLine;
+      return manifest;
+    }
+
+    test('117.43-36 a provenance summary stating another duration than the '
+        'record it names is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithoutTimeline(
+          // The line the document ships: rebuild_a took 145 seconds between
+          // two timestamps the same document no longer states anywhere.
+          summaryLine:
+              'rebuild_a exit_code 0 duration_seconds 145 '
+              '(2026-10-04T20:40:12.334+07:00 '
+              '.. 2026-10-04T20:42:37.771+07:00)',
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the record says rebuild_a took 999 seconds and the '
+            '`provenance_record` line restating it says 145; two copies of one '
+            'claim that disagree must not be published as pass, and the window '
+            'the summary carries cannot substitute for the timeline the record '
+            'does not state',
+      );
+      expect(
+        check.observed,
+        contains('provenance_record'),
+        reason:
+            'the refusal must come from the group holding the contradicting '
+            'summary line, not from an unrelated rule that happens to fire '
+            'when the timeline is removed',
+      );
+    });
+
+    test('117.43-36 the same document agreeing with itself still passes', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifestWithoutTimeline(
+          // Control: rebuild_a still places no timeline, so the shape under
+          // test is unchanged — only the number now matches the record and
+          // the window behind it is the 999 seconds it states.
+          summaryLine:
+              'rebuild_a exit_code 0 duration_seconds 999 '
+              '(2026-10-04T20:40:12.334+07:00 '
+              '.. 2026-10-04T20:56:51.334+07:00)',
+        ),
+      );
+
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'a record that states how long it took and a summary that restates '
+            'the same number is an honest document; comparing the two copies '
+            'must not refuse it',
       );
     });
   });

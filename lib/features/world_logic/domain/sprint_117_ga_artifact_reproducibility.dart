@@ -1101,6 +1101,7 @@ abstract final class Sprint117GaArtifactGate {
       finishedAt: source.finishedAt,
       command: source.command,
       log: source.log,
+      durationSeconds: source.durationSeconds,
     );
 
     final a = _rebuildFrom(rebuildList[0]);
@@ -1459,6 +1460,10 @@ abstract final class Sprint117GaArtifactGate {
       finishedAt: window.finishedAt,
       command: command as String?,
       log: log as String?,
+      // Sprint 117.43-36: `_decodeWindow` reads `duration_seconds` and the
+      // value reached only the raw map, so the domain could not compare a
+      // summary line restating it. Carry the claim into the record.
+      durationSeconds: window.durationSeconds,
     );
   }
 

@@ -4022,6 +4022,55 @@ Label stop 0 tercetak `widget:Focus` karena resolver probe hanya mencari `Text`/
 
 **Catatan format**: file report ini terhitung LF-only (0 CRLF pada pembacaan `newline=''` fase ini), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file; tugas menyebut CRLF — tidak berlaku pada versi live, dikoreksi di sini.
 
+## 71. Fase 71 - Focus Order di Supporting Asset Workspace Screen (2.4.3)
+
+**Layar**: `lib/features/assets/presentation/supporting_asset_workspace_screen.dart` (545 baris, `ConsumerStatefulWidget`; cabang detail `hasAsset`).
+
+**Kandidat & kelayakan**: layar tidak punya `*_focus_order_test.dart` sendiri sebelum fase ini. Fixture mandiri, tanpa file database dan tanpa network: `projectSessionProvider` di-override dengan `ProjectSessionController` yang mengembalikan `null`, dan `supportingAssetProvider('probe-armor')` di-override mengembalikan satu baris `Asset` in-memory bertipe `armor` (konstruktor drift: `id`, `projectId`, `name`, `description`, `type`, `version`, `favorite`, `createdAt`, `updatedAt`). Enam affordance berlabel teraudit: ikon favorit (tooltip `Add to favorites`), tombol `Edit details`, tiga field spesifikasi armor (`Protection`, `Material`, `Condition`), dan tombol `Save Armor`. `AssetThumbnailCard` tidak menampilkan tombol `Add Image` ketika sesi null, sehingga fixture deterministik. Tidak ada perubahan kode produksi.
+
+**Harness probe** (viewport 1536x1024, dpr 1.0): `ProviderScope(overrides: ...)` + `MaterialApp(home: Scaffold(body: SupportingAssetWorkspaceScreen(assetId: 'probe-armor')))`, tekan `LogicalKeyboardKey.tab` berulang, berhenti ketika rect berulang. Resolusi label: `Text` non-Icon pertama ke bawah; bila kosong naik maksimal 40 ancestor mencari `Tooltip.message`, `IconButton.tooltip`, lalu `TextField.decoration.labelText`.
+
+**Output probe** (`test/features/assets/_probe_focus_test.dart`, dihapus setelah kontrak dibuat):
+
+```
+PROBE_STOP 0: "Add to favorites" (822, 48, 40x40)
+PROBE_STOP 1: "Edit details" (354, 152, 235x40)
+PROBE_STOP 2: "Protection" (354, 268, 512x24)
+PROBE_STOP 3: "Material" (354, 334, 512x24)
+PROBE_STOP 4: "Condition" (354, 400, 512x24)
+PROBE_STOP 5: "Save Armor" (354, 448, 189x40)
+PROBE_STOP 6: "Add to favorites" (822, 48, 40x40)
+PROBE_REPEAT rect at stop 6 -> end
+PROBE_COUNT 6
+PROBE_EXCEPTION null
+```
+
+Iteration jujur: probe versi awal mencetak `widget:Focus` untuk stop 0 dan ketiga field. Pemeriksaan rantai ancestor (`PROBE_CHAIN`) membuktikan node fokus berada jauh di bawah `IconButton`/`TextField`, sehingga batas pencarian dinaikkan dari 10 ke 40 ancestor - setelah itu keenam label terbaca. Label tidak ditebak, dibuktikan assertion yang GREEN.
+
+**Kontrak**: `test/features/assets/supporting_asset_workspace_screen_focus_order_test.dart` (267 baris, 1 `testWidgets`):
+
+1. Rantai Tab menghasilkan tepat **6 stop unik** lalu wrap, urutan label `['Add to favorites', 'Edit details', 'Protection', 'Material', 'Condition', 'Save Armor', 'Add to favorites']`.
+2. Setiap stop `!= Rect.zero` dengan `width > 0` dan `height > 0`.
+3. Seluruh stop berada di dalam viewport 1536x1024 (`left/top >= 0`, `right <= 1536`, `bottom <= 1024`).
+4. Stop kepala (favorit) berada **di atas** kolom detail (`top` lebih kecil) dan **di kanan** kolom detail (`left` lebih besar), dengan `width < 100` (tombol ikon) - membuktikan pembacaan baris kepala dulu, lalu detail.
+5. Lima stop kolom detail berbagi satu sumbu kiri (`left` tunggal) dan `top` naik berurutan (atas-ke-bawah), berada di separuh kiri layar (`left < 800`), dengan tombol aksi `width > 150`.
+6. Tiap stop berada di dalam render box affordance miliknya dengan batas inklusif: `find.byType(IconButton)` untuk favorit, `find.widgetWithText(FilledButton, 'Edit details')`, `find.widgetWithText(FilledButton, 'Save Armor')`, dan satu dari tiga `find.byType(TextField).at(i)` untuk ketiga field (inklusif karena `Rect.contains` menolak tepi kanan).
+7. Tab terakhir kembali tepat ke rect dan label stop pertama (wrap).
+8. `tester.takeException()` null.
+
+**Gate**:
+
+- `dart format` pada kedua file -> diformat, ulang -> tanpa perubahan.
+- `dart analyze test/features/assets/supporting_asset_workspace_screen_focus_order_test.dart` -> `No issues found!` (exit 0).
+- `flutter test test/features/assets/supporting_asset_workspace_screen_focus_order_test.dart` -> `00:01 +1: All tests passed!`.
+- `flutter test test/features/assets/` (gate fitur penuh) -> lihat bukti pada baris commit.
+
+**Negative control (wajib)**: backup `cp` ke `%LOCALAPPDATA%\Temp\supporting_asset_workspace_screen_focus_order_test.dart.bak`, lalu dua baris ekspektasi `'Material'`/`'Condition'` ditukar -> `flutter test` **exit 1** (`NEG_EXIT=1`) dengan keluaran `Some tests failed.` dan 2 baris pasangan `Expected:`/`Actual:`. File dikembalikan dari backup, backup dihapus, urutan asli terverifikasi kembali (`'Material'` di baris 24).
+
+**Counter (dihitung ulang dari live, bukan dari ingatan)**: `git ls-files 'test/**/*focus_order*'` = 61 file ter-commit + kontrak fase ini = **62**; cakupan union (penyebutan nama kelas `*Screen` di seluruh kontrak focus order) 50 -> **51 layar tercakup, sisa 38 dari 89**.
+
+**Catatan format**: file report ini terbaca LF-only (0 CRLF, `newline=''`), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file - sama seperti koreksi Fase 69.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

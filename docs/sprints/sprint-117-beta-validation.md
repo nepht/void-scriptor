@@ -1840,3 +1840,77 @@ pada kalimat metode di `build_reproducibility_provenance.dart:130`
 (`_statedArtifactScope`), dan `summarised.firstMatch(member.key)` di
 `sprint_117_ga_artifact_reproducibility.dart:1671`. Hunt berikutnya: ke-30 -
 target ditentukan probe run depan, bukan pre-klaim.
+
+### Slice 117.43-35 - pembaca jumlah artefak kalimat metode hanya mengambil total pertama (defect ke-30 fail-open hunt)
+
+2026-10-04 ~19:00 WIB. Tipe = FEATURE WORK slice 117.43-35 (defect ke-30, hunt
+ke-30). HEAD awal `a8a3702` (ahead 16); commit sibling a11y `8a10d3b` (test
+weapon workspace focus order) mendarat di tengah run, `git log a8a3702..HEAD --
+<2 path slice>` kosong pada posisi commit fix sehingga sibling tidak menyentuh
+scope ini. Dirty dipreserve: `.hermes/ROADMAP_STATE.json.slice11743_29.bak`,
+`cache/`, `test/core/security/presentation/`, dan
+`test/features/weapon/weapon_workspace_focus_order_test.dart` (yang terakhir ikut
+di-commit worker sibling, bukan oleh run ini).
+DEFECT: `_statedArtifactScope` di
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart:123`
+(sebelumnya baris 130) membaca jumlah artefak pada kalimat `method` memakai
+`RegExp(...).firstMatch`, sehingga HANYA total pertama yang dibandingkan dengan
+inventaris rekaman: kalimat `this build covered 6 exe/dll artifacts, and 12
+artifacts in total` men-state dua total, tetapi hanya `6` yang diukur - total
+`12` yang tidak sama tidak pernah dibandingkan padahal ringkasan tetap
+mencetak jumlah rekaman. Ini kandidat pertama dari kasir probe slice -34
+(`firstMatch` jumlah artefak `build_reproducibility_provenance.dart`), jadi
+keluarga fail-open klaim pertama kini menyeberang dari pembaca `provenance_record`
+ke pembaca jumlah scope artefak. RED (bukti dilakukan dengan menukar file lib ke
+blob commit sebelum fix): snapshot fix disimpan dulu, lalu file ditimpa dengan
+`git show 5e8f765~1:<path>` (sha `c37e2ec8f3c845e12dc77b8236012b7d3d644be9d9afdbb10c7dfbd91ca72163`,
+66517 B), `flutter test sprint_113... --reporter expanded` = `+10 -3` exit 1:
+test baru `117.43-35 a method stating two artifact counts is compared on both`
+gagal `Expected: false / Actual: <true>` (dokumen dua total kontradiktif justru
+diterima), dua kegagalan lain = 113.39 pre-existing (lock `d500c1c5...` vs manifest
+`32e31fd3...`; artefak `73101e78...` vs `c7a33055...`). File dikembalikan dari
+snapshot lalu diverifikasi: sha disk `e332b6d0...` == blob commit dan `git
+status --short` untuk path itu bersih. Jebakan nyata saat menukar: `subprocess`
+ber-`shell=True` di Windows memakai cmd.exe sehingga `^` pada `5e8f765^:path`
+ditelan sebagai escape dan perintah diam-diam mengembalikan isi FIX (sha tidak
+berubah = swap gagal diam-diam); solusinya `5e8f765~1:path` lewat argv list tanpa
+shell. FIX: tipe hasil berubah dari `(int? count, Set<String>? names)?` menjadi
+`({List<int> counts, Set<String>? names})?` - semua kecocokan regex dikumpulkan
+lewat `allMatches` + `whereType<int>`, dan pembanding di `missingEvidence`
+(`build_reproducibility_provenance.dart:564`) menolak begitu SATU total pun
+berbeda dari panjang inventaris (`scope.counts.any((stated) => stated !=
+recorded.length)`), sehingga total kedua yang tidak sama ikut diukur; total yang
+diulang identik tetap lulus pada tiap kemunculannya (aturan repetisi benign yang
+sama dengan `readChecksumIndex` di `sprint_117_ga_artifact_reproducibility.dart:468`).
+Pembaca nama artefak tidak berubah, hasil `null` tetap untuk kalimat tanpa klaim,
+regex sengaja tidak dimodifikasi (hanya `firstMatch` -> `allMatches`) supaya seam
+117.43-24 tetap berlaku: klaim jumlah yang tidak cocok dengan rekaman tetap
+ditolak, dan manifest terbit tetap pass. GATES: format write 2 file exit 0 lalu
+`--output=none --set-exit-if-changed` 0 changed exit 0; `dart analyze` 2 file No
+issues found! exit 0; `git diff --check` exit 0; scan non-Latin Python `re` pada
+147 baris added commit `5e8f765` (6372 byte) = 0 hit dan 0 trailing whitespace.
+RED -> GREEN pada file 113: `+11 -2` exit 1 (11 pass termasuk 117.43-35; 2 fail =
+113.39 pre-existing). Regresi terarah gabungan `sprint_113_build_reproducibility_provenance_test` + `sprint_117_ga_artifact_reproducibility_test` = `+178 -2`
+exit 1; gate 117 = 167 pass (178 dikurangi 11 pass file 113, dihitung per file
+bukan dari angka gabungan) dan file 113 = 11 pass / 2 fail dengan signature sama
+persis seperti slice -33/-34 yang sudah dibuktikan pre-existing lewat worktree
+terisolasi; TIDAK ada klaim suite penuh. `flutter build windows --debug` exit 0
+dengan bukti segar `build/windows/x64/runner/Debug/data/flutter_assets` mtime
+`2026-10-04_18:50:55` (mtime `void_scriptor.exe` statis `2026-10-03_04:16` tidak
+dihitung). Patch tool tidak dipakai: sisip blok test lewat penggantian byte-eksak
+Python (numstat test murni insert 118/0), edit lib lewat dua penggantian eksak.
+Numstat commit fix `5e8f765`: domain 29/13, test 118/0. SHA-256 dari blob commit
+`5e8f765` (identik `sha256sum` disk; 67399 B dan 42822 B): domain
+`e332b6d0319fce20e75d5b6bafc018f524444f9a9eae604fdfe3867d85768fb6`, test
+`237d5c95bf18976ca07bc59dbc216c6fc8468d60a1be68affa9a956cad7d014c`. Manifest 113
+tidak disentuh (commit terakhir tetap `d150973`). Commit fix memakai 2 path
+eksplisit; ahead 16 -> 18 pada posisi commit fix (sibling `8a10d3b` + fix
+`5e8f765`), setiap commit ledger/state menambah satu - posisi akhir dihitung
+dengan `git rev-list --count origin/master..HEAD`, bukan ditulis tangan. Tidak ada
+push pada run ini. Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`,
+step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR
+117.43-02 masih BLOCKER. `firstMatch` pada pembaca jumlah artefak kalimat metode
+kini tertutup; kandidat sisa hasil probe slice -34 yang belum diklaim: `parseDigest`
+di `sprint_117_ga_artifact_reproducibility.dart:450` (0 pemanggil) dan
+`summarised.firstMatch(member.key)` di
+`sprint_117_ga_artifact_reproducibility.dart:1671`. Hunt berikutnya: ke-31.

@@ -4101,5 +4101,41 @@
       "directed_regression": "gate file 158/158 exit 0; 113 provenance file 10 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files (206) and the new ledger row (60): 0 hits, 0 trailing whitespace"
     }
+  },
+  "defect_117_43_33": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 28,
+    "slice": "117.43-33",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open position/quantity reader in the last of the three provenance_record readers: _parseCitation/_citationIsReadable for signed_candidate demanded its prefix at index 0 (line.startsWith(_kCitationPrefix)), so a citation written behind any note on its line matched nothing and was never opened - a ghost path behind a note passed while the identical citation at the front of the line was refused by 117.43-25; and it opened only the FIRST citation a line states, so a line stating two citations opened the first and never the second, leaving a ghost path behind an honest one unopened. Both halves fail open in one reader, the same pair 117.43-32 found in the log reader beside it.",
+    "proven_before_fix": "Official tests added first, no probe file: baseline gate file '158: All tests passed' exit 0, then five tests in the new 117.43-33 group (ghost behind a note, ghost behind an honest citation, honest behind a note, honest behind a rebuild restatement, two honest citations). The library was still HEAD (clean at preflight, no swap needed): '161 pass -2 fail' exit 1, both defect cases actual 'pass' while expected 'unmet', all three controls 'pass' - exactly two failures in the right place.",
+    "red": "exit 1 with two failures: 117.43-33 a ghost citation behind a note on its line is refused and 117.43-33 a ghost citation behind an honest citation on the same line is refused, both expected 'unmet' actual 'pass'; post-fix exit 0.",
+    "fix": "New helper _citationsIn finds _kCitationPrefix at a word boundary wherever the line puts it ((?:^|\\s)<prefix>(?=\\s), allMatches - position-independent, and the lookahead keeps a prefix from eating the whitespace a second citation on the same line needs), each occurrence opens its own first whitespace-delimited token, and _citationIsReadable refuses a line containing any citation this tree cannot open. _parseCitation deleted (0 references left); the _rebuildSummariesIn doc that said signed_candidate was left behind was amended. Nothing new becomes a claim: the claim is still the single token after the prefix (trailing prose 'sha256 verified intact' stays unread, 117.43-25), a prefix with no token still cites nothing (117.43-07), and the shipped manifest still passes unchanged.",
+    "green": "gate file 163/163 All tests passed exit 0 (158 baseline + 5 new), repeated after dart format; directed 113 provenance regression '+10 -2' exit 1 with both pre-existing 113.39 signatures unchanged (lock d500c1c5... vs manifest 32e31fd3...; artifact 73101e78... vs c7a33055...). No full-suite claim.",
+    "bounds_pinned_by_test": "Honest citations behind a note, behind a rebuild restatement, or paired with a second honest citation on the same line still pass, so opening every citation refuses nothing a document may honestly write; the shipped manifest passes unchanged; a prefix that introduces no token still claims nothing. The position family of the three provenance_record readers is now closed (-30 rebuild, -32 log, -33 citation).",
+    "evidence": {
+      "commit": "b062810",
+      "ledger_commit": "3d7ada0",
+      "domain_sha256": "47728057d44cce25446b2e21536bb3c414efff23ba8f39080354c5fd5fc86894",
+      "domain_bytes": 65426,
+      "test_sha256": "b519463e23f1236195598aebd9a4b3197272ea70460c00594c0229700b91241a",
+      "test_bytes": 212313,
+      "sha_source": "blob of commit b062810 via git show, equals sha256sum of disk (both verified after commit, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "probe": "no probe file: the RED witness was written directly as the official 117.43-33 group against the pre-fix library, which was HEAD itself (clean tree at preflight), so no git show swap was needed.",
+      "numstat": "domain 48/17, test 150/0 (commit b062810); ledger 56/0 (commit 3d7ada0)",
+      "patch_trap": "first fuzzy patch on the test file reported success but replaced more than old_string (double 'reason:', shifted indent); caught by re-read, file restored from snapshot identical to HEAD (sha 63af3605...), block re-appended by exact byte replace (numstat 142/0, diff -U0 no deletion lines)"
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 108.2s, fresh evidence build/windows/x64/runner/Debug/data/flutter_assets mtime 2026-10-04_16:47:11 (static runner exe mtime not counted)",
+      "roadmap_guard": "PASS pre-run; post-state run recorded in the run report",
+      "directed_regression": "gate file 163/163 exit 0; 113 provenance file 10 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over 8442 bytes of added lines = 0 hits, 0 trailing whitespace"
+    }
   }
 }

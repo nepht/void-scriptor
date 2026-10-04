@@ -4503,6 +4503,50 @@ Ketiganya mengunci `tester.takeException()` isNull. Label `<icon-button>` dituru
 
 **Rekomendasi run berikutnya**: (a) pemindaian non-glob berikutnya menyisakan `lib/core/jobs/task_center_screen.dart` (butuh fixture `BackgroundJobController` dengan job `running` agar `IconButton` cancel aktif) dan layar display-only sisa — semua di bawah ambang kecuali yang berfixture; (b) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
 
+## 83. Fase 83 — Focus Order di TaskCenterScreen (2.4.3)
+
+**Status: SELESAI — kontrak 4 test, negative control membuktikan gagal, gate hijau. Deviasi scope terdokumentasi.**
+
+**Pemilihan layar (evidence, bukan asumsi)**: rerun pemindaian live atas 89 file `lib/features/*/presentation/*_screen.dart` terhadap isi 73 file `*_focus_order_test.dart` on-disk menyisakan **30 file tanpa kontrak**. Hitung token handler non-null (`onPressed|onTap|onChanged|onSubmitted|onSelected`) per file: 1 file = `automation_center_screen.dart` (3 handler — semuanya ada di dalam dialog yang hanya terbuka lewat tap; layar dasar tetap display-only, `Switch(onChanged: null)` di `lib/features/workflow/presentation/automation_center_screen.dart:49`, terbukti pada fase 80), 1 file = `environment_workspace_screen.dart` (0 handler non-null — satu-satunya hit sintaktis `IconButton` bernilai `onPressed: null`), 28 file = **0 handler**. Kolam kandidat in-glob tetap **KOSONG** (konfirmasi keempat atas fase 80/81/82).
+
+**Deviasi scope (kebijakan, mengikuti rekomendasi (a) fase 82)**: pemindaian diperluas ke `lib/**/*_screen.dart` di luar glob tetap. Kandidat ber-token yang tersisa dan paling mandiri = `lib/core/jobs/task_center_screen.dart` (53 baris, 1.536 B): tanpa database, tanpa jaringan, konstruktor wajib hanya `BackgroundJobController`. Dua elemen interaktif nyata: afordansi rute AppBar `Back` (`MaterialLocalizations.backButtonTooltip`) dan `IconButton(tooltip: 'Cancel task')` di `lib/core/jobs/task_center_screen.dart:44-47`. Sudah ada test perilaku `test/core/jobs/task_center_screen_test.dart` (cancel men-toggle status job), tetapi belum ada kontrak urutan fokus; tidak ada focus test mana pun yang menyebut `TaskCenterScreen`.
+
+**Fixture**: `BackgroundJobQueue()` + `BackgroundJobController(queue)` + `controller.enqueue(task)` **tanpa** `drain()` sehingga job tetap `BackgroundJobStatus.queued` dan trailing cancel tetap aktif — tanpa file, tanpa timer, tanpa jaringan.
+
+**Probe (4 varian, viewport 1536x1024, dpr 1.0, berhenti saat Rect/label berulang, `EXCEPTION=null` di semua varian)**:
+- Rute dipush + 2 job: **3 stop** — `Back@8,8 40x40` -> `Cancel task@1448,124 40x40` -> `Cancel task@1448,204 40x40` -> ulang `Back`.
+- Rute dipush + 1 job: **2 stop** — `Back` -> `Cancel task`.
+- Tanpa rute induk (layar jadi `home`) + 2 job: **2 stop** — `Cancel task` -> `Cancel task` (tanpa `Back`).
+- Rute dipush + 0 job: **1 stop** — `Back`; `Text('No background tasks')` tidak menambah stop.
+
+**Kontrak**: `test/core/jobs/task_center_screen_focus_order_test.dart` — 4 `testWidgets`:
+1. rute + 2 job = 3 stop, daftar label `['Back','Cancel task','Cancel task']`; `Back` rata kiri-atas (left/top <= 16); kedua affordance cancel di separuh kanan viewport (`left > width/2`); `Back` di kiri kedua cancel; `top` menaik dari stop ke stop; dua stop cancel berbagi `left` dan `size` identik; setiap stop ber-area non-zero dan berada di dalam viewport.
+2. rute + 1 job = 2 stop `['Back','Cancel task']` dengan relasi kiri/kanan dan atas-ke-bawah yang sama.
+3. tanpa rute induk = 2 stop `['Cancel task','Cancel task']` plus `isNot(contains('Back'))` — membuktikan afordansi `Back` berasal dari rute, bukan dari layar.
+4. rute + 0 job = 1 stop `['Back']` + `find.text('No background tasks')` findsOneWidget + `find.byTooltip('Cancel task')` findsNothing.
+
+Keempat test mengunci `tester.takeException()` isNull. Label `Back` dan `Cancel task` diturunkan dari widget tree (`MaterialLocalizations.backButtonTooltip`, `IconButton.tooltip`), bukan teks karangan.
+
+**Gate (output nyata)**:
+- `dart format test/core/jobs/task_center_screen_focus_order_test.dart` -> `Formatted 1 file (1 changed)` saat penulisan awal; `Formatted 1 file (0 changed)` setelah restore negative control, EXIT=0.
+- `dart analyze test/core/jobs/task_center_screen_focus_order_test.dart` -> `No issues found!`, EXIT=0.
+- `flutter test test/core/jobs/task_center_screen_focus_order_test.dart` -> `+4 All tests passed`, EXIT=0.
+- Suite gate `flutter test test/core/jobs/` -> **`+56 All tests passed`, EXIT=0** (14 file).
+
+**Negative control WAJIB (dijalankan, angka dicatat)**: backup `cp` ke `C:\Users\nepht\AppData\Local\Temp\task_center_focus_order_test.dart.bak` (sha256 `11f81d00a021807171507eca305db51fb93e881a0e38887eac443d14068bd373`, identik dengan file asli), mutasi = tukar dua label pertama menjadi `['Cancel task','Back','Cancel task']`, jalankan kontrak -> **GAGAL**: `Some tests failed`, `EXIT_CODE=1`, 1 dari 4 test gagal pada baris 120 (`at location [0] is 'Back' instead of 'Cancel task'`). Restore dari backup (sha256 sama `11f81d00a021807171507eca305db51fb93e881a0e38887eac443d14068bd373`), `dart format` ulang -> `0 changed`, jalankan ulang -> `+4 All tests passed`, EXIT=0. Backup dihapus dan diverifikasi hilang (`No such file or directory`).
+
+**Full analyzer (di luar scope — dilaporkan, bukan diperbaiki)**: `flutter analyze` penuh di HEAD = `211 issues found`, EXIT=1 (fase 81/82 mencatat 210; kenaikan berasal dari file scratch/sibling di luar scope run ini, contoh `test/release/scratch_probe_11733_test.dart`). Scoped analyze `dart analyze test/core/jobs/` -> `No issues found!`, EXIT=0, sehingga file kontrak tidak menambah issue apa pun. Tidak ada file `lib/` yang disentuh run ini.
+
+**Counter**: `git ls-files test | grep -c focus_order_test` = **72 sebelum run**, kontrak ini menambah 1 -> **73 setelah commit**. Metric B (kelas `*Screen` dari 89 file glob yang disebut isi `*_focus_order_test.dart` on-disk) = **59 dari 89, sisa 30 — tidak naik**, identik dengan pengukuran fase 80; angka 60/61 pada fase 81/82 tidak dapat direproduksi dengan metric ini dan diperbaiki terbuka di sini. Dasar kelas non-glob bertambah 1: `TaskCenterScreen`, setelah `SecuritySettingsScreen` (fase 81) dan `CollaborationCommentsScreen` (fase 82).
+
+**Tidak ada perubahan kode produksi.** File dirty milik sibling tidak disentuh: `docs/evidence/sprint-117-35-manifest-20261002.json`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/` (WIP focus-order `project_lock` milik eksekutor lain). Probe sekali pakai yang dihapus setelah kontrak dibuat: `test/core/jobs/_probe_focus_test.dart`.
+
+**Catatan format**: report ini terbaca LF-only (0 CRLF, 4.636 baris) sebelum sisipan; sisipan ditulis dengan `\n` lewat pembacaan `newline=''`, sehingga konvensi file dipertahankan. Instruksi run ini menyebut CRLF, tetapi file nyata 0 CRLF — dipertahankan apa adanya mengikuti preseden fase 69-82.
+
+**Scan CJK/Cyrillic** pada kontrak, section ini, dan pesan commit: `none`.
+
+**Rekomendasi run berikutnya**: (a) pemindaian non-glob berikutnya menyisakan layar ber-fixture berat (mis. `world_simulation_workspace_screen` yang overflow saat dipompa standalone, `execution_monitor_screen` yang butuh `WorkflowMonitorSnapshot`) dan layar display-only — semua di bawah ambang kecuali yang berfixture; (b) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

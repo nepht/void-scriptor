@@ -3979,6 +3979,49 @@ PROBE_END takeException=null
 
 **Catatan format**: file report ini terhitung LF-only (0 CRLF pada pembacaan `newline=''` fase ini), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file; tugas menyebut CRLF — tidak berlaku pada versi live, dikoreksi di sini.
 
+## 70. Fase 70 — Focus Order di Merge Preview Screen (2.4.3)
+
+**Layar**: `lib/features/multiverse/presentation/merge_preview_screen.dart` (77 baris, `StatelessWidget`). Belum punya `*_focus_order_test.dart` sendiri sebelum fase ini (kontrak Fase 69 mencatat layar ini sebagai kandidat uncovered yang saat itu hanya menghasilkan 1 stop).
+
+**Kandidat & kelayakan**: mandiri — tanpa database, tanpa network, tanpa provider. Dua elemen interaktif pada rute pushed: affordance back `AppBar` (40x40 di kiri-atas) dan `FilledButton` `Confirm Merge`. Konstruktor `onConfirmMerge` nullable; Fase 69 memrobenya tanpa callback sehingga tombol disabled dan hanya menghasilkan 1 stop. Pada fase ini kontrak memanggil layar dengan `onConfirmMerge: () {}` — pemakaian wajar kontrak (pemanggil wajib mengisi callback), sehingga kedua affordance ikut teraudit. Tidak ada perubahan kode produksi. `MultiverseGraphScreen` ikut diprobe di file yang sama dan hanya menghasilkan `Back` + slider `Zoom` tanpa label teks pada stop keduanya, jadi tidak dipakai sebagai layar fase ini.
+
+**Harness probe** (viewport 1536x1024, dpr 1.0): `MaterialApp(navigatorKey: ..., home: seed tanpa elemen fokus)`, layar di-push lewat `navigatorKey.currentState!.push(MaterialPageRoute(...))` sehingga affordance back `AppBar` (yang hanya muncul pada rute `canPop`) ikut teraudit. Label stop diresolusi dari `Text` non-Icon pertama di sub-tree fokus, lalu dari `Tooltip.message`.
+
+**Output probe** (`test/features/multiverse/presentation/_probe_focus_test.dart`, dihapus setelah kontrak dibuat):
+
+```
+PROBE_BEGIN screen=MergePreviewScreen 1536x1024 dpr=1.0
+STOP 0: "widget:Focus" (8, 8, 40x40) type=Focus
+STOP 1: "Confirm Merge" (20, 310, 1496x40) type=Focus
+STOP 2: "widget:Focus" (8, 8, 40x40) type=Focus
+STOP 2: <repeated rect -> end>
+PROBE_END takeException=null
+```
+
+Label stop 0 tercetak `widget:Focus` karena resolver probe hanya mencari `Text`/`Tooltip` ke bawah; kontrak menambah pencarian `Tooltip.message` ke atas (`IconButton` mem-*wrap* node fokus di luar `Tooltip` miliknya) sehingga label terbaca `Back` — dibuktikan oleh assertion label yang GREEN, bukan ditebak.
+
+**Kontrak**: `test/features/multiverse/presentation/merge_preview_focus_order_test.dart` (172 baris, 1 testWidgets), membawa file probe di atas ke assertion:
+
+1. Tepat **2 stop unik** + 1 rect berulang (traversal Tab membungkus kembali ke stop pertama).
+2. Urutan label `['Back', 'Confirm Merge']`.
+3. Area fokus non-zero: `width > 0` dan `height > 0` untuk kedua stop, dan `stop != Rect.zero`.
+4. Posisi: stop 0 menempel kiri-atas (`left = 8`, `top = 8`, `40x40`); stop 1 berada di bawah (`top > stop0.top`, atas-ke-bawah) dan ke kanan (`left > stop0.left`, kiri-ke-kanan) dengan `width > 1000`.
+5. Tiap stop berada di dalam render box affordance-nya (`find.byType(BackButton)` dan `find.widgetWithText(FilledButton, 'Confirm Merge')`), dibandingkan dengan batas inklusif. Catatan: pemakaian `Rect.contains` mula-mula RED karena `contains` menolak tepi kanan (`dx < right`); dikoreksi ke `left/top/right/bottom` inklusif sebelum GREEN.
+6. `tester.takeException()` null.
+
+**Gate**:
+
+- `dart format test/features/multiverse/presentation/merge_preview_focus_order_test.dart` -> `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/multiverse` -> `No issues found!` (exit 0); `dart analyze lib/features/multiverse` -> `No issues found!` (exit 0).
+- `dart analyze` penuh (repo) -> **210 temuan, semuanya level `info` (0 error, 0 warning)**, tidak ada satu pun yang menunjuk file fase ini; penyumbang terbesar `lib/app/routing/app_router.dart` (61) dan `test/release/scratch_*` (69) — kondisi live pre-existing, diperiksa lagi di akhir run, bukan regresi fase ini. Jujur dicatat: gate "No issues found" hanya tercapai untuk scope `multiverse`, bukan untuk repo penuh.
+- `flutter test test/features/multiverse/presentation/merge_preview_focus_order_test.dart` -> `00:01 +1: All tests passed!` dengan **Flutter 3.47.6 (rev 5fc346839b)** dari direktori `D:/DevTools/Flutter-SDK-3.44.9/flutter` — nama folder lama, isi SDK sudah naik (siblon `a913bf3` men-pin CI ke 3.47.6), jadi gate berjalan di SDK yang sama dengan CI.
+
+**Negative control (wajib)**: backup `cp` ke `%LOCALAPPDATA%\Temp\merge_preview_focus_order_test.dart.bak`, lalu `expect(unique, hasLength(2))` diubah sementara menjadi `hasLength(3)` -> `flutter test` **exit 1**, keluaran `00:01 +0 -1: Some tests failed.` (1 test gagal). File dikembalikan dari backup (`hasLength(2)` kembali terbaca), backup dihapus (`RESTORED backup_removed=YES`).
+
+**Counter (dihitung ulang dari live, bukan dari ingatan)**: `git ls-files | grep -c '_focus_order_test.dart'` = **60** saat penulisan — termasuk kontrak fase ini yang tersapu ke commit `96a9d35` (`wip(riverpod3): checkpoint ...`, 95 file) di tengah run ini, jadi sebelum kontrak = 59. Cakupan union (impor `*_screen.dart` + penyebutan kelas `*Screen` pada kontrak ter-track): 51 -> **52 layar tercakup, sisa 37 dari 89** (`MergePreviewScreen` belum tercakup sebelumnya, diverifikasi dengan menghitung ulang tanpa file kontrak ini).
+
+**Catatan format**: file report ini terhitung LF-only (0 CRLF pada pembacaan `newline=''` fase ini), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file; tugas menyebut CRLF — tidak berlaku pada versi live, dikoreksi di sini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

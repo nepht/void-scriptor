@@ -140,12 +140,32 @@ void main() {
     expect(unique[1].rect.left, greaterThan(unique[0].rect.left));
     expect(unique[1].rect.width, greaterThan(1000));
 
-    // 4) Each stop maps to a real affordance on screen.
+    // 4) Each stop maps to a real affordance on screen: the stop's focus
+    //    area sits inside the affordance's own render box (the focus node
+    //    is one level deeper than the affordance widget).
     expect(find.byType(BackButton), findsOneWidget);
-    expect(tester.getRect(find.byType(BackButton)), unique[0].rect);
+    final back = tester.getRect(find.byType(BackButton));
+    final s0 = unique[0].rect;
+    expect(
+      s0.left >= back.left &&
+          s0.top >= back.top &&
+          s0.right <= back.right &&
+          s0.bottom <= back.bottom,
+      isTrue,
+      reason: 'back=$back stop=$s0',
+    );
     final confirm = find.widgetWithText(FilledButton, 'Confirm Merge');
     expect(confirm, findsOneWidget);
-    expect(tester.getRect(confirm), unique[1].rect);
+    final confirmRect = tester.getRect(confirm);
+    final s1 = unique[1].rect;
+    expect(
+      s1.left >= confirmRect.left &&
+          s1.top >= confirmRect.top &&
+          s1.right <= confirmRect.right &&
+          s1.bottom <= confirmRect.bottom,
+      isTrue,
+      reason: 'confirm=$confirmRect stop=$s1',
+    );
   });
 }
 

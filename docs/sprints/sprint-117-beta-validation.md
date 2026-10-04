@@ -1316,3 +1316,106 @@ sibling commit yang menyentuh kedua file slice pada run ini.
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
 karena gate masih INCOMPLETE, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-28 - restatement di baris multi-claim tidak pernah dibandingkan lintas grup (defect ke-23 fail-open hunt)
+
+**HEAD awal** `2b0ea40` (ahead 56, dirty 95). Kedua file slice BERSIH sebelum mutasi
+(`git status --porcelain -- <2 path>` = 0), jadi tidak ada WIP yang perlu diadopsi.
+Snapshot di `cache/scratch/slice-11743-28/`, terbukti byte-identik dengan HEAD via
+SHA-256 kedua sisi (domain `47c3d6bc…`, test `b243740b…`) — bukan `cmp`, karena `cmp`
+di MSYS melaporkan DIFFERS untuk byte identik (pelajaran `msys_cmp_pitfall`).
+
+**KELUARAN HUNT (keluarga "dibaca lalu direstate tanpa pernah dibandingkan"):** slice
+117.43-27 sudah menurunkan lapis hunt dari KEYS ke BENTUK CLAIM, dan memperbaiki
+satu dari DUA pembaca claim yang ada. `_digestsAgreeWithinGroup` (intra-grup, slice
+117.43-26) sudah memakai tokenizer `_digestClaimsIn` yang membaca satu baris sebagai
+RANTAI claim. Saudaranya `_digestsByPath` — seam di balik 117.43-21, aturan yang menahan
+satu path yang di-hash di `build_inputs` dan di-restate di `dependency_lock` pada satu
+digest — masih cocok dengan pola ter-anchor `^(\S+)\s+sha-?256\s+(\S+)\s*$` via
+`firstMatch`. Jadi DUA pembaca ini berbeda pendapat tentang apa yang diucapkan satu
+baris: intra-grup melihat semua claim, lintas-grup hanya melihat baris yang
+mNyatakan tepat SATU claim dan menganggap sisanya prosa.
+
+Akibatnya dokumen cukup menulis restatement-nya pada baris yang memuat DUA claim agar
+kontradiksi mencapai verdict tanpa diperiksa: di dalam tiap grup TIDAK ada kontradiksi
+(masing-masing path dapat satu digest), sehingga tidak ada yang dibandingkan lintas
+grup — `missingEvidence` mengembalikan nol grup hilang, `evaluate` mengembalikan `pass`,
+dan gate mencetak `build_inputs: 6 item` / `dependency_lock: 3 item` seolah setiap input
+tercatat sudah di-cross-check. Bentuk ini TIDAK terlihat oleh 117.43-26 (butuh dua
+BARIS) maupun 117.43-27 (menyelesaikan bentuk intra-grup), jadi dua slice terakhir
+tetap buta pada arah ini.
+
+**BUKTI PRE-FIX (probe `test/release/zz_probe_11743_28_test.dart`, exit 0):**
+
+| PROBE | kasus | hasil |
+|---|---|---|
+| A | dokumen jujur (kontrol) | `pass` |
+| B | 1 baris 2 claim, path pertama di-restate lintas grup | **`pass` — DEFECT** |
+| B2 | 1 baris 2 claim, path KEDUA di-restate lintas grup | **`pass` — DEFECT** |
+| B3 | kedua grup menulis multi-claim di baris masing-masing | **`pass` — DEFECT** |
+| C | 1 baris 2 claim, restatement yang MENDEPAT (kontrol) | `pass` |
+| D | prosa menyebut `sha256` tanpa nilai (kontrol) | `pass` |
+
+Probe memakai digest **64-hex asli** dari dokumen terkirim (`65149b3d…` untuk
+`windows/CMakeLists.txt`), tepat seperti slice 117.43-26/27: kasus harus gagal HANYA
+karena kedua grup BERBEDA, bukan karena digestnya malformed.
+
+**RED (exit 1, TEPAT 1 gagal):** `Expected: not contains 'pass'`, `Actual:
+['pass','pass','pass','pass']` — keempat kasus defect lolos, sementara test kontrol
+(dokumen jujur, restatement yang menyetujui, prosa tanpa nilai, path yang tidak bisa
+di-rescue mencapai verdict) **LULUS**. Test kontrol sudah hijau SEBELUM fix, jadi fix
+tidak bisa dikreditkan ke over-refusing. Satu kegagalan, di tempat yang benar.
+
+**PERBAIKAN:** `_digestsByPath` kini membaca claim lewat tokenizer `_digestClaimsIn`
+yang sama, sehingga kedua pembaca sepakat soal tata bahasa dan aturan restatement
+melihat setiap path yang satu baris nyatakan. RegEx anchored dihapus seluruhnya dari
+pembaca itu; diff tetap satu helper dan seam 117.43-21 yang sudah hijau tidak
+tersentuh. Pembaca mengambil digest PERTAMA yang diklaim untuk satu path, sehingga
+kontradiksi intra-grup tetap dilaporkan oleh `_digestsAgreeWithinGroup` yang memiliki
+aturan itu, bukan dua alasan berbeda untuk defect yang sama.
+
+**GREEN:** `sprint_117_ga_artifact_reproducibility_test.dart` **146/146 LULUS** (+2 dari
+144), seluruh keluarga 117.43-01..-28. Format: tulis 0 changed exit 0, lalu
+`--output=none --set-exit-if-changed` 0 changed exit 0 = bukti idempoten (urutan MSYS
+yang benar). `flutter analyze` 2 file "No issues found!" exit 0. `git diff --check`
+bersih exit 0. `flutter build windows --debug` exit 0, 47,2 dtk.
+
+**CATATAN PURE-INSERTION:** `git diff --numstat` untuk file test = **259 added / 0
+deleted**, dan `git diff -U0` berisi nol baris `-`. Hash `head -4511` awalnya terlihat
+berbeda dari HEAD, dan itu selisih off-by-one milik saya sendiri, bukan peluosan:
+`dart format` mengonsumsi baris akhir, sehingga `}` yang lama di
+baris 4511 menjadi baris 4512. HEAD baris 1..4510 == disk baris 1..4510 (`2071b86c…`
+identik) yang membuktikan isi lama tidak tersentuh.
+
+**SHA 4-SISI dari blob ter-commit `a9091f8` (klausul 1+2, dihitung SETELAH commit):**
+domain `bb6abd1c16baa2dd4540481864c7a46a14b9523d24bb10e402d55f1287d826e0` (53997 B),
+test `b8706c5762e66072909a7fb92fb24703428ce845e7a2ec860a692a6cfbbc891f` (188719 B);
+`git show <commit>:<path>` == `sha256sum` disk == True untuk keduanya. Manifest 113
+**TIDAK disentuh**: `b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d`,
+commit terakhirnya tetap `d150973`. Probe
+`test/release/zz_probe_11743_28_test.dart` sudah **dihapus** setelah temuannya dipindah
+ke test resmi.
+
+**COMMIT:** `a9091f8` (fix, 2 path eksplisit, 284 insertions / 12 deletions). **PUSH:**
+tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +155 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **146/146 LULUS**,
+2 kegagalan **keduanya 113.39 pre-existing** dengan signature PERSIS sama seperti
+run-run sebelumnya: `dependency lock evidence matches the live lockfile` (record
+manifest `32e31fd3…` vs live lock `c9a365e6…`) dan `signed release artifact from 113.38
+remains intact` (expected `73101e78…`, actual `c7a33055…`). Tidak ada satupun yang
+meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan `full_suite_trap`);
+`-2` itu hanya hitungan 2 file terarah ini.
+
+**KEADAAN REPOSITORI:** dirty 95 -> 96 (selisih = 2 file slice keluar dari working tree
+saat commit; sisanya milik worker lain dan tidak disentuh). HEAD `2b0ea40 -> a9091f8`,
+ahead 56 -> 57. Sibling `2b0ea40` (a11y focus order ProjectReferenceLibraryScreen) sudah
+berada di HEAD sebelum run ini dan tidak menyentuh kedua file slice.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena gate masih INCOMPLETE, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Hunt berikutnya: ke-24 —
+catatan untuk run depan, dua pembaca claim sudah MENYATU pada `_digestClaimsIn`, jadi
+lapis hunt "pembaca claim yang lebih sempit dari bahasa dokumen" sudah tertutup untuk
+keluarga ini; cari lapis lain.

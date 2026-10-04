@@ -4394,6 +4394,40 @@ Interpretasi: **2 stop unik** pada rute yang dipush — `Back` (Tooltip AppBar, 
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 80. Fase 80 — Konsensus sisa layar: pool kandidat focus order habis (2.4.3)
+
+**Status: DEFERRED (pool habis) — tanpa kontrak baru, tanpa commit test.**
+
+**Pilihan layar**: tidak ada. Dari 89 file `lib/features/*/presentation/*_screen.dart`, seluruh kandidat sisa terbukti non-interaktif saat dipompa, sehingga kriteria "minimal 2 elemen interaktif" tidak dipenuhi layar mana pun.
+
+**Metode pengukuran cakupan**:
+- Focus test di disk: `find test -name '*focus_order_test.dart'` -> 71 file (70 ter-commit + 1 tak ter-commit `test/core/security/presentation/project_lock_focus_order_test.dart`, milik eksekutor lain — tidak disentuh).
+- Metric A (union import): layar yang diimpor oleh >=1 focus test = 60/89, sisa 29.
+- Metric B (kelas `*Screen` dirujuk di isi focus test): tercakup 59/89, sisa 30. Metric B lebih ketat karena import bisa tidak langsung; selisihnya 1 layar (`AutomationCenterScreen`, diimpor `automation_templates_focus_order_test.dart` tetapi tidak pernah dipompa di sana).
+
+**Probe konsensus (probe 1 + 2, sementara, dihapus setelah run)**: 27 layar sisa dipompa pada viewport 1536x1024, dpr 1.0, 15x `LogicalKeyboardKey.tab` per layar:
+- `enabledButtons=0` pada SEMUA 27 layar (hitung `IconButton.onPressed != null` / `ButtonStyleButton.enabled` di seluruh elemen).
+- `tabStops=1` pada SEMUA 27 layar, dengan rect `Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0)` (fokus berhenti di root, bukan di kontrol) -> 0 stop kontrol terukur.
+- Angka `taps` yang besar pada konsensus berasal dari `InkWell`/`GestureDetector` internal `ListTile` tanpa `onTap` — bukan kontrol aktif, dan konsisten dengan `tabStops=1`.
+
+**Probe 3 — satu-satunya kandidat ber-token interaktif `AutomationCenterScreen`** (5 hit sintaktis `onTap`/`TextField`/`onChanged`/`onSave`, tanpa kontrak): dipompa dengan 2 `AutomationRule` nyata dan `metricsSnapshot` berisi: `switches=2 enabledSwitches=0`, `listTiles=2 tappableTiles=0`, `totalStops=1` (rect root). Layar display-only — `Switch(onChanged: null)` di `lib/features/workflow/presentation/automation_center_screen.dart:49`, `ListTile` tanpa `onTap` — sehingga gugur sebagai kandidat. Token interaktif lain di file yang sama milik `RuleEditorScreen` (kontrak `test/features/workflow/presentation/rule_editor_focus_order_test.dart`) dan `AutomationTemplatesScreen` (`automation_templates_focus_order_test.dart`), keduanya sudah teraudit.
+
+**2 layar sisanya tidak dipompa**:
+- `world_simulation_workspace_screen.dart` -> pump standalone gagal dengan `A RenderFlex overflowed by 4.5 pixels on the right` (observasi; layar tampaknya butuh konteks shell, di luar scope run ini — tidak ada perbaikan kode).
+- `execution_monitor_screen.dart` -> butuh fixture `WorkflowMonitorSnapshot` (source scan: 0 token interaktif) -> DEFERRED.
+
+**Negative control**: TIDAK DIJALANKAN — tidak ada kontrak ekspektasi untuk dimutasi karena tidak ada layar yang lolos ambang 2 stop. Tidak ada file kontrak yang dibuat, sehingga langkah format/analyze/test kontrak juga tidak berlaku pada run ini.
+
+**Tidak ada perubahan kode produksi.** Probe sekali pakai yang dihapus: `test/_probe_focus_census_test.dart`, `test/_probe_control_census_test.dart`, `test/_probe_world_sim_test.dart`, `test/features/workflow/presentation/_probe_focus_test.dart`, plus sisa probe run sebelumnya `test/features/cinematic_production/_probe_focus_test.dart` (target `AutomationCenterScreen`, kontraknya tidak jadi dibuat). File dirty sibling (`.hermes/ROADMAP_STATE.json.*.bak`, `cache/`, `docs/evidence/sprint-117-35-manifest-20261002.json`, `test/core/security/presentation/`) tidak disentuh.
+
+**Counter**: metric A tetap **60/89 layar tercakup, sisa 29** — tidak bertambah pada run ini.
+
+**Rekomendasi run berikutnya**: (a) hentikan siklus pemilihan layar sampai ada layar interaktif baru di `lib/features/*/presentation/*_screen.dart`; (b) bila ingin tetap jalan, turunkan ambang ke layar ber-1 stop ter-render (mis. `environment_workspace_screen` yang butuh fixture repository, sudah DEFERRED) atas izin Choirudin; (c) perluas scope ke widget non-`*_screen.dart` (dialog/panel) yang belum terkontrak.
+
+**Catatan format**: report ini LF-only (0 CRLF); sisipan ditulis dengan `\n` lewat pembacaan `newline=''`, konsisten dengan fase 69-79. Scan CJK/Cyrillic pada section ini dan pesan commit: `none`.
+
+**Status: DEFERRED (pool habis) — bukti terukur di atas, tanpa klaim audit baru.**
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

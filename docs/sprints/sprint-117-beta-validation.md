@@ -1706,4 +1706,6 @@ step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR
 `signed_candidate` (117.43-25) masih front-anchored dan hanya mengambil token
 pertama. Koreksi nilai pada commit `docs(117.43-32)` terpisah: angka ahead di
 paragraf atas sempat ditulis 2 -> 4 karena hanya menghitung commit run ini;
-hitungan benar 2 -> 6. Hunt berikutnya: ke-28.
+hitungan benar 2 -> 6 pada posisi commit state `77accef`, dan setiap commit
+koreksi menambah satu lagi - posisi akhir run dihitung ulang dengan
+`git rev-list --count origin/master..HEAD`. Hunt berikutnya: ke-28.

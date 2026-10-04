@@ -33,7 +33,7 @@ void main() {
 
     final initial = container.read(authControllerProvider);
 
-    expect(initial.valueOrNull?.status, AuthStatus.offline);
+    expect(initial.value?.status, AuthStatus.offline);
     expect(initial.isLoading, isFalse);
   });
 
@@ -50,7 +50,7 @@ void main() {
 
       final result = container.read(authControllerProvider);
       expect(result.hasError, isTrue);
-      expect(result.valueOrNull?.status, AuthStatus.offline);
+      expect(result.value?.status, AuthStatus.offline);
     },
   );
 

@@ -13,7 +13,7 @@ final environmentWorkspaceProvider =
       ref,
       environmentId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       return EnvironmentRepositoryImpl(
         database: session.database,
@@ -30,7 +30,7 @@ final environmentWorkspaceDataProvider =
       ref,
       environmentId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const EnvironmentWorkspaceData();
       return EnvironmentRepositoryImpl(
         database: session.database,
@@ -46,10 +46,10 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref
         .watch(environmentWorkspaceProvider(environmentId))
-        .valueOrNull;
+        .value;
     final workspaceData = ref
         .watch(environmentWorkspaceDataProvider(environmentId))
-        .valueOrNull;
+        .value;
     final width = MediaQuery.sizeOf(context).width;
     return ColoredBox(
       color: context.palette.background,

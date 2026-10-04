@@ -16,7 +16,7 @@ final creatureWorkspaceProvider =
       ),
       String
     >((ref, creatureId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) {
         return (
           null,

@@ -50,6 +50,12 @@ void main() {
       final service = _FailingThenGoodModulePreferencesService();
       await tester.pumpWidget(
         ProviderScope(
+          // Riverpod 3 auto-retries a failed provider (up to 10 attempts,
+          // 200ms exponential backoff), so by the second pump the load has
+          // already been retried and the error row never renders. The app's
+          // root scopes disable auto-retry precisely so this error surface
+          // stays visible; this test builds its own scope, so it must too.
+          retry: (_, __) => null,
           overrides: [
             projectSessionProvider.overrideWith(() => _FixedSession(session!)),
             projectSidebarModulePreferencesServiceProvider.overrideWithValue(

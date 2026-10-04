@@ -653,12 +653,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       final startupIntro =
           path == AppRoutes.splash && state.uri.queryParameters['intro'] == '1';
       if (startupIntro) return null;
-      if ((auth.isLoading && auth.valueOrNull == null) ||
-          auth.valueOrNull?.status == AuthStatus.checking) {
+      if ((auth.isLoading && auth.value == null) ||
+          auth.value?.status == AuthStatus.checking) {
         return path == AppRoutes.splash ? null : AppRoutes.splash;
       }
 
-      final session = auth.valueOrNull;
+      final session = auth.value;
       if (session == null) return AppRoutes.login;
 
       final isAuthenticated =

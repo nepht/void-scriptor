@@ -8,7 +8,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 final weaponInspectorProvider =
     FutureProvider.family<WeaponInspectorData?, String>((ref, weaponId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       final model = await WeaponRepositoryImpl(
         database: session.database,

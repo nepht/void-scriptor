@@ -10,7 +10,7 @@ class ItemInspector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asset = ref.watch(supportingAssetProvider(itemId)).valueOrNull;
+    final asset = ref.watch(supportingAssetProvider(itemId)).value;
     if (asset == null) {
       return const ReferenceInspectorPanel(
         properties: [InspectorProperty('Status', 'Loading')],

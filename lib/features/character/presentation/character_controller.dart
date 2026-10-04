@@ -24,7 +24,7 @@ final selectedAssetProvider = Provider<String?>(
 
 final characterControllerProvider =
     FutureProvider.family<List<CharacterModel>, String>((ref, projectId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != projectId) return const [];
       return CharacterRepositoryImpl(
         database: session.database,
@@ -59,7 +59,7 @@ class CharacterActions {
   }
 
   Future<void> rename(String id, String newName) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null || session.manifest.id != projectId) {
       throw StateError('No active project session');
     }
@@ -84,7 +84,7 @@ class CharacterActions {
   }
 
   Future<CharacterDeletionReview> reviewDeletion(String id) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null || session.manifest.id != projectId) {
       throw StateError('No active project session');
     }
@@ -95,7 +95,7 @@ class CharacterActions {
     String id, {
     required CharacterDeletionDecision decision,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null || session.manifest.id != projectId) {
       throw StateError('No active project session');
     }

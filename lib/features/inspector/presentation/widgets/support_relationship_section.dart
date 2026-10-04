@@ -48,7 +48,7 @@ String supportStatusLabel(SupportStatus status) => switch (status) {
 final supportNovelOptionsProvider = FutureProvider<List<SupportNovelOption>>((
   ref,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return const [];
   final assets = await ref.watch(projectAssetsProvider.future);
   return assets
@@ -106,7 +106,7 @@ class _SupportRelationshipSectionState
   }
 
   Future<void> _load() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null || !mounted) {
       if (mounted) {
         setState(() {
@@ -153,7 +153,7 @@ class _SupportRelationshipSectionState
   }
 
   NarrativeAssignmentRepository? _repository() {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     _actionSessionId = session.manifest.id;
     return NarrativeAssignmentRepository(
@@ -166,7 +166,7 @@ class _SupportRelationshipSectionState
   /// started in. Every await that can straddle a project switch (dialog,
   /// confirm) must re-validate before writing.
   bool _actionSessionStillCurrent() {
-    final current = ref.read(projectSessionProvider).valueOrNull?.manifest.id;
+    final current = ref.read(projectSessionProvider).value?.manifest.id;
     return current != null && current == _actionSessionId;
   }
 
@@ -174,13 +174,13 @@ class _SupportRelationshipSectionState
   /// project's database (the session provider may have already switched to
   /// another project while an action awaited).
   bool _isCurrentRepository(NarrativeAssignmentRepository repository) {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     return session != null && identical(session.database, repository.database);
   }
 
   @override
   Widget build(BuildContext context) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final sessionId = session?.manifest.id;
     if (sessionId != _loadedSessionId) {
       // Project switched under this section: drop stale rows and reload so a

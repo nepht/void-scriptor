@@ -331,7 +331,7 @@ class _TimelineCard extends ConsumerWidget {
   const _TimelineCard();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session == null) {
       return const _BibleCard(
         title: 'TIMELINE / ERAS',
@@ -410,7 +410,7 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
   }
 
   Future<void> _reload() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) {
       if (mounted && _factions != null) setState(() => _factions = null);
       return;
@@ -421,7 +421,7 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
     ).listForProject(projectId);
     if (!mounted) return;
     // Reject a late result from a project that is no longer active.
-    if (ref.read(projectSessionProvider).valueOrNull?.manifest.id !=
+    if (ref.read(projectSessionProvider).value?.manifest.id !=
         projectId) {
       return;
     }
@@ -429,7 +429,7 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
   }
 
   Future<void> _createFaction() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final created = await showDialog<FactionModel>(
       context: context,
@@ -456,8 +456,8 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
       previous,
       next,
     ) {
-      final previousId = previous?.valueOrNull?.manifest.id;
-      final nextId = next.valueOrNull?.manifest.id;
+      final previousId = previous?.value?.manifest.id;
+      final nextId = next.value?.manifest.id;
       if (previousId != nextId) {
         _reload();
       }
@@ -677,7 +677,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
   }
 
   Future<void> _reload() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) {
       if (mounted && _entries != null) setState(() => _entries = null);
       return;
@@ -689,7 +689,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
     );
     if (!mounted) return;
     // Reject a late result from a project that is no longer active.
-    if (ref.read(projectSessionProvider).valueOrNull?.manifest.id !=
+    if (ref.read(projectSessionProvider).value?.manifest.id !=
         projectId) {
       return;
     }
@@ -705,8 +705,8 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
       previous,
       next,
     ) {
-      final previousId = previous?.valueOrNull?.manifest.id;
-      final nextId = next.valueOrNull?.manifest.id;
+      final previousId = previous?.value?.manifest.id;
+      final nextId = next.value?.manifest.id;
       if (previousId != nextId) {
         _reload();
       }
@@ -752,7 +752,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
   }
 
   Future<void> _createRelation() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final projectId = session.manifest.id;
     final characters = await session.database.characterDao.getAllCharacters(
@@ -765,7 +765,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
           _CreateRelationshipDialog(characters: characters),
     );
     if (result == null || !mounted) return;
-    final current = ref.read(projectSessionProvider).valueOrNull;
+    final current = ref.read(projectSessionProvider).value;
     if (current == null ||
         current.manifest.id != projectId ||
         !identical(current.database, session.database)) {
@@ -809,7 +809,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
         ) ??
         false;
     if (!confirmed || !mounted) return;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final repository = RelationRepositoryImpl(database: session.database);
     final relation = await repository.getById(entry.relationId);

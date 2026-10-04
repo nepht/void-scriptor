@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/selection/selection_memory_snapshot.dart';
 import '../../../core/selection/selection_controller.dart';
@@ -55,7 +56,7 @@ final projectSidebarModulePreferencesProvider =
       ref,
       projectId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != projectId) {
         return const ProjectSidebarModulePreferences(
           factions: false,
@@ -75,21 +76,21 @@ final propExplorerProvider = FutureProvider.family<List<PropModel>, String>((
   ref,
   projectId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null || session.manifest.id != projectId) return const [];
   return PropRepository(session.database).listForProject(projectId);
 });
 
 final creatureExplorerProvider =
     FutureProvider.family<List<CreatureModel>, String>((ref, projectId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != projectId) return const [];
       return CreatureRepository(session.database).listForProject(projectId);
     });
 
 final supportingAssetExplorerProvider =
     FutureProvider.family<List<Asset>, (String, AssetType)>((ref, key) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != key.$1) return const [];
       // BUG-10 (hunt-run171): scope stays in SQL (see AssetDao
       // listByProjectAndType) instead of a full-table fetch per instance.
@@ -103,7 +104,7 @@ final storyExplorerProvider = FutureProvider.family<List<Asset>, String>((
   ref,
   projectId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null || session.manifest.id != projectId) return const [];
   // BUG-10 (hunt-run171): SQL-scoped story assets (was full-table scan).
   return session.database.assetDao.listByProjectAndType(projectId, 'story');
@@ -122,7 +123,7 @@ final explorerAssetFocusProvider = StateProvider<(String, AssetType)?>(
 /// character-roles-support phase_one).
 final explorerNarrativeAssignmentsProvider =
     FutureProvider<List<NarrativeAssignment>>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       return NarrativeAssignmentRepository(
         database: session.database,
@@ -146,7 +147,7 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
   if (type != AssetType.faction) {
     ref.read(worldbuildingSectionIntentProvider.notifier).state = null;
   }
-  final session = ref.read(projectSessionProvider).valueOrNull;
+  final session = ref.read(projectSessionProvider).value;
   // hunt-run171 BUG-13: stamp the focus intent with its project session;
   // without a session there is nothing to highlight, so clear instead of
   // leaving a bare type that would leak into the next opened project.
@@ -189,22 +190,22 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
     case AssetType.character:
       final characters = ref
           .read(characterControllerProvider(projectId))
-          .valueOrNull;
+          .value;
       restore(characters?.map((item) => item.assetId));
     case AssetType.story:
-      final stories = ref.read(storyExplorerProvider(projectId)).valueOrNull;
+      final stories = ref.read(storyExplorerProvider(projectId)).value;
       restore(stories?.map((item) => item.id));
     case AssetType.environment:
       final environments = ref
           .read(environmentExplorerProvider(projectId))
-          .valueOrNull;
+          .value;
       restore(environments?.map((item) => item.assetId));
     case AssetType.creature:
       // BUG-05 (hunt-20260910): restore sinkron saat katalog creature
       // sudah siap, mengikuti pola character/environment.
       final creatures = ref
           .read(creatureExplorerProvider(projectId))
-          .valueOrNull;
+          .value;
       restore(creatures?.map((item) => item.assetId));
     default:
       if (ref.read(selectionProvider)?.assetType != type) {
@@ -217,7 +218,7 @@ void focusWorldbuildingSection(
   WidgetRef ref,
   WorldbuildingExplorerSection section,
 ) {
-  final session = ref.read(projectSessionProvider).valueOrNull;
+  final session = ref.read(projectSessionProvider).value;
   if (session == null) return;
   final projectId = session.manifest.id;
   ref.read(worldbuildingSectionIntentProvider.notifier).state = (
@@ -254,7 +255,7 @@ void focusWorldbuildingSection(
 /// swallowed by contract (memory is a convenience, never a blocker) but
 /// are observable via debugPrint.
 final selectionMemoryPersistenceProvider = Provider<void>((ref) {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return;
   final projectId = session.manifest.id;
 
@@ -291,7 +292,7 @@ final selectionMemoryPersistenceProvider = Provider<void>((ref) {
 final explorerCatalogRecoveryProvider = Provider<void>((ref) {
   final intent = ref.watch(workspaceIntentProvider);
   final selection = ref.watch(selectionProvider);
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (intent == null || session == null) return;
   final (projectId, type) = intent;
   if (projectId != session.manifest.id) return;
@@ -300,11 +301,11 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
   if (selection != null) return;
   List<String>? idsOf(AsyncValue<List<Object?>> value) {
     if (type == AssetType.story) {
-      return (value as AsyncValue<List<Asset>>).valueOrNull
+      return (value as AsyncValue<List<Asset>>).value
           ?.map((item) => item.id)
           .toList(growable: false);
     }
-    return value.valueOrNull
+    return value.value
         ?.map((item) => (item as dynamic).assetId as String)
         .toList(growable: false);
   }
@@ -380,7 +381,7 @@ final explorerCatalogRecoveryProvider = Provider<void>((ref) {
 
 final wardrobeExplorerProvider =
     FutureProvider.family<List<WardrobeModel>, String>((ref, projectId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != projectId) return const [];
       return WardrobeRepositoryImpl(
         database: session.database,
@@ -390,7 +391,7 @@ final wardrobeExplorerProvider =
 
 final weaponExplorerProvider = FutureProvider.family<List<WeaponModel>, String>(
   (ref, projectId) async {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session == null || session.manifest.id != projectId) return const [];
     return WeaponRepositoryImpl(
       database: session.database,
@@ -404,7 +405,7 @@ final environmentExplorerProvider =
       ref,
       projectId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null || session.manifest.id != projectId) return const [];
       return EnvironmentRepositoryImpl(
         database: session.database,
@@ -424,7 +425,7 @@ class ExplorerPanel extends ConsumerWidget {
     ref.watch(selectionMemoryPersistenceProvider);
     final projectId = ref
         .watch(projectSessionProvider)
-        .valueOrNull
+        .value
         ?.manifest
         .id;
     final characters = projectId == null
@@ -463,7 +464,7 @@ class ExplorerPanel extends ConsumerWidget {
     // hunt-run171 BUG-13: the focus intent must match the ACTIVE project
     // session; a stale focus typed in another project must not highlight
     // this project's explorer groups.
-    final activeSession = ref.watch(projectSessionProvider).valueOrNull;
+    final activeSession = ref.watch(projectSessionProvider).value;
     final effectiveFocusedType =
         focusedType != null &&
             activeSession != null &&
@@ -479,7 +480,7 @@ class ExplorerPanel extends ConsumerWidget {
           )
         : ref.watch(projectSidebarModulePreferencesProvider(projectId));
     final modulePreferences =
-        modulePreferencesAsync.valueOrNull ??
+        modulePreferencesAsync.value ??
         const ProjectSidebarModulePreferences(
           factions: false,
           relationshipMap: true,
@@ -1093,7 +1094,7 @@ Future<void> _configureSidebarModules(
   // is open (stack replacement underneath); a disposed WidgetRef throws
   // on read. Guard before touching ref, matching Referee guidance.
   if (!context.mounted) return;
-  final session = ref.read(projectSessionProvider).valueOrNull;
+  final session = ref.read(projectSessionProvider).value;
   if (session == null || session.manifest.id != projectId) return;
   try {
     await ref
@@ -1120,7 +1121,7 @@ Future<void> createExplorerAsset(
   WidgetRef ref, {
   AssetType? fixedType,
 }) async {
-  final session = ref.read(projectSessionProvider).valueOrNull;
+  final session = ref.read(projectSessionProvider).value;
   if (session == null) return;
   var type = fixedType ?? AssetType.character;
   var creatureCategory = CreatureCategory.animal;
@@ -1228,7 +1229,7 @@ Future<void> createExplorerAsset(
   final (assetType, name, selectedCreatureCategory) = result;
   final projectId = session.manifest.id;
   final paths = ref.read(projectPathsProvider);
-  if (ref.read(projectSessionProvider).valueOrNull != session) return;
+  if (ref.read(projectSessionProvider).value != session) return;
   try {
     late final String assetId;
     switch (assetType) {
@@ -1310,7 +1311,7 @@ Future<void> createExplorerAsset(
         return;
     }
     if (!context.mounted ||
-        ref.read(projectSessionProvider).valueOrNull != session) {
+        ref.read(projectSessionProvider).value != session) {
       return;
     }
     ref
@@ -1541,9 +1542,9 @@ class _CharacterGroupState extends ConsumerState<_CharacterGroup> {
               ? (assignments.error as StateError).message.toString()
               : assignments.error.toString())
         : null;
-    final usableAssignments = assignments.valueOrNull ?? const [];
+    final usableAssignments = assignments.value ?? const [];
     final filter = _filter;
-    final characters = widget.characters.valueOrNull;
+    final characters = widget.characters.value;
     // hunt-run171 BUG-12: while the narrative-assignments provider is still
     // loading there is no data to filter against; `valueOrNull ?? const []`
     // would make every explicit-value dimension match nobody and render zero

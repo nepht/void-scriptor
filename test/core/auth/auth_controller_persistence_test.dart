@@ -34,13 +34,13 @@ void main() {
       );
       await first.read(authControllerProvider.future);
       expect(
-        first.read(authControllerProvider).valueOrNull?.status,
+        first.read(authControllerProvider).value?.status,
         AuthStatus.offline,
       );
 
       await first.read(authControllerProvider.notifier).continueAsGuest();
       expect(
-        first.read(authControllerProvider).valueOrNull?.status,
+        first.read(authControllerProvider).value?.status,
         AuthStatus.guest,
       );
       first.dispose();
@@ -105,7 +105,7 @@ void main() {
     await notifier.logout();
     expect(await store.load(), isNull);
     expect(
-      container.read(authControllerProvider).valueOrNull?.status,
+      container.read(authControllerProvider).value?.status,
       AuthStatus.unauthenticated,
     );
     container.dispose();

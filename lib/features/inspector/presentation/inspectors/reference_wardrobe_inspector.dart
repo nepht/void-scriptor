@@ -10,7 +10,7 @@ class ReferenceWardrobeInspector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final data = ref.watch(wardrobeInspectorProvider(wardrobeId)).valueOrNull;
+    final data = ref.watch(wardrobeInspectorProvider(wardrobeId)).value;
     if (data == null) {
       return const ReferenceInspectorPanel(
         properties: [InspectorProperty('Status', 'Loading')],

@@ -36,8 +36,8 @@ class WorkspaceHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final character = characterId == null
         ? null
-        : ref.watch(characterWorkspaceProvider(characterId!)).valueOrNull;
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+        : ref.watch(characterWorkspaceProvider(characterId!)).value;
+    final session = ref.watch(projectSessionProvider).value;
     final resolvedProjectName = projectName?.trim();
     return Container(
       height: 36,

@@ -11,7 +11,7 @@ final supportingAssetProvider = FutureProvider.family<Asset?, String>((
   ref,
   assetId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   return session?.database.assetDao.getById(assetId);
 });
 
@@ -20,7 +20,7 @@ final supportingAssetProfileProvider =
       ref,
       assetId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       return (session.database.select(
         session.database.supportingAssetProfiles,
@@ -136,7 +136,7 @@ class _AssetDetails extends ConsumerWidget {
                                 onPressed: () async {
                                   final session = ref
                                       .read(projectSessionProvider)
-                                      .valueOrNull;
+                                      .value;
                                   await session?.database.assetDao.setFavorite(
                                     asset.id,
                                     !asset.favorite,
@@ -271,7 +271,7 @@ class _AssetDetails extends ConsumerWidget {
     nameController.dispose();
     descriptionController.dispose();
     if (save != true || name.isEmpty) return;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await (session.database.update(
       session.database.assets,
@@ -319,7 +319,7 @@ class _SupportingSpecificationEditorState
   Widget build(BuildContext context) {
     final spec = _specificationFor(widget.assetType);
     final profile = ref.watch(supportingAssetProfileProvider(widget.assetId));
-    final existing = profile.valueOrNull;
+    final existing = profile.value;
     if (!_loaded && !profile.isLoading) {
       _loaded = true;
       final values = _valuesFor(widget.assetType, existing);
@@ -356,7 +356,7 @@ class _SupportingSpecificationEditorState
   }
 
   Future<void> _save() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final first = Value(_nullable(_first.text));
     final second = Value(_nullable(_second.text));

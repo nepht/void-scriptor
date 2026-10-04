@@ -20,7 +20,7 @@ class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   Future<void> _createCharacter(BuildContext context, WidgetRef ref) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) {
       // BUG-03 (vs-hunt-20260913-dashboard): '/studio' tanpa projectId
       // me-render shell tanpa sesi — karakter tak mungkin dibuat. Destinasi

@@ -21,7 +21,7 @@ final sceneWorkspaceProvider = FutureProvider.family<StorySceneNode?, String>((
   ref,
   sceneId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   return StoryRepositoryImpl(
     database: session.database,
@@ -34,7 +34,7 @@ final sceneAssetInstancesProvider =
       ref,
       sceneId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       return SceneAssetInstanceRepository(
         session.database,
@@ -56,7 +56,7 @@ class SceneWorkspaceScreen extends ConsumerStatefulWidget {
 
 class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
   Future<void> _openTimeline() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null || !mounted) return;
     final service = CreateTimelineService(database: session.database);
     final timelineId = await service.ensureTimelineForScene(
@@ -134,7 +134,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
       },
     );
     if (content == null || content.isEmpty) return;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CreateStoryService(
       database: session.database,
@@ -144,7 +144,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
   }
 
   Future<void> _deleteBeat(SceneBeatEditorItem beat) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CreateStoryService(
       database: session.database,
@@ -154,7 +154,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
   }
 
   Future<void> _reorderBeats(List<SceneBeatEditorItem> ordered) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CreateStoryService(
       database: session.database,
@@ -168,7 +168,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final data = ref.watch(sceneWorkspaceProvider(widget.sceneId)).valueOrNull;
+    final data = ref.watch(sceneWorkspaceProvider(widget.sceneId)).value;
     final beats =
         data?.beats
             .map(
@@ -184,7 +184,7 @@ class _SceneWorkspaceScreenState extends ConsumerState<SceneWorkspaceScreen> {
         const <SceneBeatEditorItem>[];
     final environment = data?.environment;
     final sceneAssets =
-        ref.watch(sceneAssetInstancesProvider(widget.sceneId)).valueOrNull ??
+        ref.watch(sceneAssetInstancesProvider(widget.sceneId)).value ??
         const <SceneAssetInstanceModel>[];
     final total = beats.fold<double>(
       0,

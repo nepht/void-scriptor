@@ -57,7 +57,7 @@ class WorkspaceResolver extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selection = ref.watch(selectionProvider);
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final intent = ref.watch(workspaceIntentProvider);
     // Mount the catalog-recovery provider so pending typed navigation
     // restores its remembered selection once the catalog finishes loading.
@@ -572,14 +572,14 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
     // Body bisa ter-mount saat session masih loading (selection tersedia
     // lebih dulu). Muat begitu session siap, tanpa kehilangan data awal.
     ref.listenManual(projectSessionProvider, (previous, next) {
-      if (next.valueOrNull != null && _factions == null && !_loading) {
+      if (next.value != null && _factions == null && !_loading) {
         _load();
       }
     }, fireImmediately: true);
   }
 
   Future<void> _load() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final projectId = session.manifest.id;
     final db = session.database;
@@ -621,7 +621,7 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   }
 
   Future<void> _createFaction() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     var name = '';
     final submitted = await showDialog<String>(
@@ -682,7 +682,7 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   /// dan kartu gambar era tak mungkin tampil untuk pengguna nyata. Dialog
   /// ini memakai repository yang sama; nama kosong ditolak jujur.
   Future<void> _createEra() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     var name = '';
     final submitted = await showDialog<String>(
@@ -734,7 +734,7 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   Widget build(BuildContext context) {
     final palette = context.palette;
     final selectedId = ref.watch(selectionProvider)?.assetId;
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final sectionIntent = ref.watch(worldbuildingSectionIntentProvider);
     final focusedSection = sectionIntent?.$1 == session?.manifest.id
         ? sectionIntent?.$2
@@ -935,7 +935,7 @@ class _WorldbuildingBodyState extends ConsumerState<WorldbuildingBody> {
   }
 
   void _selectAsset(String assetId, AssetType assetType) {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     ref
         .read(selectionProvider.notifier)

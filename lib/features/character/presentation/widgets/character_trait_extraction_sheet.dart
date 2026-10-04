@@ -63,7 +63,7 @@ class _CharacterTraitExtractionSheetState
   String? _error;
 
   Future<void> _loadNovels() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final novels = await CharacterTraitExtractionService.listNovels(
       session.database,
@@ -77,7 +77,7 @@ class _CharacterTraitExtractionSheetState
   }
 
   Future<void> _analyze() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     final novelId = _novelId;
     if (session == null || novelId == null) {
       setState(() {
@@ -133,7 +133,7 @@ class _CharacterTraitExtractionSheetState
 
   Future<void> _applySelected() async {
     final result = _result;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (result == null || session == null || _selected.isEmpty) return;
     final repository = CharacterRepositoryImpl(
       database: session.database,
@@ -177,7 +177,7 @@ class _CharacterTraitExtractionSheetState
     // Session provider bisa masih loading saat sheet dibuka (pola bug run244):
     // muat novel lewat post-frame tiap kali session berubah dari kosong ->
     // terisi, bukan sekali di initState.
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session != null && _novels.isEmpty && !_novelsLoading) {
       _novelsLoading = true;
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadNovels());

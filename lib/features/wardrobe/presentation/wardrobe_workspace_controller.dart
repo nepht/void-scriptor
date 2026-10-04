@@ -7,7 +7,7 @@ import '../domain/wardrobe_workspace_data.dart';
 
 final wardrobeWorkspaceProvider = FutureProvider.family<WardrobeModel?, String>(
   (ref, wardrobeId) async {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session == null) return null;
     return WardrobeRepositoryImpl(
       database: session.database,
@@ -25,7 +25,7 @@ final wardrobeWorkspaceDetailsProvider =
       ref,
       wardrobeId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const WardrobeWorkspaceData();
       return WardrobeRepositoryImpl(
         database: session.database,

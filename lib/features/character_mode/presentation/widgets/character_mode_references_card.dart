@@ -11,7 +11,7 @@ class CharacterModeReferencesCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session == null) return const SizedBox.shrink();
     ref.watch(projectAssetsProvider);
     final repository = CharacterModeReferenceRepository(session.database);

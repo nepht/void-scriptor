@@ -118,7 +118,7 @@ class UnavailableLayoutPresetRepository implements LayoutPresetRepository {
 /// repository. Before a project opens, callers receive a safe empty repository
 /// so startup and non-project routes never fail on layout persistence.
 final layoutPresetRepositoryProvider = Provider<LayoutPresetRepository>((ref) {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return const UnavailableLayoutPresetRepository();
   return DriftLayoutPresetRepository(session.database);
 });

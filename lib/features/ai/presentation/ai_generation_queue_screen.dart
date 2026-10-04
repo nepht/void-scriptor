@@ -11,7 +11,7 @@ typedef AiPromptSubmission =
 
 final aiGenerationRuntimeProvider =
     FutureProvider.autoDispose<AiGenerationRuntime?>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       final runtime = await AiGenerationRuntime.open(
         database: session.database,

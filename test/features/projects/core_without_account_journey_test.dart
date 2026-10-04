@@ -42,7 +42,7 @@ void main() {
     addTearDown(container.dispose);
     await container.read(authControllerProvider.future);
     await container.read(authControllerProvider.notifier).continueOffline();
-    final offline = container.read(authControllerProvider).valueOrNull;
+    final offline = container.read(authControllerProvider).value;
     expect(offline?.status, AuthStatus.offline);
     expect(offline?.userId, isNull, reason: 'no account identity');
 

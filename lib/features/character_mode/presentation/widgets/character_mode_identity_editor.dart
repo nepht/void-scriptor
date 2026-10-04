@@ -13,7 +13,7 @@ class CharacterModeIdentityEditor extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     if (session == null) return const SizedBox.shrink();
     return FutureBuilder<CharacterModeIdentityOverride?>(
       future: CharacterModeIdentityRepository(

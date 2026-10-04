@@ -30,7 +30,7 @@ final customStorageStoreProvider = FutureProvider<CustomStorageLocationStore>((
 });
 
 final projectPathsProvider = Provider<ProjectPaths>((ref) {
-  final store = ref.watch(customStorageStoreProvider).valueOrNull;
+  final store = ref.watch(customStorageStoreProvider).value;
   return ProjectPaths(customStorageStore: store);
 });
 
@@ -59,7 +59,7 @@ final currentProjectSessionProvider = projectSessionProvider;
 /// (dashboard). The Inspector cross-project guard compares the selection's
 /// projectId against this value instead of holding a full session.
 final currentProjectIdProvider = Provider<String?>((ref) {
-  return ref.watch(projectSessionProvider).valueOrNull?.manifest.id;
+  return ref.watch(projectSessionProvider).value?.manifest.id;
 });
 
 class ProjectSessionController extends AsyncNotifier<ProjectSession?> {

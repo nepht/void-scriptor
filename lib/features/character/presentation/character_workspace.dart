@@ -16,7 +16,7 @@ class CharacterWorkspace extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final characters = ref.watch(characterControllerProvider(projectId));
     final selectedId = ref.watch(selectedAssetProvider);
-    final selected = characters.valueOrNull
+    final selected = characters.value
         ?.where((item) => item.assetId == selectedId)
         .firstOrNull;
 
@@ -67,7 +67,7 @@ class CharacterWorkspace extends ConsumerWidget {
     );
     controller.dispose();
     if (name == null || name.isEmpty) return;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CharacterActions(ref, projectId, session.database).create(name);
   }

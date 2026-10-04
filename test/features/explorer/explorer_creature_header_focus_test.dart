@@ -155,11 +155,10 @@ void main() {
       });
       await tester.pumpAndSettle();
 
-      expect(
-        container.read(workspaceIntentProvider),
-        (projectId, AssetType.creature),
-        reason: 'header tap must stamp the typed creature intent (BUG-18)',
-      );
+      expect(container.read(workspaceIntentProvider), (
+        projectId,
+        AssetType.creature,
+      ), reason: 'header tap must stamp the typed creature intent (BUG-18)');
       expect(
         container.read(selectionProvider)?.assetId,
         creatureId,
@@ -187,11 +186,10 @@ void main() {
     await tester.tap(find.text('Creatures & Companions'));
     await tester.pumpAndSettle();
 
-    expect(
-      container.read(explorerAssetFocusProvider),
-      (projectId, AssetType.creature),
-      reason: 'header tap must stamp the project-scoped focus (BUG-18)',
-    );
+    expect(container.read(explorerAssetFocusProvider), (
+      projectId,
+      AssetType.creature,
+    ), reason: 'header tap must stamp the project-scoped focus (BUG-18)');
     expect(
       creatureTile(tester).backgroundColor,
       isNotNull,

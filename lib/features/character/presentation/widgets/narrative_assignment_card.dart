@@ -41,7 +41,7 @@ final narrativeAssignmentRepositoryFactoryProvider =
 /// project's story assets (the same records the Novel workspace opens).
 final narrativeNovelOptionsProvider =
     FutureProvider<List<NarrativeNovelOption>>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       final assets = await ref.watch(projectAssetsProvider.future);
       return assets
@@ -109,7 +109,7 @@ class _NarrativeAssignmentCardState
   }
 
   NarrativeAssignmentRepository? _repository() {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     return NarrativeAssignmentRepository(
       database: session.database,
@@ -120,7 +120,7 @@ class _NarrativeAssignmentCardState
   Future<void> _loadFor(NarrativeNovelOption novel) async {
     final epoch = ++_loadEpoch;
     final characterId = widget.characterId;
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) {
       // hunt-run157 BUG-09: a vanished session between the options-provider
       // build and this pick used to return silently, leaving the card stuck

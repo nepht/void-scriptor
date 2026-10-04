@@ -9,7 +9,7 @@ final weaponWorkspaceProvider = FutureProvider.family<WeaponModel?, String>((
   ref,
   weaponId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   return WeaponRepositoryImpl(
     database: session.database,
@@ -23,7 +23,7 @@ final weaponWorkspaceProvider = FutureProvider.family<WeaponModel?, String>((
 /// honest empty states instead of the previous hardcoded sample data.
 final weaponWorkspaceDetailsProvider =
     FutureProvider.family<WeaponWorkspaceData, String>((ref, weaponId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const WeaponWorkspaceData();
       return WeaponRepositoryImpl(
         database: session.database,

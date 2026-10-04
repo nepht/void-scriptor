@@ -141,7 +141,12 @@ void main() {
       isA<StateError>(),
       reason: 'bug hidup: read() pada disposed ref harus melempar tanpa guard',
     );
-    expect('${errorSink.value}', contains('disposed'));
+    // Riverpod 3 replaced the Riverpod 2 wording ('...ref used after being
+    // disposed'). The contract under test is that reading a ref whose widget
+    // is unmounted still throws a StateError — assert on that, not on the
+    // library's exact sentence, so a Riverpod message change cannot silently
+    // pass this regression guard.
+    expect('${errorSink.value}', contains('unmounted'));
   });
 
   testWidgets(

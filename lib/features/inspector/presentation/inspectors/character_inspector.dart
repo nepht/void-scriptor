@@ -44,7 +44,7 @@ final characterInspectorNameProvider = FutureProvider.family<String?, String>((
   ref,
   characterId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   final asset = await session.database.assetDao.getById(characterId);
   if (asset == null || asset.projectId != session.manifest.id) return null;
@@ -56,7 +56,7 @@ final characterInspectorDetailsProvider =
       ref,
       characterId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const CharacterInspectorDetails();
       final asset = await session.database.assetDao.getById(characterId);
       if (asset == null || asset.projectId != session.manifest.id) {
@@ -104,23 +104,23 @@ class CharacterInspector extends ConsumerWidget {
       loading: () => _CharacterInspectorBody(
         characterId: characterId,
         character: null,
-        assetName: name.valueOrNull,
-        identity: identity.valueOrNull,
-        details: details.valueOrNull ?? const CharacterInspectorDetails(),
+        assetName: name.value,
+        identity: identity.value,
+        details: details.value ?? const CharacterInspectorDetails(),
       ),
       error: (error, _) => _CharacterInspectorBody(
         characterId: characterId,
         character: null,
-        assetName: name.valueOrNull,
-        identity: identity.valueOrNull,
-        details: details.valueOrNull ?? const CharacterInspectorDetails(),
+        assetName: name.value,
+        identity: identity.value,
+        details: details.value ?? const CharacterInspectorDetails(),
       ),
       data: (value) => _CharacterInspectorBody(
         characterId: characterId,
         character: value,
-        assetName: name.valueOrNull,
-        identity: identity.valueOrNull,
-        details: details.valueOrNull ?? const CharacterInspectorDetails(),
+        assetName: name.value,
+        identity: identity.value,
+        details: details.value ?? const CharacterInspectorDetails(),
       ),
     );
   }

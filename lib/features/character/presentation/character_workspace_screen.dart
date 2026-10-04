@@ -72,9 +72,9 @@ class _CharacterWorkspaceScreenState
             ? const CharacterEmptyState()
             : _buildWorkspace(
                 character,
-                identity.valueOrNull ??
+                identity.value ??
                     CharacterIdentityProfile(characterId: widget.characterId),
-                portrait.valueOrNull,
+                portrait.value,
               ),
       ),
     );
@@ -132,7 +132,7 @@ class _CharacterWorkspaceScreenState
   /// browser uses), then refresh the bound portrait. External files are
   /// never referenced in place, so the portrait survives moving folders.
   Future<void> _importPortrait(String characterId) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No active project session.')),

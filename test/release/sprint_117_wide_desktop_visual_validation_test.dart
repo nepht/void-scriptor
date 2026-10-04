@@ -813,7 +813,7 @@ void main() {
         final container = ProviderScope.containerOf(
           tester.element(find.byType(AccountCloudCenterScreen)),
         );
-        final session = container.read(authControllerProvider).valueOrNull;
+        final session = container.read(authControllerProvider).value;
         final expectedStatusTexts = <String>[];
         for (final item in AccountCenterWideDesktopFrame.statusBarItems(
           AccountCloudSnapshot.localOnly(session: session),

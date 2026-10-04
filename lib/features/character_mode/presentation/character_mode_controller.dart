@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../projects/presentation/project_persistence_providers.dart';
@@ -14,7 +15,7 @@ final characterModesProvider =
       ref,
       characterId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       return CharacterModeRepositoryImpl(
         session.database,
@@ -25,7 +26,7 @@ final lastUsedCharacterModeProvider = FutureProvider.family<String?, String>((
   ref,
   characterId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   return CharacterModeRepositoryImpl(
     session.database,
@@ -46,7 +47,7 @@ final characterModeLoadoutProvider =
       ref,
       modeId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       return CharacterLoadoutRepositoryImpl(
         session.database,
@@ -54,7 +55,7 @@ final characterModeLoadoutProvider =
     });
 
 final projectAssetsProvider = FutureProvider<List<db.Asset>>((ref) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return const [];
   return session.database.assetDao.getAllAssets();
 });
@@ -67,7 +68,7 @@ class CharacterModeActions {
     required String characterId,
     required String name,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     final id = await CharacterModeRepositoryImpl(session.database).createMode(
       projectId: session.manifest.id,
@@ -85,7 +86,7 @@ class CharacterModeActions {
     required String assetId,
     int quantity = 1,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CharacterLoadoutRepositoryImpl(
       session.database,
@@ -98,7 +99,7 @@ class CharacterModeActions {
     required LoadoutSlot slot,
     required String assetId,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     await CharacterLoadoutRepositoryImpl(
       session.database,
@@ -111,7 +112,7 @@ class CharacterModeActions {
     required String description,
     required String type,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     final id = const Uuid().v4();
     await session.database.assetDao.createStandaloneCharacterAsset(

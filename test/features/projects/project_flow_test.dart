@@ -66,7 +66,7 @@ void main() {
           localPath: tempDirectory.path,
         );
 
-    final projects = container.read(projectControllerProvider).valueOrNull;
+    final projects = container.read(projectControllerProvider).value;
     expect(projects, hasLength(1));
     expect(project.id, isNotEmpty);
     expect(projects!.single.name, 'Void Universe');

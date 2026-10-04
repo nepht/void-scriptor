@@ -65,7 +65,7 @@ class CharacterModeSelector extends ConsumerWidget {
                 previousModeId: previous,
                 currentModeId: value,
               );
-              final session = ref.read(projectSessionProvider).valueOrNull;
+              final session = ref.read(projectSessionProvider).value;
               if (session != null) {
                 CharacterModeRepositoryImpl(
                   session.database,

@@ -195,7 +195,7 @@ class _AccountCloudCenterScreenState
     final data =
         widget.snapshot ??
         AccountCloudSnapshot.localOnly(
-          session: ref.watch(authControllerProvider).valueOrNull,
+          session: ref.watch(authControllerProvider).value,
         );
     final operationalMetrics =
         widget.snapshot != null || widget.operationalMetrics != null
@@ -2108,7 +2108,7 @@ class _OperationalMetricsCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = metrics.valueOrNull;
+    final value = metrics.value;
     final loading = metrics.isLoading && value == null;
     final failed = metrics.hasError && value == null;
     final usageMessage = loading

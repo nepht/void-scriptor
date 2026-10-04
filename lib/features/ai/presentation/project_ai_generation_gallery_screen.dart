@@ -12,7 +12,7 @@ import 'ai_generation_gallery_screen.dart';
 
 final projectGenerationOutputsProvider =
     FutureProvider<List<GenerationGalleryItem>>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       final rows = await GenerationRepository(
         session.database,
@@ -34,7 +34,7 @@ class ProjectAiGenerationGalleryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final outputs = ref.watch(projectGenerationOutputsProvider);
     return outputs.when(
       loading: () =>

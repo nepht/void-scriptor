@@ -145,16 +145,14 @@ void main() {
     skip: !Platform.isWindows,
   );
 
-  testWidgets(
-    'cast section shows explicit empty state without assignments',
-    (tester) async {
-      final session = await seed(tester, 'empty', assignments: const {});
-      await pumpCast(tester, session);
+  testWidgets('cast section shows explicit empty state without assignments', (
+    tester,
+  ) async {
+    final session = await seed(tester, 'empty', assignments: const {});
+    await pumpCast(tester, session);
 
-      expect(find.text('CAST'), findsOneWidget);
-      expect(find.text('No cast assigned to this novel yet.'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    expect(find.text('CAST'), findsOneWidget);
+    expect(find.text('No cast assigned to this novel yet.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 }

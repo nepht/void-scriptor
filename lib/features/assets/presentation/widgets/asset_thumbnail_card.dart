@@ -17,7 +17,7 @@ final assetThumbnailProvider = FutureProvider.family<String?, String>((
   ref,
   assetId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   final asset = await session.database.assetDao.getById(assetId);
   final path = asset?.thumbnailPath;
@@ -54,7 +54,7 @@ class AssetThumbnailCard extends ConsumerStatefulWidget {
 
 class _AssetThumbnailCardState extends ConsumerState<AssetThumbnailCard> {
   Future<void> _import() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     const typeGroup = XTypeGroup(
       label: 'Images',
@@ -88,8 +88,8 @@ class _AssetThumbnailCardState extends ConsumerState<AssetThumbnailCard> {
   @override
   Widget build(BuildContext context) {
     final thumbnail = ref.watch(assetThumbnailProvider(widget.assetId));
-    final path = thumbnail.valueOrNull;
-    final hasSession = ref.watch(projectSessionProvider).valueOrNull != null;
+    final path = thumbnail.value;
+    final hasSession = ref.watch(projectSessionProvider).value != null;
     return VoidCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

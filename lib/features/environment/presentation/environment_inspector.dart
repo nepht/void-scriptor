@@ -9,7 +9,7 @@ final environmentInspectorProvider = FutureProvider.family<String?, String>((
   ref,
   environmentId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   return (await EnvironmentRepositoryImpl(
     database: session.database,
@@ -24,7 +24,7 @@ class EnvironmentInspector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final model = ref
         .watch(environmentInspectorProvider(environmentId))
-        .valueOrNull;
+        .value;
     return Container(
       color: context.palette.panel,
       padding: const EdgeInsets.all(16),

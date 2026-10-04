@@ -15,7 +15,7 @@ final characterScopeStatesProvider =
       Map<CharacterScopeLayer, CharacterScopeState>,
       String
     >((ref, characterId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const {};
       return CharacterRepositoryImpl(
         database: session.database,

@@ -142,7 +142,7 @@ void main() {
                   // tap; createExplorerAsset's ref.read needs the settled
                   // value (mirrors run159's optionCounters warm-up).
                   final ready =
-                      ref.watch(projectSessionProvider).valueOrNull != null;
+                      ref.watch(projectSessionProvider).value != null;
                   return Column(
                     children: [
                       Text('SESSION_READY:$ready'),

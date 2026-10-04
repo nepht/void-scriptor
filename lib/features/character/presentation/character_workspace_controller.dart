@@ -17,7 +17,7 @@ final characterPortraitProvider = FutureProvider.family<String?, String>((
   ref,
   characterId,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return null;
   final asset = await session.database.assetDao.getById(characterId);
   final path = asset?.thumbnailPath;
@@ -27,7 +27,7 @@ final characterPortraitProvider = FutureProvider.family<String?, String>((
 
 final characterWorkspaceProvider =
     FutureProvider.family<CharacterModel?, String>((ref, characterId) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       return CharacterRepositoryImpl(
         database: session.database,
@@ -41,7 +41,7 @@ final characterIdentityProvider =
       ref,
       characterId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       return CharacterRepositoryImpl(
         database: session.database,
@@ -55,7 +55,7 @@ class CharacterIdentityActions {
   final WidgetRef ref;
 
   Future<void> update(CharacterIdentityProfile profile) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final repository = CharacterRepositoryImpl(
       database: session.database,

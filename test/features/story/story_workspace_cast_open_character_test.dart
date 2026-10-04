@@ -112,49 +112,45 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    'cast rows show the character description from the profile',
-    (tester) async {
-      final (session, _) = await seed(
-        tester,
-        'desc',
-        biography: 'Penjaga menara kutub selatan.',
-        personality: 'Diam, tapi menimbang setiap kata.',
-      );
-      await pumpCast(tester, session);
+  testWidgets('cast rows show the character description from the profile', (
+    tester,
+  ) async {
+    final (session, _) = await seed(
+      tester,
+      'desc',
+      biography: 'Penjaga menara kutub selatan.',
+      personality: 'Diam, tapi menimbang setiap kata.',
+    );
+    await pumpCast(tester, session);
 
-      expect(find.text('Nyx'), findsOneWidget);
-      expect(
-        find.textContaining('Penjaga menara kutub selatan.'),
-        findsOneWidget,
-      );
-      expect(
-        find.textContaining('Diam, tapi menimbang setiap kata.'),
-        findsOneWidget,
-      );
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    expect(find.text('Nyx'), findsOneWidget);
+    expect(
+      find.textContaining('Penjaga menara kutub selatan.'),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Diam, tapi menimbang setiap kata.'),
+      findsOneWidget,
+    );
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 
-  testWidgets(
-    'tapping a cast row opens the same character workspace',
-    (tester) async {
-      final (session, nyxId) = await seed(
-        tester,
-        'open',
-        biography: 'Pembuat gerbang es.',
-        personality: 'Keras kepala.',
-      );
+  testWidgets('tapping a cast row opens the same character workspace', (
+    tester,
+  ) async {
+    final (session, nyxId) = await seed(
+      tester,
+      'open',
+      biography: 'Pembuat gerbang es.',
+      personality: 'Keras kepala.',
+    );
 
-      final opened = <String>[];
-      await pumpCast(tester, session, onTapCharacter: opened.add);
-      await tester.tap(find.text('Nyx'));
-      await tester.pump();
+    final opened = <String>[];
+    await pumpCast(tester, session, onTapCharacter: opened.add);
+    await tester.tap(find.text('Nyx'));
+    await tester.pump();
 
-      expect(opened, [nyxId]);
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    expect(opened, [nyxId]);
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 }

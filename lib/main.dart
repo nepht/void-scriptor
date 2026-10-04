@@ -44,6 +44,15 @@ Future<void> main() async {
   // renders IS a healthy boot of the recovery path.
   runApp(
     ProviderScope(
+      // Riverpod 3 auto-retries a failed provider (exponential backoff, up
+      // to 10 attempts). This app already surfaces load failures itself:
+      // panels render a manual error row with a Retry action (BUG-8 catalog,
+      // BUG-20 sidebar module preferences), plus SectionErrorBoundary. Silent
+      // auto-retry makes those rows flash and vanish, which reinstates the
+      // silent-masking bug they exist to prevent and makes the manual Retry
+      // button useless. Riverpod 2 had no auto-retry, so disabling it restores
+      // the exact pre-upgrade runtime contract instead of re-inventing one.
+      retry: (_, __) => null,
       overrides: [
         if (sessionStore != null)
           authSessionStoreProvider.overrideWithValue(sessionStore),

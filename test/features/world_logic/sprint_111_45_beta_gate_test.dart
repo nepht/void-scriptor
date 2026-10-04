@@ -218,11 +218,9 @@ void main() {
         final criterion = report.criterionFor(Wave3GateEvidence.securityReview);
         expect(criterion.passed, isTrue);
         expect(criterion.details['securityPassing'], isTrue);
-        expect(
-          criterion.details['deferredThreatIds'],
-          ['th-power-loss-integrity'],
-          reason: 'hardware-bound tidak boleh dianggap lunak',
-        );
+        expect(criterion.details['deferredThreatIds'], [
+          'th-power-loss-integrity',
+        ], reason: 'hardware-bound tidak boleh dianggap lunak');
       },
     );
 

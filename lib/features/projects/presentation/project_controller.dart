@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../platform/domain/platform_capability.dart';
 import '../../platform/platform_capability_providers.dart';
@@ -75,7 +76,7 @@ class ProjectController extends AsyncNotifier<List<ProjectModel>> {
           PlatformCapability.localFileSystem,
           action: 'Memindahkan proyek',
         );
-    final activeSession = ref.read(projectSessionProvider).valueOrNull;
+    final activeSession = ref.read(projectSessionProvider).value;
     if (activeSession?.package.projectId == projectId) {
       await ref.read(projectSessionProvider.notifier).closeProject();
     }
@@ -92,7 +93,7 @@ class ProjectController extends AsyncNotifier<List<ProjectModel>> {
   }
 
   Future<void> deleteProject(String projectId) async {
-    final activeSession = ref.read(projectSessionProvider).valueOrNull;
+    final activeSession = ref.read(projectSessionProvider).value;
     if (activeSession?.package.projectId == projectId) {
       await ref.read(projectSessionProvider.notifier).closeProject();
     }

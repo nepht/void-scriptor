@@ -19,7 +19,7 @@ class SettingsHubScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final palette = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(

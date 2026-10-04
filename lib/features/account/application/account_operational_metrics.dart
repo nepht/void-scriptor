@@ -24,7 +24,7 @@ class AccountOperationalMetrics {
 
 final accountOperationalMetricsProvider =
     FutureProvider<AccountOperationalMetrics?>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
 
       final now = DateTime.now().toUtc();

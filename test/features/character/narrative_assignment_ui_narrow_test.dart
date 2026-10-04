@@ -117,23 +117,21 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    'narrative assignment card renders without overflow at 390x844',
-    (tester) async {
-      final (package, session, characterId) = await seed(tester, 'narrow');
-      await pumpWorkspace(
-        tester,
-        package,
-        session,
-        characterId,
-        size: const Size(390, 844),
-      );
+  testWidgets('narrative assignment card renders without overflow at 390x844', (
+    tester,
+  ) async {
+    final (package, session, characterId) = await seed(tester, 'narrow');
+    await pumpWorkspace(
+      tester,
+      package,
+      session,
+      characterId,
+      size: const Size(390, 844),
+    );
 
-      expect(find.text('Narrative Assignment'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    expect(find.text('Narrative Assignment'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 
   testWidgets(
     'narrative assignment card renders without overflow at 2.0 text scale',

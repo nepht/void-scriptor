@@ -11,7 +11,7 @@ import 'reference_library_screen.dart';
 final projectReferencesProvider = FutureProvider<List<ReferenceModel>>((
   ref,
 ) async {
-  final session = ref.watch(projectSessionProvider).valueOrNull;
+  final session = ref.watch(projectSessionProvider).value;
   if (session == null) return const [];
   final projectDir = await ref
       .watch(projectPathsProvider)
@@ -48,7 +48,7 @@ class ProjectReferenceLibraryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final references = ref.watch(projectReferencesProvider);
     return references.when(
       loading: () => const Scaffold(

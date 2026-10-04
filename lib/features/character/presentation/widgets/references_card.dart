@@ -60,7 +60,7 @@ class _ReferencesCardState extends ConsumerState<ReferencesCard> {
     _sessionSub = ref.listenManual<AsyncValue<ProjectSession?>>(
       projectSessionProvider,
       (previous, next) {
-        if ((previous?.valueOrNull) == null && next.valueOrNull != null) {
+        if ((previous?.value) == null && next.value != null) {
           _reload();
           setState(() {});
         }
@@ -77,7 +77,7 @@ class _ReferencesCardState extends ConsumerState<ReferencesCard> {
   }
 
   void _reload() {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     _slots = _loadSlots(session);
   }
 
@@ -114,7 +114,7 @@ class _ReferencesCardState extends ConsumerState<ReferencesCard> {
   }
 
   Future<void> _addImage() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final label = await showDialog<String>(
       context: context,
@@ -164,7 +164,7 @@ class _ReferencesCardState extends ConsumerState<ReferencesCard> {
 
   @override
   Widget build(BuildContext context) {
-    final hasSession = ref.watch(projectSessionProvider).valueOrNull != null;
+    final hasSession = ref.watch(projectSessionProvider).value != null;
     return VoidCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

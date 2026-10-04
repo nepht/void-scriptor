@@ -59,12 +59,12 @@ void main() {
     children: [
       Consumer(
         builder: (context, ref, _) => Text(
-          'NARRATIVE_NOVELS:${ref.watch(narrativeNovelOptionsProvider).valueOrNull?.length}',
+          'NARRATIVE_NOVELS:${ref.watch(narrativeNovelOptionsProvider).value?.length}',
         ),
       ),
       Consumer(
         builder: (context, ref, _) => Text(
-          'SUPPORT_NOVELS:${ref.watch(supportNovelOptionsProvider).valueOrNull?.length}',
+          'SUPPORT_NOVELS:${ref.watch(supportNovelOptionsProvider).value?.length}',
         ),
       ),
     ],

@@ -141,7 +141,7 @@ void main() {
         final package = await makePackage(root, 'Flow Wire');
         final controller = container.read(projectSessionProvider.notifier);
         await controller.open(package.projectId);
-        final session = container.read(projectSessionProvider).valueOrNull!;
+        final session = container.read(projectSessionProvider).value!;
         await ProjectResilienceController(
           session,
         ).createBackup(note: 'flow-slice');
@@ -157,7 +157,7 @@ void main() {
           backup: rows.single,
         );
 
-        final fresh = container.read(projectSessionProvider).valueOrNull;
+        final fresh = container.read(projectSessionProvider).value;
         expect(
           fresh,
           isNotNull,

@@ -23,7 +23,7 @@ class StoryInspector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final story = ref.watch(storyInspectorProvider(storyId)).valueOrNull;
+    final story = ref.watch(storyInspectorProvider(storyId)).value;
     final title = story?.title ?? storyId;
     final status = story?.status.isNotEmpty == true ? story!.status : 'Draft';
     final synopsis = story?.synopsis;

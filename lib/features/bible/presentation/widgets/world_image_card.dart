@@ -93,7 +93,7 @@ class _WorldImageCardState extends ConsumerState<WorldImageCard> {
   }
 
   Future<void> _import() async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     const typeGroup = XTypeGroup(
       label: 'Images',
@@ -119,7 +119,7 @@ class _WorldImageCardState extends ConsumerState<WorldImageCard> {
 
   @override
   Widget build(BuildContext context) {
-    final hasSession = ref.watch(projectSessionProvider).valueOrNull != null;
+    final hasSession = ref.watch(projectSessionProvider).value != null;
     return VoidCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

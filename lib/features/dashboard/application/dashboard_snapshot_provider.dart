@@ -10,7 +10,7 @@ final dashboardRepositoryProvider = Provider<DashboardRepository>(
 
 final dashboardSnapshotProvider =
     FutureProvider.autoDispose<DashboardSnapshot?>((ref) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return null;
       return ref
           .watch(dashboardRepositoryProvider)

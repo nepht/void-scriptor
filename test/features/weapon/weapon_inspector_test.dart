@@ -17,10 +17,10 @@ void main() {
         child: const MaterialApp(home: InspectorResolver()),
       ),
     );
-    final container = tester
-        .element(find.byType(InspectorResolver))
-        .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>()!
-        .container;
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(InspectorResolver)),
+      listen: false,
+    );
     container
         .read(selectionProvider.notifier)
         .select(

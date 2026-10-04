@@ -20,11 +20,11 @@ class WeaponWorkspaceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = ref.watch(weaponWorkspaceProvider(weaponId)).valueOrNull;
+    final model = ref.watch(weaponWorkspaceProvider(weaponId)).value;
     // vs-hunt-20260914-wardrobe-weapon WBUG-6: child rows come from the
     // repository; detail cards are data-driven with honest empty states.
     final details =
-        ref.watch(weaponWorkspaceDetailsProvider(weaponId)).valueOrNull ??
+        ref.watch(weaponWorkspaceDetailsProvider(weaponId)).value ??
         const WeaponWorkspaceData();
     // WBUG-6: while a session/model is still resolving, scalar fields render
     // the dash placeholder — never invented sample numbers like '420 mm'.

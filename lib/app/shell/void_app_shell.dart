@@ -182,7 +182,7 @@ class _VoidAppShellState extends ConsumerState<VoidAppShell> {
         // 'Memeriksa…' button) is owned by ProjectLockScreen itself.
         final resolved = ref.watch(projectNameProvider(error.projectId));
         return ProjectLockScreen(
-          projectName: resolved.valueOrNull ?? error.projectId,
+          projectName: resolved.value ?? error.projectId,
           errorText: _unlockError,
           onUnlock: _unlockProject,
         );

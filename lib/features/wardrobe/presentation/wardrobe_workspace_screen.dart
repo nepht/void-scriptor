@@ -21,11 +21,11 @@ class WardrobeWorkspaceScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(wardrobeWorkspaceProvider(wardrobeId));
-    final model = state.valueOrNull;
+    final model = state.value;
     // vs-hunt-20260914-wardrobe-weapon WBUG-5: child rows come from the
     // repository; the detail cards are data-driven with honest empty states.
     final details =
-        ref.watch(wardrobeWorkspaceDetailsProvider(wardrobeId)).valueOrNull ??
+        ref.watch(wardrobeWorkspaceDetailsProvider(wardrobeId)).value ??
         const WardrobeWorkspaceData();
     return Container(
       color: context.palette.backgroundSecondary,

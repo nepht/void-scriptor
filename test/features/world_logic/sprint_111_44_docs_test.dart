@@ -34,11 +34,9 @@ void main() {
       for (final kind in Wave3GuideKind.canonicalKinds) {
         final entries = Wave3DocsCatalog.canonical.entriesOfKind(kind);
         expect(entries, isNotEmpty, reason: '${kind.outputLabel} kosong');
-        expect(
-          entries.map((e) => e.kind).toSet(),
-          {kind},
-          reason: '${kind.outputLabel} tercampur jenis lain',
-        );
+        expect(entries.map((e) => e.kind).toSet(), {
+          kind,
+        }, reason: '${kind.outputLabel} tercampur jenis lain');
       }
     });
 

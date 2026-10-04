@@ -100,42 +100,38 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    'renders the package-owned thumbnail bound to the asset',
-    (tester) async {
-      final session = await seed(tester, 'bound', imageName: 'coat.png');
-      await pumpBound(tester, session);
+  testWidgets('renders the package-owned thumbnail bound to the asset', (
+    tester,
+  ) async {
+    final session = await seed(tester, 'bound', imageName: 'coat.png');
+    await pumpBound(tester, session);
 
-      final image = tester.widget<Image>(find.byType(Image).last);
-      final boundPath = (image.image as FileImage).file.path;
-      expect(boundPath, contains('asset_thumbnails'));
-      expect(
-        boundPath,
-        (await session.database.assetDao.getById('asset-first'))!.thumbnailPath,
-      );
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    final image = tester.widget<Image>(find.byType(Image).last);
+    final boundPath = (image.image as FileImage).file.path;
+    expect(boundPath, contains('asset_thumbnails'));
+    expect(
+      boundPath,
+      (await session.database.assetDao.getById('asset-first'))!.thumbnailPath,
+    );
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 
-  testWidgets(
-    'shows the placeholder when the bound file was deleted',
-    (tester) async {
-      final session = await seed(tester, 'stale', imageName: 'coat2.png');
-      final stale = await tester.runAsync(
-        () async => (await session.database.assetDao.getById(
-          'asset-first',
-        ))!.thumbnailPath!,
-      );
-      await tester.runAsync(() => File(stale!).delete());
-      await pumpBound(tester, session);
+  testWidgets('shows the placeholder when the bound file was deleted', (
+    tester,
+  ) async {
+    final session = await seed(tester, 'stale', imageName: 'coat2.png');
+    final stale = await tester.runAsync(
+      () async => (await session.database.assetDao.getById(
+        'asset-first',
+      ))!.thumbnailPath!,
+    );
+    await tester.runAsync(() => File(stale!).delete());
+    await pumpBound(tester, session);
 
-      expect(find.byType(Image), findsNothing);
-      expect(find.byIcon(Icons.checkroom_outlined), findsOneWidget);
-      // The honest import path stays available, never a dead icon.
-      expect(find.text('Add Image'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    },
-    skip: !Platform.isWindows,
-  );
+    expect(find.byType(Image), findsNothing);
+    expect(find.byIcon(Icons.checkroom_outlined), findsOneWidget);
+    // The honest import path stays available, never a dead icon.
+    expect(find.text('Add Image'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 }

@@ -40,7 +40,7 @@
         "check": "budget_is_refused_and_exceeded_work_surfaces_provider_timeout",
         "status": "pass",
         "declared": "A non-positive timeout budget is rejected at construction and an exceeded budget surfaces AiProviderTimeoutException naming the provider and the budget, never a raw TimeoutException.",
-        "observed": "non-positive budget refused (zero=true negative=true); exceeded budget raised AiProviderTimeoutException after 25ms; under-budget call returned true."
+        "observed": "non-positive budget refused (zero=true negative=true); exceeded budget raised AiProviderTimeoutException after 26ms; under-budget call returned true."
       },
       {
         "area": "throttling",
@@ -103,7 +103,7 @@
   },
   "probes": {
     "timeout_rejected_non_positive_budget": "zero=true negative=true",
-    "timeout_provider_exception_ms": "25",
+    "timeout_provider_exception_ms": "26",
     "timeout_under_budget_passed": "true",
     "throttling_invalid_limits_refused": "empty_id=true zero_requests=true zero_window=true",
     "throttling_allow_pattern": "true,true,false,false(after 11s)=true",

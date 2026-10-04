@@ -22,10 +22,10 @@ void main() {
       ),
     );
 
-    final container = tester
-        .element(find.byType(WorkspaceResolver))
-        .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>()!
-        .container;
+    final container = ProviderScope.containerOf(
+      tester.element(find.byType(WorkspaceResolver)),
+      listen: false,
+    );
     container
         .read(selectionProvider.notifier)
         .select(

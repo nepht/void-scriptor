@@ -25,9 +25,9 @@ class _ThemeSettingsScreenState extends ConsumerState<ThemeSettingsScreen> {
   Widget build(BuildContext context) {
     ref.watch(platformProvider);
     final theme = ref.watch(themeControllerProvider);
-    final selected = theme.valueOrNull ?? AppThemeMode.system;
+    final selected = theme.value ?? AppThemeMode.system;
     final selectedAccent =
-        ref.watch(themeAccentControllerProvider).valueOrNull ??
+        ref.watch(themeAccentControllerProvider).value ??
         VoidThemeAccent.voidPurple;
     final selectedLabel = switch (selected) {
       AppThemeMode.dark => 'Dark',

@@ -47,7 +47,7 @@ class VoidDesktopShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     final runtime = session?.mutationRuntime;
     final renderedContent = runtime == null
         ? _buildContent(context, ref, null, null, content)
@@ -112,7 +112,7 @@ class VoidDesktopShell extends ConsumerWidget {
     ProjectMutationState? state,
     Widget? suppliedContent,
   ) {
-    final session = ref.watch(projectSessionProvider).valueOrNull;
+    final session = ref.watch(projectSessionProvider).value;
     return Scaffold(
       body: Column(
         children: [

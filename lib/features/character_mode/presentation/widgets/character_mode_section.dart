@@ -78,7 +78,7 @@ class CharacterModeSection extends ConsumerWidget {
         );
         final lastUsedId = ref
             .watch(lastUsedCharacterModeProvider(characterId))
-            .valueOrNull;
+            .value;
         final mode = _resolveMode(items, selectedId ?? lastUsedId);
         if (mode == null) {
           return _EmptyModeState(onCreate: () => _createMode(context, ref));
@@ -158,7 +158,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loadout = ref.watch(characterModeLoadoutProvider(mode.id));
     final assets =
-        ref.watch(projectAssetsProvider).valueOrNull ?? const <db.Asset>[];
+        ref.watch(projectAssetsProvider).value ?? const <db.Asset>[];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -342,7 +342,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
                           (originalQuantity[slot] ?? 1)) {
                     final session = ref
                         .read(projectSessionProvider)
-                        .valueOrNull;
+                        .value;
                     if (session != null) {
                       await CharacterLoadoutRepositoryImpl(
                         session.database,

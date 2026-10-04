@@ -8,19 +8,15 @@ import 'package:void_scriptor/features/project_resilience/application/project_re
 void main() {
   final root = Platform.environment['VOID_LOCK_TEST_ROOT'];
   final result = Platform.environment['VOID_LOCK_TEST_RESULT'];
-  test(
-    'independent process competes for the shared marker',
-    () async {
-      final lock = ProjectSessionLock(
-        ProjectPackage(projectId: 'process-test', root: Directory(root!)),
-      );
-      try {
-        await lock.acquire();
-        await File(result!).writeAsString('OWNED', flush: true);
-      } on StateError {
-        await File(result!).writeAsString('BLOCKED', flush: true);
-      }
-    },
-    skip: root == null || result == null,
-  );
+  test('independent process competes for the shared marker', () async {
+    final lock = ProjectSessionLock(
+      ProjectPackage(projectId: 'process-test', root: Directory(root!)),
+    );
+    try {
+      await lock.acquire();
+      await File(result!).writeAsString('OWNED', flush: true);
+    } on StateError {
+      await File(result!).writeAsString('BLOCKED', flush: true);
+    }
+  }, skip: root == null || result == null);
 }

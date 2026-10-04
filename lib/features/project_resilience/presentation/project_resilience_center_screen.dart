@@ -164,7 +164,7 @@ class _ProjectResilienceWorkspaceScreenState
   @override
   Widget build(BuildContext context) {
     final session =
-        widget.session ?? ref.watch(projectSessionProvider).valueOrNull;
+        widget.session ?? ref.watch(projectSessionProvider).value;
     if (session == null) {
       return const ProjectResilienceCenterScreen(
         title: 'Project Resilience',

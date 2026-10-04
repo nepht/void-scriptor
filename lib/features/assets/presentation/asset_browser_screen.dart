@@ -363,7 +363,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
     required String description,
     required String type,
   }) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     final id = const Uuid().v4();
     await session.database.assetDao.createStandaloneAsset(
@@ -477,7 +477,7 @@ class _AssetBrowserScreenState extends ConsumerState<AssetBrowserScreen> {
   /// Production default: file dialog (image types) then a copy into the
   /// active package's asset namespace via [AssetThumbnailImporter].
   Future<String?> _defaultImportThumbnail(String assetId) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return null;
     const typeGroup = XTypeGroup(
       label: 'Images',

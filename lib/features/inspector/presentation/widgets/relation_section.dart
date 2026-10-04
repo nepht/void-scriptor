@@ -17,7 +17,7 @@ final relationDisplayProvider =
       ref,
       assetId,
     ) async {
-      final session = ref.watch(projectSessionProvider).valueOrNull;
+      final session = ref.watch(projectSessionProvider).value;
       if (session == null) return const [];
       return RelationDisplayService(session.database).forAsset(assetId);
     });
@@ -129,7 +129,7 @@ class RelationSection extends ConsumerWidget {
                                 if (!confirmed || !context.mounted) return;
                                 final session = ref
                                     .read(projectSessionProvider)
-                                    .valueOrNull;
+                                    .value;
                                 if (session == null) return;
                                 final repository = RelationRepositoryImpl(
                                   database: session.database,
@@ -154,7 +154,7 @@ class RelationSection extends ConsumerWidget {
                             onTap: () async {
                               final session = ref
                                   .read(projectSessionProvider)
-                                  .valueOrNull;
+                                  .value;
                               if (session == null) return;
                               final asset = await session.database.assetDao
                                   .getById(item.assetId);
@@ -186,7 +186,7 @@ class RelationSection extends ConsumerWidget {
   }
 
   Future<void> _addRelation(BuildContext context, WidgetRef ref) async {
-    final session = ref.read(projectSessionProvider).valueOrNull;
+    final session = ref.read(projectSessionProvider).value;
     if (session == null) return;
     final assets = (await session.database.assetDao.getAllAssets())
         .where((asset) => asset.id != assetId)
@@ -203,7 +203,7 @@ class RelationSection extends ConsumerWidget {
     // belong to the project the user was in when the dialog opened. Writing
     // through them after a switch lands the relation in the previous
     // project's database. Re-validate before mutating.
-    final current = ref.read(projectSessionProvider).valueOrNull;
+    final current = ref.read(projectSessionProvider).value;
     if (current == null || !identical(current.database, session.database)) {
       return;
     }

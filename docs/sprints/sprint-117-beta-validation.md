@@ -1709,3 +1709,59 @@ paragraf atas sempat ditulis 2 -> 4 karena hanya menghitung commit run ini;
 hitungan benar 2 -> 6 pada posisi commit state `77accef`, dan setiap commit
 koreksi menambah satu lagi - posisi akhir run dihitung ulang dengan
 `git rev-list --count origin/master..HEAD`. Hunt berikutnya: ke-28.
+
+### Slice 117.43-33 - pembaca `signed_candidate` tetap terikat posisi: prefix di indeks 0 dan hanya klaim pertama per baris (defect ke-28 fail-open hunt)
+
+2026-10-04 ~16:55 WIB. Tipe = FEATURE WORK slice 117.43-33 (defect ke-28, hunt fail-open
+posisi/kuantitas pembaca). HEAD awal `68dea7b`; tidak ada commit sibling di tengah run
+(`git log 68dea7b..HEAD` hanya memuat `b062810`); dua WIP sibling yang muncul di dirty
+(`test/features/workflow/presentation/_probe_focus_test.dart` dan
+`test/features/cinematic_production/presentation/`) dipreserve, tidak disentuh. DEFECT:
+`_parseCitation`/`_citationIsReadable` adalah pembaca terakhir dari tiga pembaca
+`provenance_record` yang masih menyimpan posisi di dalam grammarnya. (1)
+`line.startsWith(_kCitationPrefix)` menuntut prefix di indeks 0, jadi citation di
+belakang catatan apa pun tidak pernah terbuka - ghost path di belakang catatan lolos
+`pass`, padahal citation identik di awal baris ditolak 117.43-25. (2) Hanya klaim
+pertama per baris yang dibuka: baris yang men-state dua citation membuka yang pertama
+saja, jadi ghost path di belakang citation jujur tidak pernah dibuka. RED: gate resmi
+baseline 158/158 pass exit 0 lalu 5 test baru grup 117.43-33; terhadap lib pre-fix (HEAD
+- file lib bersih sebelum run, tidak perlu swap `git show`) = 161 pass -2 fail exit 1:
+dua defect case `Actual 'pass'` vs `Expected 'unmet'`, tiga kontrol pass (citation jujur
+di belakang catatan; jujur di belakang restatement rebuild; dua citation jujur satu
+baris). FIX: helper baru `_citationsIn` mencocokkan prefix pada word boundary
+`(?:^|\s)<prefix>(?=\s)` lewat `allMatches` (posisi di mana pun; lookahead supaya prefix
+tidak menelan whitespace citation saudaranya), setiap kemunculan membuka token
+pertamanya sendiri, dan `_citationIsReadable` menolak baris yang mengandung citation
+tak-terbuka; `_parseCitation` dihapus (sisa referensi 0); komentar dok
+`_rebuildSummariesIn` yang menyatakan `signed_candidate` ditinggalkan di posisi lama
+diamandemen agar tidak basi. Batas tidak melebar: klaim tetap satu token setelah prefix
+(`sha256 verified intact` tetap tak terbaca, 117.43-25), prefix tanpa token tetap
+mengutip apa pun (117.43-07), dan manifest terbit tetap `pass` tanpa perubahan. GATES:
+GREEN gate 163/163 All tests passed exit 0 (158+5), diulang sesudah format; format write
+1 changed exit 0 -> `--output=none --set-exit-if-changed` 0 changed exit 0; analyze 2
+file No issues found! exit 0; git diff --check exit 0; scan non-Latin Python `re` pada
+8442 byte added lines = 0 hit dan 0 trailing whitespace; regresi terarah
+`sprint_113_build_reproducibility_provenance_test` +10 -2 exit 1 dengan signature 113.39
+PERSIS sama (lock hidup `d500c1c5...` vs manifest `32e31fd3...`; artefak `73101e78...`
+vs `c7a33055...` - pre-existing, bukan akibat slice); `flutter build windows --debug`
+exit 0 (108,2 dtk) dengan bukti segar `Debug/data/flutter_assets` mtime
+`2026-10-04_16:47:11` (mtime `void_scriptor.exe` statis tidak dihitung). JEBAKAN PATCH
+TERULANG (ketiga kalinya di keluarga ini): patch tool fuzzy pertama pada test file
+melaporkan success tetapi mengganti LEBIH dari old_string - double `reason:` dan seluruh
+indentasi blok bergeser; ditangkap oleh re-read diff, file dipulihkan dari snapshot yang
+terbukti identik HEAD (sha `63af3605...`), lalu blok di-append ulang dengan penggantian
+byte-eksak Python (anchor unique; numstat 142/0, `git diff -U0` tanpa baris `-`).
+Numstat commit: domain 48/17, test 150/0. SHA-256 dari blob commit `b062810` (identik
+`sha256sum` disk): domain
+`47728057d44cce25446b2e21536bb3c414efff23ba8f39080354c5fd5fc86894` (65426 B), test
+`b519463e23f1236195598aebd9a4b3197272ea70460c00594c0229700b91241a` (212313 B). Manifest
+113 tidak disentuh (commit terakhir tetap `d150973`). Commit `b062810` memakai 2 path
+eksplisit. ahead 8 -> 9 pada posisi commit fix; setiap commit ledger/state menambah satu
+- posisi akhir dihitung dengan `git rev-list --count origin/master..HEAD`, bukan ditulis
+tangan. dirty 2 -> 4 (dua WIP sibling baru di atas, dipreserve). Tidak ada push pada run
+ini. Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, step_closed false, verdict
+GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih BLOCKER. Keluarga
+posisi tiga pembaca `provenance_record` kini tertutup (-30 rebuild, -32 log, -33
+citation). Hunt berikutnya: ke-29 - probe pembaca lain yang masih memakai
+firstMatch/pertama saja atau menjadikan posisi bagian grammar; target ditentukan probe
+run depan, bukan pre-klaim.

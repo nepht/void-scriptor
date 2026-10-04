@@ -86,6 +86,34 @@ if (-not (Test-Path -LiteralPath $SignToolPath -PathType Leaf)) {
 }
 
 foreach ($file in $files) {
+  # Fail-closed guard: re-signing an artifact that already carries a
+  # certificate REPLACES its certificate table (the byte range past the
+  # security directory entry) instead of appending to it, so the signed
+  # digest changes even though the build inputs did not. That silently
+  # desynchronises every recorded checksum, which is indistinguishable
+  # from a non-reproducible build. Verify-only keeps signing idempotent.
+  $existing = Get-AuthenticodeSignature -LiteralPath $file.FullName
+  $existingState = $existing.Status.ToString()
+  if ($existingState -eq 'Valid') {
+    $existingThumbprint = if ($existing.SignerCertificate) {
+      $existing.SignerCertificate.Thumbprint
+    } else {
+      ''
+    }
+    if ($existingThumbprint -eq $thumbprint) {
+      & $SignToolPath verify /pa /all $file.FullName
+      if ($LASTEXITCODE -ne 0) {
+        throw "Existing signature re-verification failed for $($file.FullName) with exit code $LASTEXITCODE."
+      }
+      Write-Host "already signed by $thumbprint; verified without re-signing: $($file.FullName)"
+      continue
+    }
+    throw "$($file.FullName) is already signed by certificate $existingThumbprint, not $thumbprint. Re-signing would replace that signature and drift the recorded checksum; rebuild from a clean tree instead."
+  }
+  if ($existingState -ne 'NotSigned') {
+    throw "$($file.FullName) has Authenticode status $existingState, expected NotSigned before signing. Refusing to overwrite it."
+  }
+
   $arguments = @(
     'sign', '/fd', 'SHA256', '/sha1', $thumbprint, '/s', 'My',
     '/d', "Void Scriptor $Version", $file.FullName

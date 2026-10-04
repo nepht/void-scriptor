@@ -112,7 +112,7 @@
     "log": "docs/evidence/sprint-113-39-resign-20261004.log"
   },
   "metadata_run": {
-    "command": "python tools/generate_release_metadata.py --artifacts-dir build/windows/x64/runner/Release",
+    "command": "python tools/generate_release_metadata.py --flutter D:/DevTools/Flutter-SDK-3.44.9/flutter/bin/flutter.bat --pub-cache C:/Users/nepht/AppData/Local/Pub/Cache --artifacts-dir build/windows/x64/runner/Release --manifest-path build/release-metadata/artifact-manifest.json",
     "exit_code": 0,
     "duration_seconds": 5,
     "log": "docs/evidence/sprint-113-39-metadata-20261004.log"

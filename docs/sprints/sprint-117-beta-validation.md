@@ -1573,3 +1573,74 @@ Scene Workspace Screen) masuk di tengah run dan tidak menyentuh path slice
 Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, verdict
 GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih
 BLOCKER. Hunt berikutnya: ke-26.
+### Slice 117.43-31 - digest baris checksum non-signed tidak pernah
+dibandingkan dengan bytes-nya (defect ke-26 fail-open hunt)
+
+DEFECT: `measureChecksums` mengukur digest hanya untuk baris yang path-nya
+tercatat di set `signed_artifacts`. Untuk setiap baris lain ia hanya
+memeriksa apakah path-nya ada (arah `phantom` dari 117.43-03), jadi
+setengah klaim baris itu - pasangan `digest` yang berdiri di depan path -
+tidak pernah disentuh. Padahal kontrak gate itu sendiri berjanji "every
+checksum line matches the bytes on disk", dan vocabulary dokumen sudah punya
+`checksum_digest_drift:<path>` yang berarti persis ketidakcocokan ini. Uji
+langsung atas artefak ter-commit: 493 baris index, 492 path ada di disk, 485
+cocok, 7 tidak cocok - 6 di antaranya signed (drift yang sudah dikenal dari
+113.39) dan 1 di antaranya `build/windows/x64/runner/Release/data/app.so`
+yang berstatus NON-SIGNED sehingga ketidakcocokannya tidak pernah dilaporkan
+oleh check mana pun. Bentuk fail-open-nya: dokumen cukup menulis keenam
+digest signed dengan benar lalu digest salah untuk path mana pun yang ia
+sebut; path itu ada, jadi bukan phantom, barisnya terbaca utuh, tidak
+malformed, tidak duplikat - dan check tetap pass sambil mencetak bahwa
+artefak-artefak sudah cocok. Keluarga ke-26 ini adalah pembalikan arah dari
+ke-19/ke-23/ke-25: yang mengendalikan klaim mana yang BISA diukur kini adalah
+set signed, sehingga dokumen mengendalikan permukaan pengukurannya dengan
+memilih apa yang ia deklarasikan signed.
+
+RED (test resmi langsung, tanpa file probe): dua test ditambahkan ke grup
+baru `117.43-31` sementara baseline file gate sudah `152: All tests passed`
+exit 0. Test kontrol (digest non-signed benar) pass; test defect (signed
+benar, non-signed `b`*64) gagal karena hasilnya `pass`, bukan `violation` -
+keluar `+152 -1` exit 1 dengan persis satu kegagalan di test defect itu.
+
+FIX: pada loop non-signed `measureChecksums`, path yang tidak ada tetap
+`phantom` (arah lama tidak diubah), sedangkan path yang ada kini di-hash
+`sha256` bytes-nya dan dibandingkan ke digest tercatat; selisih masuk ke
+`drifting` yang sudah ada, tanpa kategori baru. Set signed tetap menentukan
+artefak mana yang harus TERCOVER, bukan klaim mana yang boleh dibandingkan.
+Agar angka yang dicetak tidak melebihi yang diukur, `declared` kini
+`N artifact / M checksum line` dan observed pada pass kini
+`M checksum line digest match` (sebelumnya hanya menghitung artefak signed).
+Kontrol lama yang memakai file checksum ter-commit tidak disentuh dan tetap
+hijau: jalurnya sama (signed drift non-empty -> violation + `drifting:`),
+hanya jumlah drift yang ikut naik 6 -> 7. `eval`/`evaluate` dan `isVacuous`
+tidak membandingkan teks `declared` vs `observed`, jadi tidak ada seam lain
+yang tersentuh perubahan label itu.
+
+GREEN: setelah patch, file gate `+154: All tests passed` exit 0 (152 baseline
++ 2 baru, 0 gagal); diulang setelah `dart format` lewat regresi terarah dua
+file: `+164 -2` exit 1 dengan 2 gagal KEDUA 113.39 pre-existing dan signature
+persis sama (lock `32e31fd3` vs `c9a365e6`, artefak `73101e78` vs
+`c7a33055`); tidak ada klaim suite penuh.
+
+Gerbang: `dart format` write `1 changed` exit 0 lalu
+`--output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten);
+`dart analyze` 2 file `No issues found!` exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 (72,2 dtk) dengan bukti segar
+`build/windows/x64/runner/Debug/data/flutter_assets` mtime
+`2026-10-04_14:14:04` (mtime `void_scriptor.exe` statis tidak dihitung);
+roadmap guard PASS pre-commit `canonical_sha256`
+`b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6` tidak
+berubah; scan non-Latin Python `re` (CJK/kana/hangul/fullwidth) pada 132
+added lines kedua file = 0 hit, 0 trailing whitespace. Numstat fix: domain
+28/4, test 104/0 (total 132/4). SHA-256 dari blob commit `d2da703`
+(identik dengan `sha256sum` disk): domain
+`79f454cfdbc1a4e357b9a7e631833d253292935e347c39b912878b0528eb9922` (77589 B),
+test `24e1b8ce04a28000b12087b8cb2b18e4b6e4462f3eccf26baf05e6f7c45af2fc`
+(200460 B). Manifest 113 tidak disentuh (commit terakhir tetap `d150973`).
+Commit `d2da703` memakai 2 path eksplisit. Sibling `59132ee` (a11y audit
+focus order Publishing Dashboard Screen) masuk di tengah run; `git log
+3ddc24b..HEAD -- <2 path slice>` hanya memuat `d2da703`, jadi sibling tidak
+menyentuh slice. ahead 71 -> 73, dirty tetap 96. Tidak ada push pada run ini.
+Status TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02
+masih BLOCKER. Hunt berikutnya: ke-27.

@@ -11,19 +11,19 @@
       "channel": "rc",
       "previous_version": "1.2.0-alpha.1",
       "artifact_path": "build/windows/x64/runner/Release/void_scriptor.exe",
-      "artifact_sha256": "73101e781b3fb2341277af715fbda3ea3fbe9d750f0d5e15711b3a17c6732b7d",
+      "artifact_sha256": "3b8b68a33bf402964f569c4b353c021853c3b074dd6e950d67ac1efb73b312e4",
       "artifact_size_bytes": 156640,
       "hash_algorithm": "sha256",
-      "source": "signed artifact produced by 113.38, re-hashed live this slice"
+      "source": "signed artifact re-signed and re-hashed live during sprint 113.39 re-verification (2026-10-04)"
     },
     "signature_check": {
       "status": "Valid",
       "verification_exit_code": 0,
       "thumbprint": "E336967CB949B489B7FE320E80683780C00C4A8A",
-      "method": "PowerShell Get-AuthenticodeSignature (live, 2026-09-23)",
+      "method": "PowerShell Get-AuthenticodeSignature (live, 2026-10-04)",
       "certificate_scope": "self-signed local development",
       "trust_limit": "no public trust: status Valid only verifies the local signature integrity; Windows end-users without the dev cert will see an unknown-publisher warning",
-      "checked_at": "2026-09-23T13:49:00+07:00"
+      "checked_at": "2026-10-04T21:48:09+07:00"
     },
     "download": {
       "method": "local fixture transfer in test tempdir with SHA-256 verification",

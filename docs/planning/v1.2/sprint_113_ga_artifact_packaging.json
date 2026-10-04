@@ -3,7 +3,7 @@
   "title": "GA Artifact Packaging",
   "version": "1.2.0-rc.1",
   "status": "VERIFIED-LOCAL",
-  "source_revision": "30dda0c3389a8bd9e3cae705abd51eaecbca2630",
+  "source_revision": "1025121f62510dd6e05befad92283245111d18b1",
   "required_outputs": {
     "signed_artifacts": [
       "build/windows/x64/runner/Release/dartjni.dll",
@@ -62,7 +62,7 @@
     "signed_file_count": 6
   },
   "dependency_evidence": {
-    "pubspec_lock_sha256": "32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8",
+    "pubspec_lock_sha256": "d500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a",
     "sbom_components": 130,
     "sbom_format": "CycloneDX",
     "source": "pubspec.lock hash-pinned; tools/generate_release_metadata.py"
@@ -99,22 +99,23 @@
     "source": "tools/generate_release_metadata.py over flutter pub deps --json"
   },
   "build": {
-    "command": "D:/DevTools/Flutter SDK/flutter/bin/flutter.bat build windows --release --no-pub",
+    "command": "flutter clean && D:/DevTools/Flutter-SDK-3.44.9/flutter/bin/flutter.bat build windows --release",
     "exit_code": 0,
     "duration_seconds": 102,
-    "log": "docs/evidence/sprint-113-38-build-release.log"
+    "log": "docs/evidence/sprint-113-38-build-release.log",
+    "source_revision": "1025121f62510dd6e05befad92283245111d18b1"
   },
   "signing_run": {
     "command": "powershell -ExecutionPolicy Bypass -File tools/sign_windows_release.ps1 -AllowSelfSignedLocal ...",
     "exit_code": 0,
     "duration_seconds": 3,
-    "log": "docs/evidence/sprint-113-38-sign.log"
+    "log": "docs/evidence/sprint-113-39-resign-20261004.log"
   },
   "metadata_run": {
     "command": "python tools/generate_release_metadata.py --artifacts-dir build/windows/x64/runner/Release",
     "exit_code": 0,
     "duration_seconds": 5,
-    "log": "docs/evidence/sprint-113-38-metadata.log"
+    "log": "docs/evidence/sprint-113-39-metadata-20261004.log"
   },
   "limits": [
     "Artifacts carry a SELF_SIGNED_TEST signature (UNSIGNED_PUBLIC_TRUST for public distribution); public CA signing and RFC3161 timestamping remain distribution gates.",

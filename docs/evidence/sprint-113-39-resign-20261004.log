@@ -1,0 +1,49 @@
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\dartjni.dll
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\dartjni.dll
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\dartjni.dll
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\file_selector_windows_plugin.dll
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\file_selector_windows_plugin.dll
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\file_selector_windows_plugin.dll
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_secure_storage_windows_plugin.dll
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_secure_storage_windows_plugin.dll
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_secure_storage_windows_plugin.dll
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_windows.dll
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_windows.dll
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\flutter_windows.dll
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\sqlite3.dll
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\sqlite3.dll
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\sqlite3.dll
+Done Adding Additional Store
+Successfully signed: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\void_scriptor.exe
+File: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\void_scriptor.exe
+Index  Algorithm  Timestamp    
+========================================
+0      sha256     None         
+
+Successfully verified: D:\VoidScriptor\void_scriptor_multiplatform\build\windows\x64\runner\Release\void_scriptor.exe
+SIGNED_RC_MANIFEST=D:\VoidScriptor\void_scriptor_multiplatform\build\release-metadata\windows-signed-rc-manifest.json

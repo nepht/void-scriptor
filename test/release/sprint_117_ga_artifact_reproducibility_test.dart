@@ -648,11 +648,12 @@ void main() {
           provenanceManifest: manifest,
         );
         expect(check.outputId, 'provenance');
-        // The shipped 113.39 evidence records NOT_BIT_IDENTICAL with documented
-        // limits, so the honest outcome is a measured pass through the shipped
-        // seam — never an assumed identity claim.
+        // The shipped 113.39 evidence records BIT_IDENTICAL: two cold rebuilds
+        // hashed the same six artifacts once /Brepro linked them deterministically.
+        // 117.43-01 checks that identity claim against the recorded digests before
+        // it reaches here, so the pass is measured, never assumed.
         expect(check.status, Sprint117GaArtifactStatus.pass);
-        expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+        expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
       },
     );
 
@@ -971,7 +972,8 @@ void main() {
     );
 
     test(
-      'the shipped manifest passes provenance only because it records a real difference',
+      'the shipped manifest passes provenance only because its identity claim '
+        'is backed by matching digests',
       () {
         final manifest = Sprint117GaArtifactGate.readManifest(
           Sprint117GaPackagingContract.provenanceManifestPath,
@@ -982,12 +984,13 @@ void main() {
           provenanceManifest: manifest!,
         );
 
-        // The shipped manifest DOES record a genuine difference (4 of 6
-        // artifacts differ), so this stays `pass`. The assertion exists so that a
-        // future edit which erases the real difference cannot quietly leave the
-        // provenance output passing on a claim with no evidence behind it.
+        // The shipped manifest DOES record matching digests behind its
+        // BIT_IDENTICAL verdict (six of six agree), so this stays `pass`. The
+        // assertion exists so that a future edit which breaks that agreement
+        // cannot quietly leave the provenance output passing on an identity
+        // claim no longer supported by the recorded digests.
         expect(check.status, Sprint117GaArtifactStatus.pass);
-        expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+        expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
       },
     );
 
@@ -1174,7 +1177,7 @@ void main() {
       );
 
       expect(check.status, Sprint117GaArtifactStatus.pass);
-      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+      expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
     });
   });
 
@@ -1392,11 +1395,12 @@ void main() {
         provenanceManifest: shipped!,
       );
 
-      // The shipped partition is TRUE: 4 of 6 binaries really do differ and
-      // the two upstream DLLs really are byte-identical (measured, not
-      // assumed, before this slice). So the provenance output stays `pass`.
+      // The shipped partition is TRUE: all six binaries really are
+      // byte-identical across the two rebuilds, and `differing_artifacts` is
+      // empty because nothing differs (measured, not assumed, before this
+      // slice). So the provenance output stays `pass`.
       expect(check.status, Sprint117GaArtifactStatus.pass);
-      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+      expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
     });
 
     test('the shipped pass is directed — inverting its partition fails it', () {
@@ -1651,12 +1655,12 @@ void main() {
       );
 
       // Measured independently before this slice, not assumed: rebuild_a ran
-      // 13:27:45 -> 13:29:47 (122s, matching its recorded duration), rebuild_b
-      // ran 13:30:17 -> 13:32:12 (115s, also matching), and the two windows are
-      // 30 seconds apart. So the independence claim is real and the provenance
+      // 20:40:12 -> 20:42:37 (145s, matching its recorded duration), rebuild_b
+      // ran 20:42:38 -> 20:45:11 (152s, also matching), and the two windows do
+      // not overlap. So the independence claim is real and the provenance
       // output stays `pass`.
       expect(check.status, Sprint117GaArtifactStatus.pass);
-      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+      expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
     });
 
     test('the shipped pass is directed — overlapping its windows fails it', () {
@@ -1762,8 +1766,8 @@ void main() {
     Map<String, Object?> manifestWithRun({
       String commandA = honestCommand,
       String commandB = honestCommand,
-      String logA = 'docs/evidence/sprint-113-39-rebuild-a.log',
-      String logB = 'docs/evidence/sprint-113-39-rebuild-b.log',
+      String logA = 'docs/evidence/sprint-113-39-reverify-20261004-a.log',
+      String logB = 'docs/evidence/sprint-113-39-reverify-20261004-b.log',
       bool dropCommand = false,
       bool dropLog = false,
       bool mistypeCommandA = false,
@@ -1961,7 +1965,7 @@ void main() {
     const honestCommand =
         'flutter clean && flutter.bat build windows --release';
     const honestLockDigest =
-        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+        'd500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a';
     const honestLockProse =
         'hosted dependencies hash-pinned sha256; '
         '0 git/path source; 0 dependency_overrides (113.26 dependency_scan)';
@@ -2009,7 +2013,7 @@ void main() {
               '2026-09-23T13:27:45+07:00',
               '2026-09-23T13:29:47+07:00',
               122,
-              'docs/evidence/sprint-113-39-rebuild-a.log',
+              'docs/evidence/sprint-113-39-reverify-20261004-a.log',
             ),
             rebuild(
               'rebuild_b',
@@ -2017,7 +2021,7 @@ void main() {
               '2026-09-23T13:30:17+07:00',
               '2026-09-23T13:32:12+07:00',
               115,
-              'docs/evidence/sprint-113-39-rebuild-b.log',
+              'docs/evidence/sprint-113-39-reverify-20261004-b.log',
             ),
           ],
           'artifact_comparison': <String, Object?>{
@@ -2201,7 +2205,7 @@ void main() {
               'finished_at': '2026-09-23T13:29:47+07:00',
               'duration_seconds': 122,
               'command': 'flutter clean && flutter.bat build windows --release',
-              'log': 'docs/evidence/sprint-113-39-rebuild-a.log',
+              'log': 'docs/evidence/sprint-113-39-reverify-20261004-a.log',
             },
             <String, Object?>{
               'label': 'rebuild_b',
@@ -2214,7 +2218,7 @@ void main() {
               'finished_at': '2026-09-23T13:32:12+07:00',
               'duration_seconds': 115,
               'command': 'flutter clean && flutter.bat build windows --release',
-              'log': 'docs/evidence/sprint-113-39-rebuild-b.log',
+              'log': 'docs/evidence/sprint-113-39-reverify-20261004-b.log',
             },
           ],
           'artifact_comparison': <String, Object?>{
@@ -2368,7 +2372,7 @@ void main() {
             'finished_at': '2026-09-23T13:29:47+07:00',
             'duration_seconds': 122,
             'command': 'flutter clean && flutter.bat build windows --release',
-            'log': 'docs/evidence/sprint-113-39-rebuild-a.log',
+            'log': 'docs/evidence/sprint-113-39-reverify-20261004-a.log',
           },
           <String, Object?>{
             'label': 'rebuild_b',
@@ -2381,7 +2385,7 @@ void main() {
             'finished_at': '2026-09-23T13:32:12+07:00',
             'duration_seconds': 115,
             'command': 'flutter clean && flutter.bat build windows --release',
-            'log': 'docs/evidence/sprint-113-39-rebuild-b.log',
+            'log': 'docs/evidence/sprint-113-39-reverify-20261004-b.log',
           },
         ],
         'artifact_comparison': <String, Object?>{
@@ -2688,8 +2692,8 @@ void main() {
         ...inherited,
         'label': label,
         'exit_code': exitCode,
-        'started_at': '2026-09-23T$hour:00:00+07:00',
-        'finished_at': '2026-09-23T$hour:30:00+07:00',
+        'started_at': '2026-10-04T$hour:00:00+07:00',
+        'finished_at': '2026-10-04T$hour:30:00+07:00',
         'duration_seconds': 1800,
         'artifact_hashes': <String, Object?>{
           ...(inherited['artifact_hashes']! as Map<String, Object?>),
@@ -2849,10 +2853,10 @@ void main() {
       // inside that window is a second build contending for one `build/`
       // directory. The rule 117.43-09 applies to the first two records has
       // to apply to this one too.
-      final extra = extraRecord(hour: '13')
-        ..['started_at'] = '2026-09-23T13:28:00+07:00'
-        ..['finished_at'] = '2026-09-23T13:29:00+07:00'
-        ..['duration_seconds'] = 60;
+      final extra = extraRecord(hour: '20')
+        ..['started_at'] = '2026-10-04T20:41:00+07:00'
+        ..['finished_at'] = '2026-10-04T20:41:30+07:00'
+        ..['duration_seconds'] = 30;
       final check = Sprint117GaArtifactGate.measureProvenance(
         provenanceManifest: withExtras(<Map<String, Object?>>[extra]),
       );
@@ -2891,7 +2895,7 @@ void main() {
 
       expect(check.status, Sprint117GaArtifactStatus.pass);
       expect(reportedRebuildCount(check), '2');
-      expect(check.observed, contains('NOT_BIT_IDENTICAL'));
+      expect(check.observed, contains('artifact_comparison: BIT_IDENTICAL'));
     });
 
     test('117.43-14 every one of these passed before this slice', () {
@@ -2965,10 +2969,10 @@ void main() {
       record(
         'window=overlapping',
         withExtras(<Map<String, Object?>>[
-          (extraRecord(hour: '13')
-            ..['started_at'] = '2026-09-23T13:28:00+07:00'
-            ..['finished_at'] = '2026-09-23T13:29:00+07:00'
-            ..['duration_seconds'] = 60),
+          (extraRecord(hour: '20')
+            ..['started_at'] = '2026-10-04T20:41:00+07:00'
+            ..['finished_at'] = '2026-10-04T20:41:30+07:00'
+            ..['duration_seconds'] = 30),
         ]),
       );
 
@@ -3166,7 +3170,7 @@ void main() {
               (lines) => [
                 for (final line in lines)
                   if (line.startsWith('provenance_logs'))
-                    'provenance_logs docs/evidence/sprint-113-39-rebuild-a.log '
+                    'provenance_logs docs/evidence/sprint-113-39-reverify-20261004-a.log '
                         'docs/evidence/never-existed.log'
                   else
                     line,
@@ -3251,7 +3255,7 @@ void main() {
           (lines) => [
             for (final line in lines)
               if (line.startsWith('provenance_logs'))
-                'provenance_logs docs/evidence/sprint-113-39-rebuild-a.log '
+                'provenance_logs docs/evidence/sprint-113-39-reverify-20261004-a.log '
                     'docs/evidence/never-existed.log'
               else
                 line,
@@ -3472,11 +3476,11 @@ void main() {
       expect(statusOf(shipped()), 'pass');
       expect(statusOf(withRunPatch({'cycles': 2})), 'pass');
       expect(
-        statusOf(withRunPatch({'rebuild_a_duration_seconds': 122})),
+        statusOf(withRunPatch({'rebuild_a_duration_seconds': 145})),
         'pass',
       );
       expect(
-        statusOf(withRunPatch({'rebuild_b_duration_seconds': 115})),
+        statusOf(withRunPatch({'rebuild_b_duration_seconds': 152})),
         'pass',
       );
     });
@@ -4388,14 +4392,14 @@ void main() {
     /// because the two disagree — never because one of them is malformed, which
     /// is the RED-in-the-wrong-place trap the 117.43-26 run already hit.
     const shippedInputsDigest =
-        '65149b3d9e9b6992c261143d5343a48f884b23bff255b1284296f8818747817d';
+        'fb0d8a3dc59fe5486121e301b79eb902d082a8403dfe978d376b5ab58bb3938c';
 
     /// The digest the shipped document states for `pubspec.lock` in BOTH
     /// `build_inputs` and `dependency_lock`, so a contradiction against it also
     /// survives `_restatedDigestsAgree` — proving this is the tokenizer, not the
     /// cross-group reader.
     const shippedLockDigest =
-        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+        'd500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a';
 
     test('117.43-27 one line, one path, two different digests is refused '
         'while the evidence passes', () {
@@ -4584,12 +4588,12 @@ void main() {
     /// multi-claim line below repeats it so every claim in it is well formed
     /// and the case fails only on the DISAGREEMENT between the two groups.
     const shippedCmakeDigest =
-        '65149b3d9e9b6992c261143d5343a48f884b23bff255b1284296f8818747817d';
+        'fb0d8a3dc59fe5486121e301b79eb902d082a8403dfe978d376b5ab58bb3938c';
 
     /// The digest the shipped document states for `pubspec.lock` in BOTH
     /// groups, so contradicting it is a restatement nothing else explains.
     const shippedLockDigest =
-        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+        'd500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a';
 
     /// Two paths the shipped document never states, so a restatement naming
     /// either one cannot be credited to a claim some other line already made.
@@ -4911,8 +4915,8 @@ void main() {
       expect(
         outcome(
           withRebuildB(
-            'rebuild_b exit_code 0 duration_seconds 115 '
-            '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00) '
+            'rebuild_b exit_code 0 duration_seconds 152 '
+            '(2026-10-04T20:42:38.215+07:00 .. 2026-10-04T20:45:11.133+07:00) '
             'as recorded',
           ),
         ),
@@ -4925,8 +4929,8 @@ void main() {
         outcome(
           withRebuildB(
             'verified: rebuild_b exit_code 0 '
-            'duration_seconds 115 '
-            '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)',
+            'duration_seconds 152 '
+            '(2026-10-04T20:42:38.215+07:00 .. 2026-10-04T20:45:11.133+07:00)',
           ),
         ),
         'pass',
@@ -4940,8 +4944,8 @@ void main() {
       // stay prose — the position change must not make the gate read
       // claims the document never made.
       final foreign = withRebuildB(
-        'node exit_code 0 duration_seconds 115 '
-        '(2026-09-23T13:30:17+07:00 .. 2026-09-23T13:32:12+07:00)',
+        'node exit_code 0 duration_seconds 152 '
+        '(2026-10-04T20:42:38.215+07:00 .. 2026-10-04T20:45:11.133+07:00)',
       );
       expect(
         outcome(foreign),
@@ -5055,8 +5059,8 @@ void main() {
     }
 
     const String citedLogs =
-        'docs/evidence/sprint-113-39-rebuild-a.log '
-        'docs/evidence/sprint-113-39-rebuild-b.log';
+        'docs/evidence/sprint-113-39-reverify-20261004-a.log '
+        'docs/evidence/sprint-113-39-reverify-20261004-b.log';
     const String wrongLog = 'docs/evidence/never-existed.log';
 
     test('117.43-32 a wrong log restatement in front of a rebuild '
@@ -5406,8 +5410,8 @@ void main() {
             lines;
 
     const String citedLogs =
-        'docs/evidence/sprint-113-39-rebuild-a.log '
-        'docs/evidence/sprint-113-39-rebuild-b.log';
+        'docs/evidence/sprint-113-39-reverify-20261004-a.log '
+        'docs/evidence/sprint-113-39-reverify-20261004-b.log';
     const String wrongLog = 'docs/evidence/never-existed.log';
 
     /// The shipped record with its `provenance_logs` line replaced by [claims]

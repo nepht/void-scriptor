@@ -1,0 +1,24 @@
+
+===== clean =====
+Deleting build...                                                  594ms
+Deleting .dart_tool...                                              43ms
+Deleting ephemeral...                                                5ms
+Deleting Generated.xcconfig...                                       1ms
+Deleting flutter_export_environment.sh...                            0ms
+Deleting ephemeral...                                                1ms
+Deleting ephemeral...                                                3ms
+Deleting ephemeral...                                               44ms
+Deleting .flutter-plugins-dependencies...                            0ms
+
+===== build windows --release =====
+Resolving dependencies...
+Downloading packages...
+  cross_file 0.3.5+5 (0.4.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.14 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+4 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Building Windows application...                                   139,4s
+√ Built build\windows\x64\runner\Release\void_scriptor.exe

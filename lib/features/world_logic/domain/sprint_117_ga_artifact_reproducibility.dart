@@ -805,7 +805,19 @@ abstract final class Sprint117GaArtifactGate {
   static Sprint117GaArtifactCheck measureProvenance({
     required Map<String, Object?> provenanceManifest,
   }) {
-    final evidence = provenanceManifest['required_evidence'];
+    final evidenceField = _documentField(
+      provenanceManifest,
+      'required_evidence',
+    );
+    if (evidenceField.ambiguous) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: 'required_evidence',
+        observed: 'required_evidence is stated under two keys that trim alike',
+      );
+    }
+    final evidence = evidenceField.value;
     if (evidence is! Map<String, Object?>) {
       return Sprint117GaArtifactCheck.unmet(
         outputId: 'provenance',
@@ -814,12 +826,23 @@ abstract final class Sprint117GaArtifactGate {
         observed: 'manifest carries no required_evidence object',
       );
     }
+    final runField = _documentField(provenanceManifest, 'rebuild_run');
+    if (runField.ambiguous) {
+      return Sprint117GaArtifactCheck.unmet(
+        outputId: 'provenance',
+        check: 'provenance_evaluation',
+        declared: 'rebuild_run',
+        observed: 'rebuild_run is stated under two keys that trim alike',
+      );
+    }
     final evaluation = _evaluateShippedProvenance(
       evidence,
       // Sprint 117.43-16: the restatement lives one level above
       // `required_evidence`, so it has to be handed down here; inside the
-      // group it did not exist at all.
-      provenanceManifest['rebuild_run'],
+      // group it did not exist at all. 117.43-39 resolves it by trimmed key,
+      // so a document spelling it `' rebuild_run '` states the same group and
+      // reaches the same comparison.
+      runField.value,
     );
     const declared = 'build provenance evaluated';
     if (evaluation == null) {
@@ -919,6 +942,40 @@ abstract final class Sprint117GaArtifactGate {
     );
   }
 
+  /// Resolves a document-level field whatever whitespace surrounds its key.
+  ///
+  /// Sprint 117.43-39: every document-level reader in this file matched the
+  /// bare key exactly while 117.43-38 taught the members one floor down to
+  /// match after `trim()`, so a field spelled `' status '` was read as
+  /// ABSENT — and absence is a non-claim (117.43-07), which let a document
+  /// switch off any refusal here with one leading space. Proven on the
+  /// shipped document before this helper existed: `status`, `rebuild_run`,
+  /// `canonical_step`, `limits` and `version` each moved from `unmet` to
+  /// `pass` while the value stayed identical and only the key gained a space.
+  ///
+  /// Whitespace around a key changes no meaning, so a variant that trims to
+  /// [field] states that field's claim and must be read. Two keys trimming
+  /// alike state it twice with no rule for choosing, and picking one would
+  /// make the gate verdict a coin toss, so that is reported as ambiguous and
+  /// the callers refuse instead of guessing. A key that no amount of trimming
+  /// can bring into the shipped vocabulary is not this field's variant at all
+  /// (117.43-16); this helper never looks for those.
+  static ({bool present, bool ambiguous, Object? value}) _documentField(
+    Map<String, Object?> document,
+    String field,
+  ) {
+    var present = false;
+    var ambiguous = false;
+    Object? value;
+    for (final entry in document.entries) {
+      if (entry.key.trim() != field) continue;
+      if (present) ambiguous = true;
+      present = true;
+      value = entry.value;
+    }
+    return (present: present, ambiguous: ambiguous, value: value);
+  }
+
   /// Refuses a document-level `limits` group that cannot be read as a list of
   /// non-blank strings. Returns the observed reason, or null when the group
   /// states nothing or reads cleanly.
@@ -938,8 +995,12 @@ abstract final class Sprint117GaArtifactGate {
   ///    how they relate to the nested comparison limits — that vocabulary
   ///    belongs to the document, so this reader adds no acceptance of its own.
   static String? _documentLimitsRefusal(Map<String, Object?> document) {
-    if (!document.containsKey('limits')) return null;
-    final value = document['limits'];
+    final field = _documentField(document, 'limits');
+    if (field.ambiguous) {
+      return 'limits is stated under two keys that trim alike';
+    }
+    if (!field.present) return null;
+    final value = field.value;
     if (value == null) return null;
     final limits = _stringList(value);
     if (limits == null) {
@@ -965,19 +1026,23 @@ abstract final class Sprint117GaArtifactGate {
   ///    segment — the remainder of that token is the document's own;
   ///  * `version`, `canonical_step` and `title` are NOT measured here.
   static String? _headerVerdictRefusal(Map<String, Object?> document) {
-    for (final field in const <String>['status', 'decision']) {
-      if (!document.containsKey(field)) continue;
-      final value = document[field];
+    for (final name in const <String>['status', 'decision']) {
+      final field = _documentField(document, name);
+      if (field.ambiguous) {
+        return '$name is stated under two keys that trim alike';
+      }
+      if (!field.present) continue;
+      final value = field.value;
       if (value == null) continue;
       if (value is! String || value.trim().isEmpty) {
         return '$field present without a readable verdict '
             '(${value.runtimeType})';
       }
-      final declaresLocalVerification = field == 'status'
+      final declaresLocalVerification = name == 'status'
           ? value.trim() == 'VERIFIED-LOCAL'
           : value.trim().startsWith('VERIFIED_LOCAL');
       if (!declaresLocalVerification) {
-        return '$field states ${value.trim()} while the evidence evaluates '
+        return '$name states ${value.trim()} while the evidence evaluates '
             'pass';
       }
     }
@@ -1001,8 +1066,12 @@ abstract final class Sprint117GaArtifactGate {
   ///  * nothing is required about WHICH version it states — that vocabulary
   ///    belongs to the document, so this reader adds no acceptance of its own.
   static String? _documentVersionRefusal(Map<String, Object?> document) {
-    if (!document.containsKey('version')) return null;
-    final value = document['version'];
+    final field = _documentField(document, 'version');
+    if (field.ambiguous) {
+      return 'version is stated under two keys that trim alike';
+    }
+    if (!field.present) return null;
+    final value = field.value;
     if (value == null) return null;
     if (value is! String || value.trim().isEmpty) {
       return 'version present without a readable value (${value.runtimeType})';
@@ -1037,8 +1106,12 @@ abstract final class Sprint117GaArtifactGate {
   ///  * nothing is required about `title`, which 117.43-19 recorded as prose
   ///    outside acceptance and deliberately left unmeasured.
   static String? _documentStepRefusal(Map<String, Object?> document) {
-    if (!document.containsKey('canonical_step')) return null;
-    final value = document['canonical_step'];
+    final field = _documentField(document, 'canonical_step');
+    if (field.ambiguous) {
+      return 'canonical_step is stated under two keys that trim alike';
+    }
+    if (!field.present) return null;
+    final value = field.value;
     if (value == null) return null;
     if (value is! String || value.trim().isEmpty) {
       return 'canonical_step present without a readable value '

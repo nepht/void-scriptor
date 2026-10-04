@@ -5840,4 +5840,214 @@ void main() {
       );
     });
   });
+
+  group('117.43-39 a document-level key is read whatever whitespace surrounds '
+      'it', () {
+    // Sprint 117.43-39 (fail-open): 117.43-38 taught the members of
+    // `rebuild_run` to be matched after `trim()` and wrote down the rule this
+    // file already follows - whitespace around a key changes no meaning. The
+    // document-level lookups one floor up were still exact, so a field spelled
+    // `' status '` was read as ABSENT, and absence is a non-claim
+    // (117.43-07): one leading space switched off any refusal in this file.
+    // Proven before the fix with the shipped document differing only in the
+    // key's whitespace - `status` unmet -> pass, `rebuild_run` unmet -> pass,
+    // `canonical_step` unmet -> pass, `limits` unmet -> pass, `version` unmet
+    // -> pass - while the same values under the bare keys were refused. The
+    // corrected grammar pinned here: a whitespace variant of a defined
+    // document key states its claim, two keys trimming alike state it twice
+    // and are refused instead of guessed between, and a key no amount of
+    // trimming can bring into the shipped vocabulary stays a non-claim
+    // (117.43-16).
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// Shipped manifest whose [field] is stated ONLY under a key spelled with
+    /// one leading and one trailing space, holding [value] verbatim.
+    Map<String, Object?> spaced(String field, Object? value) {
+      final manifest = shipped();
+      manifest.remove(field);
+      manifest[' $field '] = value;
+      return manifest;
+    }
+
+    test('117.43-39 the shipped document spells its document keys bare, so the '
+        'cases below isolate the lookup itself', () {
+      final manifest = shipped();
+      expect(
+        manifest.keys.every((key) => key == key.trim()),
+        isTrue,
+        reason:
+            'if the shipped document already carried stray whitespace the '
+            'cases below would not isolate the document-level lookup',
+      );
+      expect(outcome(manifest), 'pass');
+    });
+
+    test('117.43-39 a header field stated under a whitespace-variant key is '
+        'still refused', () {
+      final cases = <String, String>{
+        "status stating 'BROKEN-LOCAL'": outcome(
+          spaced('status', 'BROKEN-LOCAL'),
+        ),
+        "decision stating 'DRAFT_PROVENANCE'": outcome(
+          spaced('decision', 'DRAFT_PROVENANCE'),
+        ),
+        'status as an integer': outcome(spaced('status', 42)),
+        'decision as a blank string': outcome(spaced('decision', '   ')),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the header states a verdict this gate must weigh; one space '
+            'around the key cannot turn the statement into silence: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-39 a rebuild_run group stated under a whitespace-variant key '
+        'is still measured against the records', () {
+      final run = <String, Object?>{
+        ...(shipped()['rebuild_run']! as Map<String, Object?>),
+        'cycles': 999,
+      };
+      expect(
+        outcome(spaced('rebuild_run', run)),
+        isNot('pass'),
+        reason:
+            'a restatement of 999 cycles where two rebuilds are recorded must '
+            'reach the 117.43-16 comparison, which the 117.43-38 members '
+            'inside it already implement',
+      );
+    });
+
+    test('117.43-39 a canonical_step stated under a whitespace-variant key is '
+        'still reconciled', () {
+      expect(
+        outcome(spaced('canonical_step', '113.40')),
+        isNot('pass'),
+        reason:
+            'a document naming another step is not the 113.39 provenance '
+            'document (117.43-20), whatever whitespace its key carries',
+      );
+    });
+
+    test('117.43-39 limits and version stated under whitespace-variant keys '
+        'are still decoded', () {
+      final cases = <String, String>{
+        'limits as an integer': outcome(spaced('limits', 42)),
+        'version as an integer': outcome(spaced('version', 42)),
+      };
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'a present value in a shape nobody decoded is unevaluable, not a '
+            'silent agreement (117.43-13): '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-39 required_evidence stated under a whitespace-variant key is '
+        'evaluated, not reported missing', () {
+      final evidence = shipped()['required_evidence'];
+      expect(
+        outcome(spaced('required_evidence', evidence)),
+        'pass',
+        reason:
+            'the group is present, so reading it runs every check inside it '
+            '(117.43-01..15); skipping it published "manifest carries no '
+            'required_evidence object" about a document that states it',
+      );
+      expect(
+        outcome(spaced('required_evidence', 42)),
+        'unmet',
+        reason: 'a present group in an undecodable shape stays unevaluable',
+      );
+      expect(
+        outcome(shipped()..remove('required_evidence')),
+        'unmet',
+        reason:
+            'absence still fails closed: provenance cannot be evaluated '
+            'without its evidence',
+      );
+    });
+
+    test('117.43-39 two keys that trim alike are refused, not guessed '
+        'between', () {
+      final header = shipped();
+      header[' status '] = 'BROKEN-LOCAL';
+      expect(
+        outcome(header),
+        isNot('pass'),
+        reason:
+            'the document then states two statuses under keys spelling the '
+            'same field; reading only the bare one leaves the contradicting '
+            'twin unread',
+      );
+      final run = shipped();
+      run[' rebuild_run '] = <String, Object?>{'cycles': 999};
+      expect(
+        outcome(run),
+        isNot('pass'),
+        reason:
+            'the bare group agrees with the records while the variant '
+            'restates 999 cycles; taking one at random is a coin toss on the '
+            'gate verdict',
+      );
+    });
+
+    test(
+      '117.43-39 an agreeing whitespace-variant document key still passes',
+      () {
+        expect(outcome(spaced('status', 'VERIFIED-LOCAL')), 'pass');
+        expect(outcome(spaced('version', '1.2.0-rc.1')), 'pass');
+        expect(outcome(spaced('canonical_step', '113.39')), 'pass');
+        final run = <String, Object?>{
+          ...(shipped()['rebuild_run']! as Map<String, Object?>),
+          'cycles': 2,
+        };
+        expect(outcome(spaced('rebuild_run', run)), 'pass');
+      },
+    );
+
+    test('117.43-39 member keys no trim can bring into the shipped vocabulary '
+        'stay non-claims', () {
+      // Hunt candidates (a) and (b): the degenerate label case
+      // `rebuild__duration_seconds` (the grammar needs at least one
+      // character between prefix and suffix) and the case variant
+      // `Rebuild_a_duration_seconds` (trim folds no letters). Both sit beside
+      // a contradicting 999 that each bare twin would refuse, which is exactly
+      // what makes them decisions rather than defects: refusing a key the
+      // shipped grammar never spells would invent grammar (117.43-16
+      // cold_rebuilds, pinned with `rebuild_a_duration` in 117.43-38).
+      for (final key in const <String>[
+        'rebuild__duration_seconds',
+        'Rebuild_a_duration_seconds',
+      ]) {
+        final manifest = shipped();
+        manifest['rebuild_run'] = <String, Object?>{
+          ...(manifest['rebuild_run']! as Map<String, Object?>),
+          key: 999,
+        };
+        expect(
+          outcome(manifest),
+          'pass',
+          reason:
+              '"$key" is not a whitespace variant of a defined key, so the '
+              'trim rule does not reach it and it states no claim',
+        );
+      }
+    });
+  });
 }

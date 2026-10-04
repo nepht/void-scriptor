@@ -4065,5 +4065,41 @@
       "directed_regression": "gate file 154/154 exit 0; 113 provenance file 12 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files and the new ledger row: 0 hits, 0 trailing whitespace"
     }
+  },
+  "defect_117_43_32": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 27,
+    "slice": "117.43-32",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open EITHER-OR reader in _summaryAgreesWithRebuilds: provenance_record carries two restatement readers, _rebuildSummariesIn (every rebuild restatement anywhere on the line, since 117.43-30) and _logSummaryNamesUnknownLogs (a provenance_logs claim), but the caller ran them as alternatives - a line that produced a summary ran only the summary comparison, a line that produced none ran only the log comparison. So the log claim was compared only on the lines its sibling reader left alone while the group kept printing 'provenance_record: 6 item'. Measured on the committed manifest: the 117.43-15 control (a wrong log set on a line of its own) is unmet, and the identical wrong log set written in front of the shipped rebuild_a restatement - with rebuild_a moved off its own line so all six claims survive - is pass; only the line break differs. Running both readers on every line exposed two more sides of the same reader, fixed together rather than left for the next run: the log reader demanded its prefix at position 0 (a claim written BEHIND a rebuild restatement never matched and was never compared) and read to the end of the line (an honest claim in front swallowed the restatement's tokens as paths and would refuse an honest document).",
+    "proven_before_fix": "Official tests added first, no probe file: baseline gate file '154: All tests passed' exit 0, then four tests in the new 117.43-32 group (wrong claim in front, wrong claim behind, honest in front, honest behind). Measured against the pre-fix library by swapping in git show HEAD:path and restoring the snapshot afterwards (sha back to c688ef4fcacfb074 on both sides): '+2 -2' exit 1, both defect cases actual 'pass' while expected 'unmet', both controls 'pass' - exactly two failures, in the right place, not a red in the wrong location.",
+    "red": "exit 1 with two failures: 117.43-32 a wrong log restatement in front of a rebuild restatement is refused and 117.43-32 a wrong log restatement behind a rebuild restatement is refused, both expected 'unmet' actual 'pass'; post-fix exit 0.",
+    "fix": "The log comparison now runs for every line (the loop no longer branches to continue), and _parseLogSummary locates _kLogSummaryPrefix at a word boundary wherever the line puts it, then truncates the claim at the point where a rebuild restatement begins (_kRebuildSummaryPattern with a rebuild_ label), so the two readers split the line into their own segments instead of one consuming the other; the constant stays referenced, so no unused_element appears. Nothing new becomes a claim: the claim is still the token run the prefix introduces, a line without the prefix still names no log, and 'rebuild_a rebuilt cleanly' still states no measurement.",
+    "green": "gate file 158/158 All tests passed exit 0 (154 baseline + 4 new), repeated after dart format; directed 113 provenance regression '+10 -2' exit 1 with both pre-existing 113.39 signatures unchanged (artifact 73101e78 vs c7a33055; expected live lock d500c1c5... vs manifest 32e31fd3..., the live lock having moved from c9a365e6... - not caused by this slice). No full-suite claim.",
+    "bounds_pinned_by_test": "An honest log restatement sharing a line with a rebuild restatement still passes in both positions, so comparing every line refuses nothing a document may honestly write; the shipped manifest still passes unchanged; a line without the prefix still claims no log; the 117.43-15/-25/-30 boundaries (build_command, source_revision, signed_candidate, prose) are untouched. Remaining hole of the same family, recorded rather than silently closed: _parseCitation for signed_candidate is still front-anchored and takes only the first token after its prefix.",
+    "evidence": {
+      "commit": "85566d6",
+      "ledger_commit": "f62e0aa",
+      "domain_sha256": "369b75873e42174f249d2bb0c2afd353ce4ae2a3afd1da08bfd314b8a469954f",
+      "domain_bytes": 63774,
+      "test_sha256": "63af36051e2160c069cd4af7b85191d8d605316bd0570f034de2a152e45fb251",
+      "test_bytes": 206686,
+      "sha_source": "blob of commit 85566d6 via git show, equals sha256sum of disk (both verified after commit, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "probe": "no probe file: the RED witness was written directly as the official 117.43-32 group, and the pre-fix measurement was taken by swapping the library from git show HEAD:path and restoring the snapshot (sha equal on both sides), so nothing to delete",
+      "sibling": "fb1c76f test(a11y): audit focus order Supporting Asset Workspace Screen landed mid-run; git log 715e30b..HEAD on the 2 slice paths only lists 85566d6",
+      "push": "none this run (ahead 4: fb1c76f sibling + 85566d6 fix + f62e0aa ledger + this state commit); push deferred per run policy"
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 101.6s, fresh evidence build/windows/x64/runner/Debug/data/flutter_assets mtime 2026-10-04_15:49:29 (static runner exe mtime not counted)",
+      "roadmap_guard": "PASS pre-run and post-state, canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 unchanged",
+      "directed_regression": "gate file 158/158 exit 0; 113 provenance file 10 pass / 2 fail with both pre-existing 113.39 signatures unchanged. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files (206) and the new ledger row (60): 0 hits, 0 trailing whitespace"
+    }
   }
 }

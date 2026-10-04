@@ -6,7 +6,7 @@
 # (format + analyze + test) so every push to gitlab.com gets a green/red
 # signal without duplicating the full build matrix on shared runners.
 #
-# Toolchain: pinned Flutter 3.44.9 stable (verified present in the
+# Toolchain: pinned Flutter 3.47.6 stable (verified present in the
 # official release manifest; matches the GitHub workflow pin). Installed
 # from the official tarball because no public Docker image carries this
 # version yet. CI runs stay hermetic: no project data, no local paths.
@@ -19,7 +19,7 @@ flutter-verify:
   image: debian:bookworm-slim
   timeout: 45 minutes
   variables:
-    FLUTTER_VERSION: "3.44.9"
+    FLUTTER_VERSION: "3.47.6"
     FLUTTER_ROOT: "/opt/flutter"
     PUB_CACHE: "$CI_PROJECT_DIR/.pub-cache"
   before_script:

@@ -2096,3 +2096,77 @@ tanpa pencetak jumlah member, jadi wajib diprobe dulu. Catatan metode:
 dari ke-32 ini, pola `firstMatch`/wajib-versi-opsional pada pembaca klaim
 layak dicek berbarengan dengan pertanyaan lama "siapa yang mencetak
 jumlahnya".
+
+### Slice 117.43-38 - kunci anggota `rebuild_run` hanya terbaca kalau spasi
+di sekelilingnya nol (defect ke-33 fail-open hunt)
+
+DEFECT. `_rebuildRunAgrees`
+(`sprint_117_ga_artifact_reproducibility.dart` pre-fix :1670-1676) membaca
+`cycles` dengan kunci persis lewat `run['cycles']` dan mencocokkan kunci
+anggota lain dengan `summarised.firstMatch(member.key)` tanpa `trim()`,
+padahal pembaca lain di file yang sama selalu meng-trim tokennya lebih dulu
+(`readChecksumIndex` `line.trim()`, pembaca jendela `startedAt!.trim()`).
+Akibatnya anggota yang beda dari kosakata terdefinisi hanya oleh spasi
+sekeliling dilewati diam-diam: `'rebuild_a_duration_seconds ': 999` di
+samping twin persisnya yang sepakat (145) membuat grup tetap `pass`, dan
+`' cycles': 3` di samping `cycles: 2` lolos sama sekali sementara pencetak
+siklus tetap mencetak angkanya dari kunci persis. Probe awal
+(`cache/probe_117_43_38_test.dart`, kini dihapus) mencetak `pass` untuk
+varian trailing/leading/tab dan `unmet` untuk semua kontrol: kunci persis
+999/999.0/'999', label-case `rebuild_A...` (index<0), dan inner-space
+`rebuild_ a_duration_seconds`.
+
+RED. Lima test resmi `117.43-38` ditulis lebih dulu (blok via write_file lalu
+disisip byte-eksak dengan anchor EOF `  });` + `}`, assert awalan file
+identik, numstat 122/0 dengan 0 baris `-`) dan dijalankan terhadap lib yang
+belum diubah: `--plain-name "117.43-38"` -> `+3 -2` exit 1, dua test
+penolakan gagal dengan `Actual: 'pass'`.
+
+FIX. Kunci anggota di-trim sebelum dicocokkan (`final key =
+member.key.trim()`), dan pembacaan `cycles` pindah ke loop per-anggota
+sehingga varian ber-spasi ikut diukur; value `null` tetap non-claim
+(117.43-07), vocabulary yang trim tidak mampu cocokkan tetap non-claim
+(117.43-16 `cold_rebuilds`, dipin di test baru), doc-comment fungsi dapat
+paragraf 117.43-38. Tidak ada penerimaan baru: angka yang kini terbaca sudah
+diukur pada rekaman; satu-satunya perubahan batas klaim adalah kunci
+ber-spasi berhenti menjadi prosa.
+
+GATES. Baseline sebelum perubahan: file gate 173/173 exit 0. Format
+`dart.bat format` lalu `--output=none --set-exit-if-changed` pada 2 file ->
+`0 changed` exit 0 (write tidak menyentuh kode lama: numstat test tetap
+122/0). `dart analyze` 2 file -> `No issues found!` exit 0. `git diff
+--check` exit 0. Scan non-Latin pada 23 baris added lib + 122 baris added
+test -> 0 hit, 0 trailing whitespace. GREEN `--plain-name "117.43-38"` ->
+`+5` All tests passed exit 0. Regresi terarah 2 file -> `+191` All tests
+passed! exit 0 (178 file 117 + 13 file 113), diulang setelah sibling a11y
+`9e75884` mendarat di tengah run -> tetap `+191` exit 0. `flutter build
+windows --debug` exit 0, 37,0 detik,
+`build/windows/x64/runner/Debug/data/flutter_assets` mtime 2026-10-05 04:14
+(exe statis 02:22 tidak dihitung). Guard PASS pre-run.
+
+BUKTI SHA (blob commit `948dfb7`):
+`sprint_117_ga_artifact_reproducibility.dart` =
+`287b349bda9c11d2595678c3697660233a07483a0590803c3f05906713adbd8e`
+(79007 B, disk == blob);
+`sprint_117_ga_artifact_reproducibility_test.dart` =
+`83d2d8a88a58cbd01c95382abf21e22540877136a020299896116d84f38a9d92`
+(232451 B blob; disk CRLF dinormalkan == blob, sha disk mentah
+`eb9d69a8...`). Numstat: lib 23/5, test 122/0. Kedua path bersih setelah
+commit `948dfb7`; HEAD awal run `8117414` (ahead 37), sibling a11y
+`9e75884` tak menyentuh 2 path slice, posisi terukur setelah commit fix =
+ahead 39 (`git rev-list --count origin/master..HEAD`). Patch tool 0
+pemakaian; probe scratch dihapus karena seluruh temuannya sudah menjadi test
+resmi.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, `next_step` 117.43, `step_closed`
+false, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`, TODO-OPERATOR
+117.43-02 tetap menunggu keputusan drift manifest. Tidak ada push.
+
+Kandidat hunt berikutnya ke-34 (probe dulu, jangan klaim sebelum ada baris
+hasil): (a) `rebuild__duration_seconds: 999` tetap `pass` - regex mensyaratkan
+minimal satu karakter label sehingga kunci degenerat itu terlewat; putuskan
+apakah ia "klaim yang disebut tapi tak terbaca" (117.43-13) atau vocabulary
+tak terdefinisi; (b) varian huruf besar `Rebuild_a_duration_seconds: 999`
+juga `pass` (trim tidak mengubah huruf); (c) lookup kunci tingkat dokumen
+tanpa trim (`provenanceManifest['rebuild_run']`, `['comparison']`) belum
+diprobe - perkiraan: kunci ber-spasi dianggap grup absen/non-claim.

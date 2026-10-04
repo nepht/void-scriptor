@@ -1652,6 +1652,13 @@ abstract final class Sprint117GaArtifactGate {
   /// from the duration its own record states; and a duration naming a label
   /// no record carries.
   ///
+  /// Sprint 117.43-38: member keys are matched after `trim()`, the way every
+  /// other reader in this file tokenises its input. Whitespace around a key
+  /// changes no meaning, so a member spelled ` cycles` or
+  /// `rebuild_a_duration_seconds ` is read as the claim it spells instead of
+  /// being skipped beside an agreeing exact-key twin. Keys the trim cannot
+  /// bring into the shipped vocabulary remain non-claims (117.43-16).
+  ///
   /// Non-claiming, pinned by test: an absent group or a `null` member states
   /// nothing (117.43-07); prose members (`method`,
   /// `signed_snapshot_restore`) make no number claim; and vocabulary this
@@ -1667,13 +1674,24 @@ abstract final class Sprint117GaArtifactGate {
     if (rebuildRun is! Map<String, Object?>) return false;
     final run = rebuildRun;
 
-    final cycles = _durationOrNull(run['cycles'], run.containsKey('cycles'));
-    if (identical(cycles, _kUndecodable)) return false;
-    if (cycles != null && cycles != rebuilds.length) return false;
-
     final summarised = RegExp(r'^(rebuild_.+)_duration_seconds$');
     for (final member in run.entries) {
-      final label = summarised.firstMatch(member.key)?.group(1);
+      // Sprint 117.43-38: match on the trimmed key, the way every other
+      // reader in this file tokenises — `readChecksumIndex` trims each line
+      // and the window readers trim each timestamp. Whitespace around a key
+      // changes no meaning, so ` cycles` and `rebuild_a_duration_seconds `
+      // state the claims their bare twins state and must face the same
+      // comparison; before this slice the variant was skipped while the
+      // agreeing exact-key twin kept the group publishing pass. Keys the
+      // trim cannot make match stay non-claims (117.43-16).
+      final key = member.key.trim();
+      if (key == 'cycles') {
+        final cycles = _durationOrNull(member.value, true);
+        if (identical(cycles, _kUndecodable)) return false;
+        if (cycles != null && cycles != rebuilds.length) return false;
+        continue;
+      }
+      final label = summarised.firstMatch(key)?.group(1);
       if (label == null) continue;
       final seconds = _durationOrNull(member.value, true);
       if (identical(seconds, _kUndecodable)) return false;

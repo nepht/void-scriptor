@@ -5718,4 +5718,126 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-38 (hunt ke-33): `_rebuildRunAgrees` matches
+  // member keys against `^(rebuild_.+)_duration_seconds$` (and reads `cycles`
+  // by exact key) without trimming, while every other reader in this file
+  // trims its token before matching — `readChecksumIndex` runs `line.trim()`,
+  // the window readers run `startedAt!.trim()`. So a member that differs from
+  // defined vocabulary only by surrounding whitespace states a number nobody
+  // reads: the exact-key twin beside it agrees with the record, the
+  // whitespace twin contradicts it, and the group still publishes pass. The
+  // probe run before this slice printed `pass` for `'rebuild_a_duration_
+  // seconds ': 999` and `' cycles': 3` against records of 145 seconds and 2
+  // cycles, while the exact-key controls printed `unmet`. Surrounding
+  // whitespace changes no meaning, so trimming keys invents no grammar
+  // (117.43-16's `cold_rebuilds` non-claim rule stays untouched, pinned
+  // below).
+  group('117.43-38 a rebuild_run key is read whatever whitespace surrounds '
+      'it', () {
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    /// Shipped manifest with [patch] merged into its `rebuild_run` group.
+    Map<String, Object?> withRunPatch(Map<String, Object?> patch) {
+      final manifest = shipped();
+      final run = manifest['rebuild_run']! as Map<String, Object?>;
+      manifest['rebuild_run'] = <String, Object?>{...run, ...patch};
+      return manifest;
+    }
+
+    test('117.43-38 the shipped group spells its keys without surrounding '
+        'whitespace, so the fixtures measure the trim rule itself', () {
+      final run = shipped()['rebuild_run']! as Map<String, Object?>;
+      expect(
+        run.keys.every((key) => key == key.trim()),
+        isTrue,
+        reason:
+            'if the shipped document already carried stray whitespace the '
+            'cases below would not isolate the reader seam',
+      );
+      expect(statusOf(shipped()), 'pass');
+    });
+
+    test('117.43-38 a duration restated under a whitespace-variant key that '
+        'contradicts the record is refused', () {
+      const variants = <String>[
+        'rebuild_a_duration_seconds ',
+        ' rebuild_a_duration_seconds',
+        'rebuild_a_duration_seconds\t',
+      ];
+      for (final key in variants) {
+        expect(
+          statusOf(withRunPatch({key: 999})),
+          isNot('pass'),
+          reason:
+              'member "$key" states 999 seconds where the record states 145; '
+              'whitespace around a key changes no meaning, so a reader that '
+              'skips it lets the document contradict itself while the '
+              'agreeing exact-key twin keeps the group publishing pass',
+        );
+      }
+    });
+
+    test('117.43-38 a cycle count stated under a whitespace-variant key that '
+        'contradicts the records is refused', () {
+      const variants = <String>['cycles ', ' cycles', '\tcycles'];
+      for (final key in variants) {
+        expect(
+          statusOf(withRunPatch({key: 3})),
+          isNot('pass'),
+          reason:
+              'member "$key" states 3 cycles where two rebuilds are recorded; '
+              'the count printer compares the exact-key `cycles` only, so '
+              'the contradicting variant must be read too, not skipped',
+        );
+      }
+    });
+
+    test('117.43-38 a whitespace-variant restatement that agrees with the '
+        'record is still read and accepted', () {
+      expect(
+        statusOf(withRunPatch({'rebuild_a_duration_seconds ': 145})),
+        'pass',
+        reason:
+            'trimming must expose the member to the same comparison, not '
+            'refuse it on shape: a restatement that agrees passes',
+      );
+      expect(
+        statusOf(withRunPatch({' cycles': 2})),
+        'pass',
+        reason: 'the agreeing cycle count under a variant key still passes',
+      );
+    });
+
+    test('117.43-38 vocabulary this grammar does not define stays a '
+        'non-claim beside the trim rule', () {
+      expect(
+        statusOf(withRunPatch({'cold_rebuilds': 7})),
+        'pass',
+        reason:
+            "a key this group's shipped vocabulary does not use defines no "
+            'claim (117.43-16); trimming does not change that',
+      );
+      expect(
+        statusOf(withRunPatch({'rebuild_a_duration': 999})),
+        'pass',
+        reason:
+            'a key spelled outside the shipped `_duration_seconds` '
+            'vocabulary is not a whitespace variant of a defined key, so '
+            'refusing it would invent grammar (117.43-16 cold_rebuilds '
+            'rule)',
+      );
+    });
+  });
 }

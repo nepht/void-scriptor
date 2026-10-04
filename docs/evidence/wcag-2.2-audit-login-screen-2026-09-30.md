@@ -3019,6 +3019,62 @@ STOP_COUNT 7 dengan urutan berbeda: `New Novel`, `Open Novel`, `Create Character
 
 **VERIFIED** untuk focus order `DashboardScreen` pada 1536x1024 dan 390x844 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum berupa native Windows focus ring pada aplikasi yang sudah dibangun, dan label diambil dari subtree `Text` pertama sehingga affordance berbasis ikon saja akan tampil sebagai runtime type. Enam layar kandidat lain tetap **DEFERRED** karena fixture-nya butuh Drift/project session.
 
+## 58. Fase 58 — Focus Order di Story Workspace Screen (2.4.3)
+
+### Layar yang dipilih
+
+`StoryWorkspaceScreen` (`lib/features/story/presentation/story_workspace_screen.dart`). Di antara kandidat yang belum ter-audit, layar ini punya densitas affordance fokus tertinggi (59 hit interaktif) sekaligus file-nya **bersih** di `git status` (bukan WIP Core Worker), dan seluruh dependensinya bisa di-inject: `StoryRepositoryImpl` di-override dengan hierarchy in-memory serta `ProjectDatabase` di-override lewat `_FakeExecutor` yang melempar `UnimplementedError` bila tersentuh. Tidak ada database file maupun jaringan pada traversal fokus.
+
+Kandidat lain yang ditolak pada run ini:
+
+- `AssetBrowserScreen` — densitas terbaik (44 stop interaktif) tetapi `lib/features/assets/presentation/asset_browser_screen.dart` **dirty** di `git status`, milik Core Worker. Modifikasi di sana berisiko menabrak WIP sibling.
+- `AutomationCenterScreen` — `ListTile` tidak punya `onTap` dan `Switch` diberi `onChanged: null`, sehingga tidak menghasilkan focus stop yang dapat diukur.
+- `MyLibraryScreen`, `MergePreviewScreen`, `OptionalTourScreen`, `MultiverseGraphScreen` — hanya 1–2 elemen yang benar-benar focusable (`Slider` pada `MultiverseGraphScreen` pun tidak membentuk traversal bermakna), di bawah syarat minimal 2 elemen interaktif.
+- `MarketplaceWorkspaceScreen`, `CreatorWorkspaceScreen`, `HudDesignerScreen`, `reference_library_screen`, `reference_management_screen` — **KENALAHAN**: sudah punya kontrak `*_focus_order_test.dart` sendiri.
+- `AboutScreen`, `KeyboardNavigationScreen`, `marketplace_home_screen`, `creator_sidebar_screen`, `dashboard_metrics_screen`, `discovery_home_screen`, `seller_center_screen`, `final_creator_dashboard_screen` — nol affordance fokus.
+
+### Kontrak
+
+`test/features/story/story_workspace_focus_order_test.dart` — 4 test. Fixture: satu `StoryHierarchy` in-memory dengan satu story (`story-1`) dan satu bab berisi satu scene bernama `Kedatangan Void`, plus `draftByScene`/`snapshotByScene` kosong. Label stop diambil dari subtree fokus: `Text` pertama yang bukan `Icon`, lalu `Semantics.label`, lalu `InputDecorator.hintText`, lalu `debugLabel` FocusNode sebagai fallback.
+
+### Hasil probe (1536x1600, dpr 1.0)
+
+STOP_COUNT 7, traversal berhenti saat rect berulang (wrap ke stop pertama):
+
+1. `Mode Fokus` — rect 20.0, 129.0, 195.0x40.0
+2. `Kedatangan Void` — rect 40.0, 427.0, 1120.0x34.0
+3. `node:scene-draft-editor` — rect 56.0, 587.0, 1088.0x168.0
+4. `Cari Novel` — rect 40.0, 1073.0, 195.0x40.0
+5. `Snapshot` — rect 40.0, 1201.0, 166.8x40.0
+6. `Atur Retensi` — rect 210.8, 1201.0, 223.2x40.0
+7. `Story Bible — story-1` — rect 0.0, 0.0, 1200.0x1425.0
+
+Semua stop punya area fokus non-zero. Stop 3 adalah `TextField` editor draft scene yang tidak punya child `Text`; labelnya diambil dari `debugLabel: 'scene-draft-editor'`, yang stabil terhadap perubahan subtree. Stop 7 adalah container `Scrollable` yang menutup siklus.
+
+### Catatan geometri yang dikunci
+
+- **Viewport 1536x1600, bukan 1024.** Pada probe pertama di 1536x1024, `Scrollable.ensureVisible` menggulir otomatis setiap Tab sehingga rect fokus **bergeser antar-stop** (stop yang sama melaporkan `top` berbeda tergantung urutan kedatangan). Kontrak pun gagal: `Expected: top 259.0, Actual: top 349.0`. Memakai viewport 1600 tinggi membuat seluruh isi muat tanpa scroll, sehingga urutan posisinya deterministik dan yang diukur adalah urutan fokus, bukan artefak scroll.
+- **Enam stop UI menuruni halaman** (top 129 → 427 → 587 → 1073 → 1201), jadi reading order Flutter default sudah sesuai 2.4.3. Kontrak mengunci invariant top-monotik untuk lima stop pertama.
+- **Snapshot dan Atur Retensi sebaris** (top keduanya 1201, left 40 vs 210.8) — satu panel Snapshots dengan dua aksi. Kontrak mengunci bahwa keduanya sebaris dan yang kedua di sebelah kanan, bukan sekadar urutan label.
+- Stop terakhir (container scroll) sengaja dikecualikan dari asersi top-monotik karena posisinya 0.0, 0.0 — itu outset halaman, bukan penanda urutan yang salah.
+
+### Bukti eksekusi
+
+- Probe `test/features/story/zz_probe_focus_test.dart` → `All tests passed!` (`FLUTTER_EXIT=0`), stdout `STOP 0..6` + `STOP_COUNT 7`. Dibuat ulang sebagai `zz_probe_rects_test.dart` untuk menangkap rect presisi dari harness kontrak yang identik, lalu **kedua probe dihapus** (`ls` → `No such file or directory`).
+- `dart format test/features/story/story_workspace_focus_order_test.dart` → `Formatted 1 file (1 changed)`, re-run `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/story/story_workspace_focus_order_test.dart` → `No issues found!` (`EXIT=0`), diulang setelah restore negative control dengan hasil sama.
+- `flutter test test/features/story/story_workspace_focus_order_test.dart` → `All tests passed!` (`+4`), `FLUTTER_EXIT=0`.
+- **Negative control**: `_expectedLabels` ditukar dua label pertama (`Mode Fokus` <-> `Kedatangan Void`) via `cp` backup ke `/c/Users/nepht/AppData/Local/Temp/story_workspace_focus_order_test.bak` (9.312 B). Hasil `+2 -2: Some tests failed.` dengan `FLUTTER_EXIT=1` — test `1. tujuh stop fokus dengan urutan label terkunci` gagal pada `Expected: 'Kedatangan Void' / Actual: 'Mode Fokus'`, dan test `4. Tab setelah container scroll kembali ke stop pertama` ikut gagal karena bergantung pada `_expectedLabels.first`. Backup dipulihkan, label kembali ke urutan benar, backup dihapus (`ls` → `No such file or directory`), `dart analyze` → `No issues found!`.
+- Gate suite: `flutter test test/features/story/` → `01:41 +220: All tests passed!`, `FLUTTER_EXIT=0`.
+- Scan CJK/Cyrillic + credential pada file kontrak: `CJK_CYRILLIC_SCAN = none`, `HAS_SECRETISH = False`, satu-satunya karakter non-ASCII adalah `—` (em-dash) yang merupakan bagian dari string UI milik aplikasi sendiri (`Story Bible — story-1`).
+
+### Status
+
+**VERIFIED** untuk focus order `StoryWorkspaceScreen` pada 1536x1600 dpr 1.0 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah satu file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum native Windows focus ring pada aplikasi yang sudah dibangun, dan harness memakai viewport 1600 agar seluruh isi muat — perilaku di viewport 1024 yang menggulir otomatis **belum** dikontrak secara geometris.
+
+Kumulatif: **44 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 43); 45 layar tersisa. Layar yang clean namun butuh fixture Drift/project session — `scene_workspace_screen`, `character_workspace_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `production_asset_workspace_screen`, `level_editor_screen`, `creature_workspace_screen`, `publishing_workspace_screen`, `wardrobe_workspace_screen` — tetap **DEFERRED** dan merupakan kandidat run berikutnya.
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

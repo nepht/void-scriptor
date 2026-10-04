@@ -3126,6 +3126,64 @@ Probe kedua pada 390x844 memberi hasil identik secara struktural: `Installed` di
 **VERIFIED** untuk focus order `MyLibraryScreen` pada 1536x1024 dan 390x844 dpr 1.0 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah satu file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum native Windows focus ring pada aplikasi yang sudah dibangun; aktivasi tab dibuktikan lewat `Enter` pada `TabBar` Material, bukan navigasi arrow.
 
 Kumulatif: **45 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 44); 44 layar tersisa. Layar yang clean namun butuh fixture Drift/project session — `scene_workspace_screen`, `character_workspace_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `production_asset_workspace_screen`, `level_editor_screen`, `creature_workspace_screen`, `publishing_workspace_screen`, `wardrobe_workspace_screen` — tetap **DEFERRED** dan merupakan kandidat run berikutnya.
+## 60. Fase 60 — Focus Order di RuleEditorScreen (2.4.3)
+
+### Layar yang dipilih
+
+`RuleEditorScreen`, kelas privat di `lib/features/workflow/presentation/automation_center_screen.dart`. Layar mandiri: seluruh state berasal dari `TextEditingController` lokal, tidak ada database, tidak ada network, tidak ada Riverpod provider, tidak ada `ProjectSession`. `git status` bersih untuk file tersebut, dan file masih memuat `AutomationCenterScreen` serta `AutomationTemplatesScreen` yang sudah ter-cover di fase sebelumnya.
+
+Kandidat yang gugur pada run ini:
+
+- `AutomationTemplatesScreen` dan `AutomationCenterScreen` (file yang sama) — sudah punya kontrak focus order di `test/features/workflow/presentation/automation_templates_focus_order_test.dart`; probe awal memberi 3 stop, tapi tidak perlu diulang.
+- `about_screen.dart` — probe_traversal hanya menemukan 1 stop. Akar masalahnya terverifikasi di SDK: `ListTile` yang `enabled: false` memakai `canRequestFocus: enabled` (`material/list_tile.dart:987`), sehingga tile display-only memang bukan simpul fokus. Bukan defect produksi, hanya di bawah syarat minimal.
+- `merge_preview_screen.dart`, `multiverse_graph_screen.dart` — masing-masing satu simpul fokus nyata setelah di-probe.
+- Layar ber-skor interaksi tinggi (`asset_browser_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `scene_workspace_screen`) — semuanya berstatus dirty milik Core Worker. Diff-nya sudah diperiksa dan hanya berisi rename `.valueOrNull` -> `.value`, tetapi mengunci kontrak geometri pada file milik WIP lain berisiko mengunci state yang belum final, jadi dilewati.
+
+### Kontrak
+
+`test/features/workflow/presentation/rule_editor_focus_order_test.dart` — 5 test dalam satu `group`. Berbeda dengan fase sebelumnya, identitas stop dikunci pada **geometri** (`left|top|width|height`), bukan hanya urutan label, karena jumlah stop di layar ini bergantung pada state. Label diambil dua arah: descendant `Text` dulu (label tombol), lalu ancestor `EditableText` (nilai field yang sedang diketik) — node fokus milik `TextField` duduk di *bawah* `EditableText`, jadi label hanya terjangkau dengan berjalan ke atas.
+
+### Hasil probe (1536x1024, dpr 1.0)
+
+`SAVE_VISIBLE=false` pada draft kosong. Setelah `enterText` + `pumpAndSettle`:
+
+- `STOP 0` — field workflow-id, rect `12.0, 36.0, 1512.0x24.0`
+- `STOP 1` — `Save rule`, rect `12.0, 84.0, 1512.0x40.0`
+- `STOP 2` — mengulang `STOP 0`, traversal menutup siklus
+
+Probe dihapus setelah kontrak dibuat (`_probe_focus_test.dart` -> dihapus).
+
+### Kontrak yang dikunci
+
+- Draft kosong: tepat **1** stop dan `find.byKey(Key('editor-save'))` == `findsNothing`. Jumlah stop dan keberadaan aksi diikat satu sama lain, sehingga menambahkan aksi tanpa mengunci urutan akan menggigit.
+- Draft lengkap: tepat **2** stop, urutan label `[nilai field, 'Save rule']`, `field.rect.top < save.rect.top`, `field.rect.left == save.rect.left`, kedua sumbu > 0.
+- Traversal maju dari field mendarat di `Save rule`; traversal mundur (Shift+Tab) dari `Save rule` kembali ke field dan tidak keluar dari rantai. Keduanya juga membuktikan `onSave` tidak pernah terpicu hanya karena perpindahan fokus.
+- Aksi simpan tetap membawa nilai yang diketik (`saved!.workflowId == 'wf-submit'`), sehingga kontrak tidak mengunci rantai fokus pada state yang salah.
+
+### Koreksi terhadap ekspektasi run ini
+
+Dua asumsi awal salah dan digigit test, bukan diperbaiki oleh probe baru:
+
+1. Dugaan bahwa setelah `enterText` fokus masih berada di luar field, sehingga traversal pertama adalah field — salah. Setelah `enterText` fokus sudah di dalam field, jadi traversal pertama adalah `Save rule`. Dikonfirmasi oleh probe (`FOCUS_AFTER_ENTERTEXT`) sebelum kontrak ditulis ulang.
+2. `_labelOf` versi pertama hanya mencari `Text` descendant dan mengembalikan `<non-text>` untuk field, karena label semantik sebuah `TextField` berada di ancestor, bukan descendant.
+
+### Bukti eksekusi
+
+- `dart format ...` -> `Formatted 1 file (0 changed)`, `FMT_EXIT=0`.
+- `dart analyze ...` -> `No issues found!`. Satu error nyata sempat muncul dan diperbaiki: `unchecked_use_of_nullable_value` pada `editable.controller` karena `EditableText?` tidak dipromosikan oleh closure `visitAncestorElements` — diperbaiki dengan `editable!`.
+- `flutter test test/features/workflow/presentation/rule_editor_focus_order_test.dart` -> `00:01 +5: All tests passed!`, `TEST_EXIT=0`.
+- **Negative control #1 (jumlah stop)**: `hasLength(2)` -> `hasLength(3)` via `cp` backup ke `/c/Users/nepht/AppData/Local/Temp/rule_foc_backup.dart`. Hasil `+4 -1: Some tests failed.` dengan `NEG_EXIT=1`, pesan `Expected: an object with length of <3> / Actual: [...] / Which: has length of <2>`.
+- **Negative control #2 (urutan baca)**: hanya `lessThan(save.rect.top)` -> `greaterThan(save.rect.top)`. Hasil `+4 -1: Some tests failed.` dengan `NEG2_EXIT=1`, pesan `Expected: a value greater than <84.0> / Actual: <36.0>` — bukti bahwa asumsi urutan benar-benar terikat pada geometri, bukan sekadar urutan array.
+- Percobaan negative control pertama tidak dihitung sebagai bukti: mutasi kedua tidak cocok setelah `dart format` mengubah indentasi, sehingga file tidak berubah dan test tetap hijau. Diulang dengan pencarian regex yang meng-anchor jumlah kemunculan.
+- Setelah restore: `flutter test` -> `00:01 +5: All tests passed!`, `FINAL_EXIT=0`; backup dihapus, `ls` -> `No such file or directory`.
+- Gate suite: `flutter test test/features/workflow/` -> `00:10 +27: All tests passed!`, `GATE_EXIT=0`.
+
+### Status
+
+**VERIFIED** untuk focus order `RuleEditorScreen` pada 1536x1024 dpr 1.0 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah satu file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum native Windows focus ring pada aplikasi yang sudah dibangun.
+
+Kumulatif: **46 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 45); 43 layar tersisa. Layar clean namun butuh fixture Drift/project session tetap **DEFERRED**.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

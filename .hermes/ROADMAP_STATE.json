@@ -3240,8 +3240,8 @@
       "commit": "4283ebd",
       "pushed": false
     },
-    "ledger_sha256_lf_canonical": "674e853d5afab31fbc4b224cfe99cbb7d5b4bc8b4e14ea54efa04d2653318e7f",
-    "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally.",
+    "ledger_sha256_lf_canonical": "87ec461b794305cc340a762aacfd2ec6bb7f4de4e0d43ac4c85996742938fc7f",
+    "state_sha256_note": "This file must never record its own sha256. The write that stores the value changes the bytes and invalidates it in the same step, and a blob sha recorded one commit behind is stale the moment it lands. Verify ROADMAP_STATE.json the only honest way: compare the disk file against 'git show <commit>:.hermes/ROADMAP_STATE.json'. The 117.43-13 slice files and the ledger DO have stable recorded shas (LF-canonical) and those are verified normally. | 2026-10-04 run15: ledger_sha256_lf_canonical refreshed to the slice 117.43-24 ledger blob (87ec461b794305cc3...), verified disk sha256sum == git show f9c7306:<path> after commit, per policy 2026-10-02 clause 4. This file still never records its own sha256.",
     "defect_117_43_14": {
       "status": "FIXED-LOCAL",
       "slice": "117.43-14",

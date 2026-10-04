@@ -793,3 +793,110 @@ Manifest 113.39 dan `pubspec.lock` TIDAK disentuh run ini.
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-23 - satu tool yang direkam dengan dua versi (defect ke-18 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Penomoran slice diverifikasi dulu sesuai jebakan `slice_numbering`: `117.43-01`..`-22` sudah
+terpakai di ledger DAN state, hunt ke-18 ini memakai `-23`. Nomor urut hunt (18) != nomor
+slice (23) karena repo sudah punya defect 117.43-14 yang bertabrakan dengan urutan hunt ke-14.
+
+Tidak ada WIP yang perlu diadopsi: kedua file slice KOSONG di `git status --porcelain`
+sebelum mutasi (HEAD awal `ae26db1`, ahead 35, dirty 94, 0 conflict marker, preflight CIM
+Win32_Process 0 proses dart/flutter_tester/msbuild/java/cmake). Snapshot recoverable di
+`cache/scratch/slice-117-43-23-20261004-064722/` (`domain.dart.pre`, `test113.dart.pre`, plus
+`domain.dart.fixed` dan `domain.dart.head` untuk batas RED).
+
+**DEFECT:** `toolchain_versions` adalah grup yang menyatakan **SDK mana** yang menghasilkan
+build, tetapi satu-satunya pembacanya adalah `_hasContent` - yaitu "apakah setiap baris string
+non-kosong?" - lalu verdict mencetak `toolchain_versions: N item` seolah N versi sudah
+dibandingkan terhadap sesuatu. Bandingkan dengan `artifact_hashes` yang diperiksa tepat 64 hex:
+untuk grup ini tidak ada pembaca bentuk sama sekali. Yang tidak diperiksa justru kontradiksi
+yang paling merusak, karena `method` perbandingan itu sendiri bertumpu pada "the same tree and
+machine", sementara `limits`-nya secara terbuka menyatakan cross-SDK reproducibility tidak
+dijamin. Contohnya dokumen yang mencantumkan `Flutter 3.44.6 ...` dan `Flutter 3.44.9 ...`
+pada grup yang sama: dua SDK berbeda dalam satu build, `missingEvidence` mengembalikan `[]`,
+`evaluate` mengembalikan `pass`, dan gate mencetak `toolchain_versions: 7 item`. Ini pasangan
+silang dari 117.43-21, yang menahan satu digest path agar sama di dua grup: jenis yang sama -
+pernyataan yang diulang tanpa dibandingkan - satu lapis ke luar.
+Verified secara struktural: dokumen yang di-ship merekam 7 baris `toolchain_versions` dengan
+satu versi per tool, jadi dokumen jujur tidak tersentuh; manifest
+(`sha256 b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d`) dan `pubspec.lock`
+TIDAK disentuh run ini.
+
+**BATAS ATURAN (semuanya dipin test 117.43-23):**
+
+1. baris tanpa nomor versi bertitik tidak mengklaim apa pun - pinned engine revision
+   (`Engine hash <40 hex> (revision 83675ed276)`) dan baris prosa host (`Host Windows x64
+   (MSYS bash runner)`) dibiarkan, sesuai non-claim 117.43-07;
+2. bilangan bulat telanjang (`2026`) dan token berbentuk tanggal (`2026-07-08`) adalah tahun
+   produk atau tanggal build - keduanya mengakhiri nama tool dan **tidak pernah** dibaca
+   sebagai versi, jadi `Visual Studio Build Tools 2026 18.9.0` tetap satu kelompok dengan
+   `Visual Studio Build Tools 18.9.0`;
+3. tool yang namanya muncul di satu baris saja tidak punya apa pun untuk dibantah;
+4. presisi berbeda dari satu versi yang sama (`18.9` di sebelah `18.9.0`) bukan versi kedua;
+5. hanya nomor bertitik PERTAMA pada satu baris yang dibaca sebagai versi tool-nya, sehingga
+   `Visual Studio Build Tools 2026 18.9.0 version 18.9.12105.275` - versi tool di satu presisi
+   dan build terpasang di presisi lain - tidak ditolak sebagai dua versi;
+6. tidak ada tuntutan.toolchain mana yang dipilih sebuah dokumen, atau berapa banyak.
+
+**RED independen:** exit 1 dengan **TEPAT 1** kegagalan (test baru); 3 kontrol hijau -
+dokumen yang di-ship yang merekam satu versi per tool, baris tanpa nomor versi, dan satu
+tool yang direkam di dua presisi. Kontrol 1 memuat dokumen nyata dari disk
+(`hasLength(greaterThan(3))`, 7 baris), jadi kegagalan di slice ini berarti dokumen jujur
+justru ditolak, bukan kasus buatan.
+
+**BATAS RED KEDUA (wajib untuk defect keluarga ini):** implementasi dikembalikan ke HEAD
+sementara (`git show HEAD:<path>`; sha256 working file `47b674e3efda3df29f0d6dce36086e9db2309704b39b006c35fca82e8caae1ff`
+= blob ter-commit `4b65d46` yang tercatat di slice sebelumnya, 34375 B) sementara test tetap
+ada -> **mengulang TEPAT 1 kegagalan yang sama di baris yang sama (448, "one build cannot have
+been produced by two SDK versions") tanpa compile error**, dengan `Actual: []` yang membuktikan
+`_hasContent` memang tidak pernah menolak apa pun. Restore diverifikasi `cmp` byte-identik
+terhadap snapshot `domain.dart.fixed`.
+
+**JEBAKAN DESIGN (tertangkap saat review, sebelum run):** versi pertama helper membandingkan
+**semua** nomor bertitik pada dua baris secara berpasangan. Itu menolak dokumen yang di-ship:
+`18.9.0` dan `18.9.12105.275` berbeda komponen, jadi kontrol 1 akan merah - dan merah karena
+dokumen jujur, bukan karena defect. Diperbaiki dengan membaca hanya nomor bertitik pertama
+sebagai versi tool dan memperlakukan sisanya sebagai kualifier build. Aturan pairwise
+dipertahankan karena hanya bentuk itu yang bisa diputuskan tanpa menebak.
+
+**GREEN file 113 = `+8 -2`** (dari `+7 -2`, +1 test baru): test baru hijau; 2 kegagalan
+`113.39` proven pre-existing (lihat regresi). **File gate 117 = `+136: All tests passed!`
+exit 0.**
+
+**GATES:** `dart format` 2 file `Formatted 2 files (2 changed)` exit 0, lalu
+`dart format --output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten, tanpa perlu
+menulis ulang - jebakan `format_idempotency_jebakan`); `dart analyze` 2 file
+**No issues found!** exit 0; `git diff --check` exit 0; `flutter build windows --debug`
+exit 0 **26,0 dtk**, `Built build\windows\x64\runner\Debug\void_scriptor.exe`;
+`dart run tool/roadmap_guard.dart` PASS pre dan post slice,
+`canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`
+TIDAK berubah, `recommended_step 117.43`.
+
+**SHA 2-SISI dari artefak TER-COMMIT `git show f0bcd5a:<path>`** (pathspec forward slash;
+sesuai klausul 1+2 policy 2026-10-02): domain
+`d5e244b97b49e8cbf376969a930bb762765e2ec82ec2b1c80d3628ff4e54145e` (39291 B), test
+`2e75366e20ba126ec53296b71ef9efdf1f48c160dd62810c130488f603a29367` (25480 B) -
+`disk == git show <commit>:<path>` untuk keduanya, kedua sisi LF-murni (0 CRLF).
+
+**COMMIT:** `f0bcd5a` (2 path eksplisit, 209 insertions). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +144 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **136/136 LULUS**
+seluruhnya (termasuk seluruh keluarga 117.43-14..-23), 2 kegagalan **keduanya 113.39
+pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
+`dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
+lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+**Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
+terarah ini, bukan seluruh repo.
+
+**KEADAAN REPOSITORI:** dirty 94 -> 96 selama slice, **94** sesudah commit (selisih tepat
+2 file slice; 2 file a11y worker lain ikut ter-commit lewat `a85375a` sehingga hitungan ahead
+naik 2, bukan 1). HEAD masuk `ae26db1 -> f0bcd5a`, ahead 35 -> 37.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
+verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

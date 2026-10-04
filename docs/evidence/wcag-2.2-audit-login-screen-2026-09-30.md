@@ -3942,6 +3942,43 @@ ulang dari `git ls-files` + `find` dengan dua definisi (import `*_screen.dart` =
 **Gate fitur**: `dart format` pada file kontrak -> 0 file berubah; `dart analyze test/features/assets/asset_browser_focus_order_test.dart` -> `No issues found!`; `flutter test test/features/assets/` -> exit 0 dengan `01:08 +62: All tests passed!` (reporter default). Reporter JSON terpisah pada direktori yang sama: 22 suite terdeteksi **termasuk** `asset_browser_focus_order_test.dart`, 84 `testDone` sukses, 0 kegagalan, `done.success=true`.
 
 **Counter (dihitung ulang dari live, bukan dari ingatan)**: `lib/features/*/presentation/*_screen.dart` = 89 kandidat; `git ls-files 'test/**/*focus_order*'` = 58 file kontrak, ditambah kontrak fase ini = 59; cakupan union (impor `*_screen.dart` + penyebutan nama kelas `*Screen`) = 49 -> **50 layar tercakup, sisa 39 dari 89**. Definisi kedua tetap sama dengan Fase 67: file yang menguji widget bagian (mis. `dialog`/`panel`) dihitung terhadap layar yang diimpor.
+
+## 69. Fase 69 — Focus Order di Publishing Dashboard Screen (2.4.3)
+
+**Layar**: `lib/features/release/presentation/publishing_dashboard_screen.dart` (141 baris, `ConsumerWidget`). Belum punya `*_focus_order_test.dart` sebelum fase ini.
+
+**Kandidat & kelayakan**: dipilih dari 39 layar sisa yang belum tercakup kontrak. Mandiri — tanpa database, tanpa network; dependensi tunggal `releaseProvider` adalah `NotifierProvider` lokal dengan state default (`lib/features/release/application/release_controller.dart:64`, class `ReleaseController`, 66 baris, semua aksi hanya membalik `ReleaseState`). Empat layar uncovered lain yang bersih (`merge_preview_screen`, `optional_tour_screen`, `level_editor_screen`, `multiverse_graph_screen`) hanya punya SATU kontrol interaktif eksplisit sehingga di bawah syarat "minimal 2 elemen interaktif"; `merge_preview_screen` diprobe lebih dulu dan hanya menghasilkan 1 stop karena `Confirm Merge` `FilledButton` disabled (konstruktor `onConfirmMerge` nullable, tidak pernah diisi di luar test) — dicatat sebagai observasi, tanpa perubahan kode produksi.
+
+**Harness probe** (viewport 1536x1024, dpr 1.0): `ProviderScope` + `MaterialApp(navigatorKey: ..., home: seed tanpa elemen fokus)`, lalu layar di-push lewat `navigatorKey.currentState!.push(MaterialPageRoute(...))` sehingga affordance back AppBar (yang hanya muncul pada rute `canPop`) ikut teraudit, sesuai cara aplikasi membuka layar.
+
+**Output probe** (`test/features/release/presentation/_probe_focus_test.dart`, dihapus setelah kontrak dibuat):
+
+```
+PROBE_BEGIN viewport=1536x1024 dpr=1.0
+STOP 0: "Back" (8, 8, 40x40) type=Focus
+STOP 1: "New Release" (1299, 8, 221x40) type=Focus
+STOP 2: "Back" (8, 8, 40x40) type=Focus
+STOP 2: <repeated rect -> end>
+PROBE_END takeException=null
+```
+
+**Kontrak**: `test/features/release/presentation/publishing_dashboard_focus_order_test.dart`, 2 testWidgets.
+
+1. Rute pushed: tepat **2 stop**; urutan label `['Back', 'New Release']`; setiap rect punya `width > 0` dan `height > 0`; `stops[0].rect.left < stops[1].rect.left` (kiri-ke-kanan); selisih `top` antar stop <= 4 px (satu baris AppBar); back menempel kiri-atas (`left <= 16`, `top <= 16`); aksi di separuh kanan viewport (`left > 768`) dengan `right <= 1536`; `tester.takeException()` null.
+2. Tanpa rute induk (`home:`): tepat **1 stop** label `New Release` (affordance back hanya ada pada rute pushed), area fokus non-zero, posisi kanan viewport.
+
+**Gate**:
+
+- `dart format test/features/release/presentation/publishing_dashboard_focus_order_test.dart` -> 1 file berubah (disesuaikan formatter), lalu ulang -> tanpa perubahan.
+- `dart analyze test/features/release/presentation/publishing_dashboard_focus_order_test.dart` -> `No issues found!` (exit 0).
+- `flutter test test/features/release/presentation/publishing_dashboard_focus_order_test.dart` -> `00:02 +2: All tests passed!`.
+
+**Negative control (wajib)**: backup `cp` ke `%LOCALAPPDATA%\Temp\publishing_focus_order_negctl.bak`, lalu urutan label ekspektasi dibalik menjadi `['New Release', 'Back']` -> `flutter test` **exit 1**, keluaran `00:02 +1 -1: Some tests failed.` dengan `Expected: ['New Release', 'Back']` / `Actual: ['Back', 'New Release']`. File dikembalikan dari backup, backup dihapus (`no backup left`), run ulang -> `00:02 +2: All tests passed!`.
+
+**Counter (dihitung ulang dari live, bukan dari ingatan)**: `git ls-files 'test/**/*focus_order*'` = 58 file ter-commit + kontrak fase ini = **59**; cakupan union (impor `*_screen.dart` + penyebutan nama kelas `*Screen`) 50 -> **51 layar tercakup, sisa 38 dari 89**.
+
+**Catatan format**: file report ini terhitung LF-only (0 CRLF pada pembacaan `newline=''` fase ini), jadi sisipan section ditulis dengan `\n` agar konsisten dengan isi file; tugas menyebut CRLF — tidak berlaku pada versi live, dikoreksi di sini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

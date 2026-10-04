@@ -3992,5 +3992,42 @@
       "directed_regression": "113 provenance file: exit 1 with +10 -2, both failures pre-existing 113.39 (signatures unchanged); 117 gate file: exit 0, 146/146. Only three files import the domain (domain + the two test files) and all were run. No full-suite claim is made.",
       "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over both slice files and the new ledger row: 0 hits"
     }
+  },
+  "defect_117_43_30": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 25,
+    "slice": "117.43-30",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open POSITION-CLAIM reader on provenance_record: the third reader for that group used a pattern anchored ^...$ with firstMatch, so it answered ONLY for a line whose entire content is the claim. A restatement written behind a heading, behind a note, or TWO restatements sharing one line matched nothing, was read as prose, and was never compared with the record it summarizes, while the group still printed 'provenance_record: 6 item' as if every line had been weighed. The other two readers of the same group (provenance_logs, signed_candidate) take their claim from the FRONT of the line and ignore the rest of it, so here claim POSITION became part of the grammar for one reader only. Same fail-open family as hunt #22/#23 (readers with different tokenizers) and #27/#28/#29 (reader keeps the first claim only): one group over, and inside a group whose other two readers were already straight. Moving a wrong restatement onto a line wearing prose was enough to pass without comparison.",
+    "proven_before_fix": "RED probe test/release/zz_probe_11743_30_test.dart run against the shipped manifest BEFORE the patch: baseline 'pass'; control single line with exit_code wrong 'unmet' (the 117.43-15 measurement); wrong restatement with a note after it 'pass'; two restatements on one line 'pass'; wrong restatement behind a heading 'pass'; honest restatement wearing a note 'pass'. The first three passes are the defect: each states an exit code, a duration, and a window the record contradicts, yet was counted as an item and never measured. After the patch the same probe returned all three defects 'unmet' and both controls still 'pass'.",
+    "red": "exit 1 with the defect cases showing 'pass' and the exact-line control 'unmet' (117.43-15 still refusing the bare wrong line); post-fix probe exit 0.",
+    "fix": "_kRebuildSummaryPattern unanchored (^ and $ removed) so the claim grammar is searched anywhere in the line, _parseRebuildSummary replaced by _rebuildSummariesIn returning EVERY claim the line states in order, and the _summaryAgreesWithRebuilds loop compares each claim against the record it names. The claim grammar itself is unchanged - label, exit code, duration, and both parseable timestamps still have to be complete - so only the POSITION rule was removed, not the definition of a claim: a line stating no complete claim stays prose, and a label not starting with rebuild_ is still skipped exactly as before.",
+    "green": "post-format: 117 gate file 152/152 All tests passed (146 before + the new 6-test group, 0 regressions in the 117.43-14..-29 families); 113 provenance file 12 pass / 2 fail with both failures the pre-existing 113.39 pair, byte-identical signature (lock 32e31fd3 vs c9a365e6, artifact 73101e78 vs c7a33055). No full-suite claim.",
+    "bounds_pinned_by_test": "an agreeing restatement wearing a note or behind a heading still passes (position changes what is read, not what it says); a label that names no rebuild keeps the full grammar and stays prose - unanchoring did not widen what counts as a claim; prose naming a rebuild while stating no exit code, duration, or window still claims nothing (117.43-07); a restatement of an unrecorded rebuild behind a note is still refused (117.43-15 rule stays intact).",
+    "evidence": {
+      "commit": "b44d393",
+      "ledger_commit": "a9e4b00",
+      "domain_sha256": "733c9588d32d1c419413d2929f29e8989c1d5998815db290f87a889085dfb622",
+      "domain_bytes": 60295,
+      "test_sha256": "96c8d63be5ecc5f357ea1f93dc96cd5cdf852aed5885d67a7f06a6298ed15b44",
+      "test_bytes": 196334,
+      "sha_source": "blob of commit b44d393 via git show, equals sha256sum of disk (both verified after commit, before this write)",
+      "manifest_113_untouched": true,
+      "manifest_113_last_commit": "d150973",
+      "probe": "test/release/zz_probe_11743_30_test.dart deleted after its findings moved into the official group; deletion recorded in the ledger row",
+      "comment_correction": "the provenance_record reader doc claimed 'Only its weaker shape claim is enforced' for source_revision, but no reader in lib/ checks 40 hex for that line and 117.43-15 pins 'source_revision not-a-revision-at-all' as a non-claim; the comment now states the enforcement that actually exists",
+      "sibling": "321937f test(a11y): audit focus order Scene Workspace Screen landed mid-run; git log 3bce40b..HEAD on the 2 slice paths is empty",
+      "push": "none this run (ahead grows; push is deferred per run policy)"
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 59.4s, build/windows/x64/runner/Debug/void_scriptor.exe produced",
+      "roadmap_guard": "PASS pre-commit, canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6 unchanged",
+      "directed_regression": "113 provenance file: exit 1 with 12 pass / 2 fail, both pre-existing 113.39 signatures unchanged; 117 gate file: exit 0, 152/152. No full-suite claim.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over the added lines of both slice files and the new ledger row: 0 hits"
+    }
   }
 }

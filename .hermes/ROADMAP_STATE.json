@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-05T02:40:00+07:00",
-  "updated_by": "core_worker_cron_slice_117_43_28",
+  "updated_at": "2026-10-05T04:20:00+07:00",
+  "updated_by": "core_worker_cron_slice_117_43_38",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -4269,5 +4269,28 @@
     "ahead_measured": "git rev-list --count origin/master..HEAD = 35 at ledger commit a5d07e5 and 36 after this state commit (HEAD started 2f439b9 ahead 32; sibling a11y added 531c8a9 during the run). The top-level `ahead`/`commit` pair (57 / 83c7d64) was already stale before this run and is left untouched - do not read it as this run's position.",
     "status_unchanged": "PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 still the operator's blocker; no push this run.",
     "next_hunt": "ke-33. parseDigest at sprint_117_ga_artifact_reproducibility.dart:450 still has 0 callers (dead code, not fail-open - wire or drop under its own scope); summarised.firstMatch(member.key) at :1671 still skips rebuild_run members outside ^rebuild_.+_duration_seconds$ with no item counter for that group - probe before claiming. New method note from this hunt: check 'mandatory vs optional part of the reader grammar' alongside 'who prints the count'."
+  },
+  "defect_117_43_38": {
+    "date": "2026-10-05",
+    "hunt_ordinal": 33,
+    "slice": "117.43-38",
+    "status": "FIXED-LOCAL",
+    "defect_number": 33,
+    "family": "fail-open / member key read only when surrounding whitespace is zero (sibling of -23 different tokenizer, -25 position grammar, -27 either/or readers, -37 mandatory window)",
+    "summary": "_rebuildRunAgrees in sprint_117_ga_artifact_reproducibility.dart read `cycles` by exact key (run['cycles']) and matched member keys with summarised.firstMatch(member.key) WITHOUT trim(), while every other reader in the same file trims its token first (readChecksumIndex line.trim(), window readers startedAt!.trim()). A member differing from defined vocabulary only by surrounding whitespace was skipped silently: 'rebuild_a_duration_seconds ': 999 beside its agreeing exact-key twin (145) left the group publishing pass, and ' cycles': 3 beside cycles: 2 passed unnoticed while the cycle printer kept printing the count it read from the exact key. Pre-fix probe (cache/probe_117_43_38_test.dart, deleted after migration) printed pass for trailing/leading/tab variants and unmet for every control: exact key 999/999.0/'999', label-case rebuild_A (index<0), inner-space 'rebuild_ a_duration_seconds'.",
+    "proven_before_fix": "Five official tests written first (block built via write_file, inserted byte-exactly at the EOF anchor with prefix-identical assert; numstat 122/0 with 0 '-' lines) and run against unmodified lib: flutter test .../sprint_117_ga_artifact_reproducibility_test.dart --plain-name \"117.43-38\" -> exit 1, +3 -2: both refusal tests failed with Actual: 'pass', the fixture/agreeing-variant/vocabulary-boundary tests passed. lib untouched at that point (swap not needed: fix not yet applied).",
+    "red": "exit 1 with exactly 2 named failures (duration variant + cycles variant), each asserting isNot('pass') against a document whose exact-key twin still agrees with the record.",
+    "fix": "Member keys are matched after member.key.trim(), and the cycles read moved into the per-member loop so a whitespace-variant count is measured too; a null value stays a non-claim (117.43-07) and vocabulary the trim cannot bring into the shipped grammar stays a non-claim (117.43-16 cold_rebuilds, pinned by a new test). Doc-comment gained a 117.43-38 paragraph. No acceptance invented: every number now read was already measured on the record; the only boundary moved is that a whitespace-variant key stops being prose.",
+    "gates": "baseline gate file 173/173 exit 0 before the change; dart format (write) then --output=none --set-exit-if-changed on 2 files -> 0 changed exit 0 (write touched nothing: test numstat stayed 122/0); dart analyze 2 files No issues found! exit 0; git diff --check exit 0; non-Latin scan of 23 added lib lines + 122 added test lines -> 0 CJK/kana/hangul/fullwidth hits, 0 trailing whitespace; GREEN --plain-name \"117.43-38\" -> +5 All tests passed exit 0; directed regression of the ONLY two test files importing these two sources -> +191 All tests passed! exit 0 (178 + 13), re-run after sibling a11y commit 9e75884 landed mid-run -> still +191 exit 0; flutter build windows --debug exit 0 in 37.0s with Debug/data/flutter_assets mtime 2026-10-05 04:14 (static exe 02:22 not counted); roadmap_guard PASS before the run.",
+    "sha256_blobs_948dfb7": {
+      "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart": "287b349bda9c11d2595678c3697660233a07483a0590803c3f05906713adbd8e",
+      "test/release/sprint_117_ga_artifact_reproducibility_test.dart": "83d2d8a88a58cbd01c95382abf21e22540877136a020299896116d84f38a9d92"
+    },
+    "sha_note": "lib disk == blob; test file is CRLF so the raw disk sha (eb9d69a8b3388d82d0abf789ede729a01155c3536e69ffeeac0c13c8a14bc2b3, 238294 B) differs from the committed blob (232451 B) - normalized CRLF->LF disk == blob. Both paths clean in git status after the fix commit.",
+    "numstat_commit": "fix commit 948dfb7: lib 23/5, test 122/0 (145 insertions, 5 deletions total); ledger commit 72bd7cd: 74/0.",
+    "ledger_commit": "72bd7cd",
+    "ahead_measured": "39 at fix commit 948dfb7 (git rev-list --count origin/master..HEAD; HEAD at preflight 8117414 ahead 37, sibling a11y 9e75884 +1, this fix +1); ledger and state commits each add one more - recompute at wrap-up rather than chase a final number.",
+    "status_unchanged": "PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 still waiting on the operator's manifest-drift decision. No push this run.",
+    "next_hunt": "ke-34, probe first (do not claim without a result row): (a) rebuild__duration_seconds: 999 still passes - the regex requires >=1 label character so the degenerate key is skipped; decide claimed-but-unreadable (117.43-13) vs undefined vocabulary; (b) case variant Rebuild_a_duration_seconds: 999 also passes (trim does not fold case); (c) document-level key lookups without trim (provenanceManifest['rebuild_run'], ['comparison']) were NOT probed this run - a whitespace key at that level is presumed to read as an absent group (non-claim), verify before any claim."
   }
 }

@@ -4643,6 +4643,31 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 
 **Gate & negative control:** tidak dijalankan - tidak ada test kontrak yang dibuat karena tidak ada layar sasaran (bukan pass, bukan fail).
 
+## 87. Fase 87 - Focus Order: re-verifikasi independen kolam kandidat + probe langsung (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar in-glob yang memenuhi kriteria pemilihan (belum punya kontrak + minimal 2 elemen interaktif). Tidak ada test kontrak yang dibuat, tidak ada kode produksi yang diubah, probe sementara sudah dihapus.
+
+**Pemindaian ulang independen (metode berbeda dari fase 84-86):**
+
+- `lib/features/*/presentation/*_screen.dart` = **89 file** (sama dengan fase 86); `lib/**/*_screen.dart` = **95 file**; `test/**/*_focus_order_test.dart` = **75 file**.
+- Dua perbaikan metode yang tidak dipakai run sebelumnya: (a) `import` dicocokkan untuk kutip tunggal DAN ganda (`import "..."`), (b) kontrak hanya dihitung jika kelas layar benar-benar direferensikan di luar baris komentar (pump nyata), bukan karena nama file disebut.
+- Hasil: **61/89** layar di-pump oleh kontrak fokus genuine; **28 layar** tanpa kontrak, dan ke-28 file itu bernilai **0 token handler** (`onTap`/`onPressed`/`onChanged`/`onSubmitted`/`onSelected`/`InkWell`/`GestureDetector`/`Switch`/`Checkbox`/`TextField`/`*Button` dll).
+- Empat pemeriksaan silang, semuanya nol kandidat: (1) resolusi kelas widget child eksternal per layar, termasuk bentuk generik `Foo<Bar>(`, -> **0** layar sisa merender widget child yang punya handler; (2) regex luas `on[A-Z]\w*` pada 28 file sisa -> hanya `onComplete` di `splash_screen.dart` (callback animasi, bukan stop fokus); (3) layar di luar glob = 6 file: `foundation_route_screen` dan `plugin_manager_screen` 0 handler, `collaboration_comments_screen`, `task_center_screen`, `project_lock_screen`, `security_settings_screen` sudah berkontrak; (4) `skip:` pada 75 kontrak fokus = **0**, dan ke-75 nya benar-benar menekan `LogicalKeyboardKey.tab`/`simulateKeyDownEvent` - tidak ada kontrak kosong.
+
+**Koreksi angka (self-correction terhadap laporan fase 86):** fase 86 mencatat **62/89** in-glob berkontrak; hitung ulang dengan metode pump-only menghasilkan **61/89**. Delta-nya `lib/features/creator/presentation/ai_studio_screen.dart` - satu-satunya layar yang "disebut" oleh test fokus tetapi tidak pernah di-pump, dan penyebutannya itu substring false-positive dari nama `advanced_ai_studio_screen` (`test/features/ai/presentation/advanced_ai_studio_focus_order_test.dart`), bukan kontrak untuk layar itu. Layarnya sendiri 0 handler dan tetap tidak eligible. Angka yang dipakai mulai sekarang: **61/89**.
+
+**Probe langsung (bukti live, bukan klaim statis):** probe sekali pakai `test/features/platform/presentation/_probe_focus_test.dart` memompa 4 layar sisa pada viewport 1536x1024, dpr 1.0, `LogicalKeyboardKey.tab` diulang sampai rect berulang (maks 25), lalu file dihapus:
+
+- `AboutScreen` -> **0 stop nyata**; satu entri tercatat `Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0)` = `FocusScopeNode` root (rect viewport penuh), label teks pertama `VOID SCRIPTOR`; `tester.takeException()` null.
+- `KeyboardNavigationScreen` -> pola sama (scope root, label `Shortcuts`), exception null.
+- `DonationScreen` -> pola sama (scope root, label `DONATIONS`), exception null.
+- `WorldHealthDashboardScreen` -> pola sama (scope root, label `Population`), exception null.
+- Kesimpulan probe: layar display-only benar-benar punya **0 kontrol yang bisa difokus**; entri "1 stop" yang tercatat hanyalah scope root, jadi ambang minimal 2 elemen interaktif tetap tidak terpenuhi.
+
+**Kenapa tidak ada kontrak yang dibuat:** kriteria pemilihan run ini (in-glob + belum punya `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif) tidak dipenuhi satu pun layar. Kontrak 0-stop justru menghitung layar display-only sebagai "layar teraudit" tanpa mengukur urutan fokus, sehingga tidak dibuat. Pool pengganti yang terukur tetap **24 file** widget non-`*_screen.dart` di `lib/features/*/presentation/` dengan >=2 handler (kandidat terkecil: `workspace_layout/presentation/detachable_window_button.dart` 31 baris/2 handler, `scene_assets/presentation/scene_asset_panel.dart` 51/2, `workspace_layout/presentation/split_editor.dart` 63/2); pool itu di luar glob dan menunggu keputusan Choirudin atas opsi 1-3 di bagian 86, yang belum dijawab.
+
+**Gate & negative control:** tidak dijalankan - tidak ada test kontrak yang dibuat (bukan pass, bukan fail). Tidak ada perubahan selain section ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

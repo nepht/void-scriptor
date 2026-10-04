@@ -3957,5 +3957,40 @@
       "directed_regression": "exit 1, +155 -2 over sprint_113_build_reproducibility_provenance_test.dart + sprint_117_ga_artifact_reproducibility_test.dart. Both failures are the pre-existing 113.39 pair with byte-identical signatures (lock 32e31fd3 vs c9a365e6; artifact 73101e78 vs c7a33055). No full-suite claim is made."
     },
     "pure_insertion_note": "git diff --numstat for the test file = 259 added / 0 deleted and git diff -U0 contains no '-' lines. The head -4511 hash first appeared to differ from HEAD; that was my own off-by-one, not corruption: dart format consumed the final newline so the old line 4511 '}' became line 4512. HEAD lines 1..4510 equal disk lines 1..4510 (2071b86c...) byte for byte."
+  },
+  "defect_117_43_29": {
+    "date": "2026-10-04",
+    "hunt_ordinal": 24,
+    "slice": "117.43-29",
+    "status": "FIXED-LOCAL",
+    "summary": "fail-open SHAPE-CLAIM reader on toolchain_versions: 117.43-23 installed the pairwise rule over _ToolchainLine, but the reader behind it was _readToolchainLine, which returns EXACTLY ONE claim per line (name cut at the first digit-bearing token, version taken as the first dotted number via firstWhere). A second (tool, version) on the same line never reached the green rule: 'Flutter 3.44.6 and Flutter 3.44.9' produced _ToolchainLine(flutter, 3.44.6) alone, the pairwise loop compared one claim against itself, missingEvidence reported no missing group, evaluate returned pass, and the gate still printed 'toolchain_versions: 2 item' as if two SDK versions had been weighed. Same fail-open shape as hunt #23 (readers with different tokenizers) and #27/#28 (reader keeps the first claim only), one group to the right: the domain reader reads one claim, the gate reader compares all of them. toolchain_versions was the passable because the document only had to put its restatement on the shared line. This group decides WHICH SDK built the exe while the comparison's own premise is same tree and machine with cross-SDK reproducibility disclaimed in its limits, so an unweighed version is not cosmetic.",
+    "proven_before_fix": "RED run of the new official test (no separate probe): exit 1, EXACTLY one failure at the defect assertion (line 565, Expected contains 'toolchain_versions' / Actual: []). The three controls BEFORE it passed in the same run (shipped document's own toolchain lines, two DIFFERENT tools on one line, the same tool and version restated), so the fix cannot be credited to over-refusing. Contrast values are real SDK version strings, not digest-shaped constants, because 117.43-26 shipped a RED that failed for the wrong reason (63/65-char constants refused as MALFORMED).",
+    "red": "exit 1, exactly 1 failed, 4 passed: '117.43-29 one line naming two tools must not discard the second tool's version' failed on the defect assertion with Actual: [] while controls passed first.",
+    "fix": "_readToolchainLine replaced by _readToolchainLines returning EVERY claim the line states: each run of non-digit tokens up to a digit-bearing token is a candidate tool, the first dotted number after that run is its version, and a leading connector (and/or/with/then/also/alongside/versus/vs/followed/by) is stripped so a restatement lines up with its first statement within the line AND across lines. Monotone by construction: reading more claims only ADDS pairwise comparisons and never removes one (two names equal before stay equal after the same strip), so the fix cannot hide a contradiction; the worst case is refusing a document that writes the SAME prose word twice with two different dotted numbers after it, and no shipped line does (pinned by the shipped control).",
+    "green": "post-format: 113 provenance file +10 -2 (both failures the pre-existing 113.39 pair with byte-identical signatures: lock 32e31fd3 vs c9a365e6, artifact 73101e78 vs c7a33055; my test green, 117.43-23 family green); 117 gate file 146/146 All tests passed (0 regressions in 117.43-14..-28). No full-suite claim.",
+    "bounds_pinned_by_test": "a line may name SEVERAL DIFFERENT tools - several claims, not a contradiction, each still compared against its own restatements wherever they appear; the same tool and version restated on one line stays idempotent (117.43-21/26/27/28 shape one group over); a bare integer (2026) and a date-shaped token (2026-07-08) still end a name without being a version, and a line with no dotted number still states no version (117.43-07, 117.43-23); 18.9 beside 18.9.0 is still one version written twice; the SHIPPED document's own toolchain lines (including the multi-tool line with 'version 18.9.12105.275' prose) stay pass.",
+    "evidence": {
+      "commit": "1bfb845",
+      "ledger_commit": "ee5fc32",
+      "domain_sha256": "772ee9b5b4b121a4a55c8e2694d0cab61d4eb9d34d58a45302482d06623c5760",
+      "domain_bytes": 57710,
+      "test_sha256": "8257051e5f0b07e10de28ac9277859c5321a271c7b4aaec706ab0d93ae718521",
+      "test_bytes": 38267,
+      "sha_source": "blob of commit 1bfb845 via git show, equals sha256sum of disk (both verified before this write)",
+      "manifest_113_untouched": "b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d",
+      "manifest_113_last_commit": "d150973",
+      "probe": "none - RED was run directly on the official test file, so there is no probe artifact to delete",
+      "sibling": "90aa8bc test(a11y): audit focus order Workspace Export Options Dialog landed mid-run; diff f976256..90aa8bc on the 4 slice paths is empty",
+      "push": "none this run (ahead grows; push is deferred per run policy)"
+    },
+    "gates": {
+      "format_write": "1 changed exit 0",
+      "format_idempotent": "--output=none --set-exit-if-changed 0 changed exit 0",
+      "analyze": "2 files, No issues found!, exit 0",
+      "diff_check": "exit 0",
+      "windows_build_debug": "exit 0, 32.2s",
+      "directed_regression": "113 provenance file: exit 1 with +10 -2, both failures pre-existing 113.39 (signatures unchanged); 117 gate file: exit 0, 146/146. Only three files import the domain (domain + the two test files) and all were run. No full-suite claim is made.",
+      "nonlatin_scan": "Python re CJK/kana/hangul/fullwidth over both slice files and the new ledger row: 0 hits"
+    }
   }
 }

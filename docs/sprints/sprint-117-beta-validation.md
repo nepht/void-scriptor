@@ -900,3 +900,109 @@ naik 2, bukan 1). HEAD masuk `ae26db1 -> f0bcd5a`, ahead 35 -> 37.
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
 verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-24 - method yang menyatakan scope cakupannya melebihi digest yang dicatatnya (defect ke-19 unmeasured-claim hunt)
+
+**TIPE:** FEATURE WORK - perbaikan defect di dalam `next_step` kanonik aktif (117.43).
+Penomoran slice diverifikasi dulu sesuai jebakan `slice_numbering`: `117.43-01`..`-23` sudah
+terpakai di ledger DAN state, hunt ke-19 ini memakai `-24`. Nomor urut hunt (19) != nomor
+slice (24) karena repo sudah punya defect 117.43-14 yang bertabrakan dengan urutan hunt ke-14.
+
+Tidak ada WIP yang perlu diadopsi: kedua file slice KOSONG di `git status --porcelain`
+sebelum mutasi (HEAD awal `53308bf`, ahead 39, dirty 95, preflight CIM Win32_Process 0 proses
+dart/flutter_tester/msbuild/java/cmake). Snapshot recoverable di
+`cache/scratch/slice-117-43-24-20261004/` (`head.txt` berisi SHA-256 kelima file sebelum
+mutasi, `domain.dart.fixed` untuk batas RED).
+
+**DEFECT:** kalimat `method` pada `artifact_comparison` adalah SATU kalimat yang memuat DUA
+klaim, dan hanya yang pertama pernah dibaca. 117.43-22 memulai pembacaan field ini untuk
+**ALGORITMA** (`_namesOtherDigestAlgorithm`), tetapi sisa kalimatnya - yaitu **SCOPE**
+cakupan perbandingan - tidak pernah dibaca oleh apa pun. Dokumen yang di-ship menyatakan
+keduanya: `SHA-256 over the 6 exe/dll artifacts (void_scriptor.exe + dartjni.dll,
+file_selector_windows_plugin.dll, flutter_secure_storage_windows_plugin.dll,
+flutter_windows.dll, sqlite3.dll)` lalu gate mencetak
+`artifact_comparison: NOT_BIT_IDENTICAL (6 artifact)` seolah cakupan itu sudah diperiksa.
+Tidak ada pembaca yang membandingkan SCOPE dengan inventaris yang benar-benar di-hash:
+hitungan yang tidak cocok, atau nama artefak yang tidak pernah di-hash rebuild mana pun dalam
+perbandingan yang sama, mendeskripsikan perbandingan yang tidak pernah dijalankan sebagaimana
+mestinya - namun `missingEvidence` mengembalikan `[]`, `evaluate` mengembalikan `pass`, dan
+gate mencetak angka `(6 artifact)` seolah cakupan sudah diperiksa. Verified secara struktural:
+enumerasi pada dokumen yang di-ship cocok PERSIS dengan 6 kunci inventaris
+(`set(enumerated) == set(inventory)` True, kedua sisi 6), jadi dokumen jujur tidak tersentuh.
+
+**BATAS ATURAN (semuanya dipin test 117.43-24):**
+
+1. kalimat tanpa hitungan dan tanpa enumerasi tidak mengklaim scope apa pun - dibiarkan,
+   sesuai non-claim 117.43-07 (`SHA-256 over exe+dll set`, `cold rebuilds, cache dropped`);
+2. enumerasi yang MENCONTOHKAN tidak mengklaim kelengkapan, sehingga artefak yang ada di
+   inventaris tetapi tidak disebut kalimat TIDAK menjadi defect - menuntut daftar itu
+   lengkap akan mengarang acceptance criterion yang tak pernah dinyatakan evidence, yaitu
+   overclaim yang persis sama yang gate ini ada untuk menolak;
+3. yang ditolak HANYA klaim afirmatif: total yang tidak cocok dengan inventaris tercatat,
+   dan artefak bernama yang tidak pernah di-hash;
+4. hanya nama yang berbentuk keluaran build yang dibaca sebagai artefak (`.exe`, `.dll`,
+   `.so`, `.dylib`, `.a`, `.lib`), sehingga kualifier seperti `the same tree and machine`
+   atau `two independent cycles` tidak pernah salah dibaca sebagai nama artefak.
+
+**RED independen:** exit 1 dengan **TEPAT 1** kegagalan (test baru), di baris 717 pada
+kasus hitungan (`SHA-256 over the 4 exe/dll artifacts`). Kontrol hijau, termasuk kontrol 1
+yang memuat kalimat `method` NYATA dari disk (`contains('the 6 exe/dll artifacts')`, 6
+artefak tercatat) - jadi kegagalan berarti dokumen jujur ditolak, bukan kasus buatan.
+
+**BATAS RED KEDUA (wajib untuk defect keluarga ini):** implementasi dikembalikan ke HEAD
+sementara (`git show HEAD:<path>`; sha256 working file
+`d5e244b97b49e8cbf376969a930bb762765e2ec82ec2b1c80d3628ff4e54145e` = blob ter-commit
+`f0bcd5a` yang tercatat di slice sebelumnya, 39291 B) sementara test tetap ada ->
+**mengulang TEPAT 1 kegagalan yang sama di baris yang sama (717) tanpa compile error**,
+dengan `Actual: <true>` yang membuktikan `isWellFormed` memang tidak pernah menolak scope
+yang tidak cocok. Restore diverifikasi `cmp` byte-identik terhadap `domain.dart.fixed`
+(sha256 `264150e74ed6fa5f03a7d870a7aa6f5cb110cf18ed68183777f5323e45cc7cd0`).
+
+**KEBOCORAN SEMENTARA (tertangkap dan ditutup di dalam run ini):** versi pertama regex
+enumerasi lupa satu `)` penutup sehingga `RegExp` melempar `FormatException: Unterminated
+group` pada setiap pemanggilan - GREEN pertama gagal BUKAN karena defect belum diperbaiki,
+tetapi karena helper-nya sendiri belum valid. Diperbaiki, lalu GREEN ke-2 lulus.
+
+**GATES:** `dart format` 2 file `Formatted 2 files (1 changed)` exit 0, lalu
+`dart format --output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten - jebakan
+`format_idempotency_jebakan`: mode itu tidak pernah menulis, dua kali exit 1 bukan bukti
+formatter rusak); `dart analyze` 2 file **No issues found!** exit 0; `git diff --check`
+exit 0; `flutter build windows --debug` exit 0 **26,1 dtk**,
+`Built build\\windows\\x64\\runner\\Debug\\void_scriptor.exe`;
+`dart run tool/roadmap_guard.dart` PASS pre dan post slice,
+`canonical_sha256 b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`
+TIDAK berubah, `recommended_step 117.43`.
+
+**SHA 2-SISI dari artefak TER-COMMIT `git show 83c7d64:<path>`** (pathspec forward slash;
+sesuai klausul 1+2 policy 2026-10-02): domain
+`264150e74ed6fa5f03a7d870a7aa6f5cb110cf18ed68183777f5323e45cc7cd0` (43634 B), test
+`73f918d7e5a9aeb10e833ae0c4d93c536a8c3f89a6d336c5066d3653875989e0` (32165 B) -
+`disk == git show <commit>:<path>` untuk keduanya, kedua sisi LF-murni (0 CRLF).
+Manifest `docs/planning/v1.2/sprint_113_build_reproducibility_provenance.json` TIDAK
+disentuh run ini: sha disk tetap
+`b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d` (6750 B) dan commit
+terakhir yang menyentuhnya tetap `d150973`.
+
+**COMMIT:** `83c7d64` (2 path eksplisit, 247 insertions). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +145 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **136/136 LULUS**
+seluruhnya (termasuk seluruh keluarga 117.43-14..-24), 2 kegagalan **keduanya 113.39
+pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
+`dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
+lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+**Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
+terarah ini, bukan seluruh repo.
+
+**KEADAAN REPOSITORI:** dirty 95 -> 97 selama slice, **95** sesudah commit (selisih tepat
+2 file slice). HEAD masuk `53308bf -> 83c7d64`, ahead 39 -> 41; satu commit sibling
+`5ff642b test(a11y): audit focus order Story Workspace Screen` masuk di tengah run dan
+**tidak menyentuh** kedua file slice (dibuktikan `git log 53308bf..HEAD -- <2 path>`
+kosong), jadi tidak ada tabrakan writer. Manifest, `pubspec.lock` dan
+`docs/release/v1.2.0-rc.1-checksums.txt` tidak disentuh.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
+verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

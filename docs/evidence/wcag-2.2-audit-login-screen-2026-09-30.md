@@ -4155,6 +4155,44 @@ Interpretasi: **2 stop unik**; Tab ke-3 mengulang rect stop 0 (terbukti dari col
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 74. Fase 74 — Focus Order di WeaponWorkspaceScreen (2.4.3)
+
+**Layar**: `lib/features/weapon/presentation/weapon_workspace_screen.dart` (`WeaponWorkspaceScreen`) — saudara kembar `WardrobeWorkspaceScreen` yang pada fase 73 secara eksplisit ditunda dengan catatan "Weapon tetap tersisa untuk fase berikutnya". Layar mandiri: tanpa database/network pada state kosong (`weaponWorkspaceProvider` / `weaponWorkspaceDetailsProvider` keduanya return `null` / `WeaponWorkspaceData()` saat `projectSessionProvider` belum punya session, jadi `ProviderScope` pola cukup).
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/weapon/_probe_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, loop `LogicalKeyboardKey.tab` maks 14, berhenti saat rect berulang. Output live:
+
+```
+STOP 0 label=icon:0xe314 rect=1426.0,36.0 40.0x40.0
+STOP 1 label=icon:0xe402 rect=1474.0,36.0 40.0x40.0
+STOP 2 label=icon:0xe314 rect=1426.0,36.0 40.0x40.0
+REPEAT_AT_STOP_2
+TOTAL_STOPS=2 LABELS=[icon:0xe314, icon:0xe402]
+```
+
+**Kontrak**: `test/features/weapon/weapon_workspace_focus_order_test.dart` (file kontrak, ikut di-commit) mengunci 5 hal:
+
+1. Jumlah stop = **2** dan `walk.ended == 'repeat'` (traversal benar-benar membungkus, bukan terpotong cap iterasi).
+2. Urutan label = `Icons.history` (`0xe314`) lalu `Icons.more_horiz` (`0xe402`) — dua tombol ikon header.
+3. Properti posisi: `first.left < second.left` (1426 < 1474), `top` kedua stop sama dan jatuh di band header (`inInclusiveRange(0, 160)`; top terukur 36).
+4. Area fokus setiap stop `width * height > 0` (40x40 keduanya).
+5. `tester.takeException()` null.
+
+Kedua stop berasal dari `WeaponHeader` (`lib/features/weapon/presentation/widgets/weapon_header.dart`): `IconButton(history)` dan `IconButton(more_horiz)` dengan `onPressed` non-null (masing-masing menampilkan SnackBar feedback). Keduanya hanya dirender saat lebar layout >= 500 (non-compact) — kontrak ini memang mengunci perilaku desktop 1536 px. Catatan jujur yang sama dengan fase 73: kedua tombol header **hanya ikon tanpa `Tooltip`/`Semantics` label**, temuan 4.1.2/2.4.6 di luar cakupan 2.4.3, tidak diperbaiki di sini.
+
+**Gate** (dijalankan berurutan, output live):
+
+- `dart format test/features/weapon/weapon_workspace_focus_order_test.dart` -> `Formatted 1 file (0 changed)`.
+- `dart analyze test/features/weapon/weapon_workspace_focus_order_test.dart` -> `No issues found!`.
+- `flutter test test/features/weapon/weapon_workspace_focus_order_test.dart` -> `All tests passed!`, `EXIT=0`.
+
+**Negative control WAJIB (satu ekspektasi diubah sementara)**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/weapon_focus_order_test.bak.dart`, lalu urutan ekspektasi label dibalik (`more_horiz` sebelum `history`) di baris 104. Hasil: `Some tests failed` + `Failing tests: ...weapon_workspace_focus_order_test.dart`, exception `at location [0] is 'icon:0xe314' instead of 'icon:0xe402'`, `EXIT=1` — kontrak TERBUKTI punya gigi. Restore dari backup -> `All tests passed!` `EXIT=0`, backup dihapus dan keberadaannya diverifikasi (`No such file or directory`).
+
+**Counter (diukur ulang live dari HEAD)**: `git ls-files 'test/**/*focus_order*'` = **64 file ter-commit** sebelum run ini; kontrak fase ini menambah 1 file sehingga setelah commit menjadi **65 (64 + 1)**. Cakupan union (penyebutan nama kelas `*Screen` dari 89 file `lib/features/**/*_screen.dart` di seluruh kontrak focus order) 55 -> **56 layar tercakup, sisa 33 dari 89**. (Fase 73 mencatat 54/35; selisih 1 berasal dari metode pencocokan nama kelas yang dihitung ulang penuh pada run ini — angka live inilah yang dipakai.)
+
+**Catatan format**: report ini terbaca **LF-only (0 CRLF)** — dibaca/tulis dengan `newline=''`, sisipan section ditulis dengan `\n` agar konsisten dengan isi file dan diff tetap terbatas pada section ini (sama seperti fase 69/71/72/73). Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

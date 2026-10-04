@@ -3302,6 +3302,82 @@ permukaan **dialog**, bukan `_screen.dart`, jadi counter layar tidak naik. 50 `_
 live masih belum punya kontrak; yang clean namun butuh fixture Drift/project session tetap
 **DEFERRED**.
 
+## 62. Fase 62 — Focus Order di ProductionAssetWorkspaceScreen (2.4.3)
+
+**Target:** `lib/features/production_assets/presentation/production_asset_workspace_screen.dart`
+**Kontrak:** `test/features/production_assets/production_asset_workspace_screen_focus_order_test.dart`
+**Viewport probe:** 1536x1600, dpr 1.0, `sendKeyEvent(LogicalKeyboardKey.tab)`
+
+### Why this target
+
+`ProductionAssetWorkspaceScreen` adalah pure widget: konstrukturnya hanya menerima
+`ProductionAssetKind` dan `ProductionAssetDetail` yang sudah ter-resolve. Tidak ada
+`projectSessionProvider`, tidak ada Drift, tidak ada network, tidak ada plugin platform.
+Karena itu dia dihapus dari daftar DEFERRED yang biasa dipakai untuk layar workspace lain.
+
+Layar ini punya tiga region (navigator kiri, preview tengah, inspector kanan), dan setiap
+section inspector yang punya data dirender sebagai `ExpansionTile` sehingga menjadi stop focus
+yang nyata. Section yang data-nya `null` dirender sebagai `ListTile` tanpa `onTap`, yang
+memang tidak masuk traversal fokus — itulah yang membuat rantai fokusnya bisa dikunci.
+
+`SceneWorkspaceScreen` yang terlihat lebih kecil justru ditolak karena file-nya `DIRTY`
+(WIP Core Worker); kontrak yang mengunci urutannya berisiko bentrok dengan revert.
+
+### Measured stops (4 unik, lalu wrap)
+
+| Stop | Label | Rect |
+|---|---|---|
+| 0 | `Identity` | `L=1292.0 W=228.0` di kolom inspector kanan |
+| 1 | `Physical` | di bawah `Identity` |
+| 2 | `Abilities` | di bawah `Physical` |
+| 3 | `Modes` | di bawah `Abilities` |
+| 4 | WRAP (back to stop 0) | - |
+
+Probe berhenti pada stop ke-5 karena rect kembali sama dengan stop 0 (guard `seen` berbasis
+koordinat), jadi jumlah stop unik terverifikasi 4.
+
+### Locked contract
+
+- urutan label `['Identity', 'Physical', 'Abilities', 'Modes', 'Identity']` (termasuk wrap);
+- setiap stop punya `width > 0` dan `height > 0`;
+- setiap stop punya `left >= 1250.0` (semua di kolom inspector kanan, bukan navigator kiri);
+- `top` naik strictly: `0 < 1 < 2 < 3`;
+- `find.text('Species')` `findsOneWidget` sekaligus label itu TIDAK boleh masuk rantai fokus
+  (ListTile non-interaktif tidak bisa difokuskan);
+- `tester.takeException()` null.
+
+### Gates
+
+- `dart format <kontrak>` -> `Formatted 1 file (1 changed)` (probe dihapus bersamaan).
+- `dart analyze test/features/production_assets/` -> `No issues found!`.
+- `flutter test <kontrak>` -> `00:01 +1: All tests passed!` (`GREEN_EXIT_CODE=0`).
+
+### Negative control
+
+Tukar urutan dua label pertama (`'Identity'` dan `'Physical'`) via `cp` backup ke
+`/c/Users/nepht/AppData/Local/Temp/nc_focus_backup.dart`.
+
+Hasil `NEGCTRL_EXIT=1`, `Some tests failed.`:
+
+```
+Which: at location [0] is 'Identity' instead of 'Physical'
+```
+
+Failure dilempar tepat di baris assertion `stops.map((s) => s.label).toList()`, bukan karena
+crash. Setelah restore: `grep` mengembalikan urutan label asli, backup dihapus
+(`ls` -> `No such file or directory`).
+
+### Scan CJK/Cyrillic
+
+`production_asset_workspace_screen_focus_order_test.dart` -> `none`. Tidak ada credential
+di kontrak; fixture `ProductionAssetDetail` sepenuhnya literals statis.
+
+### Production code
+
+Tidak ada perubahan di `lib/`. Temuan probe: urutan focus sudah sesuai urutan baca section
+inspector, jadi tidak ada defect yang perlu diperbaiki. File probe `_probe_focus_test.dart`
+dihapus setelah kontrak ditulis.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

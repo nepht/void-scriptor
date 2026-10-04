@@ -1419,3 +1419,74 @@ karena gate masih INCOMPLETE, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 catatan untuk run depan, dua pembaca claim sudah MENYATU pada `_digestClaimsIn`, jadi
 lapis hunt "pembaca claim yang lebih sempit dari bahasa dokumen" sudah tertutup untuk
 keluarga ini; cari lapis lain.
+
+### Slice 117.43-29 - baris toolchain yang menyatakan dua versi tidak dibandingkan (defect ke-24 fail-open hunt)
+
+Tanggal: 2026-10-04 · Status: FIXED-LOCAL · Defect: fail-open SHAPE-CLAIM reader
+(membaca sebagian dari klaim sebuah baris) · Hunt: ke-24 · Gerbang: PASS
+pre+post, `canonical_sha256 b7ef2d35` tidak berubah.
+
+Kelas defect: 117.43-23 memasang rule pairwise untuk `toolchain_versions` di
+atas `_ToolchainLine`, tapi membacanya lewat `_readToolchainLine` yang
+mengembalikan TEPAT SATU klaim per baris: nama dipotong pada token pertama
+yang membawa angka, versi diambil sebagai angka bertitik PERTAMA dari seluruh
+baris (`firstWhere`). Konsekuensinya klaim kedua tidak pernah sampai ke rule
+yang sudah hijau. `Flutter 3.44.6 and Flutter 3.44.9` pada SATU baris
+menghasilkan `_ToolchainLine(flutter, 3.44.6)` saja, loop pairwise
+membandingkan satu klaim dengan dirinya sendiri, `missingEvidence` tidak
+melapor kehilangan grup, `evaluate` kembali `pass`, dan gate tetap mencetak
+`toolchain_versions: 2 item` seolah dua versi sudah ditimbang. Ini bentuk yang
+sama dengan ke-23 (pembaca beda tata bahasa) dan ke-27/28 (pembaca membuang
+klaim pertama saja), satu kelompok lebih kanan: pembaca pada domain membaca
+satu klaim, pembaca pada gate membandingkan semua. `toolchain_versions`
+menjadi lewat karena dokumen cukup menaruh restatement-nya di baris yang sama
+dengan versi pertama. Grup ini yang menentukan SDK mana yang membangun
+eksimen, sedangkan prasyarat komparasinya "tree dan machine sama" dengan
+batasan cross-SDK sudah dideklarasikan sendiri, jadi versi yang tidak pernah
+ditimbang bukan kosmetik.
+
+Bukti RED: run pertama gagal tepat SATU tes pada assertion defect (line 565),
+`Actual: []`, keluar 1; tiga kontrol di depannya (dokumen shipped, dua alat
+berbeda dalam satu baris, restatement identik) lulus, jadi perbaikan tidak
+bisa dikreditkan ke over-refuse. GREEN: setelah format, file
+`test/release/sprint_113_build_reproducibility_provenance_test.dart`
+`+10 -2` - dua kegagalan keduanya pasangan pre-existing 113.39 dengan
+signature identik (lock `32e31fd3` vs `c9a365e6`, artefak `73101e78` vs
+`c7a33055`); file gate `sprint_117_ga_artifact_reproducibility_test.dart`
+`146/146 All tests passed` (0 regresi keluarga 117.43-14..-28). Tidak ada
+klaim suite penuh. Hanya tiga file yang mengimpor domain (domain + dua file
+test) dan ketiganya sudah dijalankan.
+
+Perbaikan: reader diganti `_readToolchainLines` yang mengembalikan SEMUA
+klaim baris - setiap run kata non-angka sampai token ber-angka adalah satu
+kandidat alat, angka bertitik pertama setelah run itu versinya - dan konektor
+awal (`and`, `or`, `with`, ...) dibuang supaya restatement sejajar dengan
+pernyataan pertamanya baik dalam baris maupun lintas baris. Properti monoton
+dijaga: membaca lebih banyak klaim hanya menambah pasangan perbandingan,
+tidak pernah mengurangi, jadi perbaikan tidak dapat menyembunyikan
+kontradiksi - batas terburuknya menolak dokumen yang menulis KATA PROSA yang
+sama dua kali dengan dua angka bertitik berbeda, dan tidak ada baris shipped
+yang melakukan itu (dikunci kontrol shipped). Batas lain yang dikunci test:
+satu baris boleh menyebut beberapa alat berbeda tanpa jadi kontradiksi;
+`18.9` di samping `18.9.0` tetap satu versi yang ditulis dua kali
+(restatement idempoten); token integer polos (`2026`) dan tanggal
+(`2026-07-08`) tetap mengakhiri nama tanpa jadi versi; baris tanpa angka
+bertitik tetap bukan klaim (117.43-07, 117.43-23).
+
+Gerbang: `dart format` write `1 changed` exit 0 lalu
+`--output=none --set-exit-if-changed` `0 changed` exit 0 (idempoten);
+`dart analyze` 2 file `No issues found!` exit 0; `git diff --check` exit 0;
+`flutter build windows --debug` exit 0 (32,2 dtk); scan non-Latin Python `re`
+(CJK/kana/hangul/fullwidth) pada kedua file = 0 hit. SHA-256 dari blob commit
+`1bfb845` (`git show`, sama dengan sha256sum disk): domain
+`772ee9b5b4b121a4a55c8e2694d0cab61d4eb9d34d58a45302482d06623c5760`,
+test `8257051e5f0b07e10de28ac9277859c5321a271c7b4aaec706ab0d93ae718521`.
+Manifest 113 tidak disentuh `b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d`
+(commit terakhir tetap `d150973`). Numstat fix: domain 102/26, test 134/0
+(tes murni insertif). Commit `1bfb845` memakai 2 path eksplisit. Sibling
+`90aa8bc` (a11y audit focus order Workspace Export Options Dialog) masuk di
+tengah run dan tidak menyentuh path slice (diff f976256..90aa8bc pada 4 path
+slice kosong); tidak ada push pada run ini. Status TIDAK BERUBAH:
+PARTIAL-LOCAL, `next_step 117.43`, `step_closed false`, verdict
+GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih
+BLOCKER. Hunt berikutnya: ke-25.

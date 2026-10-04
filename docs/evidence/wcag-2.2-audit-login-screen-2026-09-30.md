@@ -3075,6 +3075,57 @@ Semua stop punya area fokus non-zero. Stop 3 adalah `TextField` editor draft sce
 Kumulatif: **44 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 43); 45 layar tersisa. Layar yang clean namun butuh fixture Drift/project session — `scene_workspace_screen`, `character_workspace_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `production_asset_workspace_screen`, `level_editor_screen`, `creature_workspace_screen`, `publishing_workspace_screen`, `wardrobe_workspace_screen` — tetap **DEFERRED** dan merupakan kandidat run berikutnya.
 
 
+
+
+## 59. Fase 59 — Focus Order di My Library Screen (2.4.3)
+
+### Layar yang dipilih
+
+`MyLibraryScreen` (`lib/features/marketplace/presentation/my_library_screen.dart`). Layar mandiri: seluruh konten di-hardcode di widget, tanpa database, tanpa network, tanpa Riverpod provider, tanpa callback eksternal. `git status` bersih untuk file tersebut.
+
+**Koreksi terhadap fase 58.** Section 58 menolak `MyLibraryScreen` dengan alasan "hanya 1-2 elemen yang benar-benar focusable, di bawah syarat minimal 2 elemen interaktif". Penolakan itu perlu dikoreksi berdasarkan bukti probe: hitungan statis pada sumber memang hanya menemukan satu `TabBar`, sehingga affordance fokus kedua tidak terlihat. Probe runtime pada dua viewport membuktikan sebaliknya — `TabBar` menghasilkan **dua** focus stop, tepat dua, karena tiap `Tab` adalah simpul fokus tersendiri. Syarat minimal 2 elemen interaktif **terpenuhi**, sehingga penolakan fase 58 dicoret berdasarkan bukti, bukan berdasarkan hitungan statis.
+
+Kandidat lain yang ditolak pada run ini:
+
+- `optional_tour_screen.dart`, `merge_preview_screen.dart` — masing-masing hanya satu simpul fokus nyata setelah di-probe; tetap di bawah syarat minimal.
+- `multiverse_graph_screen.dart` — satu `Slider` tunggal; traversal satu stop tidak menguji urutan apa pun.
+- `marketplace_home_screen`, `seller_center_screen`, `creator_sidebar_screen`, `discovery_home_screen` — tetap nol affordance fokus, sama seperti pada fase sebelumnya.
+
+### Kontrak
+
+`test/features/marketplace/my_library_screen_focus_order_test.dart` — 3 test dalam satu `group`. Label stop diambil dari subtree fokus: `Text` pertama yang bukan `Icon`, dengan fallback `widget:<runtimeType>` supaya kegagalan tetap terbaca. Traversal berhenti saat rect berulang.
+
+### Hasil probe (1536x1024, dpr 1.0)
+
+STOP_COUNT 2, traversal menutup siklus pada stop kedua:
+
+1. `Installed` — rect 0.0, 56.0, 768.0x48.0
+2. `Updates` — rect 768.0, 56.0, 768.0x48.0
+
+Probe kedua pada 390x844 memberi hasil identik secara struktural: `Installed` di 0.0, 56.0, 195.0x48.0 lalu `Updates` di 195.0, 56.0, 195.0x48.0, dengan `NARROW_EXCEPTION=null`. Probe dihapus setelah kontrak dibuat (`_probe_focus_test.dart` -> `PROBE_REMOVED`).
+
+### Catatan geometri yang dikunci
+
+- Dua stop berbagi satu baris fokus: `top` keduanya 56.0 dan `bottom` keduanya 104.0 pada viewport lebar. Kontrak mengunci `top` sama, `bottom` sama, dan `right` stop pertama sama dengan `left` stop kedua (berdempetan tanpa celah horizontal) — bukan sekadar urutan label.
+- Urutan kiri-ke-kanan dikunci lewat `stops[0].rect.left < stops[1].rect.left`, bukan lewat urutan array saja, supaya regresi geometri `TabBar` ikut tertangkap.
+- Kedua stop punya lebar 768.0 = setengah viewport 1536 karena `TabBar` membagi lebar penuh rata; di 390 lebarnya menjadi 195.0. Kontrak sengaja tidak mengunci lebar absolut, hanya `> 0` pada kedua sumbu plus urutan kiri-ke-kanan, supaya tetap valid di dua viewport.
+- Tile konten di bawah tab (`v1.2.0`, `v1.3.0 available`) **tidak** menghasilkan focus stop. Tile dirender tanpa `onTap`, jadi bukan simpul fokus. Ini benar untuk konten read-only, dan kontrak memverifikasinya secara tidak langsung lewat `_expectedStops == 2`: jika tile suatu saat mendapat `onTap`, jumlah stop berubah dan kontrak gagal — persis perilaku yang diharapkan.
+- Test kedua membuktikan urutan fokus bukan sekadar urutan visual: fokus dikunci ke tab `Updates` dengan dua kali `Tab`, lalu `Enter`, dan konten berganti dari `v1.2.0` ke `v1.3.0 available`. Ini membuktikan traversal benar-benar mencapai simpul fokus yang dapat diaktivasi.
+
+### Bukti eksekusi
+
+- `dart format test/features/marketplace/my_library_screen_focus_order_test.dart` -> `Formatted 1 file (1 changed)`.
+- `dart analyze test/features/marketplace/my_library_screen_focus_order_test.dart` -> `No issues found!` (`EXIT=0`). Satu error nyata sempat muncul lebih dulu dan diperbaiki: `argument_type_not_assignable` pada `primaryFocus!.context` karena `FocusNode.context` bertipe `BuildContext?` — diperbaiki dengan `!.context!`.
+- `flutter test test/features/marketplace/my_library_screen_focus_order_test.dart` -> `All tests passed!` (`+3`), `FLUTTER_EXIT=0`.
+- **Negative control**: `_expectedLabels` ditukar dari `['Installed', 'Updates']` menjadi `['Updates', 'Installed']` via `cp` backup ke `/c/Users/nepht/AppData/Local/Temp/my_lib_focus_backup.dart`. Hasil `+1 -2: Some tests failed.` dengan `NEGCTRL_EXIT=1` — 2 dari 3 test gagal menangkap urutan yang dibalik, termasuk test viewport sempit pada baris 151. Backup dipulihkan, `_expectedLabels` kembali ke urutan benar, backup dihapus, lalu test diulang -> `+3: All tests passed!`.
+- Gate suite: `flutter test test/features/marketplace/` -> `00:16 +46: All tests passed!`, `GATE_EXIT=0`.
+- Scan CJK/Cyrillic + credential pada file kontrak: `CJK_CYRILLIC_SCAN = none`, `HAS_SECRETISH = False`, satu-satunya karakter non-ASCII adalah em-dash.
+
+### Status
+
+**VERIFIED** untuk focus order `MyLibraryScreen` pada 1536x1024 dan 390x844 dpr 1.0 di codebase saat commit. Tidak ada defect produksi yang ditemukan pada fase ini; seluruh perubahan adalah satu file test baru. Batas bukti: pengukuran adalah traversal `Tab` sintetik pada widget tree, belum native Windows focus ring pada aplikasi yang sudah dibangun; aktivasi tab dibuktikan lewat `Enter` pada `TabBar` Material, bukan navigasi arrow.
+
+Kumulatif: **45 dari 89** layar `*_screen.dart` sudah punya kontrak focus order (sebelum run ini 44); 44 layar tersisa. Layar yang clean namun butuh fixture Drift/project session — `scene_workspace_screen`, `character_workspace_screen`, `project_bible_workspace_screen`, `supporting_asset_workspace_screen`, `project_ai_generation_gallery_screen`, `production_asset_workspace_screen`, `level_editor_screen`, `creature_workspace_screen`, `publishing_workspace_screen`, `wardrobe_workspace_screen` — tetap **DEFERRED** dan merupakan kandidat run berikutnya.
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

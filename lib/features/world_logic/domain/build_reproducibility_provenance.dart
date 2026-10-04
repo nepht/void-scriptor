@@ -1006,24 +1006,88 @@ class BuildProvenanceEvidence {
   ///  * a reachable path cannot rescue failing evidence.
   static bool _digestsAgreeWithinGroup(List<String>? items) {
     if (items == null) return true;
-    final claim = RegExp(
-      r'^(\S+)\s+sha-?256\s+(\S+)\s*$',
-      caseSensitive: false,
-    );
     final declared = <String, String>{};
     for (final item in items) {
-      final match = claim.firstMatch(item.trim());
-      if (match == null) continue;
-      final digest = match.group(2)!;
-      // Same non-claim and same already-reported defect as `_digestsByPath`:
-      // only a well-formed digest can contradict another one.
-      if (!_digestPattern.hasMatch(digest)) continue;
-      final path = match.group(1)!;
-      final first = declared.putIfAbsent(path, () => digest);
-      if (first != digest) return false;
+      for (final claim in _digestClaimsIn(item)) {
+        final path = claim.key;
+        final digest = claim.value;
+        final first = declared.putIfAbsent(path, () => digest);
+        if (first != digest) return false;
+      }
     }
     return true;
   }
+
+  /// Every `<path> sha256 <digest>` claim a line states, in order.
+  ///
+  /// Sprint 117.43-27 (fail-open, fixed). The reader this replaces matched
+  /// `^(\S+)\s+sha-?256\s+(\S+)\s*$` with `firstMatch`, which is anchored at
+  /// BOTH ends and therefore describes exactly ONE claim per line. The rule
+  /// built on it could compare one path to one digest per line, so a line
+  /// stating the claim twice — `windows/CMakeLists.txt sha256 <a> sha256 <b>` —
+  /// did not merely go uncompared: the anchored pattern found no match at all,
+  /// so the line was skipped exactly as prose is skipped and reached the
+  /// verdict as though it had stated nothing. Proven before the fix: that one
+  /// line reported `provenance_evaluation: pass`, while the two-LINE form of
+  /// the same contradiction was already refused by 117.43-26 — the rule could
+  /// only ever fire on the shape the shipped document happens to use.
+  ///
+  /// So a line is read as a sequence of claims rather than one claim. A marker
+  /// token introduces the digest that follows it, and the path is the token
+  /// before the marker — UNLESS that token is itself a well-formed digest, in
+  /// which case it was the PREVIOUS claim's digest and the marker restates
+  /// that same path, which is precisely the shape 117.43-26 refused across two
+  /// lines and this one refuses across two positions in one.
+  ///
+  /// Bounds, so nothing beyond the defect is refused:
+  ///
+  ///  * `a.cpp sha256 <a> b.cpp sha256 <b>` states two DIFFERENT paths and is
+  ///    two claims, not a contradiction — the plain token between the digests
+  ///    is read as the next path, exactly as one claim per line read it before;
+  ///  * a marker naming the algorithm without a value supplies no digest and
+  ///    stays a non-claim (117.43-07, 117.43-11), which is what keeps the
+  ///    shipped `dependency_lock` prose and the 117.43-26 prose control
+  ///    honest — `sha256;` and `sha256` without a following digest are markers
+  ///    with nothing to claim;
+  ///  * a half-written digest is already reported by
+  ///    `_hasWellFormedDigestClaims`; this reader skips it rather than
+  ///    inventing a second reason for the same defect (117.43-26);
+  ///  * the SAME digest restated stays an idempotent restatement.
+  static List<MapEntry<String, String>> _digestClaimsIn(String line) {
+    final tokens = line.trim().split(RegExp(r'\s+'));
+    final claims = <MapEntry<String, String>>[];
+    String? pendingPath;
+    for (var i = 0; i < tokens.length; i++) {
+      if (!_digestMarkerPattern.hasMatch(tokens[i])) {
+        pendingPath = tokens[i];
+        continue;
+      }
+      if (i + 1 >= tokens.length || !_digestPattern.hasMatch(tokens[i + 1])) {
+        // Names the algorithm, states no digest (117.43-07, 117.43-11).
+        continue;
+      }
+      // The token before this marker is the path it introduces, unless that
+      // token is itself a digest — then it was the previous claim's digest and
+      // this marker restates that claim's path.
+      final preceding = i >= 1 ? tokens[i - 1] : null;
+      final path = preceding != null && !_digestPattern.hasMatch(preceding)
+          ? preceding
+          : pendingPath;
+      if (path == null) continue;
+      final digest = tokens[i + 1];
+      claims.add(MapEntry<String, String>(path, digest));
+      pendingPath = path;
+      i++;
+    }
+    return claims;
+  }
+
+  /// The token that introduces a digest: `sha256`, `SHA-256`, `sha 256` is not
+  /// a marker — the shipped grammar always writes the algorithm as one token.
+  static final RegExp _digestMarkerPattern = RegExp(
+    r'^sha-?256$',
+    caseSensitive: false,
+  );
 
   /// Whether the digests one path is given in two different groups agree.
   ///

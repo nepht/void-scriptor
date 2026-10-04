@@ -4318,4 +4318,194 @@ void main() {
       expect(outcome(broken), isNot('pass'));
     });
   });
+
+  group('117.43-27 one line that states two different digests for one path is '
+      'refused', () {
+    // Sprint 117.43-27 (fail-open, fixed): 117.43-26 taught this layer that a
+    // path must not be given two different digests inside one group, and its
+    // rule works by TOKENISING the group line by line — `_digestsAgreeWithinGroup`
+    // matches `^(\S+)\s+sha-?256\s+(\S+)\s*$` and compares every path to the
+    // FIRST digest claimed for it. That anchored pattern accepts exactly ONE
+    // `<path> sha256 <digest>` pair per line, so a line stating the claim
+    // twice — `windows/CMakeLists.txt sha256 <shipped> sha256 <other>` — does
+    // not merely contradict itself, it is not parsed as a claim AT ALL: the
+    // regex finds no match, the line is skipped exactly as prose is skipped,
+    // and the contradiction reaches the verdict unexamined.
+    //
+    // This is the same defect as 117.43-26 seen from the tokenizer rather than
+    // from the map, and it is strictly wider: 117.43-26 needed two LINES to
+    // state its contradiction, so a document that put the second digest on the
+    // same line was already outside what that rule could see. The rule could
+    // only ever fire on the shape the shipped document happens to use.
+    //
+    // Proven before the fix, with the SHIPPED digest so the case is a pure
+    // contradiction rather than a malformed-digest shape that would fail closed
+    // for the wrong reason: probes B, B2 and E each reported `pass` — one line
+    // naming one path twice with two different 64-hex digests, the same against
+    // the cross-group-restated `pubspec.lock`, and a two-digest line naming an
+    // unstated path — while the honest document and both non-claim controls
+    // passed too, so the rule was blind in exactly one direction.
+    //
+    // Bounds, all pinned by test, so the fix cannot over-refuse:
+    //
+    //  * the SAME digest stated twice on one line is an idempotent
+    //    restatement, exactly as repeating a line is (117.43-26) — a document
+    //    may say the same thing twice in one breath;
+    //  * a line that NAMES the algorithm without supplying a value states no
+    //    digest and stays a non-claim (117.43-07, 117.43-11), which is what
+    //    keeps the shipped `dependency_lock` prose honest;
+    //  * nothing is required about which paths a document states, or how many
+    //    times — only that the digests it states for ONE path do not disagree.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> linesOf(Map<String, Object?> manifest, String group) => [
+      for (final line
+          in (manifest['required_evidence']! as Map<String, Object?>)[group]!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeGroup(
+      Map<String, Object?> manifest,
+      String group,
+      List<String> lines,
+    ) =>
+        (manifest['required_evidence']! as Map<String, Object?>)[group] = lines;
+
+    /// The digest the shipped document states for [_kOnlyInputsPath]. The
+    /// contradictions below pair it with [_kOtherDigest] so the case fails only
+    /// because the two disagree — never because one of them is malformed, which
+    /// is the RED-in-the-wrong-place trap the 117.43-26 run already hit.
+    const shippedInputsDigest =
+        '65149b3d9e9b6992c261143d5343a48f884b23bff255b1284296f8818747817d';
+
+    /// The digest the shipped document states for `pubspec.lock` in BOTH
+    /// `build_inputs` and `dependency_lock`, so a contradiction against it also
+    /// survives `_restatedDigestsAgree` — proving this is the tokenizer, not the
+    /// cross-group reader.
+    const shippedLockDigest =
+        '32e31fd31a928e20007226e720ee37a661afb5d0d224d4eb24b04463496626f8';
+
+    test('117.43-27 one line, one path, two different digests is refused '
+        'while the evidence passes', () {
+      final cases = <String, String>{};
+
+      // The defect itself: one path, two well-formed digests, ONE line.
+      final both = shipped();
+      writeGroup(both, 'build_inputs', <String>[
+        ...linesOf(both, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $shippedInputsDigest sha256 $_kOtherDigest',
+      ]);
+      cases['one line, two digests, build_inputs'] = outcome(both);
+
+      // The same one-line contradiction against the path 117.43-21 restates
+      // across two groups, so the rule cannot be credited to the cross-group
+      // reader either.
+      final lock = shipped();
+      writeGroup(lock, 'dependency_lock', <String>[
+        ...linesOf(lock, 'dependency_lock'),
+        'pubspec.lock sha256 $shippedLockDigest sha256 $_kOtherDigest',
+      ]);
+      cases['one line, two digests, dependency_lock'] = outcome(lock);
+
+      // A path the shipped document never states: one line may not state two
+      // different digests whatever the reader calls the path.
+      final unstated = shipped();
+      writeGroup(unstated, 'build_inputs', <String>[
+        ...linesOf(unstated, 'build_inputs'),
+        'windows/runner/not-shipped.cpp sha256 $shippedInputsDigest sha256 '
+            '$_kOtherDigest',
+      ]);
+      cases['one line, two digests, unstated path'] = outcome(unstated);
+
+      // Three digests on one line, the first and last agreeing, so a rule
+      // comparing only the first two would pass it.
+      final three = shipped();
+      writeGroup(three, 'build_inputs', <String>[
+        ...linesOf(three, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $shippedInputsDigest sha256 $_kOtherDigest '
+            'sha256 $shippedInputsDigest',
+      ]);
+      cases['one line, three digests, first and last agreeing'] = outcome(
+        three,
+      );
+
+      expect(
+        cases.values,
+        isNot(contains('pass')),
+        reason:
+            'the gate publishes provenance_evaluation: pass for a document '
+            'whose single line states two different digests for one path — the '
+            'contradiction is skipped by the tokenizer instead of compared: '
+            '${cases.entries.map((e) => '${e.key}=${e.value}').join(', ')}',
+      );
+    });
+
+    test('117.43-27 the same digest twice on one line is an idempotent '
+        'restatement, not a contradiction', () {
+      // Without this control the rule above would prove nothing: refusing every
+      // repeated digest would pass all four cases and refuse the honest
+      // document with them.
+      expect(
+        outcome(shipped()),
+        'pass',
+        reason: 'the shipped document states each digest once per line',
+      );
+
+      final repeated = shipped();
+      writeGroup(repeated, 'build_inputs', <String>[
+        ...linesOf(repeated, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $shippedInputsDigest sha256 '
+            '$shippedInputsDigest',
+      ]);
+      expect(
+        outcome(repeated),
+        'pass',
+        reason:
+            'a path restated twice on one line with the digest it already had '
+            'states the same fact twice, which 117.43-26 already accepts across '
+            'two lines and must accept within one',
+      );
+
+      // Merely naming the algorithm supplies no digest to agree or disagree
+      // about, which is what keeps the shipped `dependency_lock` prose honest.
+      final prose = shipped();
+      writeGroup(prose, 'build_inputs', <String>[
+        ...linesOf(prose, 'build_inputs'),
+        '$_kOnlyInputsPath sha256; re-hashed after the toolchain upgrade',
+      ]);
+      expect(
+        outcome(prose),
+        'pass',
+        reason:
+            'mentioning sha256 without a value is a description, not a digest '
+            'claim (117.43-07, 117.43-11)',
+      );
+
+      // A reachable path cannot buy back a pass the measurement does not
+      // support — the bound 117.43-25 pinned for a cited document and
+      // 117.43-26 pinned for a build input.
+      expect(File(_kOnlyInputsPath).existsSync(), isTrue);
+      final broken = shipped();
+      writeGroup(broken, 'build_inputs', <String>[
+        ...linesOf(broken, 'build_inputs'),
+        '$_kOnlyInputsPath sha256 $shippedInputsDigest sha256 $_kOtherDigest',
+      ]);
+      (broken['required_evidence']! as Map<String, Object?>).remove(
+        'artifact_comparison',
+      );
+      expect(outcome(broken), isNot('pass'));
+    });
+  });
 }

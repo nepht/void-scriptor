@@ -4547,6 +4547,48 @@ Keempat test mengunci `tester.takeException()` isNull. Label `Back` dan `Cancel 
 
 **Rekomendasi run berikutnya**: (a) pemindaian non-glob berikutnya menyisakan layar ber-fixture berat (mis. `world_simulation_workspace_screen` yang overflow saat dipompa standalone, `execution_monitor_screen` yang butuh `WorkflowMonitorSnapshot`) dan layar display-only — semua di bawah ambang kecuali yang berfixture; (b) perluas ke widget non-`*_screen.dart` (dialog/panel) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
 
+## 84. Fase 84 — Focus Order di Production Validation Center Screen (2.4.3)
+
+**Status: SELESAI — kontrak 3 test, negative control membuktikan gagal, gate hijau. Deviasi scope terdokumentasi.**
+
+**Pilihan layar (evidence, bukan asumsi)**: rerun pemindaian live atas 93 kelas `*Screen` di 89 file `lib/features/**/*_screen.dart` terhadap isi 74 file `*_focus_order_test.dart` on-disk. Kolam in-glob tetap KOSONG untuk kelas dengan >=2 handler non-null: satu-satunya kelas tanpa kontrak yang punya handler hidup adalah `ProductionValidationCenterScreen` (1 handler: `IconButton(onPressed: onRefresh)` di `lib/features/cinematic_production/presentation/cinematic_production_workspace_screen.dart:128`); 28 file sisanya 0 handler terukur (konfirmasi kelima atas fase 80-83). Mengikuti ambang fase 81 (">= 2 stop terukur"), layar ini memenuhi karena afordansi rute `Back` menambah stop kedua saat dipush — diperiksa langsung lewat probe, bukan diasumsikan.
+
+**Mengapa layar ini lolos kriteria**: kecil (63 baris kelas), mandiri — konstruktor hanya `List<ProductionValidationIssue> issues` + `VoidCallback onRefresh`, fixture murni objek Dart tanpa database, jaringan, maupun Riverpod. File sumber berisi dua kelas `*Screen`; yang sudah punya kontrak adalah `CinematicProductionWorkspaceScreen` (`cinematic_production_focus_order_test.dart`), sedangkan `ProductionValidationCenterScreen` belum disebut focus test mana pun. Test perilaku `test/features/cinematic_production/cinematic_production_workspace_test.dart` menyebut kelas ini, tetapi tidak mengunci urutan fokus.
+
+**Probe (hasil terukur, viewport 1536x1024, dpr 1.0, berhenti saat Rect berulang, `EXCEPTION=null` di semua varian)**:
+- Rute dipush + 2 issue: **2 stop** — `Back@8,8 40x40` -> refresh `@1492,8 40x40` -> ulang `Back`.
+- Rute dipush + 0 issue: **2 stop** — `Back` -> refresh (identik; empty-state `ListTile` tanpa `onTap` tidak menambah stop).
+- Tanpa rute induk (layar jadi `home`) + 2 issue: **1 stop** — refresh saja, tanpa `Back` (afordansi berasal dari rute, bukan layar).
+
+Baris issue `ListTile` (tanpa `onTap`) tidak pernah menjadi tab stop di varian mana pun.
+
+**Kontrak**: `test/features/cinematic_production/production_validation_center_focus_order_test.dart` — 3 `testWidgets`:
+1. rute + 2 issue = 2 stop, daftar label `['Back','<icon-button>']`; `Back` rata kiri-atas (left/top <= 16); refresh di separuh kanan viewport (`left > width/2`) dan segaris vertikal dengan `Back` (`top` sama); `Back.left < refresh.left`; `find.text('Missing thumbnail')` dan `find.text('2 validation issue(s)')` tetap ter-render sementara stop tetap 2 (bukti baris issue non-fokus).
+2. rute + 0 issue = tetap 2 stop + `find.text('No production issues found.')` findsOneWidget + `find.text('0 validation issue(s)')` findsOneWidget + `stops.length == 2` (empty state menambah nol stop).
+3. tanpa rute induk = 1 stop `['<icon-button>']` + `isNot(contains('Back'))` — membuktikan `Back` berasal dari rute.
+
+Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam viewport (`_expectRectsInViewport`). Label `Back` diturunkan dari `IconButton.tooltip` (`MaterialLocalizations.backButtonTooltip`); label refresh `<icon-button>` diturunkan dari widget tree (IconButton tanpa tooltip, tanpa teks), bukan teks karangan.
+
+**Gate (output nyata)**:
+- `dart format test/features/cinematic_production/production_validation_center_focus_order_test.dart` -> `Formatted 1 file (1 changed)`, EXIT=0.
+- `dart analyze test/features/cinematic_production/production_validation_center_focus_order_test.dart` -> `No issues found!`, EXIT=0.
+- `flutter test .../production_validation_center_focus_order_test.dart` -> `+3 All tests passed`, EXIT=0.
+- Suite gate `flutter test test/features/cinematic_production/` -> **`+6 All tests passed`, EXIT=0** (3 file: kontrak baru 3 test, `cinematic_production_focus_order_test` 1, `cinematic_production_workspace_test` 2).
+
+**Negative control WAJIB (dijalankan dua kali, angka dicatat)**: backup `cp` ke `C:\Users\nepht\AppData\Local\Temp\production_validation_focus_order_test.dart.bak` (sha256 `5675bead3bf6b8e67b09c268037ee5484754014a39ca920decaecab44ce8ca77`, identik dengan file asli), mutasi = tukar dua label menjadi `['<icon-button>','Back']` di kedua ekspektasi label, jalankan kontrak -> **GAGAL**: `Some tests failed`, `NEGATIVE_EXIT_CODE=1`, **2 dari 3 test gagal** (`route with two issues` dan `route with zero issues`; varian tanpa rute induk tetap lolos karena hanya punya satu label). Restore dari backup (sha256 sama `5675bead3bf6b8e67b09c268037ee5484754014a39ca920decaecab44ce8ca77`), jalankan ulang -> `+3 All tests passed`. Backup dihapus dan diverifikasi hilang (`No such file or directory`).
+
+**Full analyzer (di luar scope — dilaporkan, bukan diperbaiki)**: tidak dijalankan ulang penuh dalam run ini; gate yang dijalankan = `dart analyze` atas file kontrak (`No issues found!`). Tidak ada file `lib/` yang disentuh run ini, sehingga kontribusi terhadap issue penuh nol.
+
+**Counter (pengukuran live run ini)**: file `*_focus_order_test.dart` on-disk = **74 sebelum kontrak ini, 75 sesudahnya** (di dalamnya 1 WIP `test/core/security/presentation/` milik eksekutor lain yang tak disentuh). Metric B (file glob `lib/features/**/*_screen.dart` yang minimal satu kelas `*Screen`-nya disebut focus test on-disk) = **61 dari 89 sebelum kontrak, tetap 61 sesudahnya** — kontrak ini menambah cakupan *kelas* (`ProductionValidationCenterScreen`, kelas ke-64 dari 93) tetapi bukan *file* baru, karena file sumbernya sudah terhitung lewat `CinematicProductionWorkspaceScreen`. Basis kelas non-glob tidak berubah.
+
+**Tidak ada perubahan kode produksi.** File dirty milik sibling tidak disentuh: `docs/evidence/sprint-117-35-manifest-20261002.json`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`. Probe sekali pakai yang dihapus setelah kontrak dibuat: `test/features/cinematic_production/_probe_focus_test.dart` (diverifikasi hilang dari `git status`).
+
+**Catatan format**: report ini LF-only (0 CRLF) sebelum sisipan; sisipan ditulis `\n` lewat pembacaan `newline=''`, sehingga konvensi file dipertahankan (preseden fase 69-83).
+
+**Scan CJK/Cyrillic** pada kontrak, section ini, dan pesan commit: `none`.
+
+**Rekomendasi run berikutnya**: (a) kolam in-glob untuk kelas dengan >=2 handler kini terkonfirmasi kosong lima kali berturut-turut — kandidat sisa in-glob semuanya display-only (0 handler) atau ber-fixture berat (`world_simulation_workspace_screen` overflow standalone, `execution_monitor_screen` butuh `WorkflowMonitorSnapshot`); (b) perluas ke widget non-`*_screen.dart` (dialog/panel, mis. `project_comments_panel` yang sudah punya test perilaku tapi belum kontrak fokus) bila Choirudin menyetujui; (c) audit afordansi rute/back per layar 1-stop tetap butuh persetujuan Choirudin.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -5363,4 +5363,163 @@ void main() {
       );
     });
   });
+  // RED-first for defect 117.43-34: `provenance_logs` is the last
+  // `provenance_record` reader that opens only the FIRST claim its line
+  // states. `_parseLogSummary` found the prefix with `firstMatch` and then cut
+  // the claim at the first rebuild restatement behind it, so its two halves
+  // failed in opposite directions from the same place:
+  //
+  //  * a second log restatement written behind a rebuild restatement was cut
+  //    away with that restatement — the honest claim at the front of the line
+  //    was all the reader compared, and a wrong log set restated after it was
+  //    still counted among the group's items while no reader opened it;
+  //  * with no restatement to cut at, the first claim ran into the second
+  //    prefix and the marker token `provenance_logs` itself was read as one of
+  //    the paths, so a document restating its cited logs twice stopped naming
+  //    the cited set and was refused.
+  //
+  // Bounds, so no acceptance is invented: every claim the line states is held
+  // to the same cited set a lone claim is held to (117.43-15), a claim's
+  // tokens still stop where the line's rebuild restatement begins
+  // (117.43-32), and reading every claim must not change the verdict of a
+  // document that states them honestly — the two-honest-claims control
+  // 117.43-33 pinned for citations, for logs.
+  group('117.43-34 every provenance_logs claim a line states is compared', () {
+    Map<String, Object?> shipped() => _manifest(_kProvenanceManifest);
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    List<String> recordOf(Map<String, Object?> manifest) => [
+      for (final line
+          in (manifest['required_evidence']!
+                  as Map<String, Object?>)['provenance_record']!
+              as List<dynamic>)
+        line as String,
+    ];
+
+    void writeRecord(Map<String, Object?> manifest, List<String> lines) =>
+        (manifest['required_evidence']!
+                as Map<String, Object?>)['provenance_record'] =
+            lines;
+
+    const String citedLogs =
+        'docs/evidence/sprint-113-39-rebuild-a.log '
+        'docs/evidence/sprint-113-39-rebuild-b.log';
+    const String wrongLog = 'docs/evidence/never-existed.log';
+
+    /// The shipped record with its `provenance_logs` line replaced by [claims]
+    /// — one claim or several on that line, whichever the case needs. Every
+    /// other line is untouched, so the record still states the same evidence.
+    Map<String, Object?> withLogClaims(List<String> claims) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final index = lines.indexWhere(
+        (row) => row.startsWith('provenance_logs '),
+      );
+      expect(
+        index,
+        isNonNegative,
+        reason:
+            'the shipped document restates its logs, so this rule measures a '
+            'claim the record really states',
+      );
+      writeRecord(manifest, <String>[
+        for (var i = 0; i < lines.length; i++)
+          if (i == index) claims.join(' ') else lines[i],
+      ]);
+      return manifest;
+    }
+
+    /// The shipped record with its `provenance_logs` claim moved onto the
+    /// shipped `rebuild_a` restatement — the honest claim in front of the
+    /// restatement, and [trailing] restated behind it when given. One line
+    /// disappears while every claim survives, so the record still states the
+    /// same evidence in every case.
+    Map<String, Object?> withLogsAroundRebuild({String? trailing}) {
+      final manifest = shipped();
+      final lines = recordOf(manifest);
+      final rebuildA = lines.firstWhere(
+        (row) => row.startsWith('rebuild_a exit_code'),
+      );
+      final logs = lines.firstWhere(
+        (row) => row.startsWith('provenance_logs '),
+      );
+      final merged = <String>[];
+      for (final row in lines) {
+        if (row.startsWith('rebuild_a exit_code')) {
+          merged.add(
+            trailing == null ? '$logs $rebuildA' : '$logs $rebuildA $trailing',
+          );
+          continue;
+        }
+        if (row.startsWith('provenance_logs ')) continue;
+        merged.add(row);
+      }
+      expect(
+        merged.length,
+        lines.length - 1,
+        reason: 'the merge moves one claim onto the other line',
+      );
+      writeRecord(manifest, merged);
+      return manifest;
+    }
+
+    test('117.43-34 a wrong second log restatement behind a rebuild '
+        'restatement is refused', () {
+      expect(
+        outcome(withLogsAroundRebuild(trailing: 'provenance_logs $wrongLog')),
+        'unmet',
+        reason:
+            'the front claim agrees with the records, so the wrong set '
+            'restated behind the rebuild restatement is the only claim that '
+            'can fail the line — a restatement is a claim wherever the line '
+            'puts it and however many precede it',
+      );
+    });
+
+    test('117.43-34 two honest log restatements on one line still pass', () {
+      expect(
+        outcome(
+          withLogClaims(<String>[
+            'provenance_logs $citedLogs provenance_logs $citedLogs',
+          ]),
+        ),
+        'pass',
+        reason:
+            'reading every claim must not refuse a document that states them '
+            'honestly; the second prefix is a marker, not one of the paths it '
+            'names',
+      );
+    });
+
+    test('117.43-34 a wrong first log restatement beside an honest one is '
+        'refused', () {
+      expect(
+        outcome(
+          withLogClaims(<String>[
+            'provenance_logs $wrongLog provenance_logs $citedLogs',
+          ]),
+        ),
+        'unmet',
+        reason:
+            'every claim on the line is held to the cited set, so an agreeing '
+            'restatement behind a wrong one cannot launder it',
+      );
+    });
+
+    test('117.43-34 two honest log restatements around a rebuild restatement '
+        'still pass', () {
+      expect(
+        outcome(withLogsAroundRebuild(trailing: 'provenance_logs $citedLogs')),
+        'pass',
+        reason:
+            'the same claims with the cited logs named are an honest record; '
+            'opening the second claim must not change the verdict of a '
+            'document that states both correctly',
+      );
+    });
+  });
 }

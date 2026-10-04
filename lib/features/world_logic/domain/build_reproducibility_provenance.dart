@@ -695,7 +695,10 @@ class BuildProvenanceEvidence {
   /// follows the claim rather than the line: it starts wherever
   /// `provenance_logs` appears and ends where the rebuild restatement begins,
   /// so a line carrying both claims gives each reader its own segment
-  /// (`_parseLogSummary`). A line carrying no log claim still claims no log.
+  /// (`_logSummariesIn`). Sprint 117.43-34 then gave every `provenance_logs`
+  /// CLAIM on one line its own segment as well: a line may restate its logs
+  /// more than once and each statement is compared with the cited set. A line
+  /// carrying no log claim still claims no log.
   ///
   /// Two lines are deliberately NOT compared, and the boundaries are pinned by
   /// the 117.43-15 tests:
@@ -848,50 +851,62 @@ class BuildProvenanceEvidence {
     return citations;
   }
 
-  /// A `provenance_logs <paths...>` claim stated on [line], or null when the
-  /// line states none.
+  /// Every `provenance_logs <paths...>` claim stated on [line], in the order
+  /// the line states them; empty when the line states none.
   ///
-  /// Sprint 117.43-32 (fail-open, fixed), two halves of one reader:
+  /// Sprint 117.43-34 (two halves of one reader, fixed): 117.43-32 moved the
+  /// reader off position zero and gave the line a segment per READER, but the
+  /// claim itself was still found with `firstMatch` and still cut at the first
+  /// rebuild restatement behind it — so:
   ///
-  ///  * it demanded the prefix at position 0, so a log restatement written
-  ///    behind another restatement matched nothing and was never compared —
-  ///    the position-as-grammar shape 117.43-30 already closed for the reader
-  ///    beside it. The prefix is now found wherever the line puts it, at a
-  ///    word boundary, and
-  ///  * it read to the end of the line, so once its sibling reader was run
-  ///    against every line too, a rebuild restatement sharing the line was
-  ///    swallowed as paths and an honest document was refused. The claim now
-  ///    stops where the line's rebuild restatement begins, so the two readers
-  ///    split the line instead of one consuming the other.
+  ///  * a SECOND claim written behind that restatement was cut away with it,
+  ///    the honest claim at the front of the line was all the reader compared,
+  ///    and a wrong log set restated after it was never opened;
+  ///  * with no restatement to cut at, the first claim ran into the second
+  ///    prefix and the marker token `provenance_logs` itself was read as one
+  ///    of the paths, so a document restating its cited logs twice stopped
+  ///    naming the cited set and was refused.
   ///
-  /// Nothing new becomes a claim: the claim is still the run of
-  /// whitespace-separated tokens the prefix introduces, a line without the
-  /// prefix still names no log, and `rebuild_a rebuilt cleanly` still states
-  /// no measurement. The only lines whose reading changes are the ones that
-  /// carry BOTH claims, which is where the two readers used to overlap.
-  static _LogSummary? _parseLogSummary(String line) {
+  /// Every claim now gets a segment of its own: it runs from its prefix to
+  /// whichever comes first — the next prefix, the line's rebuild restatement,
+  /// or the end of the line — the segmentation `_citationsIn` already gives
+  /// every citation.
+  ///
+  /// Nothing new becomes a claim: the segment is still the run of
+  /// whitespace-separated tokens its prefix introduces, an empty segment still
+  /// names no log, a line without the prefix still claims nothing, and
+  /// `rebuild_a rebuilt cleanly` still states no measurement.
+  static List<_LogSummary> _logSummariesIn(String line) {
     // The prefix still names the claim; only its POSITION on the line stops
-    // being part of the rule.
+    // being part of the rule, and the boundary is a lookahead so a prefix
+    // cannot consume the whitespace the next claim's own boundary needs.
     final claim = _kLogSummaryPrefix.trimRight();
-    final boundary = RegExp(
-      '(?:^|\\s)${RegExp.escape(claim)}\\s',
-    ).firstMatch(line);
-    if (boundary == null) return null;
-    var body = line.substring(boundary.end);
-    // Hand the line over to the rebuild reader at the point where it starts
-    // restating a rebuild, so what follows is not read as this reader's paths.
-    for (final match in _kRebuildSummaryPattern.allMatches(body)) {
-      if (match.group(1)!.startsWith('rebuild_')) {
-        body = body.substring(0, match.start);
-        break;
+    final boundary = RegExp('(?:^|\\s)${RegExp.escape(claim)}(?=\\s)');
+    final claims = boundary.allMatches(line).toList();
+    final summaries = <_LogSummary>[];
+    for (var i = 0; i < claims.length; i++) {
+      final start = claims[i].end;
+      // Hand the line over to the rebuild reader at the point where it starts
+      // restating a rebuild, and stop before the next `provenance_logs` claim,
+      // so neither claim can read the other's tokens as its own.
+      var end = i + 1 < claims.length ? claims[i + 1].start : line.length;
+      for (final match in _kRebuildSummaryPattern.allMatches(line)) {
+        if (match.start >= end) break;
+        if (match.start < start) continue;
+        if (match.group(1)!.startsWith('rebuild_')) {
+          end = match.start;
+          break;
+        }
       }
+      final paths = line
+          .substring(start, end)
+          .split(RegExp(r'\s+'))
+          .where((path) => path.isNotEmpty)
+          .toList();
+      if (paths.isEmpty) continue;
+      summaries.add(_LogSummary(paths.toSet()));
     }
-    final paths = body
-        .split(RegExp(r'\s+'))
-        .where((path) => path.isNotEmpty)
-        .toList();
-    if (paths.isEmpty) return null;
-    return _LogSummary(paths.toSet());
+    return summaries;
   }
 
   /// Every `rebuild_<label> exit_code <n> duration_seconds <n> (<a> .. <b>)`
@@ -954,19 +969,23 @@ class BuildProvenanceEvidence {
     String line,
     List<RebuildResult> rebuilds,
   ) {
-    final summary = _parseLogSummary(line);
-    if (summary == null) return false;
+    final summaries = _logSummariesIn(line);
+    if (summaries.isEmpty) return false;
     final cited = <String>{
       for (final rebuild in rebuilds)
         if (rebuild.log != null && rebuild.log!.trim().isNotEmpty)
           rebuild.log!.trim(),
     };
     if (cited.isEmpty) return false;
-    // 117.43-10 makes a cited-but-unreadable log fail closed, so the summary
-    // may neither add a log no record cites nor drop one the records do:
-    // either would restate the evidence differently from the records it
-    // summarises.
-    return !_samePathSet(summary.paths, cited);
+    // 117.43-10 makes a cited-but-unreadable log fail closed, so every claim
+    // the line states may neither add a log no record cites nor drop one the
+    // records do: each restatement is held to the same cited set, because a
+    // line may state the claim more than once and the second statement is a
+    // claim like the first (117.43-34).
+    for (final summary in summaries) {
+      if (!_samePathSet(summary.paths, cited)) return true;
+    }
+    return false;
   }
 
   /// Whether the summary's window is the rebuild's own window, and the stated

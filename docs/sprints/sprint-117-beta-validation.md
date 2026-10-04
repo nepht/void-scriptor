@@ -1119,3 +1119,103 @@ masuk di tengah run dan **tidak menyentuh** kedua file slice (dibuktikan
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
 verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-26 - satu path diberi dua digest berbeda di dalam SATU grup bukti (defect ke-21 fail-open hunt)
+
+**TIPE:** FEATURE WORK, defect ke-21 dari hunt fail-open/unmeasured-claim, slice ke-26.
+HEAD awal slice `972b4d3`, ahead 48, dirty 95, tanpa conflict marker, preflight CIM
+Win32_Process 0 proses (dicek 0 lagi tepat sebelum `flutter build`). Kedua file slice
+BERSIH sebelum mutasi, jadi **tidak ada WIP yang perlu diadopsi**. Snapshot di
+`cache/scratch/slice-117-43-26-20261004/` (head.txt, state.pre.json, provenance.pre.dart,
+gate_test.pre.dart, ledger.pre.md).
+
+**KELUARAN HUNT KELUARGA "TIDAK ADA PEMBACA":** key-level exhaustion dijalankan ulang dengan
+skrip yang menelusuri seluruh kunci manifest terhadap gabungan seluruh `git ls-files lib`.
+Hasilnya **setiap kunci sudah punya pembaca di gate**, sehingga keluarga "kunci tanpa
+pembaca" **habis di level kunci** dan hunt dialihkan ke keluarga yang lebih sulit secara
+struktur: nilai yang **dibaca lalu direstate tanpa pernah dibandingkan**.
+
+**DEFECT:** `117.43-21` mengajarkan bahwa path yang di-hash di dua grup berbeda harus bernilai
+sama, dan ia membandingkan `build_inputs` vs `dependency_lock` dengan mem-parse tiap grup
+menjadi `Map<String, String>`. Map itu **tidak mampu menampung kontradiksi**: `_digestsByPath`
+melakukan `declared[path] = digest`, sehingga baris kedua untuk path yang sama **menimpa**
+yang pertama (last-wins) sebelum ada yang membandingkannya. Jadi sumbu lain dari restatement
+yang sama sama sekali tidak diperiksa. `windows/CMakeLists.txt` **hanya disebut di
+`build_inputs`** (dibuktikan langsung dari manifest: 5 baris di `build_inputs`, `pubspec.lock`
++ 1 prosa di `dependency_lock`), sehingga reader cross-group tidak punya apa pun untuk
+membandingkannya. Akibatnya dokumen yang memberi satu file itu dua digest berbeda **di dalam
+satu grup** melaporkan tidak ada evidence hilang dan mengevaluasi `pass`, sementara gate
+mencetak `build_inputs: 5 item` seolah lima file konsisten sudah di-hash.
+
+**BUKTI SEBELUM FIX (probe terpisah, lalu dipindahkan ke test resmi):** PROBE-A dokumen
+jujur = `pass` (kontrol); **PROBE-B `windows/CMakeLists.txt` dua kali di `build_inputs` dengan
+digest berbeda = `pass`** ← defect; PROBE-C duplikasi di `dependency_lock` = `unmet`
+(sudah tertangkap 117.43-21); PROBE-D path berbeda = `pass` (kontrol).
+
+**RED:** exit 1, **TEPAT 1 gagal**, signature `Expected: not contains 'pass'` /
+`Actual: _CompactValuesIterable<String>:['pass','pass','unmet']`. Kedua kasus intra-grup
+ter-lepas, kasus `dependency_lock` sudah tertangkap oleh 117.43-21 — konsisten dengan
+analisis. **GREEN 142/142** (+3 dari 139), diulang sekali lagi setelah format.
+
+**RED PALSU YANG DIBUANG (2 kegagalan eksperimen):**
+(1) `patch` pertama merusak struktur file — badan test 117.43-25 dan grup baru saling
+interleaving, `test()` yatim menggantung di luar closure. Dipulihkan dari snapshot yang
+**terbukti byte-identik dengan HEAD** (`b4a7414…` == `git show HEAD:path`), jadi tidak ada
+kerja yang hilang; slice ditulis ulang memakai anchor yang tidak menabrak test lain.
+(2) Konstanta digest karangan ternyata **63 dan 65 karakter** (bukan 64) sehingga semua kasus
+ditolak sebagai digest **malformed**, bukan sebagai kontradiksi — kontrol `pass` gagal
+padahal test defect-nya lolos, persis jebakan "RED di tempat yang salah". Digest diganti
+dengan sha256 yang benar 64 hex (`774e3326…`, `240949bd…`) dan RED barulah jatuh di tempat
+yang benar.
+
+**BATAS ATURAN (semuanya dipin test 117.43-26):** path yang hanya disebut satu grup tidak
+punya apa untuk dibandingkan (117.43-21); **path sama yang direstate dengan digest sama
+adalah restatement idempoten, bukan kontradiksi** (dokumen boleh mengulang dirinya); prosa
+yang hanya menyebut algoritma tanpa nilai tetap non-claim (117.43-07/-11); digest setengah
+tulis sudah dilaporkan `_hasWellFormedDigestClaims` sehingga tidak diatribusikan ulang di
+sini; tidak ada syarat tentang path mana yang direstate atau berapa kali; path yang
+ terjangkau tidak bisa rescuing evidence gagal. **Hanya konsistensi yang diukur — tidak
+pernah re-hash**, sesuai batas 117.43-11 (overclaim digest ditolak).
+
+**PERBAIKAN (minimal):** helper baru `_digestsAgreeWithinGroup(List<String>?)` membandingkan
+setiap path terhadap digest **PERTAMA** yang diklaim untuknya, sehingga restatement idempoten
+tetap lulus dan hanya kontradiksi nyata yang menolak. Dipanggil untuk `build_inputs` dan
+`dependency_lock` di `missingEvidence`. Regex `^(\S+)\s+sha-?256\s+(\S+)\s*$` sengaja
+diduplikasi dari `_digestsByPath` alih-alih diekstrak, agar diff tetap satu helper baru dan
+tidak menyentuh seam 117.43-21 yang sudah hijau.
+
+**GATES:** `dart format` (write) "1 changed" exit 0 lalu `--output=none --set-exit-if-changed`
+"0 changed" exit 0 (idempoten, urutan benar per `format_idempotency_jebakan`); `dart analyze`
+2 file "No issues found!" exit 0; `git diff --check` exit 0; `flutter build windows --debug`
+exit 0, 44,9 dtk; roadmap guard PASS pre+post dengan `canonical_sha256 b7ef2d35…` TIDAK
+berubah.
+
+**SHA 4-SISI dari blob ter-commit `c2f224b` (klausul 1+2, dihitung SETELAH commit):**
+domain `f32264139501651a107e7bbf9e15318ca96c9f782040de3edbfd888d6e558e2c` (49723 B), test
+`15ef45432c267b509e15939a783ebb719368348858c11fffe704aca5ae32a940` (168310 B);
+`git show <commit>:<path>` == `sha256sum` disk == True untuk keduanya. Manifest 113 **TIDAK
+disentuh**: `b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d` (6750 B),
+commit terakhir tetap `d150973`. Probe `test/release/zz_probe_11743_26_test.dart` sudah
+**dihapus** setelah temuannya dipindahkan ke test resmi.
+
+**COMMIT:** `c2f224b` (fix, 2 path eksplisit, 258 insertions). **PUSH:** tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +151 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **142/142 LULUS** (seluruh
+keluarga 117.43-14..-26), 2 kegagalan **keduanya 113.39 pre-existing** dengan signature PERSIS
+sama seperti run-run sebelumnya: `dependency lock evidence matches the live lockfile`
+(record manifest `32e31fd3…` vs live lock `c9a365e6…`) dan `signed release artifact from
+113.38 remains intact` (expected `73101e78…`, actual `c7a33055…`). **Tidak ada satupun
+meng-import gate 117. Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu
+hanya hitungan 2 file terarah ini, bukan seluruh repo.
+
+**KEADAAN REPOSITORI:** dirty 95 -> 97 (selisih = 2 file slice keluar dari working tree saat
+commit, sisanya milik worker lain). HEAD `972b4d3 -> 90be06e -> c2f224b`, ahead 48 -> 50; satu
+commit sibling `90be06e test(a11y): audit focus order ProductionAssetWorkspaceScreen` masuk di
+tengah slice dan **tidak menyentuh** kedua file slice (dibuktikan `git log 972b4d3..HEAD --
+<2 path>` kosong), jadi tidak ada tabrakan writer.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
+verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-04T13:10:00+07:00",
-  "updated_by": "core_worker_cron_117.43-25",
+  "updated_at": "2026-10-04T14:40:00+07:00",
+  "updated_by": "hermes-cron-core-worker (117.43-26)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3333,11 +3333,12 @@
       "probes_remaining": 0
     },
     "latest_slice": {
-      "id": "117.43-25",
-      "defect": "a shipped provenance_record line cites a document and asserts it was verified ('signed_candidate <path> ... verified intact') and the measureProvenance seam never opens the path it cites, so a claim about a tree nothing could open received provenance_evaluation: pass",
-      "commit": "3d6d200",
-      "hunt": "unmeasured-claim / fail-open, twentieth slice of the family",
-      "status": "PARTIAL-LOCAL"
+      "slice": "117.43-26",
+      "hunt_number": 21,
+      "commit": "c2f224b",
+      "on": "2026-10-04",
+      "status": "FIXED-LOCAL",
+      "gate_result": "142/142 PASS"
     },
     "defect_117_43_19": {
       "status": "FIXED-LOCAL",
@@ -3553,7 +3554,7 @@
       "guard": "roadmap_guard.dart PASS pre and post; canonical_sha256 b7ef2d35... UNCHANGED",
       "full_suite_claimed": false
     },
-    "last_run_summary": "Slice 117.43-24 (unmeasured-claim hunt #19, family #19): ArtifactComparison.method states BOTH the algorithm and the scope; 117.43-22 read only the algorithm, so nothing ever compared the stated count or the enumerated artifact names against the recorded digests. Six digests under a method claiming four (or naming an artifact no rebuild hashed) reported missingEvidence [] and provenance_evaluation: pass while the gate printed '(6 artifact)'. Fixed in the same fail-closed shape as 117.43-22/-23: a count that does not match the recorded inventory and a named artifact never hashed are refused; a sentence making no scope claim and an ILLUSTRATIVE enumeration are not, because requiring completeness would invent an acceptance criterion. RED exit 1 with exactly 1 failure at line 717 (controls green, incl. the real shipped method read from disk); RED boundary re-proven against the HEAD blob d5e244b9 with the same single failure at the same line. GREEN +145 -2 across the two directed files; the 2 failures are the pre-existing 113.39 pair with byte-identical signatures (root 117.43-02, unchanged). Format idempotent, analyzer clean, diff --check clean, windows --debug build exit 0 in 26,1s, guard PASS pre+post. Commit 83c7d64 (2 explicit paths, 247 insertions); HEAD 53308bf -> 83c7d64, ahead 39 -> 41 (a sibling a11y commit 5ff642b landed mid-run and did NOT touch either slice file). Step stays PARTIAL-LOCAL: 117.43-02 is still open awaiting an operator decision, so the guard pointer remains on 117.43.",
+    "last_run_summary": "Slice 117.43-26 (defect ke-21 fail-open hunt) SELESAI + COMMIT. HEAD 972b4d3 -> 90be06e (sibling a11y, tidak menyentuh 2 file slice) -> c2f224b, ahead 48 -> 50, dirty 95 -> 97. DEFECT: 117.43-21 membandingkan build_inputs vs dependency_lock lewat Map<String,String> yang tidak mampu menampung kontradiksi - declared[path]=digest menimpa baris pertama, sehingga sumbu intra-grup dari restatement yang sama tidak pernah diperiksa; windows/CMakeLists.txt hanya disebut di build_inputs sehingga reader cross-group tidak punya apa pun untuk dibandingkan, dan dokumen yang memberi satu file itu dua digest berbeda di dalam satu grup tetap dievaluasi pass sambil mencetak 'build_inputs: 5 item'. RED exit 1 TEPAT 1 gagal signature Expected not contains 'pass' / Actual ['pass','pass','unmet'] -> GREEN 142/142 (+3). DUA RED PALSU DIBUANG: patch pertama merusak struktur file (dipulihkan dari snapshot byte-identik dengan HEAD, tidak ada kerja hilang) dan konstanta digest karangan 63/65 char sehingga semua kasus ditolak sebagai MALFORMED bukan kontradiksi (diganti sha256 64 hex asli). GATES: format 1 changed lalu 0 changed exit 0, analyze No issues found! exit 0, diff --check 0, build windows --debug exit 0 44,9 dtk, guard PASS pre+post canonical_sha256 b7ef2d35 TIDAK berubah. SHA 4-SISI dari blob ter-commit c2f224b: domain f32264139501651a..., test 15ef45432c267b50..., blob==disk==ledger==state semua True; manifest 113 tidak disentuh b4f8739b71cc999f. REGRESI TERARIH 2 file exit 1 +151 -2: gate 117 142/142 LULUS, 2 fail KEDUA 113.39 pre-existing signature PERSIS sama (tidak ada yang meng-import gate 117); TIDAK ada klaim suite penuh. STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. PUSH: tidak. TODO-OPERATOR 117.43-02 tetap BLOCKER.",
     "defect_117_43_25": {
       "status": "FIXED-LOCAL",
       "slice": "117.43-25",
@@ -3599,6 +3600,55 @@
       "build": "flutter build windows --debug exit 0, 23,3 s",
       "guard": "roadmap_guard.dart PASS pre and post; canonical_sha256 b7ef2d35... UNCHANGED",
       "full_suite_claimed": false
+    },
+    "defect_117_43_26": {
+      "slice": "117.43-26",
+      "hunt": "fail-open / intra-group digest restatement",
+      "defect_number": 21,
+      "summary": "117.43-21 compared build_inputs against dependency_lock by parsing each group into a Map<String, String>; that map cannot hold a contradiction because _digestsByPath assigns declared[path] = digest, so a second line naming the same path silently overwrote the first before anything compared them. windows/CMakeLists.txt is named in build_inputs and NOWHERE ELSE, so the cross-group reader had nothing to compare it against: a document giving that one file two different digests inside a single group reported no missing evidence and evaluated to pass while the gate printed 'build_inputs: 5 item'.",
+      "proven_before_fix": "Throwaway probe against the shipped manifest: windows/CMakeLists.txt stated twice in build_inputs with different digests -> pass (PROBE-B). Control PROBE-A honest document -> pass; PROBE-C duplicate in dependency_lock -> unmet (already caught by 117.43-21); PROBE-D distinct path -> pass.",
+      "fix": "New helper _digestsAgreeWithinGroup(List<String>?) compares every path against the FIRST digest claimed for it, so an idempotent restatement still passes and only a real contradiction refuses. Called for build_inputs and dependency_lock in missingEvidence. Regex duplicated from _digestsByPath on purpose to keep the diff to one new helper and leave the already-green 117.43-21 seam untouched.",
+      "bounds": "Only consistency is measured, never re-hash (117.43-11). Same path with same digest is an idempotent restatement, not a contradiction. Prose naming the algorithm without a value stays a non-claim (117.43-07/-11). A half-written digest is already reported by _hasWellFormedDigestClaims and is not re-attributed. No requirement about which paths are restated or how often. A reachable path cannot rescue failing evidence.",
+      "measure_only": "consistency of stated digests; no file bytes are re-hashed",
+      "status": "FIXED-LOCAL",
+      "slice_commit": "c2f224b",
+      "files": {
+        "lib/features/world_logic/domain/build_reproducibility_provenance.dart": {
+          "sha256": "f32264139501651a107e7bbf9e15318ca96c9f782040de3edbfd888d6e558e2c",
+          "bytes": 49723,
+          "source": "git show c2f224b:<path>",
+          "blob_equals_disk": true
+        },
+        "test/release/sprint_117_ga_artifact_reproducibility_test.dart": {
+          "sha256": "15ef45432c267b509e15939a783ebb719368348858c11fffe704aca5ae32a940",
+          "bytes": 168310,
+          "source": "git show c2f224b:<path>",
+          "blob_equals_disk": true
+        }
+      },
+      "gates": {
+        "red": "exit 1, EXACTLY 1 failure, Expected: not contains 'pass' / Actual: ['pass','pass','unmet']",
+        "green": "142/142 (+3 from 139), re-run once after format",
+        "dart_format_write": "exit 0, 1 changed",
+        "dart_format_idempotent": "exit 0, 0 changed",
+        "dart_analyze": "exit 0, No issues found!",
+        "git_diff_check": "exit 0",
+        "flutter_build_windows_debug": "exit 0, 44.9s",
+        "roadmap_guard": "PASS pre and post, canonical_sha256 b7ef2d35 unchanged"
+      },
+      "false_red_discarded": [
+        "patch #1 tangled the file structure (117.43-25 body and the new group interleaved, orphan test() outside the closure); recovered from a snapshot proven byte-identical to HEAD (b4a7414 == git show HEAD:path), so no work was lost",
+        "hand-written digest constants were 63 and 65 chars instead of 64, so every case was refused as a MALFORMED digest rather than a contradiction; replaced with real 64-hex sha256 values (774e3326, 240949bd) and the RED then landed in the right place"
+      ],
+      "targeted_regression": "2 files, exit 1, +151 -2: gate 117 142/142 PASS (whole 117.43-14..-26 family); both failures are 113.39 pre-existing with identical signatures (lock 32e31fd3 vs c9a365e6; artifact 73101e78 vs c7a33055). Nothing imports gate 117. No full-suite claim (full_suite_trap).",
+      "manifest_113_untouched": "b4f8739b71cc999f4bd857d60d21cbf8470b022e79935bb48129904af9b0909d, 6750 B, last commit d150973",
+      "probe_removed": "test/release/zz_probe_11743_26_test.dart deleted after its findings moved into the official test"
+    },
+    "gates_reverified_run17_2026_10_04": {
+      "run": 17,
+      "on": "2026-10-04",
+      "slice": "117.43-26",
+      "result": "all slice gates green, see defect_117_43_26.gates"
     }
   },
   "sprint_117_step_11744": {

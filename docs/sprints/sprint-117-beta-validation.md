@@ -701,7 +701,7 @@ ketiga test 117.43-20 dan seluruh keluarga 117.43-18/-19/-20), 2 kegagalan **ked
 dan `signed release artifact from 113.38 remains intact` (expected `73101e78…`, actual
 `c7a33055…`). Yang kedua **direproduksi ulang dengan implementasi slice ini DIHAPUS**
 (`git show HEAD:` ke domain), signature identik - membuktikan tidak terkait dengan slice ini.
-Tidak ada satupun meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan
+Tidak ada satupun yang meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan
 `full_suite_trap`); `-2` itu hanya hitungan 2 file terarah ini, bukan seluruh repo.
 
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
@@ -783,7 +783,7 @@ pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
 lock `c9a365e6…`, diverifikasi ulang di run ini: `sha256sum pubspec.lock` =
 `c9a365e6402b1128199dc3915eb365f4a6cacfb13ac70fbb323582dcee8386e4`, file tidak berubah) dan
 `signed release artifact from 113.38 remains intact` (expected `73101e78…`, actual
-`c7a33055…`). **Tidak ada satupun meng-import gate 117.** **Tidak ada klaim suite penuh**
+`c7a33055…`). **Tidak ada satupun yang meng-import gate 117.** **Tidak ada klaim suite penuh**
 (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file terarah ini, bukan seluruh repo.
 Manifest 113.39 dan `pubspec.lock` TIDAK disentuh run ini.
 
@@ -888,7 +888,7 @@ seluruhnya (termasuk seluruh keluarga 117.43-14..-23), 2 kegagalan **keduanya 11
 pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
 `dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
 lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
-`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun yang meng-import gate 117.**
 **Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
 terarah ini, bukan seluruh repo.
 
@@ -991,7 +991,7 @@ seluruhnya (termasuk seluruh keluarga 117.43-14..-24), 2 kegagalan **keduanya 11
 pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
 `dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
 lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
-`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun yang meng-import gate 117.**
 **Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
 terarah ini, bukan seluruh repo.
 
@@ -1105,7 +1105,7 @@ seluruhnya (termasuk seluruh keluarga 117.43-14..-25), 2 kegagalan **keduanya 11
 pre-existing** dengan signature PERSIS sama seperti run sebelumnya:
 `dependency lock evidence matches the live lockfile` (record manifest `32e31fd3…` vs live
 lock `c9a365e6…`) dan `signed release artifact from 113.38 remains intact` (expected
-`73101e78…`, actual `c7a33055…`). **Tidak ada satupun meng-import gate 117.**
+`73101e78…`, actual `c7a33055…`). **Tidak ada satupun yang meng-import gate 117.**
 **Tidak ada klaim suite penuh** (jebakan `full_suite_trap`); `-2` itu hanya hitungan 2 file
 terarah ini, bukan seluruh repo.
 
@@ -1218,4 +1218,101 @@ tengah slice dan **tidak menyentuh** kedua file slice (dibuktikan `git log 972b4
 **STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
 karena `_isResolved` hanya menerima VERIFIED/COMPLETED sedangkan gate masih INCOMPLETE,
 verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
+**TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.
+
+### Slice 117.43-27 - satu baris yang menyatakan dua digest berbeda untuk satu path lolos (defect ke-22 fail-open hunt)
+
+**HEAD awal** `1ef3306` (ahead 52, dirty 95). Kedua file slice BERSIH sebelum mutasi
+(`git status --porcelain -- <2 path>` = 0), jadi tidak ada WIP yang perlu diadopsi. Snapshot
+byte-identik dengan HEAD di `cache/scratch/slice11743-27-20261004-100621/` (3 file;
+dibuktikan dengan SHA-256, bukan `cmp` — `cmp` di MSYS melaporkan DIFFERS untuk byte
+identik, jadi sha256sum adalah pembuktian yang sah di sini).
+
+**KELUARAN HUNT (keluarga "dibaca lalu direstate tanpa pernah dibandingkan" continues):**
+key-level exhaustion sudah HABIS di run sebelumnya (seluruh kunci manifest punya
+pembaca), jadi hunt turun satu lapis ke bentuk claim-nya. Defect 117.43-26 Holding path
+satu grup dua digest berbeda, tapi regex-nya `^(\S+)\s+sha-?256\s+(\S+)\s*$` ter-anchor
+di KEDUA ujung sehingga hanya bisa membaca SATU claim per baris. Baris yang menyatakan
+claim-nya DUA KALI pada satu baris tidak sekadar tidak dibandingkan — pola itu tidak
+cocok sama sekali, jadi barisnya dilewati persis seperti prosa dilewati, dan
+kontradiksinya mencapai verdict tanpa pernah diperiksa. Aturan 117.43-26 hanya bisa
+menyalakan pada BENTUK yang kebetulan dipakai dokumen terkirim; bentuk dua-baris sudah
+ditangkap, bentuk satu-baris tidak pernah terlihat sama sekali.
+
+**BUKTI PRE-FIX (probe `test/release/zz_probe_11743_27_test.dart`, exit 0):**
+
+| PROBE | kasus | hasil |
+|---|---|---|
+| A | dokumen jujur (kontrol) | `pass` |
+| B | 1 baris, 1 path, 2 digest berbeda | **`pass` — DEFECT** |
+| B2 | 1 baris, path yang di-restate lintas grup (`pubspec.lock`) | **`pass` — DEFECT** |
+| C | 1 baris, digest SAMA dua kali (kontrol) | `pass` |
+| D | prosa menyebut `sha256` tanpa nilai (kontrol) | `pass` |
+| E | 1 baris, 2 digest berbeda, path tak pernah dinyatakan | **`pass` — DEFECT** |
+
+Probe memakai digest **64-hex asli** yang diambil dari dokumen terkirim
+(`65149b3d…` untuk `windows/CMakeLists.txt`, `32e31fd3…` untuk `pubspec.lock`), bukan
+digest karangan. Ini disengaja: digest 63/65 karakter akan ditolak sebagai MALFORMED
+oleh 117.43-11 — persis jebakan RED di tempat yang salah yang menimpa slice 117.43-26.
+Kasus harus gagal HANYA karena dua digestnya berbeda.
+
+**RED (exit 1, TEPAT 1 gagal):** `Expected: not contains 'pass'`, `Actual:
+['pass','pass','pass','pass']` — keempat kasus defect lolos, sementara test kontrol
+(digest sama dua kali, prosa tanpa nilai, dokumen jujur, path yang tidak bisa di-rescue mencapai verdict)
+**LULUS**. Satu kegagalan, di tempat yang benar.
+
+**PERBAIKAN (satu helper, bukan logika yang disalin):** helper baru
+`_digestClaimsIn(String line)` membaca satu baris sebagai SEQUENCE of claims, bukan satu
+claim. Token penanda (`sha256`/`SHA-256`, `_digestMarkerPattern`) memperkenalkan digest
+berikutnya; path adalah token sebelum penanda — KECUALI bila token itu sendiri digest
+yang well-formed (maka itu digest claim sebelumnya dan penanda ini me-restate path yang
+sama, persis bentuk yang 117.43-26 tolak lintas dua baris). `_digestsAgreeWithinGroup`
+k memanggil helper itu; `_digestsByPath` (117.43-21, lintas grup) dan
+`_hasWellFormedDigestClaims` (117.43-11) **tidak disentuh** sehingga seam yang sudah hijau
+tetap hijau. Regex sengaja tidak try-catch atau fallback: bentuk dua-baris yang dulu
+ditangkap tetap tertangkap karena sekarang menjadi dua entry map dengan path sama.
+
+**BATAS ATURAN (semuanya dipin test, tidak ada acceptance baru):** digest SAMA dua kali
+pada satu baris tetap restatement idempoten (117.43-26 sudah menerima bentuk ulang satu
+baris penuh, satu baris harus sama-baiknya); penanda yang menyebut algoritma tanpa
+nilai tetap non-claim (117.43-07, 117.43-11) — inilah yang menjaga prosa
+`hosted dependencies hash-pinned sha256; …` yang ada di dokumen terkirim tetap jujur;
+DUA PATH BERBEDA pada satu baris (`a.cpp sha256 <a> b.cpp sha256 <b>`) tetap dua claim,
+bukan kontradiksi, karena token biasa di antara kedua digest dibaca sebagai path berikutnya
+persis seperti pembaca satu-claim-per-baris membacanya sebelumnya; tidak ada demander
+tentang path mana yang dinyatakan atau berapa kali.
+
+**GREEN:** `sprint_117_ga_artifact_reproducibility_test.dart` **144/144 LULUS** (+2 dari
+142), diulang sekali lagi setelah format. Format: tulis 1 changed exit 0, lalu
+`--output=none --set-exit-if-changed` 0 changed exit 0 = bukti idempoten (urutan MSYS yang
+benar). `flutter analyze` 2 file "No issues found!" exit 0. `git diff --check` bersih.
+`flutter build windows --debug` exit 0, 73,4 dtk.
+
+**SHA 4-SISI dari blob ter-commit `ed414d6` (klausul 1+2, dihitung SETELAH commit):**
+domain `47c3d6bc97585de4f02ebf7384bec4db188d2a0e978fda66e0d2116a0ab15ad6` (53080 B),
+test `b243740bdfe04ac56f82fcbe0e2d88f87123867c787f2f95ed28aaeaf7842fa7` (176948 B);
+`git show <commit>:<path>` == `sha256sum` disk == True untuk keduanya. Manifest 113 **TIDAK
+disentuh**: `f02c65c0b3624267ade80a37cd8ad8a66413092ddca877cc45aa60b5c7b248f7` (sha dari
+blob HEAD), `git status --porcelain` untuk path itu = 0. Probe
+`test/release/zz_probe_11743_27_test.dart` sudah **dihapus** (verifikasi `git status
+--porcelain` = 0) setelah temuannya dipindahkan ke test resmi.
+
+**COMMIT:** `ed414d6` (fix, 2 path eksplisit, 267 insertions / 13 deletions). **PUSH:**
+tidak.
+
+**REGRESI TERARIH 2 file (exit 1, +153 -2):** `sprint_113_build_reproducibility_provenance_test.dart`
++ `sprint_117_ga_artifact_reproducibility_test.dart`. Slice 117 = **144/144 LULUS** (seluruh
+keluarga 117.43-14..-27), 2 kegagalan **keduanya 113.39 pre-existing** dengan signature
+PERSIS sama seperti run-run sebelumnya: `dependency lock evidence matches the live
+lockfile` (record manifest `32e31fd3…` vs live lock `c9a365e6…`) dan `signed release
+artifact from 113.38 remains intact` (expected `73101e78…`, actual `c7a33055…`).
+Tidak ada satupun yang meng-import gate 117. **Tidak ada klaim suite penuh** (jebakan
+`full_suite_trap`); `-2` itu hanya hitungan 2 file terarah ini.
+
+**KEADAAN REPOSITORI:** dirty 95 -> 98 (selisih = 2 file slice keluar dari working tree saat
+commit, sisanya milik worker lain). HEAD `1ef3306 -> ed414d6`, ahead 52 -> 53. Tidak ada
+sibling commit yang menyentuh kedua file slice pada run ini.
+
+**STATUS TIDAK BERUBAH: PARTIAL-LOCAL**, `next_step` tetap **117.43**; step tidak ditutup
+karena gate masih INCOMPLETE, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`.
 **TODO-OPERATOR 117.43-02 tetap blocker** dan tidak berubah. Cron tidak mengarang pilihan.

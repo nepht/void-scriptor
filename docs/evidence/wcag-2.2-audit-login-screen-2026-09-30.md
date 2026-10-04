@@ -3487,6 +3487,94 @@ Dokumen ini memakai line ending LF (0 CRLF / 3511 LF saat pemeriksaan), bukan CR
 asumsi awal. Penyisipan section dilakukan dengan `newline=''` pada mode baca dan tulis sehingga
 line ending file tidak dikonversi.
 
+## 64. Fase 64 — Focus Order di ProjectReferenceLibraryScreen (2.4.3)
+
+Layar: `lib/features/references/presentation/project_reference_library_screen.dart`
+(`ProjectReferenceLibraryScreen`, `ConsumerWidget` tanpa argumen constructor).
+Kontrak: `test/features/references/project_reference_library_focus_order_test.dart`.
+
+### Sasaran
+
+Wrapper project-level ini merender `ReferenceLibraryScreen` dengan data dari
+`projectReferencesProvider`. Tanpa sesi proyek aktif, provider mengembalikan
+`const []`, sehingga tidak ada kartu yang muncul dan hanya baris filter yang
+harus terjangkau keyboard. Kontrak mengunci urutan itu - jalur grid kartu sudah
+diaudit terpisah di `reference_library_focus_order_test.dart`.
+
+### Probe
+
+Probe sementara `test/_probe_focus_test.dart` (dihapus setelah kontrak ditulis)
+mempompa layar pada viewport 1536x1024, dpr 1.0, di bawah `ProviderScope` polos,
+lalu menekan `LogicalKeyboardKey.tab` berulang sambil mencatat label `Text`
+pertama dan `Rect` fokus tiap stop sampai siklus berulang.
+
+Sensus atas 42 layar `lib/features/*/presentation/*_screen.dart` yang belum
+diaudit (32 git-clean, 10 sibling-dirty) menunjukkan hampir semuanya adalah shell
+demo: node fokus yang ada hanyalah root focus scope di 0,0,1536x1024. Hanya
+tiga layar punya kontrol nyata - `multiverse_graph_screen` (1 stop),
+`publishing_dashboard_screen` (1 stop, tombol `New Release`), dan
+`project_reference_library_screen` (2 stop). Layar terakhir dipilih karena satu-
+satunya dengan rantai multi-stop yang bisa diuji tanpa database.
+
+Rantai siklis 2 stop + wrap:
+
+| # | Label | Rect (L, T, W, H) |
+|---|-------|-------------------|
+| 1 | field:Search References... | 598.2, 88.0, 352.0, 24.0 |
+| 2 | All types | 978.2, 76.0, 201.6, 48.0 |
+| 3 | field:Search References... | 598.2, 88.0, 352.0, 24.0 (wrap) |
+
+### Koreksi teknik probe
+
+Dua artefak probe sempat salah dan keduanya sudah dibantah oleh bukti:
+
+- **Baca fokus sebelum Tab.** Varian pertama membaca `primaryFocus` lalu
+  menekan Tab, sehingga mengunci root `_FocusScopeWithExternalFocusNode` dan
+  membuat setiap layar tampak punya satu stop. Teknik kanonik di
+  `project_bible_workspace_screen_focus_order_test.dart` adalah Tab dulu, baru
+  baca `primaryFocus`.
+- **Satu `testWidgets` untuk banyak layar.** 26 layar dalam satu body test
+  menyisakan root scope `FocusManager` terikat ke pohon pertama, sehingga
+  traversal berhenti maju. Setelah tiap layar dipompa di body test sendiri,
+  hasilnya cocok dengan probe manual per layar.
+
+Keduanya diperbaiki di generator probe; hasil akhir bukan artefak harness.
+
+### Yang dikunci kontrak
+
+- jumlah stop tepat 2 lalu wrap: `['field:Search References...', 'All types']`;
+- urutan kiri-ke-kanan: `search.rect.left < types.rect.left`;
+- satu baris filter: `search.rect.top < types.rect.bottom`;
+- setiap stop punya `width > 0` dan `height > 0`;
+- tanpa sesi proyek tidak ada stop `tooltip:` (aksi Import butuh sesi);
+- dropdown tipe tetap terbuka dan bebas exception saat diaktifkan keyboard.
+
+### Bukti
+
+- `dart format` exit 0, `dart analyze` `No issues found!`.
+- `flutter test` file kontrak: `+3: All tests passed!`.
+- Negative control: `_expectedLabels` ditukar urutannya, hasil
+  `+1 -2: Some tests failed.` dengan `Expected: ['All types', 'field:Search
+  References...']` vs `Actual: ['field:Search References...', 'All types']`;
+  file dipulihkan dari backup dan `+3: All tests passed!` terverifikasi ulang.
+- Gate feature `flutter test test/features/references/`: `+36: All tests passed!`.
+- Scan CJK/Cyrillic pada test dan pesan commit: `none`.
+
+### Catatan
+
+- `project_reference_library_screen.dart` sendiri sedang dirty milik sibling
+  (rename mekanis `.valueOrNull` -> `.value` pada dua baris
+  `projectSessionProvider`). File itu tidak disentuh dan tidak di-commit; kontrak
+  hanya bergantung pada bentuk konstruktor dan perilaku filter yang stabil.
+- `RenderFlex` overflow di
+  `lib/features/world/presentation/world_simulation_workspace_screen.dart:43`
+  teramati saat probe batch dan bersifat pre-existing. Tidak diperbaiki di fase
+  ini karena di luar scope fokus order.
+- `splash_screen` (butuh `onComplete`) dan `execution_monitor_screen` (butuh
+  `WorkflowMonitorSnapshot`) ditandai DEFERRED: fixture-nya tidak.hermetik.
+- 42 layar belum diaudit; 40 di antaranya terbukti satu focus stop (shell demo)
+  dan tidak layak jadi target kontrak 2.4.3 tanpa perubahan UI lebih dulu.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

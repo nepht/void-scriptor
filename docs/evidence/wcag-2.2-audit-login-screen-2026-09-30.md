@@ -4271,6 +4271,46 @@ Interpretasi: **3 stop unik** dalam SATU baris `Wrap` (top identik 373.8, left n
 
 **Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
 
+## 77. Fase 77 — Focus Order di ProjectAiGenerationGalleryScreen (2.4.3)
+
+**Layar**: `lib/features/ai/presentation/project_ai_generation_gallery_screen.dart:32` (`ProjectAiGenerationGalleryScreen`, `ConsumerWidget`) — galeri output generasi AI tingkat proyek. Kelas ini membungkus `AiGenerationGalleryScreen` (sudah diaudit di fase lama, kontrak 2 stop) dan menambahkan dua keputusan sendiri: session null -> callback `onUseAsReference`/`onCompareWithPrimary` jadi `null` (tombol disabled, tidak focusable), session non-null -> kedua callback aktif. Kontrak lama tidak pernah membuktikan jalur session aktif, jadi urutan Tab pada 4 tombol kartu belum terkunci.
+
+**Pemilihan layar (evidence, bukan asumsi)**: pemindaian per-kelas atas 32 kelas `*Screen` di `lib/features/*/presentation/*_screen.dart` yang tidak disebut kontrak focus order manapun (deteksi = nama kelas dari file layar vs seluruh isi `test/**/*_focus_order_test.dart`) menyisakan hanya **dua** kelas dengan >=2 handler interaktif non-null: `ProjectAiGenerationGalleryScreen` (10 handler) dan `AutomationCenterScreen` (6 hit, tapi semuanya `Switch(onChanged: null)` / `ListTile` tanpa `onTap` = tetap 1 stop, sudah gugur di fase 73). 30 sisanya = 0-1 handler (scroll view / placeholder). Karena itu fase ini memakai layar ini; fixture-nya murni in-memory (override dua provider), tanpa database, tanpa file system, tanpa network.
+
+**Probe (sekali pakai, dihapus setelah kontrak dibuat)**: `test/features/ai/presentation/_probe_focus_test.dart`, viewport 1536x1024, `devicePixelRatio 1.0`, loop `LogicalKeyboardKey.tab` maks 20, berhenti saat rect berulang. Fixture: `projectSessionProvider` di-override dengan `_FakeSession implements ProjectSession` (`noSuchMethod` — penanda project terbuka saja, tidak ada anggota yang diakses saat render) dan `projectGenerationOutputsProvider` di-override dengan 2 item berpath `missing.png`/`missing2.png` (sengaja tidak ada -> `ColoredBox`, tanpa decode gambar). Output live:
+
+```
+STOP 0: label="Use as Reference" rect=Rect.fromLTRB(32.0, 286.0, 281.6, 326.0)
+STOP 1: label="Use as Reference" rect=Rect.fromLTRB(336.0, 286.0, 585.6, 326.0)
+STOP 2: label="Compare with Primary" rect=Rect.fromLTRB(32.0, 330.0, 288.0, 386.0)
+STOP 3: label="Compare with Primary" rect=Rect.fromLTRB(336.0, 330.0, 592.0, 386.0)
+STOP 4: label="Use as Reference" rect=Rect.fromLTRB(32.0, 286.0, 281.6, 326.0)  -> REPEAT
+```
+
+Interpretasi: **4 stop unik + wrap**. Urutan Tab membaca **baris demi baris di seluruh grid** (bukan per kartu): baris 1 = dua tombol `Use as Reference` (kiri 32 -> kanan 336, top identik 286), baru baris 2 = dua tombol `Compare with Primary` (kiri 32 -> kanan 336, top identik 330). Ini konsisten dengan `ReadingOrderTraversalPolicy` bawaan `MaterialApp` atas grid dua kartu selebar 1536 px; urutan Tab = urutan baca visual, tanpa lompat kolom.
+
+**Kontrak**: `test/features/ai/presentation/project_ai_generation_gallery_screen_focus_order_test.dart` (1 testWidgets) mengunci 4 hal:
+1. Jumlah stop = 4 unik + wrap, label persis `['Use as Reference', 'Use as Reference', 'Compare with Primary', 'Compare with Primary', <stop pertama lagi>]`.
+2. Area fokus non-zero di tiap stop.
+3. Properti posisi baris: `top` stop 0 dan 1 identik (satu baris), `left` stop 1 > stop 0 (kiri-ke-kanan), `top` stop 2 dan 3 > baris 1 (atas-ke-bawah).
+4. Properti posisi kolom: `left` stop 2 == stop 0 dan `left` stop 3 == stop 1 (dua kolom kartu sejajar), `top` stop 3 == stop 2.
+
+**Gate (jalur langsung)**:
+- `dart format --set-exit-if-changed <file>` -> `0 changed` (exit 0).
+- `dart analyze <file>` -> `No issues found!` (exit 0). Analisis penuh `dart analyze` repo = 210 issue, semuanya di file luar scope run ini (`test/release/scratch_*`, `test/app/bootstrap/*`, `test/shared/*`) — tidak ada satu pun di file run ini.
+- `flutter test <file>` -> `00:01 +1: All tests passed!` (exit 0).
+- Gate suite `flutter test test/features/ai/` -> `01:03 +177: All tests passed!` (exit 0).
+
+**Negative control WAJIB**: backup `cp` ke `C:/Users/nepht/AppData/Local/Temp/negctl_focus_order.bak`, lalu tukar urutan `_expectedLabels` menjadi `['Compare with Primary', 'Use as Reference', 'Compare with Primary', 'Use as Reference']`. Hasil: exit 1, `Some tests failed.` dengan `Which: at location [0] is 'Use as Reference' instead of 'Compare with Primary'` pada `...focus_order_test.dart:112` — kontrak TERBUKTI punya gigi (ekspektasi urutan benar-benar mengikat). Restore dari backup -> `All tests passed!` (exit 0); backup dan mutator dihapus, keberadaannya diverifikasi hilang.
+
+**Tidak ada perubahan kode produksi**: probe membuktikan urutan Tab sudah benar secara visual (baris demi baris, kiri-ke-kanan, sesuai urutan baca), jadi tidak ada sentuhan pada `lib/`.
+
+**Counter (dihitung ulang dari live)**: `git ls-files test | grep -c focus_order` = **67 file ter-commit** sebelum run ini; kontrak fase ini menambah 1 file sehingga setelah commit menjadi **68 (67 + 1)**. Cakupan union per-file (nama kelas `*Screen` dari 89 file `lib/features/*/presentation/*_screen.dart` yang disebut kontrak focus order on-disk, file kontrak ini dikecualikan saat menghitung "sebelum") 58 -> **59 file tercakup, sisa 30 dari 89**; basis kelas 93: 60 -> 61 tercakup. Sisa 30 kandidat semuanya 0-1 handler interaktif non-null (konteks: 12 di antaranya `0 handler`, mayoritas placeholder/scroll view) sehingga tidak memenuhi ambang >=2 elemen.
+
+**Catatan format**: report ini terbaca **LF-only (0 CRLF)** — dibaca/tulis dengan `newline=''`, sisipan section ditulis dengan `\n` agar konsisten dengan isi file (sama seperti fase 69/71/72/73/74/75/76). Scan CJK/Cyrillic pada file kontrak, section report ini, dan pesan commit: `none`.
+
+**Status: VERIFIED (test-level)**. Native/GUI keyboard proof tidak diminta pada run ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

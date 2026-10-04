@@ -2170,3 +2170,104 @@ tak terdefinisi; (b) varian huruf besar `Rebuild_a_duration_seconds: 999`
 juga `pass` (trim tidak mengubah huruf); (c) lookup kunci tingkat dokumen
 tanpa trim (`provenanceManifest['rebuild_run']`, `['comparison']`) belum
 diprobe - perkiraan: kunci ber-spasi dianggap grup absen/non-claim.
+
+### Slice 117.43-39 - kunci tingkat dokumen hanya terbaca kalau spasi di
+sekelilingnya nol (defect ke-34 fail-open hunt)
+
+DEFECT. Seluruh lookup kunci tingkat dokumen di
+`sprint_117_ga_artifact_reproducibility.dart` memakai pencocokan persis:
+`provenanceManifest['required_evidence']` (:808), `provenanceManifest['rebuild_run']` (:822), `document.containsKey('limits')`
+(:941),
+`containsKey('version')` (:1004), `containsKey('canonical_step')` (:1040), dan
+loop `['status','decision']` (:969) - padahal 117.43-38 baru menetapkan
+prinsip "whitespace around a key changes no meaning" untuk anggota
+`rebuild_run` satu lantai di bawahnya. Karena ketidakhadiran = non-claim
+(117.43-07), satu spasi di depan nama kunci mematikan seluruh refusal di file
+itu. Probe (`cache/probe_117_43_39_test.dart`, kini dihapus) membuktikan lima
+baris, masing-masing dari dokumen yang sama dengan hanya kunci yang digeser
+satu spasi: `status` `BROKEN-LOCAL` unmet -> pass; `rebuild_run` berisi
+`cycles: 999` unmet -> pass; `canonical_step` `113.40` unmet -> pass; `limits:
+42` unmet -> pass; `version: 42` unmet -> pass. Kontrolnya: nilai identik di
+bawah kunci persis menghasilkan `unmet` lima-limanya, jadi satu-satunya
+variabel memang whitespace kuncinya.
+
+KEPUTUSAN dua kandidat lain yang ikut diprobe (bukan defect): (a)
+`rebuild__duration_seconds: 999` = `pass` karena regex
+`^(rebuild_.+)_duration_seconds$` mensyaratkan minimal satu karakter label
+sehingga kunci degenerat itu tak pernah cocok; (b) `Rebuild_a_duration_seconds: 999` = `pass` karena `trim()` tidak
+melipat huruf. Keduanya bukan
+varian-spasi dari kunci terdefinisi, sehingga vocabulary tak terdefinisi ->
+non-claim, sejajar `cold_rebuilds` dan `rebuild_a_duration` yang sudah dipin
+pada 117.43-38; keduanya kini dipin eksplisit di test baru. Kandidat (c)
+`['comparison']` tidak ada sebagai lookup tingkat dokumen di `lib/` - yang
+ada `evidence['artifact_comparison']` (:1083), tingkat group, di luar scope
+slice ini.
+
+RED. Sembilan test resmi `117.43-39` ditulis lebih dulu (blok via
+`write_file`, disisip byte-eksak dengan anchor EOF `  });` + `}`, assert
+awalan file identik, numstat 207/0 lalu 210/0 setelah format write, 0 baris
+`-`) dan dijalankan terhadap lib yang belum disentuh:
+`--plain-name "117.43-39"` -> `+3 -6` exit 1. Enam kegagalan: header
+(`Actual: 'pass'`), `rebuild_run` (`'pass'`), `canonical_step` (`'pass'`),
+limits/version (`['pass','pass']`), `required_evidence` (`Expected 'pass',
+Actual 'unmet'` - grup memang tidak dibaca, melainkan dilaporkan hilang), dan
+pasangan kunci ambigu (`'pass'`). Lib pre-fix terbukti = blob HEAD karena
+`before_sha` script fix `287b349bda9c11d2595678c3697660233a07483a0590803c3f059
+06713adbd8e` sama dengan sha blob `948dfb7`.
+
+FIX. Helper baru `_documentField(document, field)` mengembalikan
+`(present, ambiguous, value)` dengan `entry.key.trim() == field`, dipakai
+oleh enam pembaca dokumen; varian ber-spasi kini dibaca seperti kunci
+polosnya, dan dua kunci yang trim-nya sama dilaporkan ambigu -> `unmet`
+(dokumen menyatakan dua nilai tanpa aturan memilih, jadi menebak salah satu
+membuat verdict gate jadi lemparan koin). `required_evidence` ber-spasi kini
+dievaluasi penuh (semua check di dalamnya berjalan) alih-alih dilaporkan
+"manifest carries no required_evidence object"; ketidakhadirannya tetap
+`unmet`. Tidak ada penerimaan baru: setiap nilai yang kini terbaca sudah
+diperiksa oleh refusal yang ada, dan vocabulary yang trim tidak mampu bawa ke
+kamus tetap non-claim (117.43-16).
+
+GATES. `dart.bat format` (write) lalu `--output=none --set-exit-if-changed`
+pada 2 file -> `0 changed` exit 0; format write hanya mengubah blok baru
+(lib tetap 87/14, test 207/0 -> 210/0, 0 baris `-`). `dart analyze` 2 file
+-> `No issues found!` exit 0. `git diff --check` exit 0. Scan non-Latin
+(python `re` kelas CJK/kana/hangul/fullwidth) pada 87 baris added lib + 210
+baris added test -> 0 hit dan 0 trailing whitespace. GREEN
+`--plain-name "117.43-39"` -> `+9` All tests passed exit 0. Regresi terarah
+2 file (gate 117 + provenance 113) -> `+200` All tests passed! exit 0,
+diulang SETELAH sibling a11y `52285dc` (1 file docs wcag, tak menyentuh 2
+path slice) mendarat di tengah run -> tetap `+200` exit 0. `flutter build
+windows --debug` exit 0, 22,7 detik,
+`build/windows/x64/runner/Debug/data/flutter_assets` mtime 2026-10-05
+06:24:11 (exe statis 02:22 tidak dihitung). Guard PASS pre-run.
+
+BUKTI SHA (blob commit `252b045`):
+`sprint_117_ga_artifact_reproducibility.dart` =
+`f61c1e9ac75b5a7771e2b112d7a3b7ae4f702a63de8e7046f2fb8f2b14b423b2`
+(82036 B, disk == blob);
+`sprint_117_ga_artifact_reproducibility_test.dart` =
+`4bff53e96e7b6f165ffafe0bb44d8e7889f473cbe2f6c2a2bcf832fd4b102a3f`
+(240739 B blob; disk CRLF dinormalkan == blob). Numstat commit fix: lib
+87/14, test 210/0. HEAD awal run `6d73e2c` (ahead 43); sibling a11y
+`52285dc` lalu commit fix `252b045` -> posisi terukur
+`git rev-list --count origin/master..HEAD` = 45. Patch tool 0 pemakaian;
+probe scratch dihapus setelah seluruh temuannya menjadi test resmi. Tidak ada
+push pada run ini.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, `next_step` 117.43, `step_closed`
+false, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`, TODO-OPERATOR
+117.43-02 tetap menunggu keputusan drift manifest.
+
+Kandidat hunt berikutnya ke-35 (probe dulu, jangan klaim sebelum ada baris
+hasil): (a) kunci tingkat group di dalam `required_evidence` dan
+`artifact_comparison` masih pencocokan persis - kunci wajib (`build_inputs`,
+`artifact_comparison`, `rebuild_results`, `provenance_record`) diprediksi
+tetap fail-closed (`unmet`) karena ketidakhadirannya ditolak, tetapi anggota
+opsional (`method`, `limits`, `differing_artifacts`, `identical_artifacts`,
+`verdict` di :1288-1350) memakai `containsKey` sehingga varian ber-spasi
+diprediksi jadi non-claim; (b) field objek rekaman (`started_at`,
+`finished_at`, `duration_seconds`, `command`, `log` di :1439-1503) juga
+`containsKey` persis; (c) apakah pembaca dokumen lain (gates saudara yang
+membandingkan `document['canonical_step'] != canonicalStep`) sengaja tetap
+persis - di situ ketidakhadiran menolak, jadi arah kegagalannya berkebalikan
+dan tidak otomatis ikut di-trim.

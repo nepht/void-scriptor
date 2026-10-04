@@ -1765,3 +1765,78 @@ posisi tiga pembaca `provenance_record` kini tertutup (-30 rebuild, -32 log, -33
 citation). Hunt berikutnya: ke-29 - probe pembaca lain yang masih memakai
 firstMatch/pertama saja atau menjadikan posisi bagian grammar; target ditentukan probe
 run depan, bukan pre-klaim.
+
+### Slice 117.43-34 - pembaca `provenance_logs` hanya membuka klaim pertama per baris dan memotongnya di restatement rebuild (defect ke-29 fail-open hunt)
+
+2026-10-04 ~18:15 WIB. Tipe = FEATURE WORK slice 117.43-34 (defect ke-29, hunt
+fail-open klaim pertama). HEAD awal `ac58323` (commit sibling a11y `ac58323`
+mendarat 17:40 sebelum run; `git log ac58323..HEAD` di posisi commit fix hanya
+memuat commit milik run ini); dirty sibling `test/_wcag243_survey_test.dart`,
+`test/core/security/presentation/`, `cache/`, dan
+`.hermes/ROADMAP_STATE.json.slice11743_29.bak` dipreserve, tidak disentuh.
+DEFECT: `_parseLogSummary` adalah pembaca `provenance_record` terakhir yang
+membuka klaim lewat `firstMatch` dan memotong token klaim pada restatement rebuild
+di belakangnya - dua setengah itu gagal berlawanan dari satu titik yang sama.
+(1) Fail-open: baris `provenance_logs <cited> rebuild_a ... provenance_logs
+<wrong>` - `firstMatch` membuka klaim pertama lalu pemotongan membuang sisa baris
+pada awal restatement, jadi set log yang salah di belakang restatement tidak
+pernah dibandingkan padahal `provenance_record: N item` tetap tercetak; RED
+membuktikan `Actual 'pass'` vs `Expected 'unmet'`. (2) Fail-closed: tanpa
+restatement untuk dipotong, klaim pertama menabrak prefix kedua sehingga token
+penanda `provenance_logs` ikut terbaca sebagai path - dokumen jujur yang men-state
+set log kutipannya dua kali di satu baris ditolak (`Actual 'unmet'` vs
+`Expected 'pass'`). RED: gate resmi baseline 163/163 pass exit 0, lalu 4 test baru
+grup 117.43-34 = 167 test, 165 pass -2 fail exit 1 (dua defect case persis di
+atas; dua kontrol tetap pass: klaim salah di samping klaim jujur tetap `unmet`,
+dua klaim jujur mengapit restatement rebuild tetap `pass`). FIX: `_parseLogSummary`
+diganti `_logSummariesIn` - prefix dicocokkan dengan word boundary
+`(?:^|\s)<prefix>(?=\s)` lewat `allMatches` (posisi di mana pun; lookahead
+supaya prefix tidak menelan whitespace klaim saudaranya), setiap klaim diberi
+segmennya sendiri dari akhir prefix sampai yang paling dekat antara awal prefix
+berikutnya, awal restatement rebuild di baris itu, atau akhir baris (segmentasi
+yang sama dengan `_citationsIn`), dan `_logSummaryNamesUnknownLogs` membandingkan
+setiap segmen dengan set kutipan lalu menolak begitu satu klaim tidak sama;
+komentar dok yang menunjuk `_parseLogSummary` diamandemen. Batas tidak melebar:
+segmen tetap run token setelah prefix, segmen kosong tetap tak mengutip, baris
+tanpa prefix tetap tanpa klaim, `rebuild_a rebuilt cleanly` tetap tanpa
+pengukuran, 117.43-32 tetap berlaku (klaim di depan restatement tetap dipotong di
+situ), dan manifest terbit tetap `pass` tanpa perubahan. GATES: GREEN gate 167/167
+All tests passed exit 0 sesudah format write 1 changed; lalu
+`--output=none --set-exit-if-changed` 0 changed exit 0; analyze 2 file No issues
+found! exit 0; git diff --check exit 0; scan non-Latin Python `re` pada 223 baris
+added commit (9725 byte) = 0 hit dan 0 trailing whitespace. Regresi terarah
+`sprint_113_build_reproducibility_provenance_test` + gate = exit 1 dengan dua
+kegagalan ber-signature sama seperti slice -33 (lock hidup `d500c1c5...` vs
+manifest `32e31fd3...`; artefak `73101e78...` vs `c7a33055...`), dan KINI
+DIBUKTIKAN pre-existing: worktree terisolasi `D:\d\VoidScriptor\_verify_11743_34`
+pada HEAD `ac58323` tanpa perubahan run ini (`flutter pub get` exit 0) menjalankan
+`--plain-name 113.39` = exit 1 dengan kegagalan `dependency lock evidence matches
+the live lockfile` yang sama, sementara `signed release artifact` SKIP karena exe
+absen di worktree; kedua input kegagalan (manifest `d150973`, `pubspec.lock`,
+`docs/release/v1.2.0-rc.1-checksums.txt`, exe lokal mtime `2026-10-02_22:41` sha
+`c7a33055...`) berada di luar diff slice ini. `flutter build windows --debug`
+exit 0 (36,5 dtk) dengan bukti segar `Debug/data/flutter_assets` mtime
+`2026-10-04_18:01:50` (mtime `void_scriptor.exe` statis tidak dihitung). Worktree
+verifikasi belum terhapus: `git worktree remove --force` gagal `Permission
+denied`, sisa di `D:\d\VoidScriptor\_verify_11743_34` untuk dibersihkan manual.
+Patch tool tidak dipakai sama sekali di run ini: blok test dan blok lib ditulis
+lewat penggantian byte-eksak Python dengan anchor diuji count==1 (numstat test
+murni insert 159/0, `git diff -U0` tanpa baris `-`). Numstat commit fix `819a470`:
+domain 64/45, test 159/0. SHA-256 dari blob commit `819a470` (identik `sha256sum`
+disk; 66517 B dan 218674 B): domain
+`c37e2ec8f3c845e12dc77b8236012b7d3d644be9d9afdbb10c7dfbd91ca72163`, test
+`05f2039207f32ff89d3df9525dc3aee879272e1cdc611412d1c42da5975224c2`. Manifest 113
+tidak disentuh (commit terakhir tetap `d150973`). Commit `819a470` memakai 2 path
+eksplisit; ahead 12 -> 13 pada posisi commit fix, dan setiap commit ledger/state
+menambah satu - posisi akhir dihitung dengan `git rev-list --count
+origin/master..HEAD`, bukan ditulis tangan. Tidak ada push pada run ini. Status
+TIDAK BERUBAH: PARTIAL-LOCAL, `next_step 117.43`, step_closed false, verdict
+GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 masih BLOCKER.
+`firstMatch` terakhir pada pembaca klaim `provenance_record` kini tertutup;
+kandidat sisa hasil probe run ini (dikutip apa adanya, belum diklaim defect):
+`parseDigest` di `sprint_117_ga_artifact_reproducibility.dart:450` dengan 0
+pemanggil (mati - putuskan hapus atau beri test), `firstMatch` jumlah artefak
+pada kalimat metode di `build_reproducibility_provenance.dart:130`
+(`_statedArtifactScope`), dan `summarised.firstMatch(member.key)` di
+`sprint_117_ga_artifact_reproducibility.dart:1671`. Hunt berikutnya: ke-30 -
+target ditentukan probe run depan, bukan pre-klaim.

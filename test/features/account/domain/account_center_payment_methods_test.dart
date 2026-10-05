@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/security/credential_store.dart';
 import 'package:void_scriptor/features/account/domain/account_center_payment_methods.dart';
 import 'package:void_scriptor/features/account/domain/account_center_secure_token_vault.dart';
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -42,6 +43,11 @@ void main() {
     });
 
     test('product-spec billing contract still forbids raw card storage', () {
+      if (skipUnlessExternalCanonical(
+        "product-spec billing contract still forbids raw card storage",
+      )) {
+        return;
+      }
       final spec =
           jsonDecode(File(_productSpecPath).readAsStringSync())
               as Map<String, Object?>;

@@ -22,6 +22,7 @@ import 'package:void_scriptor/core/security/application/secret_redactor.dart';
 import 'package:void_scriptor/features/account/domain/account_center_activity_audit_overview.dart';
 import 'package:void_scriptor/features/account/domain/account_center_ai_usage_report.dart';
 import 'package:void_scriptor/features/account/domain/account_center_privacy_data_flow_review.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   const canonicalStepsPath =
@@ -53,6 +54,11 @@ void main() {
     });
 
     test('matches the canonical sprint step definition', () {
+      if (skipUnlessExternalCanonical(
+        "matches the canonical sprint step definition",
+      )) {
+        return;
+      }
       final file = File(canonicalStepsPath);
       expect(file.existsSync(), isTrue, reason: 'canonical sprint_115.json');
       expect(

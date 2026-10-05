@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_accessibility.dart';
 import 'package:void_scriptor/features/account/domain/account_center_design_tokens.dart';
 import 'package:void_scriptor/features/account/domain/account_center_information_architecture.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,11 @@ void main() {
     });
 
     test('sprint kanonik live memuat acceptance yang sama', () {
+      if (skipUnlessExternalCanonical(
+        "sprint kanonik live memuat acceptance yang sama",
+      )) {
+        return;
+      }
       final file = File(AccountCenterAccessibility.canonicalSprintPath);
       expect(file.existsSync(), isTrue);
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;

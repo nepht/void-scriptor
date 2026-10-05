@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_api_key_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   group('Sprint117ApiKeyWorkflowContract', () {
@@ -59,6 +60,11 @@ void main() {
     });
 
     test('anchor reads the secret guarantees from the committed spec', () {
+      if (skipUnlessExternalCanonical(
+        "anchor reads the secret guarantees from the committed spec",
+      )) {
+        return;
+      }
       final anchor = const Sprint117ApiKeyWorkflowLoader().load().anchor;
       expect(anchor, isNotNull);
       expect(anchor!.neverPlaintextDeclared, isTrue);
@@ -90,6 +96,11 @@ void main() {
 
   group('Sprint117ApiKeyWorkflowGate', () {
     test('the measured drill decides every check and passes', () async {
+      if (skipUnlessExternalCanonical(
+        "the measured drill decides every check and passes",
+      )) {
+        return;
+      }
       final report = await const Sprint117ApiKeyWorkflowGate()
           .evaluateWithDrill();
       expect(report.violations, isEmpty);
@@ -401,6 +412,11 @@ void main() {
     test(
       'the report round-trips through JSON without losing a check',
       () async {
+        if (skipUnlessExternalCanonical(
+          "the report round-trips through JSON without losing a check",
+        )) {
+          return;
+        }
         final report = await const Sprint117ApiKeyWorkflowGate()
             .evaluateWithDrill();
         final decoded =

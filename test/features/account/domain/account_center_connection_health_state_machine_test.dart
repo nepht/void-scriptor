@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_connection_health_state_machine.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,11 @@ void main() {
 
   group('115.10 Connection & Health State Machine contract', () {
     test('pins the canonical step acceptance and source hashes', () {
+      if (skipUnlessExternalCanonical(
+        "pins the canonical step acceptance and source hashes",
+      )) {
+        return;
+      }
       final sprint = File(
         AccountConnectionHealthStateMachine.canonicalSprintPath,
       );

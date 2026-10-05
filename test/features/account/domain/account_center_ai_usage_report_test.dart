@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_ai_usage_credits_cost_view.dart';
 import 'package:void_scriptor/features/account/domain/account_center_ai_usage_report.dart';
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -94,6 +95,11 @@ void main() {
     });
 
     test('acceptance list is pinned to canonical sprint 115.40', () {
+      if (skipUnlessExternalCanonical(
+        "acceptance list is pinned to canonical sprint 115.40",
+      )) {
+        return;
+      }
       final file = File(AccountCenterAiUsageReport.canonicalSprintPath);
       expect(file.existsSync(), isTrue);
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
@@ -113,6 +119,11 @@ void main() {
     });
 
     test('product spec keeps estimate marking and analytics privacy rules', () {
+      if (skipUnlessExternalCanonical(
+        "product spec keeps estimate marking and analytics privacy rules",
+      )) {
+        return;
+      }
       final spec =
           jsonDecode(File(_productSpecPath).readAsStringSync())
               as Map<String, Object?>;

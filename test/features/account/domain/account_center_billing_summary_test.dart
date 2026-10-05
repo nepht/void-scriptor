@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_billing_summary.dart';
 import 'package:void_scriptor/features/account/domain/account_center_subscription_entitlement_model.dart'
     show PlanBillingCycle;
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -44,6 +45,11 @@ void main() {
     });
 
     test('product-spec billing contract stays PLANNED_NOT_VERIFIED', () {
+      if (skipUnlessExternalCanonical(
+        "product-spec billing contract stays PLANNED_NOT_VERIFIED",
+      )) {
+        return;
+      }
       final spec =
           jsonDecode(File(_productSpecPath).readAsStringSync())
               as Map<String, Object?>;

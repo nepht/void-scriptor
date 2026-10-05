@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/accessibility_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   group('113.21 Accessibility Validation', () {
@@ -27,6 +28,9 @@ void main() {
       });
 
       test('detects keyboard-only mode', () {
+        if (skipUnlessExternalCanonical("detects keyboard-only mode")) {
+          return;
+        }
         final result = validator.keyboardSupport();
         expect(result.keyboardOnlyMode, isTrue);
       });

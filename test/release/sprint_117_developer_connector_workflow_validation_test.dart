@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_developer_connector_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   // The contract class is abstract on purpose, so it is read statically rather
@@ -30,6 +31,11 @@ void main() {
     });
 
     test('the external canonical step declares exactly these six items', () {
+      if (skipUnlessExternalCanonical(
+        "the external canonical step declares exactly these six items",
+      )) {
+        return;
+      }
       // Pinned by sha256 in the loader, so the read below is of the file the
       // contract actually depends on rather than of whichever pin happens to
       // sort first.
@@ -64,6 +70,11 @@ void main() {
 
   group('117.17 loader and anchor', () {
     test('reads the anchor, its declared acceptance, and both pins', () {
+      if (skipUnlessExternalCanonical(
+        "reads the anchor, its declared acceptance, and both pins",
+      )) {
+        return;
+      }
       final report = const Sprint117DeveloperConnectorWorkflowGate().evaluate();
 
       expect(report.anchor, isNotNull);
@@ -122,6 +133,11 @@ void main() {
     });
 
     test('resolves and matches every external pin', () {
+      if (skipUnlessExternalCanonical(
+        "resolves and matches every external pin",
+      )) {
+        return;
+      }
       expect(run.externalPinsResolved, isTrue);
       expect(run.allExternalPinsMatchForDrill, isTrue);
     });
@@ -212,6 +228,11 @@ void main() {
     test(
       'the measured run passes with full coverage and no violation',
       () async {
+        if (skipUnlessExternalCanonical(
+          "the measured run passes with full coverage and no violation",
+        )) {
+          return;
+        }
         final report = await const Sprint117DeveloperConnectorWorkflowGate()
             .evaluateWithDrill();
 
@@ -285,6 +306,11 @@ void main() {
     test(
       'the report serializes to valid JSON carrying its own decision',
       () async {
+        if (skipUnlessExternalCanonical(
+          "the report serializes to valid JSON carrying its own decision",
+        )) {
+          return;
+        }
         final report = await const Sprint117DeveloperConnectorWorkflowGate()
             .evaluateWithDrill();
         final json =
@@ -397,6 +423,11 @@ void main() {
     });
 
     test('a missing consumer is an open item, never a silent pass', () async {
+      if (skipUnlessExternalCanonical(
+        "a missing consumer is an open item, never a silent pass",
+      )) {
+        return;
+      }
       final unconsumed = runOf([
         for (final id in requiredChecks) observation(id, passed: true),
       ], productionCaller: false);

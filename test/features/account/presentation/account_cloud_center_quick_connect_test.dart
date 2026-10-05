@@ -6,9 +6,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_cloud_snapshot.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
 import 'package:void_scriptor/features/account/presentation/account_cloud_center_screen.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   test('quick connect evidence pins the canonical acceptance contract', () {
+    if (skipUnlessExternalCanonical(
+      "quick connect evidence pins the canonical acceptance contract",
+    )) {
+      return;
+    }
     final sprint =
         jsonDecode(
               File(

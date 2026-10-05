@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_billing_summary.dart'
     show TaxStatus;
 import 'package:void_scriptor/features/account/domain/account_center_invoice_history.dart';
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -43,6 +44,11 @@ void main() {
     });
 
     test('acceptance list is pinned to canonical sprint 115.37', () {
+      if (skipUnlessExternalCanonical(
+        "acceptance list is pinned to canonical sprint 115.37",
+      )) {
+        return;
+      }
       final file = File(AccountCenterInvoiceHistory.canonicalSprintPath);
       expect(file.existsSync(), isTrue);
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
@@ -62,6 +68,11 @@ void main() {
     });
 
     test('product-spec billing rules still require refund terms up front', () {
+      if (skipUnlessExternalCanonical(
+        "product-spec billing rules still require refund terms up front",
+      )) {
+        return;
+      }
       final spec =
           jsonDecode(File(_productSpecPath).readAsStringSync())
               as Map<String, Object?>;

@@ -8,6 +8,7 @@ import 'package:void_scriptor/features/account/domain/account_center_provider_qu
 import 'package:void_scriptor/features/account/domain/account_center_right_rail_summary.dart';
 import 'package:void_scriptor/features/account/domain/account_center_subscription_entitlement_model.dart';
 import 'package:void_scriptor/features/account/domain/account_center_team_collaboration_summary.dart';
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -46,6 +47,11 @@ void main() {
     });
 
     test('acceptance list is pinned to canonical sprint 115.38', () {
+      if (skipUnlessExternalCanonical(
+        "acceptance list is pinned to canonical sprint 115.38",
+      )) {
+        return;
+      }
       final file = File(AccountCenterRightRailSummary.canonicalSprintPath);
       expect(file.existsSync(), isTrue);
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
@@ -67,6 +73,11 @@ void main() {
     test(
       'product spec keeps the right rail sections and the no-fake-data rules',
       () {
+        if (skipUnlessExternalCanonical(
+          "product spec keeps the right rail sections and the no-fake-data rules",
+        )) {
+          return;
+        }
         final spec =
             jsonDecode(File(_productSpecPath).readAsStringSync())
                 as Map<String, Object?>;
@@ -187,6 +198,11 @@ void main() {
     });
 
     test('reference mock quota numbers can never be produced by the rail', () {
+      if (skipUnlessExternalCanonical(
+        "reference mock quota numbers can never be produced by the rail",
+      )) {
+        return;
+      }
       final spec =
           jsonDecode(File(_productSpecPath).readAsStringSync())
               as Map<String, Object?>;

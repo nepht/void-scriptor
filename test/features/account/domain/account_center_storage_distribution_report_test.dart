@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_storage_distribution_report.dart';
+import '../../../canonical_source_support.dart';
 
 const String _productSpecPath =
     'C:/Users/nepht/Documents/Codex/2026-08-22/'
@@ -100,6 +101,11 @@ void main() {
       });
 
       test('acceptance list is pinned to canonical sprint 115.41', () {
+        if (skipUnlessExternalCanonical(
+          "acceptance list is pinned to canonical sprint 115.41",
+        )) {
+          return;
+        }
         final file = File(
           AccountCenterStorageDistributionReport.canonicalSprintPath,
         );
@@ -122,6 +128,11 @@ void main() {
       });
 
       test('product spec keeps local/remote separation and mock ban', () {
+        if (skipUnlessExternalCanonical(
+          "product spec keeps local/remote separation and mock ban",
+        )) {
+          return;
+        }
         final spec =
             jsonDecode(File(_productSpecPath).readAsStringSync())
                 as Map<String, Object?>;

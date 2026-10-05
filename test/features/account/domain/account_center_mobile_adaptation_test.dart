@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_design_tokens.dart';
 import 'package:void_scriptor/features/account/domain/account_center_mobile_adaptation.dart';
 import 'package:void_scriptor/features/account/domain/account_center_responsive_grid.dart';
+import '../../../canonical_source_support.dart';
 
 /// 115.47 — Mobile Adaptation.
 ///
@@ -306,6 +307,11 @@ void main() {
 
   group('115.47 manifest', () {
     test('manifest repo cocok dengan domain dan provenance sumber', () {
+      if (skipUnlessExternalCanonical(
+        "manifest repo cocok dengan domain dan provenance sumber",
+      )) {
+        return;
+      }
       final manifest =
           jsonDecode(File(manifestPath).readAsStringSync())
               as Map<String, dynamic>;

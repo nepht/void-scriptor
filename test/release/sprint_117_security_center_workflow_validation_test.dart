@@ -9,10 +9,16 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_security_center_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   group('117.20 external canonical step', () {
     test('the external canonical step declares exactly these eight items', () {
+      if (skipUnlessExternalCanonical(
+        "the external canonical step declares exactly these eight items",
+      )) {
+        return;
+      }
       final file = File(
         'C:/Users/nepht/AppData/Local/hermes/references/void_scriptor/'
         'sprint_117.json',
@@ -41,6 +47,11 @@ void main() {
     });
 
     test('reads the anchor, its declared acceptance, and both pins', () {
+      if (skipUnlessExternalCanonical(
+        "reads the anchor, its declared acceptance, and both pins",
+      )) {
+        return;
+      }
       expect(report.anchor, isNotNull);
       final anchor = report.anchor!;
       expect(anchor.externalPinsResolved, isTrue);
@@ -81,6 +92,11 @@ void main() {
     });
 
     test('reads the three manifests in the shape each one really uses', () {
+      if (skipUnlessExternalCanonical(
+        "reads the three manifests in the shape each one really uses",
+      )) {
+        return;
+      }
       // 116.45 declares `acceptance_areas` + `limitations`, not
       // `acceptance` + `boundary`. The loader must have read the real shape
       // rather than demand a key no source uses — the false-silent class
@@ -293,6 +309,11 @@ void main() {
 
   group('117.20 gate decides from measured evidence only', () {
     test('the drill-backed run passes with full coverage', () async {
+      if (skipUnlessExternalCanonical(
+        "the drill-backed run passes with full coverage",
+      )) {
+        return;
+      }
       final report = await const Sprint117SecurityCenterWorkflowGate()
           .evaluateWithDrill();
       expect(report.status, Sprint117SecurityCenterWorkflowState.pass);
@@ -414,6 +435,11 @@ void main() {
     });
 
     test('an unmapped canonical check fails instead of shrinking scope', () {
+      if (skipUnlessExternalCanonical(
+        "an unmapped canonical check fails instead of shrinking scope",
+      )) {
+        return;
+      }
       final base = const Sprint117SecurityCenterWorkflowLoader().load();
       final rows = base.rows!
           .where((row) => row.checkId != 'recovery')
@@ -451,6 +477,11 @@ void main() {
     });
 
     test('the measured gaps appear in the report open items', () async {
+      if (skipUnlessExternalCanonical(
+        "the measured gaps appear in the report open items",
+      )) {
+        return;
+      }
       final report = await const Sprint117SecurityCenterWorkflowGate()
           .evaluateWithDrill();
       // Each item below was an open gap when this slice landed and is now

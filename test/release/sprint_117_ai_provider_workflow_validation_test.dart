@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_ai_provider_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 /// Sentinel distinguishing "argument omitted" from an explicit null.
 const Object _absent = Object();
@@ -9,6 +10,11 @@ const Object _absent = Object();
 void main() {
   group('117.15 gate', () {
     test('drill decides all nine canonical checks locally', () async {
+      if (skipUnlessExternalCanonical(
+        "drill decides all nine canonical checks locally",
+      )) {
+        return;
+      }
       final report = await const Sprint117AiProviderWorkflowGate()
           .evaluateWithDrill();
 
@@ -39,6 +45,11 @@ void main() {
     test(
       'anchor resolves every committed source and every external pin',
       () async {
+        if (skipUnlessExternalCanonical(
+          "anchor resolves every committed source and every external pin",
+        )) {
+          return;
+        }
         final report = await const Sprint117AiProviderWorkflowGate()
             .evaluateWithDrill();
         final anchor = report.anchor!;

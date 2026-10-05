@@ -9,10 +9,16 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_team_collaboration_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   group('117.19 external canonical step', () {
     test('the external canonical step declares exactly these seven items', () {
+      if (skipUnlessExternalCanonical(
+        "the external canonical step declares exactly these seven items",
+      )) {
+        return;
+      }
       // Pinned by sha256 in the loader, so the read below is of the file the
       // contract actually depends on rather than of whichever pin happens to
       // sort first.
@@ -47,6 +53,11 @@ void main() {
     });
 
     test('reads the anchor, its declared acceptance, and both pins', () {
+      if (skipUnlessExternalCanonical(
+        "reads the anchor, its declared acceptance, and both pins",
+      )) {
+        return;
+      }
       expect(report.anchor, isNotNull);
       final anchor = report.anchor!;
       expect(anchor.externalPinsResolved, isTrue);
@@ -86,6 +97,11 @@ void main() {
 
   group('117.19 gate', () {
     test('without a drill it is blocked, never passed on prose', () {
+      if (skipUnlessExternalCanonical(
+        "without a drill it is blocked, never passed on prose",
+      )) {
+        return;
+      }
       final report = const Sprint117TeamCollaborationWorkflowGate().evaluate();
 
       expect(report.status, Sprint117TeamCollaborationWorkflowState.blocked);
@@ -108,6 +124,11 @@ void main() {
     test(
       'a measured run passes with full coverage and no violations',
       () async {
+        if (skipUnlessExternalCanonical(
+          "a measured run passes with full coverage and no violations",
+        )) {
+          return;
+        }
         final report = await const Sprint117TeamCollaborationWorkflowGate()
             .evaluateWithDrill();
 
@@ -193,6 +214,11 @@ void main() {
     });
 
     test('nothing real was touched and no pin drifted', () {
+      if (skipUnlessExternalCanonical(
+        "nothing real was touched and no pin drifted",
+      )) {
+        return;
+      }
       expect(run.liveProviderTouched, isFalse);
       expect(run.userProjectTouched, isFalse);
       expect(run.liveCredentialObserved, isFalse);
@@ -255,6 +281,11 @@ void main() {
     });
 
     test('the measured gaps are reported, never folded into a pass', () {
+      if (skipUnlessExternalCanonical(
+        "the measured gaps are reported, never folded into a pass",
+      )) {
+        return;
+      }
       // This seam IS reachable from main.dart (app_router renders
       // StudioManagementPanel from DemoStudio.registry), so the caller is
       // present and the open item must NOT claim otherwise. The scan proved
@@ -312,6 +343,11 @@ void main() {
 
   group('117.19 report shape', () {
     test('serializes every section a manifest reader needs', () async {
+      if (skipUnlessExternalCanonical(
+        "serializes every section a manifest reader needs",
+      )) {
+        return;
+      }
       final report = await const Sprint117TeamCollaborationWorkflowGate()
           .evaluateWithDrill();
       final json = report.toJson();

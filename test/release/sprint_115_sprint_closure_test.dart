@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_115_closure.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   const canonicalSprintPath =
@@ -58,6 +59,11 @@ void main() {
     });
 
     test('matches definition_of_done of step 115.56 in sprint_115.json', () {
+      if (skipUnlessExternalCanonical(
+        "matches definition_of_done of step 115.56 in sprint_115.json",
+      )) {
+        return;
+      }
       final file = File(canonicalSprintPath);
       expect(file.existsSync(), isTrue, reason: 'canonical sprint_115.json');
       expect(

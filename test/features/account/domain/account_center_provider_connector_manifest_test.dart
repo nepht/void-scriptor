@@ -4,12 +4,18 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_icon_registry.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('115.9 Provider & Connector Manifest acceptance contract', () {
     test('required fields are pinned to the canonical sprint step', () {
+      if (skipUnlessExternalCanonical(
+        "required fields are pinned to the canonical sprint step",
+      )) {
+        return;
+      }
       final sprint = File(ProviderConnectorManifest.canonicalSprintPath);
       expect(sprint.existsSync(), isTrue);
       final json =

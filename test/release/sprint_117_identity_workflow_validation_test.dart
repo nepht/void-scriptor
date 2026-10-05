@@ -35,6 +35,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_identity_workflow_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   const step = Sprint117IdentityWorkflowContract.canonicalStep;
@@ -105,6 +106,11 @@ void main() {
 
   group('external pins', () {
     test('resolves and matches every external spec it pins', () {
+      if (skipUnlessExternalCanonical(
+        "resolves and matches every external spec it pins",
+      )) {
+        return;
+      }
       final anchor = const Sprint117IdentityWorkflowLoader().load().anchor;
       expect(anchor, isNotNull);
       expect(
@@ -402,6 +408,11 @@ void main() {
     test(
       'passes with full coverage when the drill supplies every outcome',
       () async {
+        if (skipUnlessExternalCanonical(
+          "passes with full coverage when the drill supplies every outcome",
+        )) {
+          return;
+        }
         final report = await const Sprint117IdentityWorkflowGate()
             .evaluateWithDrill();
         expect(
@@ -624,6 +635,11 @@ void main() {
     test(
       'emits the verdict and every evidence class it decided from',
       () async {
+        if (skipUnlessExternalCanonical(
+          "emits the verdict and every evidence class it decided from",
+        )) {
+          return;
+        }
         final report = await const Sprint117IdentityWorkflowGate()
             .evaluateWithDrill();
         final json = report.toJson();

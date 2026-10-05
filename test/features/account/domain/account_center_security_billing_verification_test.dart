@@ -26,6 +26,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_security_billing_verification.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   const canonicalSprintPath =
@@ -88,6 +89,11 @@ void main() {
     });
 
     test('matches required_outputs of step 115.54 in sprint_115.json', () {
+      if (skipUnlessExternalCanonical(
+        "matches required_outputs of step 115.54 in sprint_115.json",
+      )) {
+        return;
+      }
       final file = File(canonicalSprintPath);
       expect(file.existsSync(), isTrue, reason: 'canonical sprint_115.json');
       expect(
@@ -570,6 +576,11 @@ void main() {
 
   group('committed manifest', () {
     test('repeats the canonical identity and verdict of the live report', () {
+      if (skipUnlessExternalCanonical(
+        "repeats the canonical identity and verdict of the live report",
+      )) {
+        return;
+      }
       final manifest = readManifest();
       final document =
           jsonDecode(File(canonicalSprintPath).readAsStringSync())

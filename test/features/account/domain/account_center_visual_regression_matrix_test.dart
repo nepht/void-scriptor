@@ -13,6 +13,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_responsive_grid.dart';
 import 'package:void_scriptor/features/account/domain/account_center_visual_regression_matrix.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   const canonicalSprintPath =
@@ -89,6 +90,11 @@ void main() {
     });
 
     test('matches required_matrix of step 115.52 in sprint_115.json', () {
+      if (skipUnlessExternalCanonical(
+        "matches required_matrix of step 115.52 in sprint_115.json",
+      )) {
+        return;
+      }
       final file = File(canonicalSprintPath);
       expect(file.existsSync(), isTrue, reason: 'canonical sprint_115.json');
       expect(

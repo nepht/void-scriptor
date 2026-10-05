@@ -3,12 +3,18 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_icon_registry.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('115.8 Provider Icon Registry acceptance contract', () {
     test('acceptance canonical is pinned to sprint 115.8', () {
+      if (skipUnlessExternalCanonical(
+        "acceptance canonical is pinned to sprint 115.8",
+      )) {
+        return;
+      }
       final file = File(ProviderIconRegistry.canonicalSprintPath);
       expect(file.existsSync(), isTrue);
       final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;

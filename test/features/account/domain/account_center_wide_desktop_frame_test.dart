@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_design_tokens.dart';
 import 'package:void_scriptor/features/account/domain/account_center_wide_desktop_frame.dart';
 import 'package:void_scriptor/features/account/domain/account_cloud_snapshot.dart';
+import '../../../canonical_source_support.dart';
 
 /// 115.45 — Wide Desktop Visual Implementation.
 ///
@@ -389,6 +390,11 @@ void main() {
 
   group('115.45 manifest', () {
     test('manifest repo cocok dengan domain dan provenance sumber', () {
+      if (skipUnlessExternalCanonical(
+        "manifest repo cocok dengan domain dan provenance sumber",
+      )) {
+        return;
+      }
       final manifest =
           jsonDecode(File(manifestPath).readAsStringSync())
               as Map<String, dynamic>;

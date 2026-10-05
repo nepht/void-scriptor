@@ -13,6 +13,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_offline_mode.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   final manifestFile = File(
@@ -45,6 +46,11 @@ void main() {
   });
 
   test('acceptance matches the canonical sprint step definition', () {
+    if (skipUnlessExternalCanonical(
+      "acceptance matches the canonical sprint step definition",
+    )) {
+      return;
+    }
     final file = File(canonicalStepsPath);
     expect(file.existsSync(), isTrue, reason: 'canonical sprint_115.json');
     final document =

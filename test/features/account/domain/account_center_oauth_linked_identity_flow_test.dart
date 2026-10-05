@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_oauth_linked_identity_flow.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
+import '../../../canonical_source_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -88,6 +89,11 @@ void main() {
 
   group('115.11 OAuth & Linked Identity Flow contract', () {
     test('pins the canonical acceptance and immutable source hashes', () {
+      if (skipUnlessExternalCanonical(
+        "pins the canonical acceptance and immutable source hashes",
+      )) {
+        return;
+      }
       final sprint = File(AccountOAuthFlow.canonicalSprintPath);
       expect(sprint.existsSync(), isTrue);
       final json =

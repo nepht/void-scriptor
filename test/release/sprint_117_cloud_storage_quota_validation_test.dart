@@ -19,6 +19,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_cloud_storage_quota_validation.dart';
+import '../canonical_source_support.dart';
 
 void main() {
   const step = Sprint117CloudStorageQuotaContract.canonicalStep;
@@ -82,6 +83,11 @@ void main() {
 
   group('external pins', () {
     test('resolves and matches every external spec it pins', () {
+      if (skipUnlessExternalCanonical(
+        "resolves and matches every external spec it pins",
+      )) {
+        return;
+      }
       final anchor = const Sprint117CloudStorageQuotaLoader().load().anchor;
       expect(anchor, isNotNull);
       expect(
@@ -338,6 +344,11 @@ void main() {
 
   group('gate', () {
     test('passes with every canonical check decided by a real drill', () async {
+      if (skipUnlessExternalCanonical(
+        "passes with every canonical check decided by a real drill",
+      )) {
+        return;
+      }
       final report = await const Sprint117CloudStorageQuotaGate()
           .evaluateWithDrill();
       expect(report.status, Sprint117CloudStorageQuotaState.pass);
@@ -595,6 +606,11 @@ void main() {
     test(
       'emits the verdict and every evidence class it decided from',
       () async {
+        if (skipUnlessExternalCanonical(
+          "emits the verdict and every evidence class it decided from",
+        )) {
+          return;
+        }
         final report = await const Sprint117CloudStorageQuotaGate()
             .evaluateWithDrill();
         final json = report.toJson();

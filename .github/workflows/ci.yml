@@ -19,7 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     # 13 Sep: era billing-hidup membuktikan job ini butuh ~31 mnt penuh
     # (Test 4326 lolos, lalu Android build kena cut 30 mnt) -> 45 mnt.
-    timeout-minutes: 45
+    # Test suite penuh ±38 mnt (sebelumnya job mati cepat di format/analyze,
+    # jadi anggaran 45 mnt tak pernah teruji) + tooling/SBOM/metadata + build
+    # Linux, Web, dan Android. 70 mnt memberi ruang tanpa membuang runner.
+    timeout-minutes: 70
 
     steps:
       - name: Checkout repository

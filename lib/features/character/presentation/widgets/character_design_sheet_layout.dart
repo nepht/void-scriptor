@@ -85,10 +85,10 @@ class CharacterDesignSheetLayout extends StatelessWidget {
         return _naturalStack([
           summary,
           portrait,
-          if (closeUpDetail != null) closeUpDetail!,
+          ?closeUpDetail,
           turnaround,
           details,
-          if (references != null) references!,
+          ?references,
         ]);
       }
 

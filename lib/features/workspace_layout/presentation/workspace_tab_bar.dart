@@ -28,7 +28,7 @@ class WorkspaceTabBar extends StatelessWidget {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: tabs.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 1),
+          separatorBuilder: (_, _) => const SizedBox(width: 1),
           itemBuilder: (context, index) {
             final tab = tabs[index];
             final active = tab.id == activeTabId;

@@ -1147,8 +1147,8 @@ class Sprint116ConnectorE2EMatrix {
       final cleanedAt = _cleanupEpochMs(set, id);
       if (disconnectedAt == null && cleanedAt == null) continue;
       final revokedFrom = <int>[
-        if (disconnectedAt != null) disconnectedAt,
-        if (cleanedAt != null) cleanedAt,
+        ?disconnectedAt,
+        ?cleanedAt,
       ].reduce((a, b) => a < b ? a : b);
 
       for (final run in set.usageRuns) {

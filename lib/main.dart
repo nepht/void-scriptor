@@ -52,7 +52,7 @@ Future<void> main() async {
       // silent-masking bug they exist to prevent and makes the manual Retry
       // button useless. Riverpod 2 had no auto-retry, so disabling it restores
       // the exact pre-upgrade runtime contract instead of re-inventing one.
-      retry: (_, __) => null,
+      retry: (_, _) => null,
       overrides: [
         if (sessionStore != null)
           authSessionStoreProvider.overrideWithValue(sessionStore),

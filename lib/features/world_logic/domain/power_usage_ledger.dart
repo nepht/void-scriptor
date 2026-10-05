@@ -1,4 +1,4 @@
-library power_usage_ledger;
+library;
 
 class PowerUsageSource {
   const PowerUsageSource._({required this.revision, required this.reason});

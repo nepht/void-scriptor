@@ -712,7 +712,7 @@ class ProjectBackupService {
 /// staged copy that still matches its journaled fingerprint is rolled
 /// forward into the live payload; staged copies that diverged or vanished
 /// are discarded scratch and can never overwrite live content. Without a
-/// journal, legacy '<final>.tmp' staging residue is swept as before. The
+/// journal, legacy `'<final>.tmp'` staging residue is swept as before. The
 /// emergency pre-restore snapshot is deliberately preserved for
 /// user-driven recovery decisions.
 class RestoreCrashRecovery {

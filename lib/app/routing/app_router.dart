@@ -121,43 +121,43 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.aiImageGenerator,
-        builder: (_, __) => const AiGenerationQueueScreen(),
+        builder: (_, _) => const AiGenerationQueueScreen(),
       ),
       GoRoute(
         path: AppRoutes.aiVideoGenerator,
-        builder: (_, __) =>
+        builder: (_, _) =>
             const AiGenerationQueueScreen(mediaTarget: PromptTarget.video),
       ),
       GoRoute(
         path: AppRoutes.settings,
-        builder: (_, __) => const SettingsHubScreen(),
+        builder: (_, _) => const SettingsHubScreen(),
       ),
       GoRoute(
         path: AppRoutes.storageLocations,
-        builder: (_, __) => const StorageLocationsScreen(),
+        builder: (_, _) => const StorageLocationsScreen(),
       ),
       for (final alias in AppRoutes.foundationAliases.entries)
         GoRoute(
           path: alias.key,
-          builder: (_, __) => AppRoutes.settings == alias.value
+          builder: (_, _) => AppRoutes.settings == alias.value
               ? const ThemeSettingsScreen()
               : const SettingsHubScreen(),
         ),
       GoRoute(
         path: AppRoutes.assets,
-        builder: (_, __) => const AssetBrowserScreen(),
+        builder: (_, _) => const AssetBrowserScreen(),
       ),
       GoRoute(
         path: AppRoutes.references,
-        builder: (_, __) => const ProjectReferenceLibraryScreen(),
+        builder: (_, _) => const ProjectReferenceLibraryScreen(),
       ),
       GoRoute(
         path: AppRoutes.bible,
-        builder: (_, __) => const ProjectBibleWorkspaceScreen(),
+        builder: (_, _) => const ProjectBibleWorkspaceScreen(),
       ),
       GoRoute(
         path: AppRoutes.contentCapabilities,
-        builder: (_, __) => const ContentCapabilityMatrixScreen(),
+        builder: (_, _) => const ContentCapabilityMatrixScreen(),
       ),
       ..._productionAssetRoutes(),
       _cinematicProductionRoute(),
@@ -172,13 +172,13 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.plugins,
-        builder: (_, __) => PluginManagerScreen(
+        builder: (_, _) => PluginManagerScreen(
           plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
         ),
       ),
       GoRoute(
         path: AppRoutes.render,
-        builder: (_, __) => const RenderPreviewPanel(
+        builder: (_, _) => const RenderPreviewPanel(
           drawCalls: 0,
           culledCount: 0,
           width: 320,
@@ -187,7 +187,7 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.animation,
-        builder: (_, __) => AnimationPreviewPanel(
+        builder: (_, _) => AnimationPreviewPanel(
           currentTime: 0,
           durationSeconds: DemoAnimation.bounce.durationSeconds,
           trackCount: DemoAnimation.bounce.tracks.length,
@@ -195,11 +195,11 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.audio,
-        builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
+        builder: (_, _) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
       ),
       GoRoute(
         path: AppRoutes.virtualProduction,
-        builder: (_, __) => VirtualProductionPanel(
+        builder: (_, _) => VirtualProductionPanel(
           shotCount: DemoVirtualProduction.shotList.shots.length,
           takeCount: 0,
           totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
@@ -207,14 +207,14 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.publishing,
-        builder: (_, __) => PublishingPanel(
+        builder: (_, _) => PublishingPanel(
           channelCount: 3,
           latestVersion: DemoPublishing.manifest.version.toString(),
         ),
       ),
       GoRoute(
         path: AppRoutes.enterpriseStudio,
-        builder: (_, __) => StudioManagementPanel(
+        builder: (_, _) => StudioManagementPanel(
           studioName: DemoStudio.registry.studio.name,
           plan: DemoStudio.registry.studio.plan,
           usedSeats: DemoStudio.registry.seats.usedSeats,
@@ -223,19 +223,19 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.knowledge,
-        builder: (_, __) => KnowledgeEnginePanel(
+        builder: (_, _) => KnowledgeEnginePanel(
           entityCount: DemoKnowledge.graph.entityCount,
           relationCount: DemoKnowledge.graph.relationCount,
         ),
       ),
       GoRoute(
         path: AppRoutes.agents,
-        builder: (_, __) =>
+        builder: (_, _) =>
             const AgentPlatformPanel(agentCount: 2, runningCount: 0),
       ),
       GoRoute(
         path: AppRoutes.studioCommandCenter,
-        builder: (_, __) => StudioCommandCenter(
+        builder: (_, _) => StudioCommandCenter(
           studioName: DemoStudio.registry.studio.name,
           plan: DemoStudio.registry.studio.plan,
           usedSeats: DemoStudio.registry.seats.usedSeats,
@@ -248,21 +248,21 @@ GoRouter createAppRouter({
       ),
       GoRoute(
         path: AppRoutes.creativeOs,
-        builder: (_, __) => CreativeOsPanel(
+        builder: (_, _) => CreativeOsPanel(
           briefCount: 1,
           stage: DemoCreativeOs.pipeline.currentStage.name,
         ),
       ),
       GoRoute(
         path: AppRoutes.xrStudio,
-        builder: (_, __) => XrStudioPanel(
+        builder: (_, _) => XrStudioPanel(
           sessionState: DemoXrStudio.session.state.name,
           anchorCount: DemoXrStudio.scene.anchorCount,
         ),
       ),
       GoRoute(
         path: AppRoutes.metaverse,
-        builder: (_, __) => MetaverseStudioPanel(
+        builder: (_, _) => MetaverseStudioPanel(
           worldCount: DemoMetaverse.registry.worldCount,
           zoneCount: DemoMetaverse.registry.zoneCount,
         ),
@@ -315,16 +315,16 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.dashboard,
-      builder: (_, __) =>
+      builder: (_, _) =>
           VoidAppShell(content: const DashboardScreen(), onLogout: onLogout),
     ),
     GoRoute(
       path: AppRoutes.projects,
-      builder: (_, __) => const ProjectListScreen(),
+      builder: (_, _) => const ProjectListScreen(),
     ),
     GoRoute(
       path: AppRoutes.createProject,
-      builder: (_, __) => const CreateProjectScreen(),
+      builder: (_, _) => const CreateProjectScreen(),
     ),
     GoRoute(
       path: AppRoutes.studioProject,
@@ -335,7 +335,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.enterpriseStudio,
-      builder: (_, __) => StudioManagementPanel(
+      builder: (_, _) => StudioManagementPanel(
         studioName: DemoStudio.registry.studio.name,
         plan: DemoStudio.registry.studio.plan,
         usedSeats: DemoStudio.registry.seats.usedSeats,
@@ -344,33 +344,33 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.knowledge,
-      builder: (_, __) => KnowledgeEnginePanel(
+      builder: (_, _) => KnowledgeEnginePanel(
         entityCount: DemoKnowledge.graph.entityCount,
         relationCount: DemoKnowledge.graph.relationCount,
       ),
     ),
     GoRoute(
       path: AppRoutes.agents,
-      builder: (_, __) =>
+      builder: (_, _) =>
           const AgentPlatformPanel(agentCount: 2, runningCount: 0),
     ),
     GoRoute(
       path: AppRoutes.creativeOs,
-      builder: (_, __) => CreativeOsPanel(
+      builder: (_, _) => CreativeOsPanel(
         briefCount: 1,
         stage: DemoCreativeOs.pipeline.currentStage.name,
       ),
     ),
     GoRoute(
       path: AppRoutes.xrStudio,
-      builder: (_, __) => XrStudioPanel(
+      builder: (_, _) => XrStudioPanel(
         sessionState: DemoXrStudio.session.state.name,
         anchorCount: DemoXrStudio.scene.anchorCount,
       ),
     ),
     GoRoute(
       path: AppRoutes.metaverse,
-      builder: (_, __) => MetaverseStudioPanel(
+      builder: (_, _) => MetaverseStudioPanel(
         worldCount: DemoMetaverse.registry.worldCount,
         zoneCount: DemoMetaverse.registry.zoneCount,
       ),
@@ -387,27 +387,27 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
           route.value != AppRoutes.securityLock)
         GoRoute(
           path: route.value,
-          builder: (_, __) => _FoundationRouteLabel(label: route.key),
+          builder: (_, _) => _FoundationRouteLabel(label: route.key),
         ),
     GoRoute(
       path: AppRoutes.aiStudio,
-      builder: (context, __) => AdvancedAiStudioScreen(
+      builder: (context, _) => AdvancedAiStudioScreen(
         onOpenImageGenerator: () => context.push(AppRoutes.aiImageGenerator),
         onOpenVideoGenerator: () => context.push(AppRoutes.aiVideoGenerator),
       ),
     ),
     GoRoute(
       path: AppRoutes.aiImageGenerator,
-      builder: (_, __) => const AiGenerationQueueScreen(),
+      builder: (_, _) => const AiGenerationQueueScreen(),
     ),
     GoRoute(
       path: AppRoutes.aiVideoGenerator,
-      builder: (_, __) =>
+      builder: (_, _) =>
           const AiGenerationQueueScreen(mediaTarget: PromptTarget.video),
     ),
     GoRoute(
       path: AppRoutes.collaborationComments,
-      builder: (_, __) => const CollaborationCommentsScreen(),
+      builder: (_, _) => const CollaborationCommentsScreen(),
     ),
     GoRoute(
       path: AppRoutes.accountCloud,
@@ -436,66 +436,66 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.settings,
-      builder: (_, __) => const SettingsHubScreen(),
+      builder: (_, _) => const SettingsHubScreen(),
     ),
     GoRoute(
       path: AppRoutes.storageLocations,
-      builder: (_, __) => const StorageLocationsScreen(),
+      builder: (_, _) => const StorageLocationsScreen(),
     ),
     for (final alias in AppRoutes.foundationAliases.entries)
       GoRoute(
         path: alias.key,
-        builder: (_, __) => AppRoutes.settings == alias.value
+        builder: (_, _) => AppRoutes.settings == alias.value
             ? const ThemeSettingsScreen()
             : const SettingsHubScreen(),
       ),
     GoRoute(
       path: AppRoutes.security,
-      builder: (_, __) => const SecuritySettingsScreen(),
+      builder: (_, _) => const SecuritySettingsScreen(),
     ),
     GoRoute(
       path: AppRoutes.securityLock,
-      builder: (_, __) => const ProjectLockScreen(projectName: 'Proyek'),
+      builder: (_, _) => const ProjectLockScreen(projectName: 'Proyek'),
     ),
     GoRoute(
       path: AppRoutes.workspace,
-      builder: (_, __) => VoidAppShell(onLogout: onLogout),
+      builder: (_, _) => VoidAppShell(onLogout: onLogout),
     ),
     GoRoute(
       path: AppRoutes.studio,
-      builder: (_, __) => VoidAppShell(onLogout: onLogout),
+      builder: (_, _) => VoidAppShell(onLogout: onLogout),
     ),
     GoRoute(
       path: AppRoutes.aiComposer,
-      builder: (_, __) => const AiPromptComposerScreen(),
+      builder: (_, _) => const AiPromptComposerScreen(),
     ),
     GoRoute(
       path: AppRoutes.aiHistory,
-      builder: (_, __) => const AiGenerationQueueScreen(),
+      builder: (_, _) => const AiGenerationQueueScreen(),
     ),
     GoRoute(
       path: AppRoutes.aiGallery,
-      builder: (_, __) => const ProjectAiGenerationGalleryScreen(),
+      builder: (_, _) => const ProjectAiGenerationGalleryScreen(),
     ),
     GoRoute(
       path: AppRoutes.aiProviders,
-      builder: (_, __) => const AiProviderWorkspaceScreen(),
+      builder: (_, _) => const AiProviderWorkspaceScreen(),
     ),
     GoRoute(
       path: AppRoutes.assets,
-      builder: (_, __) => const AssetBrowserScreen(),
+      builder: (_, _) => const AssetBrowserScreen(),
     ),
     GoRoute(
       path: AppRoutes.references,
-      builder: (_, __) => const ProjectReferenceLibraryScreen(),
+      builder: (_, _) => const ProjectReferenceLibraryScreen(),
     ),
     GoRoute(
       path: AppRoutes.bible,
-      builder: (_, __) => const ProjectBibleWorkspaceScreen(),
+      builder: (_, _) => const ProjectBibleWorkspaceScreen(),
     ),
     GoRoute(
       path: AppRoutes.contentCapabilities,
-      builder: (_, __) => const ContentCapabilityMatrixScreen(),
+      builder: (_, _) => const ContentCapabilityMatrixScreen(),
     ),
     ..._productionAssetRoutes(),
     _cinematicProductionRoute(),
@@ -510,13 +510,13 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.plugins,
-      builder: (_, __) => PluginManagerScreen(
+      builder: (_, _) => PluginManagerScreen(
         plugins: [PluginDescriptor(manifest: DemoPlugin().manifest)],
       ),
     ),
     GoRoute(
       path: AppRoutes.render,
-      builder: (_, __) => const RenderPreviewPanel(
+      builder: (_, _) => const RenderPreviewPanel(
         drawCalls: 0,
         culledCount: 0,
         width: 320,
@@ -525,7 +525,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.animation,
-      builder: (_, __) => AnimationPreviewPanel(
+      builder: (_, _) => AnimationPreviewPanel(
         currentTime: 0,
         durationSeconds: DemoAnimation.bounce.durationSeconds,
         trackCount: DemoAnimation.bounce.tracks.length,
@@ -533,11 +533,11 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.audio,
-      builder: (_, __) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
+      builder: (_, _) => const AudioMeterPanel(rmsDb: -18, gainDb: -6),
     ),
     GoRoute(
       path: AppRoutes.virtualProduction,
-      builder: (_, __) => VirtualProductionPanel(
+      builder: (_, _) => VirtualProductionPanel(
         shotCount: DemoVirtualProduction.shotList.shots.length,
         takeCount: 0,
         totalDurationSeconds: DemoVirtualProduction.shotList.totalDuration,
@@ -545,7 +545,7 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
     ),
     GoRoute(
       path: AppRoutes.publishing,
-      builder: (_, __) => PublishingPanel(
+      builder: (_, _) => PublishingPanel(
         channelCount: 3,
         latestVersion: DemoPublishing.manifest.version.toString(),
       ),
@@ -566,7 +566,7 @@ GoRoute _cinematicProductionRoute() => GoRoute(
 );
 GoRoute _productionValidationRoute() => GoRoute(
   path: AppRoutes.productionValidation,
-  builder: (_, __) =>
+  builder: (_, _) =>
       ProductionValidationCenterScreen(issues: const [], onRefresh: () {}),
 );
 List<RouteBase> _resilienceRoutes() => [
@@ -582,7 +582,7 @@ List<RouteBase> _resilienceRoutes() => [
   }.entries)
     GoRoute(
       path: entry.key,
-      builder: (_, __) => ProjectResilienceWorkspaceScreen(view: entry.value),
+      builder: (_, _) => ProjectResilienceWorkspaceScreen(view: entry.value),
     ),
 ];
 
@@ -594,7 +594,7 @@ List<RouteBase> _productionAssetRoutes() => [
   }.entries) ...[
     GoRoute(
       path: entry.key,
-      builder: (_, __) => ProductionAssetWorkspaceScreen(kind: entry.value),
+      builder: (_, _) => ProductionAssetWorkspaceScreen(kind: entry.value),
     ),
     GoRoute(
       path: '${entry.key}/:id',
@@ -693,7 +693,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
 class _AuthRefresh extends ChangeNotifier {
   _AuthRefresh(this.ref) {
-    ref.listen(authControllerProvider, (_, __) => notifyListeners());
+    ref.listen(authControllerProvider, (_, _) => notifyListeners());
   }
 
   final Ref ref;

@@ -67,7 +67,7 @@ void main() {
   test('queued and running updates NEVER fire', () async {
     var fires = 0;
     final stream = StreamController<BackgroundJob>.broadcast();
-    JobEventBridge(jobUpdates: stream.stream, onFire: (_, __) => fires++);
+    JobEventBridge(jobUpdates: stream.stream, onFire: (_, _) => fires++);
     await Future<void>.delayed(Duration.zero);
 
     stream.add(jobOf(BackgroundJobStatus.queued));
@@ -97,7 +97,7 @@ void main() {
     JobEventBridge(
       jobUpdates: stream.stream,
       rules: [rule],
-      onFire: (_, __) => fires++,
+      onFire: (_, _) => fires++,
     );
     await Future<void>.delayed(Duration.zero);
 
@@ -112,7 +112,7 @@ void main() {
     final stream = StreamController<BackgroundJob>.broadcast();
     final bridge = JobEventBridge(
       jobUpdates: stream.stream,
-      onFire: (_, __) => fires++,
+      onFire: (_, _) => fires++,
     );
     bridge.dispose();
     bridge.dispose();

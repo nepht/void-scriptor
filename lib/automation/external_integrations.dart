@@ -36,7 +36,7 @@ class AiWorkflowIntegration {
     required this.externalTransferCheck,
     void Function(String providerId, double cost)? onCost,
     this.costOf,
-  }) : onCost = onCost ?? ((_, __) {});
+  }) : onCost = onCost ?? ((_, _) {});
 
   final ProviderRouter router;
   final Future<bool> Function() externalTransferCheck;

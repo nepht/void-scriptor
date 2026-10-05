@@ -12,7 +12,7 @@ void main() {
       routes: [
         GoRoute(
           path: AppRoutes.workspace,
-          builder: (_, __) => const Scaffold(body: ExplorerPanel()),
+          builder: (_, _) => const Scaffold(body: ExplorerPanel()),
         ),
       ],
     );

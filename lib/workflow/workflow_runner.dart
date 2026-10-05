@@ -289,7 +289,7 @@ class WorkflowCheckpointStore {
     final previous = _pendingWrites[key] ?? Future<void>.value();
     late final Future<void> current;
     current = previous
-        .catchError((Object _, StackTrace __) {})
+        .catchError((Object _, StackTrace _) {})
         .then((_) => _writeAtomicUnlocked(target, checkpoint));
     _pendingWrites[key] = current;
     return current.whenComplete(() {

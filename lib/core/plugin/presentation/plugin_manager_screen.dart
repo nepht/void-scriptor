@@ -16,7 +16,7 @@ class PluginManagerScreen extends StatelessWidget {
           ? const Center(child: Text('Belum ada plugin terpasang.'))
           : ListView.separated(
               itemCount: plugins.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              separatorBuilder: (_, _) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final plugin = plugins[index];
                 return ListTile(

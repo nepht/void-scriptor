@@ -1,4 +1,4 @@
-library writer_economy_calculator;
+library;
 
 import 'price_wealth_inflation_model.dart';
 

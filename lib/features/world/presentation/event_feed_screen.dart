@@ -30,7 +30,7 @@ class EventFeedScreen extends ConsumerWidget {
         child: ListView.separated(
           padding: const EdgeInsets.all(VoidSpacing.lg),
           itemCount: _events.length,
-          separatorBuilder: (_, __) => const SizedBox(height: VoidSpacing.sm),
+          separatorBuilder: (_, _) => const SizedBox(height: VoidSpacing.sm),
           itemBuilder: (context, index) {
             final (time, desc) = _events[index];
             return _EventTile(time: time, description: desc);

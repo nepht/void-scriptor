@@ -68,7 +68,7 @@ class StoryRepositoryImpl {
 
   /// vs-hunt-20260912-autosave BUG-8 (Medium): dulu select-then-insert
   /// tanpa transaction — dua penulis paralel sama-sama melihat null lalu
-  /// yang kedua kena SqliteException PK-collision ('<scene>_draft').
+  /// yang kedua kena SqliteException PK-collision (`'<scene>_draft'`).
   /// Upsert atomik menutup window TOCTOU (id deterministik per scene).
   Future<void> saveSceneDraft(String sceneId, String content) async {
     await database

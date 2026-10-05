@@ -58,7 +58,7 @@ class ProjectRegistryService {
         'ts': DateTime.now().toUtc().toIso8601String(),
         'instance': _instanceNonce,
         'op': op,
-        if (id != null) 'id': id,
+        'id': ?id,
         'after': after,
       };
       await journal.writeAsString(

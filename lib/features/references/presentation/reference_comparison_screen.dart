@@ -141,7 +141,7 @@ class _ImagePane extends StatelessWidget {
             : Image.file(
                 File(path),
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) =>
+                errorBuilder: (_, _, _) =>
                     const Icon(Icons.broken_image_outlined, size: 64),
               ),
       ),

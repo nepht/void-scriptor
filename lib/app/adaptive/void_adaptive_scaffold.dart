@@ -52,7 +52,7 @@ class VoidAdaptiveScaffold extends StatelessWidget {
                 children: [
                   desktopSidebar,
                   Expanded(child: body),
-                  if (inspector != null) inspector!,
+                  ?inspector,
                 ],
               ),
             );

@@ -199,7 +199,7 @@ void main() {
 
         // Production shells mount the persistence provider through the
         // explorer/resolver; an active listener keeps it alive identically.
-        containerA.listen(selectionMemoryPersistenceProvider, (_, __) {});
+        containerA.listen(selectionMemoryPersistenceProvider, (_, _) {});
 
         // The user works on the second novel.
         containerA
@@ -235,7 +235,7 @@ void main() {
         await containerB
             .read(projectSessionProvider.notifier)
             .openProject(projectId);
-        containerB.listen(selectionMemoryPersistenceProvider, (_, __) {});
+        containerB.listen(selectionMemoryPersistenceProvider, (_, _) {});
 
         final controllerB = containerB.read(selectionProvider.notifier);
         await _waitUntil(

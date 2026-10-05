@@ -104,7 +104,7 @@ class _ReferenceImage extends StatelessWidget {
         File(path),
         fit: BoxFit.contain,
         width: double.infinity,
-        errorBuilder: (_, __, ___) => Center(
+        errorBuilder: (_, _, _) => Center(
           child: Icon(
             Icons.broken_image_outlined,
             color: context.palette.textDisabled,

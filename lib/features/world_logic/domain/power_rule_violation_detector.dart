@@ -1,4 +1,4 @@
-library power_rule_violation_detector;
+library;
 
 import 'power_rulebook.dart';
 import 'power_usage_ledger.dart';

@@ -62,7 +62,7 @@ void main() {
 
         // --- App run, project A first ----------------------------------
         await notifier.openProject(idA);
-        container.listen(selectionMemoryPersistenceProvider, (_, __) {});
+        container.listen(selectionMemoryPersistenceProvider, (_, _) {});
         container
             .read(selectionProvider.notifier)
             .select(
@@ -79,7 +79,7 @@ void main() {
 
         // --- Switch to project B in the SAME app run --------------------
         await notifier.openProject(idB);
-        container.listen(selectionMemoryPersistenceProvider, (_, __) {});
+        container.listen(selectionMemoryPersistenceProvider, (_, _) {});
 
         // BUG-2(a): B's persisted memory must be loaded after the switch.
         final controllerB = container.read(selectionProvider.notifier);

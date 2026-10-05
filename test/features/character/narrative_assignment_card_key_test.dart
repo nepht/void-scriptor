@@ -24,7 +24,7 @@ class _FakeSessionController extends ProjectSessionController {
 /// character switch and a straddled in-flight load could combine one
 /// character's editor with another character's id. Contract: the workspace
 /// screen keys the card per character (same pattern as the resolver's
-/// wb-<projectId> keying).
+/// `wb-<projectId>` keying).
 void main() {
   testWidgets(
     'narrative assignment card is keyed per character in the workspace',

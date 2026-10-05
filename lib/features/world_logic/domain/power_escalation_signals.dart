@@ -1,4 +1,4 @@
-library power_escalation_signals;
+library;
 
 import 'power_rulebook.dart';
 import 'power_usage_ledger.dart';

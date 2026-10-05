@@ -23,7 +23,7 @@ class KnowledgeTime {
 
   /// Urutan pembanding dalam satu proyek dan satu tipe waktu: digit
   /// akhir id dibandingkan sebagai angka sehingga 'sc-2' mendahului
-  /// 'sc-10' (konvensi repo 'sc-<angka>' tidak menjamin urutan
+  /// 'sc-10' (konvensi repo `'sc-<angka>'` tidak menjamin urutan
   /// leksikografis tanpa nol-padding); tanpa digit akhir, urutan
   /// leksikografis dipakai. Campuran scene vs chapter tidak memiliki
   /// ordinal bersama dan ditolak [UnsupportedError] alih-alih

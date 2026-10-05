@@ -275,7 +275,7 @@ final selectionMemoryPersistenceProvider = Provider<void>((ref) {
   // The snapshot is scoped to the ACTIVE project before writing: the file
   // lives inside this project's package, so foreign entries must never
   // reach it (hunt-20260910b BUG-2).
-  ref.listen(selectionProvider, (_, __) {
+  ref.listen(selectionProvider, (_, _) {
     persistSelectionMemorySnapshotSync(
       selectionMemoryFileFor(session.package),
       ref

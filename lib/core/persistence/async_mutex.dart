@@ -42,7 +42,7 @@ class AsyncMutex {
     unawaited(
       result.then(
         (_) => _release(gate),
-        onError: (Object _, StackTrace __) => _release(gate),
+        onError: (Object _, StackTrace _) => _release(gate),
       ),
     );
     return result;

@@ -225,5 +225,5 @@ void main() {
   });
 }
 
-/// Alias so the record type above stays readable; db.close is Future<void>.
+/// Alias so the record type above stays readable; db.close is `Future<void>`.
 typedef ProjectDatabaseServiceCloser = Future<void> Function();

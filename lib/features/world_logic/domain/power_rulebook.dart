@@ -1,4 +1,4 @@
-library power_rulebook;
+library;
 
 /// Deterministic, domain-only power-system rulebook.
 ///

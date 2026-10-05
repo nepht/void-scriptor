@@ -55,7 +55,7 @@ void main() {
           // already been retried and the error row never renders. The app's
           // root scopes disable auto-retry precisely so this error surface
           // stays visible; this test builds its own scope, so it must too.
-          retry: (_, __) => null,
+          retry: (_, _) => null,
           overrides: [
             projectSessionProvider.overrideWith(() => _FixedSession(session!)),
             projectSidebarModulePreferencesServiceProvider.overrideWithValue(

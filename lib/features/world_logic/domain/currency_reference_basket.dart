@@ -1,4 +1,4 @@
-library currency_reference_basket;
+library;
 
 class ValidityRange {
   const ValidityRange({required this.fromTick, this.untilTick});

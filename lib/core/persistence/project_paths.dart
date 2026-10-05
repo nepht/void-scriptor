@@ -47,7 +47,7 @@ final class ProjectPaths {
   /// codified contract, but it used to be silent. This exposes the most
   /// recent fallback away from the configured custom storage location so
   /// consumers (status bar / settings surface) can surface a visible
-  /// warning: "projects are currently written to <fallback> because the
+  /// warning: "projects are currently written to `<fallback>` because the
   /// configured drive is missing". Cleared whenever a subsequent [root]
   /// call uses the configured location, and null when no custom store is
   /// configured at all.

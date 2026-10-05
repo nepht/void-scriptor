@@ -61,7 +61,7 @@ class _ContentCapabilityMatrixScreenState
                 ),
                 sliver: SliverList.separated(
                   itemCount: modules.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const SizedBox(height: VoidSpacing.sm),
                   itemBuilder: (_, index) => Center(
                     child: ConstrainedBox(

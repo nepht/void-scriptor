@@ -60,7 +60,7 @@ void main() {
               });
             },
             zoneSpecification: ZoneSpecification(
-              print: (_, __, ___, line) => printed.add(line),
+              print: (_, _, _, line) => printed.add(line),
             ),
           );
 
@@ -107,7 +107,7 @@ void main() {
           await notifier.openProject(package.projectId);
 
           final unhandled = <Object>[];
-          container.listen(selectionMemoryPersistenceProvider, (_, __) {});
+          container.listen(selectionMemoryPersistenceProvider, (_, _) {});
 
           // RED: the listener's unguarded sync write rethrows through the
           // provider plumbing and lands as an unhandled error below this zone.

@@ -6,7 +6,7 @@ import 'package:void_scriptor/features/project_resilience/application/project_re
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 
 /// Sprint 145.42 interrupted-restore crash window: a restore killed between
-/// the emergency snapshot and the final area write leaves '<final>.tmp'
+/// the emergency snapshot and the final area write leaves `'<final>.tmp'`
 /// staging artifacts inside the live package. RestoreCrashRecovery.recover
 /// documents that "the next session open removes every staging artifact",
 /// so opening the project for writing must heal them without requiring the

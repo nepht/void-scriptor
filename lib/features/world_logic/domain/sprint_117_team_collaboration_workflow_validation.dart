@@ -893,7 +893,7 @@ class Sprint117TeamCollaborationWorkflowGate {
     final ordered = <Sprint117TeamCollaborationWorkflowCheck>[
       for (final checkId
           in Sprint117TeamCollaborationWorkflowContract.requiredChecks)
-        if (byId.remove(checkId) case final check?) check,
+        ?byId.remove(checkId),
     ];
     ordered.addAll(byId.values);
     return ordered;

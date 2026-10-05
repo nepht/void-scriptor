@@ -192,7 +192,7 @@ final class OAuthAuthorizationRequest {
       'redirect_uri': redirectUriText,
       'scope': (consent.grantedScopes.toList()..sort()).join(' '),
       'state': state,
-      if (nonce != null) 'nonce': nonce!,
+      'nonce': ?nonce,
       'code_challenge': codeChallenge,
       'code_challenge_method': 'S256',
     },

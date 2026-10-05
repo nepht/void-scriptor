@@ -1,4 +1,4 @@
-library price_wealth_inflation_model;
+library;
 
 import 'currency_reference_basket.dart';
 

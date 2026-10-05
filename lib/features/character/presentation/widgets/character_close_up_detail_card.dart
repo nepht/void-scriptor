@@ -90,7 +90,7 @@ class _DetailImage extends StatelessWidget {
       child: Image.file(
         File(imagePath),
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => Center(
+        errorBuilder: (_, _, _) => Center(
           child: Icon(
             Icons.broken_image_outlined,
             color: context.palette.textDisabled,

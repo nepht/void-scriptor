@@ -302,7 +302,7 @@ void main() {
 
       final result = await scan([
         sandbox,
-      ], resolver: (_, __) => LocalStorageCategory.models);
+      ], resolver: (_, _) => LocalStorageCategory.models);
 
       expect(result.summary.bytesFor(LocalStorageCategory.models), 500);
       expect(result.summary.bytesFor(LocalStorageCategory.other), 0);

@@ -22,7 +22,7 @@
 //   110.30 power_usage_ledger.dart          PowerUsageLedger + PowerUsageEvent
 //   110.37 rumor_propagation.dart           RumorPropagationSimulator + RumorNetwork
 //   110.39 technology_node_prerequisite_model.dart  TechnologyRegistry
-library performance_scale_benchmark;
+library;
 
 import 'dart:math' as math;
 

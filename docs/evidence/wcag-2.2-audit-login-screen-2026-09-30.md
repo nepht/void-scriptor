@@ -4668,6 +4668,43 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 
 **Gate & negative control:** tidak dijalankan - tidak ada test kontrak yang dibuat (bukan pass, bukan fail). Tidak ada perubahan selain section ini.
 
+## 88. Fase 88 - Pengukuran live penuh 27 layar sisa: semua di bawah ambang 2 stop, kolam in-glob KOSONG (2.4.3)
+
+**Status:** DEFERRED (tidak ada kontrak baru; kandidat layar kosong). **Tanggal:** 2026-10-05. **Basis:** fase 80, 81, 83, 85, 86, 87.
+
+**Pembeda dari fase 87:** fase 87 hanya memprobing 4 layar. Fase 88 mengukur SEMUA layar in-glob sisa yang bisa dipompa (27 dari 28) dalam satu run, plus sanity-check metode pada layar yang sudah diaudit - jadi klaim "kolam kosong" kini berbasis pengukuran lengkap, bukan inferensi statis.
+
+### Metode probe (dengan sanity check)
+
+- Probe sementara `test/features/workflow/presentation/_probe_focus_test.dart`, sudah DIHAPUS setelah hasil dibaca (sisa direktori itu = 3 file kontrak workflow saja).
+- Tiap layar dipompa pada viewport 1536x1024, dpr 1.0, dibungkus `ProviderScope`, lalu didorong lewat `MaterialPageRoute` supaya affordance back AppBar ikut terukur, kemudian `LogicalKeyboardKey.tab` maksimal 16 kali; loop berhenti ketika Rect berulang; label = Text non-Icon pertama; `FocusScopeNode` atau rect >=1500x1000 dihitung `raw` tapi bukan `leaf`.
+- **Sanity check metode (wajib, supaya angka "1 stop" bukan artefak probe):** layar SUDAH diaudit `ProductionValidationCenterScreen` (`lib/features/cinematic_production/presentation/cinematic_production_workspace_screen.dart:115`, kontrak fase 84) menghasilkan `raw=2 leaf=2` -> `back @8,8 40x40` + `action @1492,8 40x40`. Metode terbukti mendeteksi layar multi-stop.
+
+### Hasil pengukuran live (27 layar dalam satu run)
+
+- **leaf=1 (hanya tombol back AppBar, 40x40 di 8,8), 21 layar:** AnimaticPreviewScreen, BranchPreviewScreen, CinematicContinuityCheckerScreen, ShotStatusDashboardScreen, DashboardMetricsScreen, FinalCreatorDashboardScreen, PortfolioBuilderScreen, CreatorStoreScreen, MarketplaceHomeScreen, SellerCenterScreen, MultiverseWorkspaceScreen, AboutScreen, KeyboardNavigationScreen, DiscoveryHomeScreen, PublishingWorkspaceScreen, RevenueDashboardScreen, ExecutionMonitorScreen, EventFeedScreen, SimulationInspectorScreen, WorldHealthDashboardScreen, WorldSimulationWorkspaceScreen.
+- **leaf=0 (nol leaf stop, Tab tetap di root scope), 6 layar:** AiStudioScreen, CreatorDashboardScreen, CreatorSidebarScreen, DonationDashboardScreen, DonationScreen, SplashScreen.
+- **Exception:** WorldSimulationWorkspaceScreen -> `A RenderFlex overflowed by 4.5 pixels on the right` (overflow standalone, sudah DEFERRED pada fase 87); 26 layar lainnya `ex=null`.
+
+### Statistik kolom (scan independen run ini)
+
+- `lib/features/**/*_screen.dart` = 89 file; `test/**/*_focus_order_test.dart` = 75 file; layar ter-pompa kontrak = 61; tanpa kontrak = 28 (angka sama dengan fase 80-87).
+- Tidak ada layar in-glob baru sejak fase 87: `git log --oneline -15 -- 'lib/features/*/presentation/*_screen.dart'` teratas = `26e22c8`, dan `git status --porcelain -- lib` bersih (0 perubahan di `lib/`).
+- Dari 28 layar tanpa kontrak: **0 site handler non-null** (setiap `onTap`/`onPressed`/`onChanged` di file itu bernilai `null` atau tidak ada) -> konfirmasi ke-8 kolom kosong.
+- 1 layar tidak dipompa: `CreatureWorkspaceScreen` -> DEFERRED, butuh fixture `projectSessionProvider` + `creatureWorkspaceProvider(creatureId)`, bukan layar mandiri.
+
+### Gate run ini
+
+- `flutter analyze` (penuh) -> `210 issues found`, exit 1, baseline identik fase 81/82; semuanya dari file di luar scope run ini (`test/release/scratch_*`, `lib/app/routing/app_router.dart`, dll). Run ini **tidak mengubah satu pun file `.dart`** (probe dihapus sebelum gate), kontribusi analyzer = 0.
+- `flutter test test/features/workflow/presentation/` -> `All tests passed!` (11 tests).
+- **Negative control: TIDAK DIJALANKAN** - tidak ada file kontrak yang dibuat, sehingga tidak ada ekspektasi untuk dimutasi; alasan sama dengan fase 80/81/83.
+
+### Kesimpulan
+
+- Ambang ">= 2 stop terukur" (kebijakan fase 81) dan kriteria ">= 2 elemen interaktif" (prompt run) sama-sama tidak terpenuhi oleh SATU pun layar in-glob tersisa -> **tidak ada kontrak, tidak ada perubahan kode produksi, file yang di-commit hanya report ini**.
+- Batasan keputusan Choirudin (opsi 1-3 fase 86) tetap tertunda: (1) perluas ke widget non-`*_screen.dart` (24 kandidat), (2) turunkan ambang jadi ">= 1 stop" plus audit affordance back, (3) berhenti sampai layar interaktif baru muncul.
+- Catatan mekanis: file report ini terbukti LF (0 byte CRLF); penyisipan memakai mode `newline=''` sehingga ending yang ada dipertahankan (asumsi "pertahankan CRLF" di instruksi run tidak berlaku untuk file ini).
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

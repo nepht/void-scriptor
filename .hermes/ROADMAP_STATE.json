@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.42",
-  "next_step": "117.43",
+  "last_verified_step": "117.43",
+  "next_step": "117.44",
   "stability_gate": {
     "status": "PASS",
     "note": "117.43 GA Artifact & Reproducibility: defect 117.43-19 fixed - the document-level `version` field sits on the same level the header (117.43-17) and the limits group (117.43-18) opened, and NO reader in lib/ had ever opened it; the gate even ships deriveApplicationVersion() yet nothing ever called it. Proven before the fix by dumping all 36 distinct manifest keys and matching each against gate literals, not by assumption: five present-but-unreadable shapes (integer, list, object, blank string, whitespace-only) all reported provenance_evaluation: pass. Fixed in the same fail-closed shape as 117.43-16/-17/-18: a present version that is not a non-blank string is unevaluable, an absent key and an explicit null stay non-claims (117.43-07), and nothing is required about WHICH version the document states. title and signed_snapshot_restore also have no reader but stay deliberately unmeasured - both were already bound as prose outside acceptance. Gates: focused file 133/133 exit 0 (was 130, +3), analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 25s, guard PASS pre+post (canonical_sha256 b7ef2d35... unchanged). Directed regression +138 -2 (slice 117 at 135/135; the 2 failures are the pre-existing 113.39 pair, signatures reproduced solo and unchanged, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still open awaiting an operator decision, so the guard pointer remains on 117.43. | 2026-10-04 run15 slice 117.43-24: defect 117.43-24 fixed - ArtifactComparison.method states BOTH the digest algorithm (read since 117.43-22) and the SCOPE of the comparison (read by nothing). Six recorded digests under a method claiming four, or naming an artifact no rebuild hashed, returned missingEvidence [] and provenance_evaluation: pass while the gate printed '(6 artifact)'. Fixed fail-closed on the affirmative claim only; an illustrative enumeration claims no completeness and is not refused. The shipped manifest's enumeration matches its recorded inventory exactly, so it still passes.",
@@ -627,8 +627,8 @@
     "next_step": "112.41"
   },
   "current_step": "117.43",
-  "current_step_status": "PARTIAL-LOCAL",
-  "last_run_summary": "117.43-37 defect #32 fail-open hunt FIXED-LOCAL and committed. _kRebuildSummaryPattern required the restatement window, so an unreadable or absent window - not the numbers - decided whether the exit code and duration beside it were read: `rebuild_a exit_code 1 duration_seconds 999 (not-a-timestamp .. still-not-a-timestamp)` and `rebuild_a exit_code 1 duration_seconds 145` were both read as prose while provenance_record: 6 item still counted the line. Window now optional, unreadable stated number or window refuses instead of continuing, and a window-less restatement is held to its two numbers. RED +1 -3 exit 1 on pre-fix lib, GREEN +4, directed two-file regression +186 All tests passed exit 0, format/analyze/diff-check/non-Latin scan/build green. STATUS UNCHANGED: PARTIAL-LOCAL, next_step 117.43, step not closed, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE. TODO-OPERATOR 117.43-02 remains the blocker. Next hunt: #33 (parseDigest 0 callers; summarised.firstMatch still unprobed).",
+  "current_step_status": "VERIFIED-LOCAL",
+  "last_run_summary": "2026-10-05 slice 117.43-47/48 ledger + keputusan operator: operator memilih opsi (a) untuk 117.43-02 (re-sign kandidat 1.2.0-rc.1 lalu refresh checksum), bukan menyatakan drift sebagai limitasi GA. Rebuild kanonik dari pohon bersih (clean -> pub get -> build windows --release -> sign 6 artefak -> generate_release_metadata) menutup drift: 6 signed MATCH=6/DRIFT=0 (dari 0/6) dan index 493 entri MATCH=493/DRIFT=0/MISSING=0 (dari 485/7/1). Dua suite 113.38/113.39 pulih 32/32 exit 0 (dari 17 pass/3 FAIL). Satu assertion gate 117.43 yang mengunci KEBERADAAN defect dipensiunkan menjadi klaim lebih kuat (setiap path checksum + sign manifest harus ADA), bukan di-skip; gate 224/224 exit 0. Ledger 117.43 PARTIAL-LOCAL -> VERIFIED-LOCAL; 117.43-02 ditutup atas keputusan operator. Sisa antrean dependabot dibersihkan: setup-java 6.0.0 -> 6.0.1 (commit 7621033) dan 5 PR stale ditutup karena sudah terlampaui di pubspec.lock (flutter_lints 6.0.0, drift 2.35.1, drift_dev 2.35.1, build_runner 2.16.1, archive 4.3.0). BATAS KLAIM: sertifikat self-signed lokal, bukan CA publik; penandatanganan CA publik, builder kedua, kohort beta, dan publikasi GA tetap DEFERRED-EXTERNAL.",
   "last_commit": "a5d07e5",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -740,7 +740,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.42",
+  "last_resolved_step": "117.43",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",

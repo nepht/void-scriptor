@@ -4894,6 +4894,38 @@ Probe sekali pakai `test/_probe_focus_test.dart` (DIHAPUS setelah hasil dibaca):
 - **Status audit: 61/89 layar in-glob berkontrak focus order; 28 sisanya display-only** (0 token handler dan 0 token widget fokus; 26 di antaranya di-probe live pada run ini, 1 fixture provider sudah diukur fase 92, 1 fixture snapshot belum pernah dipompa). Kolam kandidat = **0**, pengesahan ke-12 (lanjutan fase 90 = ke-10 dan fase 92 = ke-11).
 - Keputusan Choirudin atas opsi 1-3 fase 86 (perluas audit ke widget non-`*_screen.dart` termasuk `ExplorerPanel` dengan 25 handler / turunkan ambang jadi `>= 1 stop` plus audit affordance back / hentikan audit sampai ada layar interaktif baru) **masih tertunda** - selama itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED yang sama.
 
+## 94. Fase 94 — Re-verifikasi independen kolam kandidat di HEAD b827c43 (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - sama seperti fase 86-93: tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` tanpa kontrak yang memenuhi kriteria pemilihan run (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order dibuat, tidak ada file probe yang tersisa, tidak ada kode produksi diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** HEAD `b827c43`. `git diff --name-status 9ffcf25..HEAD -- 'lib/features/**/*_screen.dart'` = **kosong** (0 file layar berubah sejak basis probe live fase 93); satu-satunya perubahan `lib/` di rentang itu = `lib/features/world_logic/domain/build_reproducibility_provenance.dart` (84 insertions / 18 deletions, milik Core Worker, bukan layar). `git status --short` saat langkah 1 hanya menunjukkan file dirty milik sibling (`docs/evidence/sprint-117-35-manifest-20261002.json`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) - tidak ada yang disentuh.
+
+### Empat metode statis, dijalankan ulang dari nol (bukan kutipan fase 93)
+
+1. **Import graph:** 76 file `test/**/*focus_order*.dart` (impor kutip tunggal maupun ganda) di-match ke 89 layar in-glob -> **61 berkontrak / 28 tanpa kontrak**.
+2. **Token handler `on[A-Z]\w*:` setelah strip komentar:** total **0 token di 28 file**.
+3. **Token widget fokus** (TextField, TextFormField, EditableText, InkWell, GestureDetector, Switch, Checkbox, Radio, Slider, DropdownButton, IconButton, TextButton, ElevatedButton, OutlinedButton, FloatingActionButton, CupertinoButton): **0 kemunculan di 28 file**.
+4. **Resolusi class child eksternal:** 74 nama kapital terinstansiasi oleh 28 layar -> 31 terdefinisi di `lib/**` dan **0 di antaranya punya token handler**; 43 sisanya tidak didefinisikan di repo karena semuanya widget SDK Flutter / tipe inti Dart (Align, AppBar, Card, Column, Container, Icon, ListTile, ListView, Row, Scaffold, Semantics, Text, TextStyle, dst) yang tidak membawa handler di sisi repo.
+
+### Gate dan negative control
+
+- `flutter test test/features/platform/` -> `All tests passed!` (75 tests), exit 0.
+- `dart format` / `dart analyze` kontrak: **N/A** - tidak ada file `.dart` yang diubah, sehingga tidak ada kontrak untuk diformat/dianalisis.
+- **Negative control TIDAK DIJALANKAN** - tidak ada ekspektasi kontrak untuk dimutasi karena kontrak tidak dibuat (alasan sama fase 80/81/83/86-93). Ini bukan pass dan bukan fail.
+- `git diff --check` bersih sebelum commit; file yang di-commit hanya laporan ini (pathspec-scoped), tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi LF (`CRLF=0`, 5027 baris sebelum penyisipan) -> disisipkan dengan mode `newline=''` sehingga ending dipertahankan; instruksi "pertahankan CRLF" tidak berlaku untuk file ini.
+
+### Probe live
+
+- **Tidak diulang, dengan alasan bukti:** 26 dari 28 layar tanpa kontrak sudah di-probe live pada fase 93 (2026-10-05, `stops=1` untuk semuanya), 1 layar fixture provider sudah diukur fase 92, dan `git diff --name-status 9ffcf25..HEAD -- 'lib/features/**/*_screen.dart'` = kosong -> byte layar identik dengan basis probe itu, sehingga hasil live tidak mungkin berbeda. Mengulang probe hanya membuang siklus tanpa informasi baru; angka statis di atas adalah pengukuran baru, bukan salinan.
+
+### Kesimpulan
+
+- **Status audit: 61/89 layar in-glob berkontrak focus order; 28 sisanya display-only** (0 token handler dan 0 token widget fokus). Kolam kandidat = **0**, pengesahan ke-13 (fase 86 = ke-1, 87 = ke-2, 88 = ke-3, 89 = ke-4, 90 = ke-10, 92 = ke-11, 93 = ke-12).
+- Kriteria pemilihan run (>= 2 elemen interaktif pada layar tanpa kontrak) tetap tidak terpenuhi oleh SATU pun dari 89 layar in-glob -> tidak ada kontrak, tidak ada perubahan kode produksi.
+- Keputusan Choirudin atas opsi 1-3 fase 86 (perluas audit ke widget non-`*_screen.dart` termasuk `ExplorerPanel`, atau turunkan ambang jadi `>= 1 stop` plus audit affordance back, atau hentikan audit sampai ada layar interaktif baru) **masih tertunda** - selama itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED yang sama.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

@@ -5448,6 +5448,70 @@ File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase103.da
 - Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
 - Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - 21 layar terukur `leaf=1` (termasuk `EventFeedScreen` yang baru dikonfirmasi ulang) langsung siap dikontrakkan; (2) perluas audit ke widget non-`*_screen.dart` (24 kandidat, fase 88); atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-23.
 
+## 104. Fase 104 - Re-verifikasi independen kolam kandidat + probe live SplashScreen (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` tanpa kontrak yang memenuhi kriteria pemilihan run (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order baru, file probe sementara sudah DIHAPUS, dan tidak ada kode produksi yang diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** scan dijalankan saat HEAD `3c8a4ef` (commit fase 103); saat closeout HEAD bergerak ke `a626d3e` lewat commit sibling (`a626d3e` = roadmap state). `git log --oneline -3 -- 'lib/features/*/presentation/*_screen.dart'` teratas masih `7595201` dan `git diff --name-status 85ccb56..HEAD -- 'lib/features/**/*_screen.dart'` = **kosong** -> byte layar identik dengan basis scan fase 96-103. `git status --short` pada langkah 1 hanya menunjukkan file milik sibling Core Worker (2 manifest `docs/evidence/sprint-117-*-manifest-20261002.json`, ±30 file domain `lib/features/account/*` dan `lib/features/world_logic/*`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) - tidak ada yang disentuh, tanpa `git add -A`.
+
+### (a) Scan kandidat independen, dijalankan dari nol (import-graph + token handler)
+
+1. **Import-graph** (metode fase 89): skrip sekali pakai di luar tree repo membaca 89 file `lib/features/*/presentation/*_screen.dart` dan 76 file test yang mengandung `focus_order` pada nama, mengumpulkan semua `import` tiap kontrak, lalu menghitung layar yang di-import kontrak -> **61 berkontrak / 28 tanpa kontrak**.
+   - **Koreksi alat yang dicatat terbuka:** versi pertama skrip membangun URI dari root repo sehingga menghasilkan `package:void_scriptor/lib/features/...` dan seluruh 89 layar salah terbaca "tanpa kontrak". Diperbaiki menjadi relpath dari `<root>/lib` (kasus kontrol `login_screen.dart` kini cocok persis) -> angka 61/28 di atas berasal dari versi yang sudah diperbaiki.
+   - Selisih 61/28 (import-graph) terhadap 60/29 (primary-class census fase 96-103) = `automation_center_screen.dart`: file itu di-import kontrak saudaranya (`rule_editor_focus_order_test.dart`, `automation_templates_focus_order_test.dart`), tetapi kelas primer `AutomationCenterScreen` sendiri tidak pernah diinstansiasi kontrak mana pun. Kedua metode **sepakat pada sumbu yang menentukan**: token handler non-null milik layar tanpa kontrak = 0.
+2. **Token handler `on[A-Z]\w*:` setelah strip komentar, di seluruh 28 file:** **0 hit di semua 28 file** (tidak ada `onTap`/`onPressed`/`onChanged`/`onDestinationSelected` apa pun, termasuk nilai `null`). Sebaran 28 layar: cinema 4, creator 8, creatures 1, marketplace 3, multiverse 1, platform 2, release 3, splash 1, workflow 1, world 4.
+3. Karena kriteria run meminta minimal 2 elemen interaktif, **0 layar lolos saringan** -> tidak ada kandidat kontrak.
+
+### (b) Probe live SplashScreen (Flutter 3.44.9 / viewport 1536x1024 / dpr 1.0)
+
+Sasaran probe: `lib/features/splash/presentation/splash_screen.dart` (`SplashScreen`), satu-satunya layar tanpa kontrak di fitur `splash`; 205 baris, `StatefulWidget` murni (`AnimationController` + `Image.asset`), tanpa database/network/provider, tanpa `AppBar`.
+
+Probe sekali pakai `test/features/splash/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca): launcher men-push layar lewat `MaterialPageRoute` (dari `Builder` di bawah `Navigator`), `tester.view.physicalSize = 1536x1024` + `devicePixelRatio = 1.0`, `LogicalKeyboardKey.tab` (di-`await`) maksimal 16 kali, loop berhenti saat label+rect berulang; label = `Text` pertama pada subtree fokus -> naik lewat `visitAncestorElements` -> fallback `widget:<runtimeType>` (scope sengaja tidak diberi label teks supaya tetap terbaca sebagai root scope); rect = `RenderBox.localToGlobal(Offset.zero) & size`; rect >= 1500x1000 dihitung root scope (raw, bukan leaf).
+
+**Tiga kegagalan probe yang diperbaiki sebelum hasil dianggap sah (dicatat, bukan disembunyikan):**
+
+1. `FocusNode.widget` tidak ada di Flutter 3.44.9 -> compile error (`The getter 'widget' isn't defined for the type 'FocusNode'`); diganti `node.context?.widget.runtimeType ?? node.runtimeType`.
+2. `Navigator.of(context)` pada closure `_Launcher.build` memakai context yang berada DI ATAS `MaterialApp` -> exception `Navigator operation requested with a context that does not include a Navigator`, push tidak pernah terjadi, dan hasil pertama (fokus berhenti di tombol launcher, rect 203x40) **INVALID**. Diperbaiki dengan `Builder` di dalam `home` supaya context tombol berada di bawah `Navigator`.
+3. Run pertama memakai viewport default 800x600 (spesifikasi run minta 1536x1024) -> diulang dengan `tester.view.physicalSize`/`devicePixelRatio` + `addTearDown(tester.view.reset)`.
+
+**Hasil final (post-format, `All tests passed!` (2 test), exit 0):**
+
+- **`PROBE_TARGET_STOP_COUNT=1`**, **`PROBE_TARGET_LABELS=[widget:_FocusScopeWithExternalFocusNode @0.0,0.0 1536.0x1024.0]`**, **`PROBE_EX=null`**. Interpretasi: **raw=1, leaf=0** - satu-satunya entri adalah rect viewport penuh root `FocusScope`, bukan kontrol; `SplashScreen` tanpa `AppBar` sehingga affordance back pun tidak ada, dan Tab langsung mengulang (`PROBE_REPEAT at i=1`). Ini **merekonfirmasi** pengukuran fase 88/90 (`SplashScreen` = satu dari 6 layar `leaf=0`) di HEAD bergerak.
+- **Kontrol positif collector (test terpisah dalam file probe yang sama, run yang sama):** `UpdateScreen(onLater, onDownload)` di-push lewat `MaterialPageRoute` -> **`PROBE_CONTROL_UPDATE_STOP_COUNT=3`** = `widget:Focus @8,8 40x40` (back), `Later @20,279 740x40`, `Download @776,279 740x40` - koordinat identik dengan kontrol fase 102/103. Collector terbukti membaca stop ketika layar punya kontrol fokus, sehingga hasil 0 leaf pada `SplashScreen` bukan artefak harness.
+- `dart format` -> 1 file berubah (format semata); `dart analyze` terhadap probe -> **`No issues found!`**, exit 0; probe dijalankan ulang setelah format (angka di atas diambil pasca-format) lalu dihapus.
+
+### (c) Negative control (LANGKAH 6): ekspektasi salah dipastikan gagal
+
+File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase104.dart`, lalu satu ekspektasi dipalsukan pada test `SplashScreen`: `expect(stops, isNotEmpty);` diganti menjadi `expect(stops, hasLength(2));`.
+
+- `flutter test .../_probe_focus_test.dart --plain-name "probe: SplashScreen focus stops"` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_EXIT=1`); kegagalan pada `_probe_focus_test.dart line 142` (`00:01 +0 -1: probe: SplashScreen focus stops [E]`).
+- Restore dari backup (verifikasi `MUTATION_REMAINING=0` -> mutasi hilang), backup dihapus (`ls` -> `No such file or directory`), probe dijalankan ulang -> **`All tests passed!` (2 test)** sebelum file probe dihapus.
+
+### Gate dan bukti
+
+- `flutter test test/features/splash/` -> **`All tests passed!` (5 tests)**, `GATE_EXIT=0`, dijalankan **setelah** probe dihapus sehingga mewakili keadaan tree yang di-commit.
+- `dart analyze` terhadap probe -> `No issues found!`, exit 0 (dijalankan sebelum file dihapus).
+- `flutter analyze` penuh -> **`95 issues found`**, exit 1. Semua 95 issue berasal dari file sibling di luar scope run ini (dominan `test/release/scratch_11723_probe_test.dart`, `scratch_drill_11733_test.dart`, `scratch_11725_*`, plus info import); `grep -cE 'features\splash|wcag-2.2-audit'` atas keluaran analyzer = **0**. Run ini tidak mengubah satu pun file `.dart` (probe dihapus sebelum gate) -> kontribusi analyzer = 0. Catatan: baseline fase 81/88/90 tercatat 210 issues, kini 95 - penurunan itu pekerjaan sibling, bukan run ini.
+- Kontrak: **N/A** - tidak ada file kontrak `.dart` yang dibuat karena tidak ada layar yang lolos kriteria; `dart format`/`dart analyze`/`flutter test` kontrak tidak dijalankan.
+- **Negative control kontrak TIDAK DIJALANKAN** (alasan sama fase 80-103: tidak ada kontrak untuk dimutasi); kontrol butir (c) menggantikannya dan tetap membuktikan ekspektasi salah selalu gagal.
+- `git status --porcelain -- test` -> hanya entri sibling `?? test/core/security/presentation/`; tidak ada sisa `_*_focus_test.dart`.
+- `git add --` pathspec-scoped hanya laporan ini; tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi **LF murni** (`CR=0`, `LF=5581` sebelum penyisipan) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run (`LOCK_ACQUIRED`) dan dilepas di langkah terakhir.
+- Insiden toolchain: `taskkill //F //IM ...` ditolak shell ini (`ERROR: Invalid argument/option - '//'`) sehingga dipakai `MSYS2_ARG_CONV_EXCL='*' taskkill /F /IM flutter_tester.exe /T`; satu kali gate terhalang `Flutter failed to delete file ... sqlite3.dll` oleh `flutter_tester.exe` yatim -> di-kill ulang lalu gate hijau.
+
+### Temuan baru (dilaporkan, TIDAK diperbaiki)
+
+- `SplashScreen` dikonfirmasi **0 stop leaf** di HEAD yang bergerak (fase 88/90 mengukurnya `leaf=0`); layar ini adalah bagian dari kelompok 6 layar tanpa satu pun elemen fokus. Tidak ada dead affordance di sini: teks "Opening your local workspace" murni informatif dan tidak mengaku bisa diklik.
+- Tidak ada pola interaktif baru yang muncul di tree sejak fase 103 (`git diff 85ccb56..HEAD -- 'lib/features/**/*_screen.dart'` tetap kosong).
+
+### Kesimpulan
+
+- **Status audit: 60/89 layar in-glob berkontrak focus order (primary-class census; import-graph memberi 61/89 dengan selisih `automation_center_screen.dart`); 29 sisanya display-only dan 29/29 sudah terukur live.** Kolam kandidat dengan minimal 2 elemen interaktif = **0**; pengesahan ke-23 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104).
+- Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
+- Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - 21 layar terukur `leaf=1` langsung siap dikontrakkan; (2) perluas audit ke widget non-`*_screen.dart` (24 kandidat, fase 88); atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-24.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

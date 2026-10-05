@@ -4809,6 +4809,51 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 
 **Catatan line ending:** instruksi menyebut mempertahankan CRLF, tetapi pemeriksaan langsung `crlf=0, lf_only=4912` membuktikan dokumen ini ber-**LF**; pembacaan/pengisian memakai `newline=''` sehingga ending yang ada (LF) dipertahankan apa adanya.
 
+## 92. Fase 92 - Probe live terakhir CreatureWorkspaceScreen + re-verifikasi kolam (2.4.3)
+
+Status: **DEFERRED** (tidak ada kontrak baru, tidak ada perubahan kode produksi).
+
+### Kelayakan kandidat - 3 metode diukur ulang, bukan disalin
+
+- **Metode A (import graph, kutip tunggal + kutip ganda):** dari 89 file `lib/features/*/presentation/*_screen.dart`, **61 terkontrak** (file diimpor oleh `test/**/*_focus_order_test.dart` atau minimal satu kelasnya disebut di sana), **28 tanpa kontrak**. Dipersempit ke handler bernilai non-`null`: **ke-28 file itu berjumlah 0 token `on[A-Z]\w*:` di seluruh isinya.** Kandidat layar in-glob tanpa kontrak berminimal 2 elemen interaktif: **0**.
+- **Metode B (class-level, semua `lib/**/*_screen.dart`):** 31 kelas publik `*Screen` tidak pernah disebut satu pun kontrak focus-order (28 file in-glob + `AutomationCenterScreen` di file yang kebetulan terkontrak karena kelas lain + `FoundationRouteScreen` + `PluginManagerScreen`). Dari 31 itu, **tidak ada satupun yang punya >=2 handler non-null**; `AutomationCenterScreen` sudah diukur fase 91 (leaf=0) dan `CreatureWorkspaceScreen` diukur run ini.
+- **Metode C (token scan `on[A-Z]\w*:` setelah strip komentar, hanya nilai non-`null`)** pada 28 layar tanpa kontrak: **0**.
+
+### Layar yang diprobe: CreatureWorkspaceScreen
+
+`lib/features/creatures/presentation/creature_workspace_screen.dart` - satu-satunya layar dari 28 yang belum pernah dipompa oleh probe live mana pun.
+
+Klaim DEFERRED fase 88 ("butuh fixture `projectSessionProvider`") **tidak terbukti**: cukup `creatureWorkspaceProvider('creature-1').overrideWith((ref) async => (...))` dengan model `const` in-memory (`CreatureModel`, `CreaturePhysicalProfile`, `CreatureAbilityModel`, `CreatureModeModel`) - **tanpa Drift, tanpa file system, tanpa network**. Pola sama dengan `characterWorkspaceProvider('qowner-1').overrideWith(...)` di kontrak Character Workspace.
+
+Hasil probe (file `_probe_focus_test.dart` sekali pakai, sudah dihapus):
+
+- viewport 1536x1024, dpr 1.0, layar dipush lewat `MaterialPageRoute` supaya affordance back ikut terukur, 16x `LogicalKeyboardKey.tab`.
+- `PROBE_STOP[0] Void Fang @0,0 1536x1024` -> `PROBE_STOP[1]` rect identik -> loop berhenti.
+- `PROBE_TOTAL_STOPS=2` (1 rect unik), `PROBE_EXCEPTION=null`, `+3: All tests passed!`.
+- Interpretasi: satu-satunya node yang menerima fokus berukuran penuh viewport (rect >= 1500x1000 = **raw**, bukan leaf) dan labelnya adalah teks pertama di dalam subtree. **Leaf stop = 0.** Layar ini tidak membangun Scaffold/AppBar sama sekali, dan semua `ListTile` pada `_PhysicalCard`/`_ListCard` dibangun tanpa `onTap` sehingga tidak menghasilkan `InkWell`.
+
+**Alasan DEFERRED:** 0 leaf stop < ambang minimal 2 stop (kebijakan fase 81). Kontrak 0-stop tidak mengunci urutan apa pun sehingga tidak akan mendeteksi regresi.
+
+### Bar DEFERRED fase 88 tertutup
+
+Fase 88: "27/28 terukur, 1 layar (`CreatureWorkspaceScreen`) belum pernah dipompa". Setelah run ini: **28/28 layar in-glob tanpa kontrak punya pengukuran live.** Layar in-glob yang belum pernah diukur = **0**.
+
+### Temuan untuk keputusan Choirudin (belum dieksekusi)
+
+`ExplorerPanel` (`lib/features/explorer/presentation/explorer_panel.dart`, **25 handler non-null**) tidak pernah disebut oleh satu pun dari **75** file kontrak focus-order (`focus tests mentioning 'explorer': 0 of 75`), padahal dipompa oleh **11** test non-focus (`explorer_panel_navigation_test.dart:15`, `explorer_selection_hunt_run307_test.dart:247`, dsb). Ini kandidat terkuat untuk opsi (1) fase 86 (perluas cakupan ke widget non-`*_screen.dart`) yang masih tertunda keputusannya - di luar glob `*_screen.dart`, sehingga **tidak** dikerjakan di run ini.
+
+### Rekonsiliasi angka
+
+Fase 90 mencatat "70/89 layar sudah punya kontrak". Fase 92 hanya mereplikasi **61/89** (metode A). Scan penuh `lib/**/*_screen.dart` menemukan **95** file layar (89 in-glob + 6 di luar glob): terkontrak **65/95**, tanpa kontrak **30** (28 in-glob + `foundation_route_screen.dart` + `plugin_manager_screen.dart`, keduanya juga 0 handler). Selisih 70 vs 65 tidak tereplikasi - dicatat sebagai item rekonsiliasi metode, bukan dipakai sebagai angka baru.
+
+### Gate dan negative control
+
+- `dart analyze test/features/creatures/presentation/_probe_focus_test.dart` -> `No issues found!` (exit 0).
+- `flutter test test/features/creatures/` -> `All tests passed!` (3 test: 2 persistence + 1 probe, exit 0).
+- `git diff --check` bersih.
+- **Negative control TIDAK DIJALANKAN** - tidak ada ekspektasi kontrak yang diubah karena tidak ada kontrak yang dibuat (alasan sama dengan fase 80/81/83/86-91).
+- Line ending laporan ini LF (`count('\r\n')` = 0 sebelum penyisipan); dipertahankan apa adanya, bukan dikonversi ke CRLF.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

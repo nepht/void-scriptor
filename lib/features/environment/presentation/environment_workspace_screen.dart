@@ -44,9 +44,7 @@ class EnvironmentWorkspaceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = ref
-        .watch(environmentWorkspaceProvider(environmentId))
-        .value;
+    final model = ref.watch(environmentWorkspaceProvider(environmentId)).value;
     final workspaceData = ref
         .watch(environmentWorkspaceDataProvider(environmentId))
         .value;

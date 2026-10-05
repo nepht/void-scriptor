@@ -723,7 +723,8 @@ void main() {
     expect(
       provenance.join(' '),
       contains('D:/DevTools/Flutter-SDK-3.44.9/flutter/bin/flutter.bat'),
-      reason: 'the provenance record must cite the SDK path this tree builds with',
+      reason:
+          'the provenance record must cite the SDK path this tree builds with',
     );
 
     final toolchain = (evidence['toolchain_versions'] as List<dynamic>)

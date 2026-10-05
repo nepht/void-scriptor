@@ -22,9 +22,7 @@ class EnvironmentInspector extends ConsumerWidget {
   final String environmentId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final model = ref
-        .watch(environmentInspectorProvider(environmentId))
-        .value;
+    final model = ref.watch(environmentInspectorProvider(environmentId)).value;
     return Container(
       color: context.palette.panel,
       padding: const EdgeInsets.all(16),

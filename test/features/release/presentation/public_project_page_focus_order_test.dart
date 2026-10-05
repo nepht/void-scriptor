@@ -136,23 +136,19 @@ void main() {
       final stops = await _stops(tester);
 
       expect(stops, hasLength(_expectedStops));
-      expect(
-        _labels(stops).sublist(0, _actionCount),
-        ['Follow', 'Watch', 'Play'],
-        reason: 'Baris aksi tetap menjadi urutan fokus pertama.',
-      );
-      expect(
-        _labels(stops).skip(_actionCount),
-        [
-          'About',
-          'Characters',
-          'Gallery',
-          'Episodes',
-          'Game Updates',
-          'Credits',
-        ],
-        reason: 'Strip tab tetap lengkap dan tidak berubah urutan.',
-      );
+      expect(_labels(stops).sublist(0, _actionCount), [
+        'Follow',
+        'Watch',
+        'Play',
+      ], reason: 'Baris aksi tetap menjadi urutan fokus pertama.');
+      expect(_labels(stops).skip(_actionCount), [
+        'About',
+        'Characters',
+        'Gallery',
+        'Episodes',
+        'Game Updates',
+        'Credits',
+      ], reason: 'Strip tab tetap lengkap dan tidak berubah urutan.');
       expect(
         stops.every((stop) => stop.rect.width > 0 && stop.rect.height > 0),
         isTrue,

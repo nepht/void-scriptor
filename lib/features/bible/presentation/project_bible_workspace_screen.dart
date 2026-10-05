@@ -421,8 +421,7 @@ class _FactionsSectionState extends ConsumerState<_FactionsSection> {
     ).listForProject(projectId);
     if (!mounted) return;
     // Reject a late result from a project that is no longer active.
-    if (ref.read(projectSessionProvider).value?.manifest.id !=
-        projectId) {
+    if (ref.read(projectSessionProvider).value?.manifest.id != projectId) {
       return;
     }
     setState(() => _factions = factions);
@@ -689,8 +688,7 @@ class _RelationMapSectionState extends ConsumerState<_RelationMapSection> {
     );
     if (!mounted) return;
     // Reject a late result from a project that is no longer active.
-    if (ref.read(projectSessionProvider).value?.manifest.id !=
-        projectId) {
+    if (ref.read(projectSessionProvider).value?.manifest.id != projectId) {
       return;
     }
     setState(() => _entries = entries);

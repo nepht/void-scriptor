@@ -188,9 +188,7 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
 
   switch (type) {
     case AssetType.character:
-      final characters = ref
-          .read(characterControllerProvider(projectId))
-          .value;
+      final characters = ref.read(characterControllerProvider(projectId)).value;
       restore(characters?.map((item) => item.assetId));
     case AssetType.story:
       final stories = ref.read(storyExplorerProvider(projectId)).value;
@@ -203,9 +201,7 @@ void focusExplorerAsset(WidgetRef ref, AssetType type) {
     case AssetType.creature:
       // BUG-05 (hunt-20260910): restore sinkron saat katalog creature
       // sudah siap, mengikuti pola character/environment.
-      final creatures = ref
-          .read(creatureExplorerProvider(projectId))
-          .value;
+      final creatures = ref.read(creatureExplorerProvider(projectId)).value;
       restore(creatures?.map((item) => item.assetId));
     default:
       if (ref.read(selectionProvider)?.assetType != type) {
@@ -423,11 +419,7 @@ class ExplorerPanel extends ConsumerWidget {
     // Keep the reactive catalog recovery mounted with the panel.
     ref.watch(explorerCatalogRecoveryProvider);
     ref.watch(selectionMemoryPersistenceProvider);
-    final projectId = ref
-        .watch(projectSessionProvider)
-        .value
-        ?.manifest
-        .id;
+    final projectId = ref.watch(projectSessionProvider).value?.manifest.id;
     final characters = projectId == null
         ? const AsyncValue<List<CharacterModel>>.data([])
         : ref.watch(characterControllerProvider(projectId));
@@ -1310,8 +1302,7 @@ Future<void> createExplorerAsset(
       default:
         return;
     }
-    if (!context.mounted ||
-        ref.read(projectSessionProvider).value != session) {
+    if (!context.mounted || ref.read(projectSessionProvider).value != session) {
       return;
     }
     ref

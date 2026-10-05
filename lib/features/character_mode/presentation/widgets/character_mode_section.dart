@@ -157,8 +157,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loadout = ref.watch(characterModeLoadoutProvider(mode.id));
-    final assets =
-        ref.watch(projectAssetsProvider).value ?? const <db.Asset>[];
+    final assets = ref.watch(projectAssetsProvider).value ?? const <db.Asset>[];
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(14),
@@ -340,9 +339,7 @@ class _ModeLoadoutCard extends ConsumerWidget {
                       originalAssetId != null &&
                       (selectedQuantity[slot] ?? 1) !=
                           (originalQuantity[slot] ?? 1)) {
-                    final session = ref
-                        .read(projectSessionProvider)
-                        .value;
+                    final session = ref.read(projectSessionProvider).value;
                     if (session != null) {
                       await CharacterLoadoutRepositoryImpl(
                         session.database,

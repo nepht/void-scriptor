@@ -274,11 +274,11 @@ void main() {
 
       // Tiga clip terakhir, semua muncul setelah toolbar.
       final clips = stops.sublist(6);
-      expect(
-        clips.map((s) => s.label).toList(),
-        ['Arin Vale', 'Mira Solenne', 'Dolly In'],
-        reason: 'clip harus urut track atas lebih dulu, lalu kiri ke kanan',
-      );
+      expect(clips.map((s) => s.label).toList(), [
+        'Arin Vale',
+        'Mira Solenne',
+        'Dolly In',
+      ], reason: 'clip harus urut track atas lebih dulu, lalu kiri ke kanan');
 
       // Semua clip satu tinggi baris (28) dan di bawah toolbar.
       for (final c in clips) {

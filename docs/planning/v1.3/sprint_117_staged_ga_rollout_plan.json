@@ -1,0 +1,291 @@
+{
+  "canonical_step": "117.44",
+  "state": "pass",
+  "verdict": "STAGED_GA_ROLLOUT_PLAN_DEFINED_LOCAL",
+  "missing_fields": [],
+  "violations": [],
+  "master_flag": "beta.connectors.enabled",
+  "recorded_default": "OFF",
+  "stage_count": 3,
+  "certified_subset": [
+    "email",
+    "google",
+    "microsoft",
+    "apple",
+    "github",
+    "discord",
+    "x",
+    "facebook",
+    "google_drive",
+    "onedrive",
+    "dropbox",
+    "mega",
+    "local_storage",
+    "openai",
+    "gemini",
+    "anthropic",
+    "flux",
+    "openrouter",
+    "local_ai",
+    "gitlab",
+    "bitbucket",
+    "azure_devops",
+    "figma",
+    "adobe",
+    "canva",
+    "blender_cloud",
+    "sketchfab",
+    "paypal",
+    "stripe",
+    "midtrans",
+    "kofi"
+  ],
+  "connector_subset": [
+    "openai",
+    "gemini"
+  ],
+  "determined_exposed": [
+    "openai",
+    "gemini"
+  ],
+  "enabled_subset": [],
+  "stages": [
+    {
+      "stage_id": "stage_internal",
+      "sequence": 1,
+      "exposure_percent": 5,
+      "exposed_providers": [
+        "openai"
+      ],
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "health_criteria": [
+        "metric_error_rate"
+      ],
+      "stop_conditions": [
+        "stop_internal_error"
+      ],
+      "kill_switches": [
+        "kill_openai"
+      ],
+      "rollback": "rb_internal",
+      "support": "support-owner"
+    },
+    {
+      "stage_id": "stage_alpha",
+      "sequence": 2,
+      "exposure_percent": 25,
+      "exposed_providers": [
+        "openai",
+        "gemini"
+      ],
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "health_criteria": [
+        "metric_error_rate",
+        "metric_auth_success"
+      ],
+      "stop_conditions": [
+        "stop_alpha_error",
+        "stop_alpha_auth"
+      ],
+      "kill_switches": [
+        "kill_openai",
+        "kill_gemini"
+      ],
+      "rollback": "rb_alpha",
+      "support": "support-owner"
+    },
+    {
+      "stage_id": "stage_waitlist",
+      "sequence": 3,
+      "exposure_percent": 100,
+      "exposed_providers": [
+        "openai",
+        "gemini"
+      ],
+      "entry_criteria": [
+        "internal_dogfood_green"
+      ],
+      "exit_criteria": [
+        "no_sev1_for_72h"
+      ],
+      "health_criteria": [
+        "metric_error_rate",
+        "metric_crash_rate"
+      ],
+      "stop_conditions": [
+        "stop_waitlist_error",
+        "stop_waitlist_crash"
+      ],
+      "kill_switches": [
+        "kill_openai",
+        "kill_gemini"
+      ],
+      "rollback": "rb_waitlist",
+      "support": "support-owner"
+    }
+  ],
+  "health_criteria": [
+    {
+      "metric_id": "metric_error_rate",
+      "direction": "higher_is_worse"
+    },
+    {
+      "metric_id": "metric_auth_success",
+      "direction": "lower_is_worse"
+    },
+    {
+      "metric_id": "metric_crash_rate",
+      "direction": "higher_is_worse"
+    }
+  ],
+  "stop_conditions": [
+    {
+      "stop_id": "stop_alpha_auth",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_auth_success",
+      "action": "page_oncall"
+    },
+    {
+      "stop_id": "stop_alpha_error",
+      "stage_id": "stage_alpha",
+      "metric_id": "metric_error_rate",
+      "action": "rollback_stage"
+    },
+    {
+      "stop_id": "stop_internal_error",
+      "stage_id": "stage_internal",
+      "metric_id": "metric_error_rate",
+      "action": "halt_rollout"
+    },
+    {
+      "stop_id": "stop_waitlist_crash",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_crash_rate",
+      "action": "halt_rollout"
+    },
+    {
+      "stop_id": "stop_waitlist_error",
+      "stage_id": "stage_waitlist",
+      "metric_id": "metric_error_rate",
+      "action": "rollback_stage"
+    }
+  ],
+  "kill_switches": [
+    {
+      "kill_id": "kill_gemini",
+      "provider_id": "gemini",
+      "drilled": false
+    },
+    {
+      "kill_id": "kill_openai",
+      "provider_id": "openai",
+      "drilled": false
+    }
+  ],
+  "rollback": [
+    {
+      "rollback_id": "rb_alpha",
+      "target_id": "stage_alpha",
+      "local_project_data_touched": false,
+      "verified": false
+    },
+    {
+      "rollback_id": "rb_internal",
+      "target_id": "stage_internal",
+      "local_project_data_touched": false,
+      "verified": false
+    },
+    {
+      "rollback_id": "rb_waitlist",
+      "target_id": "stage_waitlist",
+      "local_project_data_touched": false,
+      "verified": false
+    }
+  ],
+  "support": [
+    {
+      "provider_id": "gemini",
+      "owner": "support-owner"
+    },
+    {
+      "provider_id": "openai",
+      "owner": "support-owner"
+    }
+  ],
+  "field_coverage": {
+    "stages": 3,
+    "connector_subset": 3,
+    "exposure": 3,
+    "health_criteria": 3,
+    "stop_conditions": 3,
+    "kill_switches": 3,
+    "rollback": 3,
+    "support": 3
+  },
+  "required_fields": [
+    "stages",
+    "connector_subset",
+    "exposure",
+    "health_criteria",
+    "stop_conditions",
+    "kill_switches",
+    "rollback",
+    "support"
+  ],
+  "source_manifests": [
+    "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
+    "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json",
+    "docs/planning/v1.3/sprint_117_support_incident_readiness.json",
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "live_rollout_executed": false,
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1",
+    "upstream_cohort_not_verified:COHORT_CONSENT_VERIFICATION_FAILED",
+    "kill_switch_not_drilled:kill_openai",
+    "kill_switch_not_drilled:kill_gemini",
+    "cohort_not_verified",
+    "consent_without_participant:openai",
+    "consent_without_participant:gemini",
+    "exposure_undetermined:29",
+    "beta_connector_flags_not_in_shipped_registry",
+    "kill_switch_not_drilled:kill_openai",
+    "kill_switch_not_drilled:kill_gemini",
+    "rollback_drill_not_executed",
+    "cohort_not_verified",
+    "live_rollout_not_executed"
+  ],
+  "limitations": [
+    "This plan determines local staged GA exposure only. It is not live provider availability and claims no quota, cost, credential, handshake, or hosted CI evidence.",
+    "Determined exposure is not enabled exposure: no connector is enabled because BETA_EXPOSURE_MATRIX_DETERMINED_LOCAL records no verified participant cohort.",
+    "Kill switches and rollbacks are decided and recorded, but no kill switch has been drilled against a live provider and no rollback has been executed; all external gates remain DEFERRED-EXTERNAL.",
+    "No flag has been flipped, no stage advanced, and no stop condition has fired; the rollout is a plan, and it says so."
+  ],
+  "_meta": {
+    "generated_by": "test/release/scratch_11744_generator_test.dart",
+    "source": "live Sprint117RolloutGate().evaluate()",
+    "stage_count": 3,
+    "field_coverage": {
+      "stages": 3,
+      "connector_subset": 3,
+      "exposure": 3,
+      "health_criteria": 3,
+      "stop_conditions": 3,
+      "kill_switches": 3,
+      "rollback": 3,
+      "support": 3
+    }
+  }
+}

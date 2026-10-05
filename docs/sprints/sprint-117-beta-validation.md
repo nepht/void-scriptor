@@ -3139,3 +3139,87 @@ ketat-terkunci vs grammar klaim manifest A-F = keputusan operator;
 objek/record alih-alih nilai/nama (pola yang baru saja ditemukan) —
 periksa `observed` yang memuat `${...}` untuk memastikan ia mencetak
 nilai, bukan `runtimeType`/record internal.
+
+### Slice 117.43-48 - satu null, satu tata bahasa untuk semua pembaca penolak (defect ke-43, hunt ke-44)
+
+DEFECT (fail-closed over-refusal, keluarga lanjutan ke-40 "grammar pembaca
+penolak di level value"): tiga pembaca di dalam `artifact_comparison` —
+`method`, `limits`, dan pasangan `differing_artifacts`/`identical_artifacts` —
+bercabang pada `field.present` saja, sedangkan setiap pembaca penolak lain di
+file yang sama membuka dengan guard `value == null` (`_stringOrNull`,
+`_durationOrNull`, header `status`/`decision`, dokumen `limits`, `version`,
+`canonical_step`; empat doc-comment-nya bahkan menulis eksplisit "an absent
+key and an explicit null are non-claims (117.43-07)"). Satu file membawa dua
+tata bahasa untuk satu pertanyaan, dan pertanyaannya adalah "apa yang
+dokumen ini menyatakan": `"limits": null` menjadi unevaluable
+(`shipped evidence did not evaluate`) sementara dokumen identik dengan kunci
+dihapus sampai ke `missingEvidence`, dan kedua daftar partition bernilai null
+ditolak walaupun `_ArtifactPartition` mendokumentasikan bentuk itu sebagai
+"the comparison names no artifact" — dokumen ditolak karena menulis persis
+apa yang kelasnya sendiri perintahkan untuk ditulis.
+
+BUKTI RED: probe dijalankan dulu (test satu-run, output `PROBE|label|status|
+observed`) sebelum ada asersi — hasilnya: `method` absent → unmet
+`missing artifact_comparison` vs `method` null → unmet
+`shipped evidence did not evaluate` (verdict sama, observed beda);
+`limits` identik pola; partition keduanya absent → **pass** vs keduanya null →
+**unmet** (verdict beda — inilah pelanggaran paritasnya). Test
+`117.43-48` (2 test, 96 baris) lalu disisip dengan byte-eksak dari file
+scratch (`write_file` + `replace` assert count==1; numstat 81/0, `git diff
+-U0` 0 baris `-`), `--plain-name "117.43-48"` pada lib pre-fix = `+0 -1`
+exit 1 mengutip observed parity `method` yang masih beda; test guard kedua
+(`method=42`, `limits=[42]`, separuh partition) sudah lewat sebelum fix.
+Blok probe ditukar balik sehingga 0 sisa `PROBE|` di file test.
+
+FIX (3 pembaca, 1 invarian): `methodStated`/`limitsStated` =
+`present && value != null`, dan `hasDiffering`/`hasIdentical` =
+`present && value != null`; doc-comment `method`/`limits` dan
+`_readPartition` diperluas. Karena itu `"limits": null` kini membangun
+objek yang `missingEvidence` nilai dengan cara yang sama seperti kunci
+yang dihapus, dan pasangan partition null mencapai `declares = false`.
+Yang TIDAK berubah: nilai non-null yang tak terbaca tetap menolak
+(`method = 42` tetap `_kUndecodable`, `limits = [42]` tetap null, separuh
+dinyatakan + separuh null tetap tidak terbaca) — itu dijaga oleh test
+kedua, jadi tidak ada klaim baru yang lolos.
+
+GATES: `dart format` write lalu `--output=none --set-exit-if-changed` = 0
+changed exit 0 (2 file); `dart analyze` 2 file `No issues found!` exit 0;
+`git diff --check` rc 0; scan non-Latin (python re kelas CJK/kana/hangul/
+fullwidth) + trailing whitespace pada 131 baris added = 0 dan 0; regresi DUA
+file provenance (117 + 113) dalam SATU run = `+243` All tests passed exit 0
+tanpa blok `Failing tests` (termasuk 2 test baru 117.43-48);
+`flutter build windows --debug` exit 0 (37,9 dtk; total 41 dtk).
+
+COMMITS: fix `d3150f0` (2 file, numstat 118 insert / 6 delete; 6 baris
+hapus = persis baris yang diganti, semua hunk pada baris fixture sendiri —
+tidak ada reflow kode lama). ahead `git rev-list --count origin/master..HEAD`:
+preflight 4 @ `c0fdf81` -> sesudah fix = 5. Patch tool 0 pemakaian; semua
+edit python replace byte-eksak dengan assert count==1. Tidak ada push pada
+run ini.
+
+SHA 4 sisi dari blob commit `d3150f0` (bukan working tree):
+`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`
+= `5474224686cad786723715546b97be2c8592648341b1ba37d515b80e56e4224c`
+(92384 B, disk == blob). File test ber-CRLF sehingga blob commit di-LF-kan
+oleh git: blob `6ab70aa4c98b8fcf887bf42e886bfb36315facf03d9d24a76fc046099c82d208`
+vs disk `8555c59275fdaf26d242f4d57123cd3e833e3bfdfc7218e719a3b1fa8f387283`
+— beda sha karena EOL, isi sama setelah normalisasi CRLF->LF (bukti 4 sisi
+untuk file CRLF diukur lewat `git show`, canonical).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02
+masih menunggu keputusan drift manifest. Penomoran: slice 117.43-48 = defect
+ke-43, hunt ke-44 (hunt ke-43 = probe `parseDigest` tanpa commit).
+
+HUNT BERIKUTNYA ke-45 (probe dulu, jangan klaim sebelum ada baris hasil):
+(a) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart` `:450`) 0
+pemanggil dan doc `sha256 <hex>` tidak cocok dengan pola `<hex> <path>` —
+kandidat utama, sudah tiga run tidak disentuh; (b) `rebuild_run`
+`:1834`/`:1928` tetap non-kandidat; (c) divergensi lintas-file inventaris
+checksum `:461` tetap keputusan operator; (d) audit interpolasi `observed`
+yang menyisipkan objek/record; (e) BARU — `missingEvidence`
+(`build_reproducibility_provenance.dart:768`) melabeli `artifact_comparison`
+sebagai "missing" ketika objeknya ADA dan hanya sub-kunci `method`/`limits`
+yang absen, sedangkan pesan itu juga dipakai untuk objek yang benar-benar
+null: dua kondisi berbeda, satu label — putuskan apakah labelnya
+diperbaiki atau diterima sebagai bahasa evaluasi.

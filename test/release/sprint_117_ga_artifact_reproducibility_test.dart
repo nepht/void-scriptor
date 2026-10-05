@@ -2627,6 +2627,102 @@ void main() {
       expect(check.status, Sprint117GaArtifactStatus.pass);
       expect(check.observed, contains('NOT_BIT_IDENTICAL'));
     });
+    // Sprint 117.43-48 (fail-closed over-refusal, fixed): every rejecting
+    // reader in this file opens with an explicit `value == null` guard so that
+    // an explicit null states what an absent key states -- `_stringOrNull` and
+    // `_durationOrNull` read `if (!present || value == null) return null`, and
+    // the header `status`/`decision`, the document `limits`, `version` and
+    // `canonical_step` each carry their own guard. The three readers inside
+    // `artifact_comparison` branched on the key's PRESENCE alone, so one file
+    // held two grammars for the same question: `"limits": null` was unevaluable
+    // while the same document with the key removed was reported by
+    // `missingEvidence`, and both partition lists written as null together was
+    // refused although `_ArtifactPartition` documents that very shape as
+    // naming no artifact. The verdict then depended on a shape that states
+    // nothing.
+    test('117.43-48 an explicit null in artifact_comparison states what an '
+        'absent key states', () {
+      Sprint117GaArtifactCheck measure(Map<String, Object?> m) =>
+          Sprint117GaArtifactGate.measureProvenance(provenanceManifest: m);
+
+      expect(
+        measure(manifest()).status.name,
+        'pass',
+        reason: 'the honest manifest this group builds states its claims',
+      );
+
+      for (final key in const <String>['method', 'limits']) {
+        final absent = manifest();
+        comparisonOf(absent).remove(key);
+        final nulled = manifest();
+        comparisonOf(nulled)[key] = null;
+
+        final a = measure(absent);
+        final n = measure(nulled);
+        expect(
+          n.status,
+          a.status,
+          reason:
+              '"$key": null states what an absent "$key" states, so the '
+              'two documents must receive one verdict',
+        );
+        expect(
+          n.observed,
+          a.observed,
+          reason:
+              '"$key": null and an absent "$key" must also be REPORTED '
+              'identically -- a reader that tells them apart is telling them '
+              'apart from evidence that says neither',
+        );
+      }
+
+      final noPartition = manifest();
+      comparisonOf(noPartition).remove('differing_artifacts');
+      comparisonOf(noPartition).remove('identical_artifacts');
+      final nulledPartition = manifest();
+      comparisonOf(nulledPartition)['differing_artifacts'] = null;
+      comparisonOf(nulledPartition)['identical_artifacts'] = null;
+
+      expect(
+        measure(noPartition).status.name,
+        'pass',
+        reason: 'a comparison naming no artifact makes no per-artifact claim',
+      );
+      expect(
+        measure(nulledPartition).status,
+        measure(noPartition).status,
+        reason:
+            '_ArtifactPartition documents both lists null together as '
+            'naming no artifact, so it must reach the same verdict',
+      );
+      expect(
+        measure(nulledPartition).observed,
+        measure(noPartition).observed,
+        reason: 'the null pair must be reported as the silent pair is',
+      );
+    });
+
+    test('117.43-48 a null never rescues a stated claim: an unreadable value '
+        'and a lone partition half are still unevaluable', () {
+      final badMethod = manifest();
+      comparisonOf(badMethod)['method'] = 42;
+      expectRefused('method=int', badMethod);
+
+      final badLimits = manifest();
+      comparisonOf(badLimits)['limits'] = <Object?>[42];
+      expectRefused('limits=list-of-int', badLimits);
+
+      // One half stating a claim while the other stays silent is the partial
+      // account 117.43-08 refuses; an explicit null is that silence, so it
+      // must not turn the pair into a pass either.
+      final loneHalf = manifest();
+      comparisonOf(loneHalf)['identical_artifacts'] = null;
+      expectRefused('differing stated, identical null', loneHalf);
+
+      final loneHalfAbsent = manifest();
+      comparisonOf(loneHalfAbsent).remove('identical_artifacts');
+      expectRefused('differing stated, identical absent', loneHalfAbsent);
+    });
   });
 
   // RED-first for defect 117.43-14: the ninth slice in the same hunt, and the

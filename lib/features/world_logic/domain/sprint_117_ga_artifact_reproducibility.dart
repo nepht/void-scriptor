@@ -1413,14 +1413,25 @@ abstract final class Sprint117GaArtifactGate {
     final methodField = _mapField(comparison, 'method');
     final limitsField = _mapField(comparison, 'limits');
     if (methodField.ambiguous || limitsField.ambiguous) return null;
-    final method = methodField.present
+    // Sprint 117.43-48 (fail-closed over-refusal, fixed): these two readers
+    // branched on the key's PRESENCE, so `"limits": null` was a
+    // present-but-unreadable claim while the same document with that key
+    // removed was a non-claim -- one file, two grammars for one question. Every
+    // other rejecting reader here opens with an explicit `value == null` guard
+    // (`_stringOrNull`, `_durationOrNull`, the header `status`/`decision`, the
+    // document `limits`, `version` and `canonical_step`), so branch on the VALUE
+    // and let a null state what an absent key states. A NON-null value nobody
+    // can read still refuses exactly as before.
+    final methodStated = methodField.present && methodField.value != null;
+    final limitsStated = limitsField.present && limitsField.value != null;
+    final method = methodStated
         ? methodField.value is String
               ? methodField.value as String
               : _kUndecodable
         : null;
-    final limits = limitsField.present ? _stringList(limitsField.value) : null;
+    final limits = limitsStated ? _stringList(limitsField.value) : null;
     if (identical(method, _kUndecodable)) return null;
-    if (limitsField.present && limits == null) return null;
+    if (limitsStated && limits == null) return null;
 
     final shipped = BuildProvenanceEvidence(
       buildInputs: buildInputs,
@@ -1486,13 +1497,18 @@ abstract final class Sprint117GaArtifactGate {
   /// per-artifact claim, so there is nothing to verify. When either field is
   /// present, both are read, because one list without the other cannot state a
   /// partition — a lone `differing_artifacts` is exactly the partial account
-  /// 117.43-08 refuses.
+  /// 117.43-08 refuses. 117.43-48 keeps this reader on the grammar every other
+  /// rejecting reader in this file already used: a key written as an explicit
+  /// null states what an absent key states, so "both lists null together" — the
+  /// shape this class documents as naming no artifact — reaches [declares]
+  /// false instead of making the evidence unevaluable, while one null half next
+  /// to one stated half is still the partial account above.
   static _ArtifactPartition? _readPartition(Map<String, Object?> comparison) {
     final differingField = _mapField(comparison, 'differing_artifacts');
     final identicalField = _mapField(comparison, 'identical_artifacts');
     if (differingField.ambiguous || identicalField.ambiguous) return null;
-    final hasDiffering = differingField.present;
-    final hasIdentical = identicalField.present;
+    final hasDiffering = differingField.present && differingField.value != null;
+    final hasIdentical = identicalField.present && identicalField.value != null;
     if (!hasDiffering && !hasIdentical) {
       return const _ArtifactPartition(differing: null, identical: null);
     }

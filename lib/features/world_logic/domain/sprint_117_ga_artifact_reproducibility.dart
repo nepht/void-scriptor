@@ -1034,6 +1034,16 @@ abstract final class Sprint117GaArtifactGate {
   ///    `VERIFIED-LOCAL`; `decision` only with a `VERIFIED_LOCAL` leading
   ///    segment — the remainder of that token is the document's own;
   ///  * `version`, `canonical_step` and `title` are NOT measured here.
+  ///
+  /// Sprint 117.43-47: the reason this reader publishes for an unreadable
+  /// header value names the FIELD it walked (`status`/`decision`) instead
+  /// of interpolating the `_mapField` record that carried the value. The
+  /// old text dumped the decoder's own shape
+  /// (`(ambiguous: false, present: true, value: 42) present without a
+  /// readable verdict (int)`) and was byte-identical for the two fields
+  /// whenever the unreadable value had the same shape, so the evidence
+  /// could not say which claim refused the verdict -- the same
+  /// indistinguishable-observed family 117.43-45 closed one level down.
   static String? _headerVerdictRefusal(Map<String, Object?> document) {
     for (final name in const <String>['status', 'decision']) {
       final field = _mapField(document, name);
@@ -1044,7 +1054,7 @@ abstract final class Sprint117GaArtifactGate {
       final value = field.value;
       if (value == null) continue;
       if (value is! String || value.trim().isEmpty) {
-        return '$field present without a readable verdict '
+        return '$name present without a readable verdict '
             '(${value.runtimeType})';
       }
       final declaresLocalVerification = name == 'status'

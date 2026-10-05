@@ -6953,4 +6953,76 @@ void main() {
       });
     },
   );
+  group('117.43-47 a refused header names the field it could not read', () {
+    // Defect 117.43-47 (hunt ke-42, candidate (a)): `_headerVerdictRefusal`
+    // builds its "present but unreadable" reason from the decoder RECORD it
+    // got back from `_mapField` instead of from the field NAME the loop is
+    // walking, while the two neighbouring branches of the same loop both
+    // interpolate `$name`. The evidence therefore read
+    // `(present: true, ambiguous: false, value: 42) present without a readable
+    // verdict (int)` — a dump of the decoder's own shape that never says which
+    // of `status`/`decision` could not be read, and that is byte-identical for
+    // the two fields whenever the unreadable value has the same shape. The
+    // sibling refusers (`_documentLimitsRefusal`, `_documentVersionRefusal`,
+    // `_canonicalStepRefusal`) all name their field, so this is the same
+    // one-outlier grammar 117.43-45 closed one level down: the observed reason
+    // must identify the claim it refuses.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String observed(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).observed;
+
+    test('117.43-47 the observed reason names the header field it could not '
+        'read', () {
+      final unreadableStatus = observed(shipped()..['status'] = 42);
+      expect(unreadableStatus, contains('status'));
+      final unreadableDecision = observed(
+        shipped()
+          ..['decision'] = <String, Object?>{'verdict': 'VERIFIED-LOCAL'},
+      );
+      expect(unreadableDecision, contains('decision'));
+    });
+
+    test('117.43-47 the observed reason does not dump the decoder record', () {
+      final reason = observed(shipped()..['status'] = 42);
+      expect(
+        reason,
+        isNot(contains('ambiguous')),
+        reason:
+            'the refusal is about the document field, not about the internal '
+            '`_mapField` record that carried it',
+      );
+      expect(
+        reason,
+        isNot(contains('(present')),
+        reason:
+            'the decoded record shape must not leak into the published '
+            'evidence',
+      );
+    });
+
+    test('117.43-47 two unreadable header fields produce different observed '
+        'reasons', () {
+      final asStatus = observed(shipped()..['status'] = 42);
+      final asDecision = observed(shipped()..['decision'] = 42);
+      expect(
+        asStatus,
+        isNot(asDecision),
+        reason:
+            'one unreadable value with one shape must still tell the operator '
+            'WHICH header field refused the verdict; before this slice both '
+            'reasons were byte-identical',
+      );
+      expect(asStatus, contains('status'));
+      expect(asDecision, contains('decision'));
+    });
+  });
 }

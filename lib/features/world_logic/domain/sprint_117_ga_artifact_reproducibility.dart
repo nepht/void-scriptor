@@ -1329,12 +1329,25 @@ abstract final class Sprint117GaArtifactGate {
     // silently become a measured difference claim. The gate then reported
     // `provenance` as `pass` and printed `NOT_BIT_IDENTICAL` for a manifest that
     // stated no verdict at all, manufacturing a claim the document never made.
-    // Parse it as a CLOSED vocabulary: only the two canonical strings produce an
-    // enum, and anything else makes the evidence unevaluable so the caller
-    // reports `unmet` rather than inventing a claim. Defaulting is the defect.
+    // Parse it as a CLOSED vocabulary: only the two canonical strings,
+    // trimmed of surrounding whitespace, produce an enum (117.43-45), and
+    // anything else makes the evidence unevaluable so the caller reports
+    // `unmet` rather than inventing a claim. Defaulting is the defect.
     final verdictField = _mapField(comparison, 'verdict');
     if (verdictField.ambiguous) return null;
-    final verdict = switch (verdictField.value) {
+    // Sprint 117.43-45 (fail-closed over-refusal): this match was the only
+    // closed-vocabulary VALUE comparison in this file without a trim --
+    // `status`, `decision` and `canonical_step` all compare `value.trim()` --
+    // so one space around the token sent the whole evaluation to `shipped
+    // evidence did not evaluate` while every other reader of the same
+    // document kept reading. Whitespace cannot rename the token, and
+    // whichever enum the trimmed token selects is still measured against the
+    // recorded digests below, so loosening the match lets no unmeasured
+    // claim through: a padded typo, a non-string, an absent key and an
+    // explicit null all still refuse.
+    final verdictValue = verdictField.value;
+    final verdictToken = verdictValue is String ? verdictValue.trim() : null;
+    final verdict = switch (verdictToken) {
       'BIT_IDENTICAL' => RebuildVerdict.bitIdentical,
       'NOT_BIT_IDENTICAL' => RebuildVerdict.notBitIdentical,
       _ => null,

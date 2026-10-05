@@ -6797,4 +6797,160 @@ void main() {
       }
     });
   });
+
+  group(
+    '117.43-45 a verdict is read whatever whitespace surrounds its value',
+    () {
+      // Sprint 117.43-45 (fail-closed over-refusal). 117.43-38/-39/-40 wrote
+      // down that whitespace around a KEY changes no meaning, and the header
+      // readers trim every vocabulary VALUE they compare (`status`,
+      // `decision`, `canonical_step`), but the one closed-vocabulary value in
+      // `artifact_comparison` was matched raw: `switch (verdictField.value)`
+      // required ` BIT_IDENTICAL ` to spell itself exactly, so one space moved
+      // the whole provenance evaluation to `shipped evidence did not
+      // evaluate` while every reader of the same document kept reading.
+      // Bounds pinned by the tests, so no acceptance is invented:
+      //
+      //  * only the two canonical tokens, after trim, produce an enum; a
+      //    padded typo, a non-string, an absent key and an explicit null all
+      //    stay unevaluable (117.43-07);
+      //  * trimming chooses which enum the token names — the enum is still
+      //    measured against the recorded digests, so a padded identity claim
+      //    that the digests contradict is refused exactly as the bare one.
+      Map<String, Object?> shipped() =>
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+
+      String outcome(Map<String, Object?> manifest) =>
+          Sprint117GaArtifactGate.measureProvenance(
+            provenanceManifest: manifest,
+          ).status.name;
+
+      Map<String, Object?> evidence(Map<String, Object?> manifest) =>
+          manifest['required_evidence']! as Map<String, Object?>;
+
+      Map<String, Object?> comparison(Map<String, Object?> manifest) =>
+          evidence(manifest)['artifact_comparison']! as Map<String, Object?>;
+
+      List<Map<String, Object?>> recordsOf(Map<String, Object?> manifest) =>
+          (evidence(manifest)['rebuild_results']! as List<dynamic>)
+              .cast<Map<String, Object?>>();
+
+      Map<String, Object?> withEvidence(
+        Map<String, Object?> manifest,
+        Map<String, Object?> next,
+      ) => {...manifest, 'required_evidence': next};
+
+      Map<String, Object?> withComparison(
+        Map<String, Object?> manifest,
+        Map<String, Object?> next,
+      ) => withEvidence(manifest, {
+        ...evidence(manifest),
+        'artifact_comparison': next,
+      });
+
+      Map<String, Object?> withRecord(
+        Map<String, Object?> manifest,
+        int index,
+        Map<String, Object?> record,
+      ) {
+        final next = [...recordsOf(manifest)]..[index] = record;
+        return withEvidence(manifest, {
+          ...evidence(manifest),
+          'rebuild_results': next,
+        });
+      }
+
+      test('117.43-45 the shipped document states its verdict value bare, so '
+          'the cases below isolate the value match itself', () {
+        final base = shipped();
+        final verdict = comparison(base)['verdict'];
+        expect(verdict, isA<String>());
+        expect(verdict as String, verdict.trim());
+        expect(outcome(base), 'pass');
+      });
+
+      test('117.43-45 a canonical verdict padded with whitespace is still the '
+          'same verdict', () {
+        final base = shipped();
+        final cmp = Map<String, Object?>.from(comparison(base));
+        final bare = cmp['verdict']! as String;
+        cmp['verdict'] = ' $bare ';
+
+        final check = Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: withComparison(base, cmp),
+        );
+
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.pass,
+          reason:
+              'one space around the value cannot rename the verdict; every '
+              'sibling vocabulary reader trims before comparing '
+              '(observed: ${check.observed})',
+        );
+        expect(check.observed, contains(bare));
+      });
+
+      test('117.43-45 a padded verdict outside the vocabulary is still '
+          'refused, not coerced', () {
+        final base = shipped();
+        final cmp = Map<String, Object?>.from(comparison(base));
+        cmp['verdict'] = ' BIT_IDENTITY ';
+
+        expect(
+          outcome(withComparison(base, cmp)),
+          'unmet',
+          reason:
+              'trim folds whitespace, not letters: a padded typo is still '
+              'outside the closed vocabulary (117.43-07)',
+        );
+      });
+
+      test('117.43-45 a padded non-string verdict stays unevaluable', () {
+        final base = shipped();
+        final cmp = Map<String, Object?>.from(comparison(base));
+        cmp['verdict'] = 42;
+
+        expect(
+          outcome(withComparison(base, cmp)),
+          'unmet',
+          reason: 'only strings enter the vocabulary match',
+        );
+      });
+
+      test('117.43-45 trimming does not exempt a padded claim from '
+          'measurement', () {
+        final base = shipped();
+        final records = recordsOf(base);
+        final broken = Map<String, Object?>.from(records[1]);
+        final hashes = <String, String>{
+          for (final entry
+              in (broken['artifact_hashes']! as Map<String, dynamic>).entries)
+            entry.key: entry.value as String,
+        };
+        final first = hashes.keys.first;
+        expect(hashes[first], isNot(_kOtherDigest));
+        hashes[first] = _kOtherDigest;
+        broken['artifact_hashes'] = hashes;
+
+        final cmp = Map<String, Object?>.from(comparison(base));
+        final bare = cmp['verdict']! as String;
+        expect(bare, 'BIT_IDENTICAL');
+        cmp['verdict'] = ' $bare ';
+
+        expect(
+          outcome(withComparison(withRecord(base, 1, broken), cmp)),
+          isNot('pass'),
+          reason:
+              'the padded identity claim must still face the recorded '
+              'digests; choosing the enum is not measuring it (117.43-01)',
+        );
+      });
+    },
+  );
 }

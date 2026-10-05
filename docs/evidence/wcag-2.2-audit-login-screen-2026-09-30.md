@@ -4983,6 +4983,55 @@ Dilakukan karena kriteria pemilihan run (layar tanpa kontrak + >= 2 elemen inter
 - Kriteria pemilihan run (>= 2 elemen interaktif pada layar tanpa kontrak) tetap tidak terpenuhi oleh SATU pun dari 89 layar in-glob -> tidak ada kontrak baru, tidak ada perubahan kode produksi.
 - **Tidak ada lagi layar tersisa yang bisa dipompa**: seluruh 28 layar tanpa kontrak kini berstatus terukur live. Opsi Choirudin (fase 86, masih tertunda): (1) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel), (2) turunkan ambang jadi `>= 1 stop` plus audit affordance back, atau (3) hentikan audit sampai ada layar interaktif baru. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED yang sama ke-15.
 
+## 96. Fase 96 — Focus Order di AutomationCenterScreen (2.4.3) — DEFERRED + koreksi sensus
+
+**Status: DEFERRED** (kandidat di bawah ambang; tidak ada kontrak yang dibuat, tidak ada kode produksi yang diubah).
+
+### Mengapa layar ini yang dipilih
+
+Sensus pada fase 93/95 mencatat **61 layar berkontrak / 28 tanpa kontrak** dari 89 layar in-glob. Scan independen ulang di HEAD `7595201` memakai **instansiasi kelas** (nama kelas layar dipompa oleh sebuah `test/**/*_focus_order_test.dart`), bukan import-graph, dan menghasilkan **60 berkontrak / 29 tanpa kontrak**. Selisihnya satu-satunya ada di `lib/features/workflow/presentation/automation_center_screen.dart`: file itu dihitung "berkontrak" karena `test/features/workflow/presentation/rule_editor_focus_order_test.dart` **meng-import file itu** — tetapi test tersebut hanya memompa `RuleEditorScreen`, tidak pernah `AutomationCenterScreen`. Import ≠ kontrak; koreksi sensus: **61/28 -> 60/29**.
+
+Dari 29 layar tanpa kontrak, 28 sudah pernah di-probe live pada fase 92, 93, dan 95 (semua <2 stop). `AutomationCenterScreen` adalah satu-satunya yang belum pernah di-probe, sehingga menjadi layar kerja run ini.
+
+### Probe live (Flutter 3.44.9, viewport 1536x1024, devicePixelRatio 1.0)
+
+Fixture: `AutomationCenterScreen(rules: [manual, schedule, projectEvent], metricsSnapshot: {run_count: 4, success_rate: 0.75})`, dibungkus `MaterialApp(home: Scaffold(body: ...))`. Probe sementara `test/features/workflow/presentation/_probe_focus_test.dart` (dihapus setelah selesai):
+
+- `STOP[0] label=Automation Center rect=Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0) desc=_FocusScopeWithExternalFocusNode`
+- `PROBE_REPEAT at i=1 key=0x0|1536x1024`
+- `PROBE_DONE switches=3`
+- probe run: `All tests passed!`
+
+Interpretasi: **0 stop fokus nyata.** Tab pertama tidak mendarat di kontrol mana pun (yang terbaca adalah focus scope root, rect = seluruh viewport), Tab kedua langsung mengulang key yang sama. Tidak ada rantai fokus untuk dikunci oleh kontrak 2.4.3.
+
+Sumber `AutomationCenterScreen.build` memang non-fokus seluruhnya: judul, daftar `ListTile` tanpa `onTap`, `trailing: Switch(onChanged: null)` dengan komentar sumber `// alpha scope: display-only toggle`, dan `_MetricsPanel` (teks murni). Tiga `Switch` itulah yang terhitung sebagai token interaktif pada pemilihan kandidat, tetapi semuanya disabled sehingga tidak punya focus node.
+
+### Control run (bukti metode, menggantikan negative control kontrak)
+
+Karena tidak ada kontrak, tidak ada ekspektasi yang bisa dimutasi. Sebagai gantinya dijalankan `_control_focus_test.dart` (juga dihapus) dengan dua test berbagi collector yang sama:
+
+- **Positive control (A)**: collector pada `RuleEditorScreen` draft lengkap -> `CONTROL_A stops=[Save rule, <non-text>]`, `hasLength(2)` PASS, `+1`. Collector terbukti membaca stop ketika layar punya kontrol fokus, sehingga hasil 0 pada layar ini bukan artefak harness.
+- **Negative control (B)**: ekspektasi `hasLength(1)` pada `AutomationCenterScreen` -> `CONTROL_B stops=[]`, `Expected: an object with length of <1>` / `Actual: []`, `00:01 +1 -1: ... [E]`, `Some tests failed.`, exit 1. Ekspektasi yang salah dipastikan gagal.
+
+### Status pool setelah run ini
+
+- 89 layar in-glob; **60 berkontrak, 29 tanpa kontrak** (koreksi sensus di atas).
+- Semua 29 kini terverifikasi: 28 oleh probe live run sebelumnya + 1 (layar ini) oleh probe dan control run run ini. Kandidat dengan >=2 stop fokus: **0**.
+- Tidak ada layar in-glob yang punya elemen interaktif nyata (onTap/onPressed/onChanged/InkWell/GestureDetector/TextField/dll) tanpa kontrak, kecuali `AutomationCenterScreen` yang elemennya non-fokus.
+- Layar di luar glob `lib/features/*/presentation/*_screen.dart` tetap di luar scope run ini.
+
+### Keputusan yang masih menunggu Choirudin (dari fase 95, belum dijawab)
+
+1. Turunkan ambang kontrak ke 1 stop (kandidat tersisa: `ExecutionMonitorScreen`).
+2. Perluas audit ke layar non-glob / surface di luar `presentation/*_screen.dart`.
+3. Nyatakan audit in-glob selesai di 60/89, ditutup dengan koreksi sensus ini.
+
+### Bukti gate run ini
+
+- `flutter test test/features/workflow/` -> `All tests passed!` (27 test, exit 0), 2026-10-05.
+- Probe dan control file sudah dihapus; run ini hanya menyentuh laporan ini (file WIP sibling tidak disentuh, `git add` pathspec-scoped).
+- Karena DEFERRED, tidak ada commit kontrak; negative control kontrak tetap terbukti pada run-run sebelumnya dan control run di atas mempertahankan bukti bahwa ekspektasi salah selalu gagal.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

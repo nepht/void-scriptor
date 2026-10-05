@@ -2919,3 +2919,117 @@ fail-closed, tapi ada precedent berlawanan: `readChecksumIndex` (sprint
 ukuran, jangan menambah penerimaan tanpa bukti;
 (d) `rebuild_run` `:1834` dan duplikat grammar `:1928` tetap bukan
 kandidat (satu grammar, disengaja).
+
+### Slice 117.43-46 - satu nilai `64 hex`, satu grammar di seluruh file
+(defect ke-41, hunt ke-41)
+
+PILIHAN KANDIDAT: dari daftar (a)-(d) di atas, kandidat (c) diukur lebih
+dulu karena ia satu-satunya yang menghasilkan beda VERDICT, bukan hanya
+teks pesan: (a) `'$field present without a readable verdict'` (`:1047`)
+tetap nyata — ia menyisipkan rekaman `(present:, ambiguous:, value:)`
+alih-alih `$name` dan belum dikunci test — tapi perbaikannya murni teks
+observed, dan (b) `parseDigest` (`:450`) tetap mati (0 pemanggil, doc
+`sha256 <hex>` vs pola `<hex> <path>`). Keduanya TIDAK dihapus dari
+radar.
+
+DEFECT: `RebuildResult.isWellFormed`
+(`lib/features/world_logic/domain/build_reproducibility_provenance.dart`
+def `:458`) memvalidasi tiap nilai `artifactHashes` dengan pola lokal
+`^[0-9a-f]{64}$`, sedangkan `_digestPattern` di file yang sama (dulu
+`:1375`, kini deklarasi top-level tepat sebelum `class RebuildResult`)
+memakai `^[0-9a-fA-F]{64}$` dan dipakai BERSAMA oleh empat pembaca
+klaim: `_hasWellFormedDigestClaims`, `_digestClaimsIn`, dan lewatnya
+`_digestsByPath`, `_digestsAgreeWithinGroup`, `_restatedDigestsAgree`.
+Satu nilai kini (dan sudah sejak awal) dibaca dua cara dalam SATU
+evaluasi: digest hex huruf besar yang sama diukur sebagai klaim di
+`build_inputs`, tapi menggagalkan rekaman di `rebuild_results`, dan
+penolakannya terbit sebagai `missing rebuild_results` — kata yang persis
+dipakai rekaman yang memang rusak, jadi observed tidak bisa
+membedakannya.
+
+ARAH: fail-closed over-refusal (dokumen jujur -> unmet). Diukur, bukan
+diklaim: 6 test 117.43-46 ditulis DULU; `--plain-name "117.43-46"`
+terhadap lib pre-fix = `+5 -1` exit 1 dengan satu-satunya kegagalan
+fixture REKAMAN huruf besar (`Actual: ['rebuild_results',
+'artifact_comparison']`), sementara fixture KLAIM huruf besar pada nilai
+yang sama LULUS — divergensi dua pembaca, terukur berdampingan pada run
+yang sama. Arah yang dipilih = longgarkan pembaca rekaman ke grammar
+para pembanding, bukan ketatkan grammar klaim, karena mengetatkan
+`_digestPattern` memecahkan aturan restatement 117.43-27: pemeriksaan
+`preceding` di `_digestClaimsIn` `:1517` memakai pola itu untuk memutus
+apakah token sebelum penanda adalah digest — dengan pola
+huruf-kecil-saja, baris `a.cpp sha256 <HEX_BESAR> sha256 <nilai>`
+membaca `<HEX_BESAR>` sebagai PATH sehingga satu kontradiksi lolos
+(argumen jalur kode, TIDAK diukur; dicatat sebagai alasan, bukan
+bukti).
+
+PRESEDEN berlawanan yang dicatat run sebelumnya tetap utuh dan tidak
+disentuh: `readChecksumIndex` (sprint `:461`) memang menganggap digest
+huruf besar malformed dan itu terkunci test 117.43-04 (baris `'C'*64`
+wajib masuk `malformed`). Itu pembaca format baris INVENTARIS checksum
+(`<hex> <path>` per baris) dengan input berbeda dan acceptance terkunci,
+jadi di luar scope slice ini. Konsekuensinya jujur dilaporkan: sisa
+divergensi lintas-file tetap ada (inventaris checksum ketat vs klaim
+manifest menerima A-F) dan itu keputusan operator, bukan sesuatu yang
+diam-diam disamakan.
+
+BOUND satu arah: pola hanya memutus APAKA suatu nilai digest. Panjang 64,
+charset hex, kunci kosong, exit code, dan jendela rekaman tidak berubah;
+semua pembanding (`_digestsAgreeWithinGroup`, `_restatedDigestsAgree`,
+verdict terhadap digest, `_partitionMatchesDigests`) tetap membandingkan
+string mentah, jadi tidak ada klaim yang lepas terukur — dikunci test:
+nilai bukan-hex (`'z'*64`) dan nilai salah lebar (`'ab'*31`) tetap
+`rebuild_results` missing, dan verdict `BIT_IDENTICAL` atas dua nilai
+huruf besar yang BERBEDA tetap `artifact_comparison` missing.
+
+RED/GREEN: sisip byte-eksak di akhir
+`test/release/sprint_113_build_reproducibility_provenance_test.dart`
+(akhir file: `});\n}\n`; file ini ber-LF penuh — `crlf count 0` — jadi
+konvensi baris diperiksa per file, bukan diasumsikan dari nama direktori;
+pelajaran CRLF berlaku untuk file yang memang CRLF). numstat test 110/0
+saat sisip -> 107/0 setelah `dart format` write (formatter hanya
+merework blok baru, deleted tetap 0), `git diff -U0` tanpa satu pun
+baris `-`. RED `+5 -1` exit 1 — test mendahului edit lib, jadi tidak ada
+swap blob. GREEN `+6` All tests passed exit 0.
+
+GATES: `dart format` write lalu `--output=none --set-exit-if-changed` =
+0 changed exit 0 (kedua file); `dart analyze` 2 file `No issues found!`
+exit 0; `git diff --check` rc 0; scan non-Latin (python re kelas
+CJK/kana/hangul/fullwidth) + trailing whitespace pada 132 baris added =
+0 dan 0; regresi dua file provenance dalam SATU run = `+238` All tests
+passed exit 0 tanpa blok `Failing tests` (baris nama test: 113.39 x8,
+117.43 x231 termasuk 6 test baru); `flutter build windows --debug` exit
+0 (37,5 dtk) dengan `build/windows/x64/runner/Debug/data/flutter_assets`
+mtime 2026-10-05 16:59:32 (exe statis tidak dihitung).
+
+COMMITS: fix `4e6049a` (2 file, numstat lib 25/5 + test 107/0 murni
+insert). ahead dengan `git rev-list --count origin/master..HEAD`:
+preflight 0 @ `ae34530` (remote sudah berisi seluruh slice -35..-45),
+sesudah fix = 1; angka ditanam sebagai posisi pengukuran, bukan dikejar.
+Patch tool 0 pemakaian; semua edit python replace eksak dengan assert
+count==1 atau pemotongan suffix per-offset. Tidak ada push pada run ini.
+
+SHA 4 sisi dari blob commit `4e6049a` (bukan working tree):
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart`
+= `70d6b8dc2ee8237be5a8afb0e68cac44f5d3d5a821ab3ff575b8c555de42db5e`
+(79878 B, disk == blob);
+`test/release/sprint_113_build_reproducibility_provenance_test.dart` =
+`fbf3d68826a0aa9f60cbb58be49b4ab3b155948ca660c7a5363f91c9a09f24dd`
+(47148 B, disk == blob).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed
+false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR
+117.43-02 masih menunggu keputusan drift manifest. Penomoran: slice
+117.43-46 = hunt ke-41 (defect ke-41).
+
+HUNT BERIKUTNYA ke-42 (probe dulu, jangan klaim sebelum ada baris
+hasil): (a) `'$field present without a readable verdict'`
+(`sprint_117_ga_artifact_reproducibility.dart` `:1047`) — observed
+menyisipkan rekaman alih-alih `$name`, saudara `:1016`/`:1086`/`:1126`
+memakai nama literal dan `:1041`/`:1054` memakai `$name`; belum ada test
+yang mengunci teks pesan itu; (b) `parseDigest`
+(`sprint_117_ga_artifact_reproducibility.dart` `:450`) 0 pemanggil dan
+doc-nya salah; (c) DITUTUP oleh slice ini; (d) `rebuild_run` `:1834` dan
+`:1928` tetap bukan kandidat; (e) BARU — divergensi lintas-file sisa
+(inventaris checksum sprint `:461` ketat-terkunci vs grammar klaim
+manifest A-F): keputusan operator, jangan disamakan diam-diam.

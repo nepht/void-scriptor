@@ -5512,6 +5512,67 @@ File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase104.da
 - Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
 - Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - 21 layar terukur `leaf=1` langsung siap dikontrakkan; (2) perluas audit ke widget non-`*_screen.dart` (24 kandidat, fase 88); atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-24.
 
+## 105. Fase 105 - Scan kandidat independen ulang + probe live 6 layar tanpa kontrak (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - kolam kandidat (layar `lib/features/*/presentation/*_screen.dart` yang belum punya `test/**/*_focus_order_test.dart` DAN punya minimal 2 elemen interaktif) = **0**. Tidak ada kontrak focus order baru, file probe sementara sudah DIHAPUS, dan tidak ada kode produksi yang diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+Catatan penomoran: prompt run ini menyebut "section terakhir saat ini 22", tetapi heading `## NN.` tertinggi pada saat langkah 1 = **104** (fase 104, commit `9a07949`) -> section ini bernomor **105**.
+
+### (a) Scan kandidat independen, dijalankan dari nol
+
+1. Glob `lib/features/*/presentation/*_screen.dart` = **89 layar**; file kontrak `test/**/*focus_order*.dart` = **76 file**.
+2. Import-graph dengan regex dua kutip (`import\s+['"]([^'"]+)['"]`) -> **61 berkontrak / 28 tanpa kontrak**.
+   - **Koreksi alat yang dicatat terbuka:** pass pertama skrip memakai kutip tunggal saja, sehingga `dashboard_screen.dart` dan `project_list_screen.dart` terbaca "tanpa kontrak" padahal keduanya diimpor oleh `test/features/dashboard/dashboard_screen_focus_order_test.dart` dan `test/features/projects/presentation/project_list_screen_focus_order_test.dart` (kedua file memakai `import "..."` ganda). Angka 61/28 di berasal dari pass yang sudah diperbaiki dan cocok dengan konsensus fase 96-104 (61/89 import-graph vs 60/89 primary-class census, selisih satu file `automation_center_screen.dart` yang sudah tercatat di fase 104).
+3. Token handler `on[A-Z]\w*:` setelah strip komentar, di seluruh **28 file tanpa kontrak**: **0 hit di 28/28 file** (sebaran tetap identik fase 104: cinema 4, creator 8, creatures 1, marketplace 3, multiverse 1, platform 2, release 3, splash 1, workflow 1, world 4).
+4. Cross-check arah berlawanan: dari seluruh 89 layar, **46 layar memiliki >= 2 token handler interaktif** (`onTap`/`onPressed`/`onChanged`/`onSubmitted`/`onCreateCharacter`/`onMove`/`onDelete`), dan **46/46 sudah berkontrak**; irisan "tanpa kontrak DAN >= 2 handler" = **kosong**. Kriteria pemilihan run mustahil dipenuhi di HEAD ini lewat dua arah scan - bukan sekadar ketiadaan kebetulan.
+
+### (b) Probe live batch (Flutter 3.44.9 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/platform/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca). Mekanik: tiap layar di-push lewat `NavigatorState.push(MaterialPageRoute(...))` dari `MaterialApp(home: _Root())` yang hanya berisi teks `ROOT` (tanpa tombol launcher, sehingga tidak ada stop milik harness); `FocusManager.instance.primaryFocus?.unfocus()` dijalankan sebelum tabbing; `LogicalKeyboardKey.tab` (di-`await`) maksimal 16 kali; loop berhenti saat rect berulang; label = `Text` pertama non-`Icon` pada subtree fokus dengan fallback `widget:<runtimeType>`; rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Enam layar tanpa kontrak yang dipilih - semuanya sudah punya widget test fixture terbukti (dipakai ulang setup `ProviderScope`/`MaterialApp` yang sama) dan tanpa database/network:
+
+1. `AboutScreen` -> **1 stop**: `widget:Focus` rect (8,8)-(56,56) = 48x48, `EX=null`.
+2. `KeyboardNavigationScreen` -> **1 stop**: label & rect identik di atas, `EX=null`.
+3. `EventFeedScreen` -> **1 stop**: label & rect identik di atas, `EX=null`.
+4. `ShotStatusDashboardScreen` -> **1 stop**: label & rect identik di atas, `EX=null`.
+5. `WorldHealthDashboardScreen` -> **1 stop**: label & rect identik di atas, `EX=null`.
+6. `RevenueDashboardScreen` -> **1 stop**: label & rect identik di atas, `EX=null`.
+
+Interpretasi: `leaf=1` untuk keenam layar - satu-satunya stop adalah tombol back `AppBar` (area 48x48 di kiri-atas); tidak ada satu pun yang mencapai >= 2 stop.
+
+- **Kontrol positif collector (run yang sama):** `UpdateScreen(onLater: _noop, onDownload: _noop)` -> **3 stop** = `widget:Focus` (8,8)-(56,56), `Later` (20,279)-(760,319) = 740x40, `Download` (776,279)-(1516,319) = 740x40. Koordinat `Later`/`Download` **identik** dengan kontrol fase 102/103/104 -> collector membaca stop ketika layar punya kontrol fokus, sehingga `leaf=1` keenam layar di atas bukan artefak harness.
+- **Selisih yang dicatat jujur:** rect tombol back kini terbaca 48x48 sedangkan fase 104 mencatat 40x40 pada posisi sama (8,8); penyebab tidak diverifikasi (kemungkinan layer elemen berbeda yang terbaca saat tabbing). Jumlah stop dan kedua stop aksi tidak berubah, sehingga kesimpulan tidak terpengaruh.
+- `dart format` -> 1 file berubah (format semata), exit 0; `dart analyze` terhadap probe -> **`No issues found!`**, exit 0; probe dijalankan dua kali (sebelum dan sesudah format) dan keduanya **`All tests passed! (7 test)`** exit 0. Angka di atas diambil pasca-format.
+
+### (c) Negative control (LANGKAH 6): ekspektasi salah dipastikan gagal
+
+File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase105.dart` (4931 byte), lalu satu ekspektasi dipalsukan pada test `AboutScreen`: `expect(stops, hasLength(1));` diganti menjadi `expect(stops, hasLength(2));` (baris 92).
+
+- `flutter test test/features/platform/presentation/_probe_focus_test.dart --plain-name "probe: AboutScreen focus stops"` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_EXIT=1`); kegagalan pada `_probe_focus_test.dart line 92` (`00:01 +0 -1: probe: AboutScreen focus stops [E]`).
+- Restore dari backup (verifikasi `MUTATION_REMAINING=0` -> mutasi hilang), backup dihapus (`ls` -> `No such file or directory`), probe dijalankan ulang -> **`All tests passed! (7 test)`** exit 0 sebelum file probe dihapus.
+
+### Gate dan bukti
+
+- Probe **dihapus lebih dulu**, baru gate dijalankan supaya mewakili tree yang akan di-commit: `flutter test test/features/platform/` -> **`All tests passed! (75 tests)`**, `GATE_EXIT=0`.
+- `flutter analyze` penuh -> **95 issues**, exit 1. Seluruh issue berasal dari file sibling di luar scope run ini, semuanya `test/release/scratch_*_test.dart` (`scratch_11723_probe_test.dart` 31, `scratch_drill_11733_test.dart` 23, `scratch_11725_probe3_test.dart` 8, `scratch_probe_11733_test.dart` 6, dst); grep `features/platform/presentation|wcag-2.2-audit` atas keluaran analyzer = **0 hit**. Run ini tidak menyisakan satu pun file `.dart` -> kontribusi analyzer = 0. (Fase 104 juga mencatat 95 -> tidak ada pergeseran baseline.)
+- Kontrak: **N/A** - tidak ada layar yang lolos kriteria, sehingga `dart format`/`dart analyze`/`flutter test` kontrak dan negative-control kontrak tidak dijalankan (alasan sama fase 80-104); kontrol butir (c) menggantikannya dan tetap membuktikan ekspektasi salah selalu gagal.
+- `git status --porcelain -- test` -> hanya entri sibling `?? test/core/security/presentation/`; tidak ada sisa `_*_focus_test.dart` / `_probe_*.dart`.
+- Line ending laporan: **LF murni** (`CR=0`, `LF=5645` sebelum penyisipan) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run (`LOCK_ACQUIRED`) dan dilepas di langkah terakhir.
+
+### Temuan baru (dilaporkan, TIDAK diperbaiki)
+
+1. **Dead affordance pada layar tanpa kontrak.** `AboutScreen` (`lib/features/platform/presentation/about_screen.dart:72-75`) me-render `ListTile` dengan `trailing: const Icon(Icons.chevron_right)` di dalam loop `_links` (4 baris: Licenses, Privacy, Open Source Notices, Check for Updates) **tanpa `onTap`/`onPressed` apa pun** -> UI menjanjikan navigasi (chevron) yang tidak bisa diaktifkan lewat mouse maupun keyboard. Pola serupa: `CreatureWorkspaceScreen` (`lib/features/creatures/presentation/creature_workspace_screen.dart:92,129,230,235,245` - 5 `ListTile(`), `MarketplaceHomeScreen` (`lib/features/marketplace/presentation/marketplace_home_screen.dart:100`), `DiscoveryHomeScreen` (`lib/features/release/presentation/discovery_home_screen.dart:102`), `CreatorStoreScreen` (`lib/features/marketplace/presentation/creator_store_screen.dart:106`), `MultiverseWorkspaceScreen` (`lib/features/multiverse/presentation/multiverse_workspace_screen.dart:115`), `PublishingWorkspaceScreen` (`lib/features/release/presentation/publishing_workspace_screen.dart:117`), `CinematicContinuityCheckerScreen` (`lib/features/cinema/presentation/cinematic_continuity_checker_screen.dart:47`), `ExecutionMonitorScreen` (`lib/features/workflow/presentation/execution_monitor_screen.dart:25`). Sembilan file itu tidak punya handler interaktif sama sekali, dan beberapa `ListTile(` berada di dalam loop sehingga jumlah baris yang tampak actionable lebih banyak dari satu. Ini celah WCAG 2.1.1/2.4.5 yang tidak tertangkap kriteria run (yang mensyaratkan >= 2 elemen interaktif), jadi **tidak diperbaiki di sini** - perbaikannya keputusan Choirudin.
+2. **Enam layar terukur live = `leaf=1`** (hanya tombol back `AppBar`). Artinya opsi 1 keputusan Choirudin (turunkan ambang kontrak ke >= 1 stop) membuat keenam layar ini langsung memenuhi syarat kontrak pada run berikutnya.
+
+### Kesimpulan
+
+- **Status audit: 61/89 layar in-glob berkontrak focus order (import-graph; konsensus primary-class census tetap 60/89 dengan selisih `automation_center_screen.dart`); 28 sisanya display-only (0 token handler) dan 6 di antaranya sudah diukur ulang live -> semua `leaf=1`.** Kolam kandidat (tanpa kontrak + >= 2 elemen interaktif) = **0**; pengesahan DEFERRED ke-24 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105).
+- Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
+- Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - laporan fase 104 mencatat 21 layar terukur `leaf=1` langsung siap dikontrakkan, dan enam layar terukur run ini termasuk kelas yang sama; (2) perluas audit ke widget non-`*_screen.dart` (24 kandidat, fase 88); atau (3) tutup audit in-glob di 61/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-25.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

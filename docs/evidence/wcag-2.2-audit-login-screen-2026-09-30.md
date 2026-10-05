@@ -5328,6 +5328,66 @@ File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase101.da
 - Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
 - Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - `ExecutionMonitorScreen`, `DiscoveryHomeScreen`, dan kini `CreatorStoreScreen` sama-sama terukur live 1 leaf stop, jadi kontrak bisa dibuat begitu keputusan itu turun; (2) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel); atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-21.
 
+## 102. Fase 102 - Re-verifikasi independen kolam kandidat + probe live FinalCreatorDashboardScreen (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` tanpa kontrak yang memenuhi kriteria pemilihan run (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order baru yang dibuat, tidak ada file probe yang tersisa di tree, dan tidak ada kode produksi yang diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** scan dan probe dijalankan saat HEAD `53f66de` (commit fase 101); sebelum commit, HEAD bergerak ke `da0ec30` lewat tiga commit sibling Core Worker (`00ba6d2`, `7ea313a`, `da0ec30`) yang hanya menyentuh `docs/sprints/sprint-117-beta-validation.md`, `lib/features/world_logic/domain/build_reproducibility_provenance.dart`, `lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`, `test/release/sprint_117_ga_artifact_reproducibility_test.dart`, dan `.hermes/ROADMAP_STATE.json` - `git diff --name-status 85ccb56..HEAD -- 'lib/features/**/*_screen.dart'` tetap **kosong** saat closeout, jadi byte layar identik dengan basis scan fase 96-101. `git status --short` pada langkah 1 hanya menunjukkan file milik sibling (2 manifest `docs/evidence/sprint-117-35-manifest-20261002.json` dan `sprint-117-36-manifest-20261002.json`, 10 file `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) - tidak ada yang disentuh, tanpa `git add -A`. Setelah probe dihapus, `git status --porcelain -- test` hanya menunjukkan entri sibling `?? test/core/security/presentation/` - tidak ada sisa `_*_focus_test.dart`.
+
+### Pemilihan layar
+
+Dari 29 layar tanpa kontrak, run ini memilih `lib/features/creator/presentation/final_creator_dashboard_screen.dart` (`FinalCreatorDashboardScreen`): 179 baris, StatelessWidget `const` murni tanpa database/network/provider (hanya `Scaffold` + `LayoutBuilder` + tata letak), tanpa import Riverpod, sehingga fixture `MaterialApp` + push route langsung berdiri sendiri. Layar ini terpilih karena pengukuran sebelumnya (fase 90/93) mencatatnya `leaf=1` tetapi belum perlu diukur ulang di HEAD bergerak; run ini memakainya untuk membuktikan hasil itu masih reproduksi sekaligus menjadi kontrol hidup bahwa kolam kandidat benar-benar kosong.
+
+### (a) Scan kandidat independen, dijalankan dari nol di HEAD 53f66de (5 metode + 1 kontrol)
+
+1. **Primary-class census:** nama kelas primer diturunkan dari stem filename (`final_creator_dashboard_screen.dart` -> `FinalCreatorDashboardScreen`); layar dihitung berkontrak hanya jika kelas primer itu diinstansiasi oleh sebuah `test/**/*_focus_order_test.dart` lewat regex `\b<Kelas>\s*\(` (tanpa substring false-positive - kasus `AiStudioScreen` di dalam `advanced_ai_studio_screen` terhindar otomatis, cf. koreksi fase 88). Hasil: **89 layar in-glob -> 75 file kontrak -> 60 berkontrak / 29 tanpa kontrak**, identik fase 96-101.
+2. **Token handler `on[A-Z]\w*:` setelah strip komentar, di seluruh 29 file:** 28 file = **0 token sama sekali** (termasuk nilai `null`); hanya `automation_center_screen.dart` yang punya token, dan kepemilikannya diverifikasi per baris: baris 49 `onChanged: null` (comment `// alpha scope: display-only toggle`) = `AutomationCenterScreen` (Switch disabled), baris 159 `onChanged` + 165 `onPressed` = `_RuleEditorScreenState`, baris 202 `onTap` = `AutomationTemplatesScreen` - dua kelas terakhir sudah berkontrak sendiri (`rule_editor_focus_order_test.dart`, `automation_templates_focus_order_test.dart`). **Token non-null milik kelas primer = 0 di semua 29 layar.**
+3. **Token widget fokus SDK (daftar 37 nama, termasuk `FilledButton`, `PopupMenuButton`, `DropdownButton`, `MenuAnchor`, `Switch`, `Checkbox`, `Slider`):** di 29 layar hanya menghasilkan **`ListTile` (15 kemunculan di 10 file)**, **`Chip` (2 file)**, **`Semantics` (1 file, `splash_screen.dart`, label logo non-fokus)**, plus 3 token milik kelas saudara di `automation_center_screen.dart` (`TextField`, `FilledButton`, `Switch`). Sweep pelengkap untuk widget non-handler (`Focus`, `Listener`, `MouseRegion`, `ModalBarrier`, `Dismissible`, `TabBar`) di 29 file = **0 kemunculan**. **0 `TextField`/`IconButton`/`InkWell`/`GestureDetector`/`TextButton`/`FilledButton`/`DropdownButton`/`PopupMenuButton`/`Slider`/`ExpansionTile` milik kelas primer manapun.** `FinalCreatorDashboardScreen` = **0 widget fokus, 0 handler**.
+4. **Stabilitas basis:** `git diff --name-status 85ccb56..HEAD -- 'lib/features/**/*_screen.dart'` = **kosong** (dicek ulang saat closeout di `da0ec30`) - byte layar identik dengan basis scan dan probe fase 97-101.
+5. **Kontrol positif detektor (bukti detektor tidak buntu):** `lib/features/authentication/presentation/login_screen.dart` -> **10 token handler non-null** + `TextFormField` 2, `IconButton` 1, `TextButton` 3, `FilledButton` 1; `lib/features/settings/presentation/settings_hub_screen.dart` -> **4 token `onTap`** + `ExpansionTile` 4 + `ListTile` 11. Kedua layar yang sudah berkontrak terbaca kaya token, sehingga hasil 0 token di 29 layar bebas bukan artefak detektor.
+
+### (b) Probe live FinalCreatorDashboardScreen (Flutter 3.44.9, viewport 1536x1024, devicePixelRatio 1.0)
+
+Probe sekali pakai `test/features/creator/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca; `dart analyze` terhadapnya -> 8 issues, semuanya `info - avoid_print`, ANALYZE_EXIT=0): layar didorong lewat `MaterialPageRoute` dari launcher supaya affordance back ikut terukur, `LogicalKeyboardKey.tab` (di-`await`) maksimal 16 kali, loop berhenti saat label+rect berulang; label = `Text` leluhur pertama lalu naik lewat `visitAncestorElements`, fallback `widget:<runtimeType>`; rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+- `flutter test test/features/creator/presentation/_probe_focus_test.dart` -> **`All tests passed!`** (2 test), exit 0.
+- **`PROBE_STOP[0] label=widget:Focus rect=Rect.fromLTRB(8.0, 8.0, 48.0, 48.0)`** - tombol back `AppBar` (40x40 di kiri-atas); label berupa fallback karena tombol itu hanya berisi `Icon`, tanpa `Text`.
+- **`PROBE_REPEAT at i=1 key=widget:Focus|Rect.fromLTRB(8.0, 8.0, 48.0, 48.0)`**, **`PROBE_FINAL_DASH_STOP_COUNT=1`**, **`PROBE_FINAL_DASH_LABELS=[widget:Focus]`**, **`PROBE_EX=null`** (`tester.takeException()` null - tidak ada overflow pada lebar 1536).
+- Interpretasi: **1 stop leaf** (tombol back) + siklus Tab langsung mengulang. `_SidebarItem` (baris 91-115) dan `_MetricTab` (baris 155-178) **tidak menghasilkan stop** - bukti live ketiga kalinya bahwa widget tanpa handler tidak masuk rantai fokus. Hasil ini mereproduksi pengukuran fase 90/93 (`leaf=1`) di HEAD yang bergerak 4 commit.
+
+**Kontrol positif collector (test terpisah dalam file probe yang sama, run yang sama):** `UpdateScreen(onLater: () {}, onDownload: () {})` dibungkus `ProviderScope` lalu di-push -> **`PROBE_CONTROL_UPDATE_STOP_COUNT=3`**: `widget:Focus` (8,8 -> 48,48, back), `Later` (20,279 -> 760,319), `Download` (776,279 -> 1516,319); `All tests passed!`. Collector terbukti membaca stop ketika layar punya kontrol fokus, sehingga hasil 1 stop pada layar ini bukan artefak harness.
+
+### (c) Negative control (LANGKAH 6): ekspektasi salah dipastikan gagal
+
+File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase102.dart`, lalu satu ekspektasi dipalsukan pada test `FinalCreatorDashboardScreen` (baris 88): `expect(stops, isNotEmpty);` diganti menjadi `expect(stops, hasLength(2));`.
+
+- `flutter test ..._probe_focus_test.dart --plain-name "probe: FinalCreatorDashboardScreen focus stops"` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_EXIT=1`).
+- Bukti kegagalan: `Which: has length of <1>` pada `_probe_focus_test.dart line 88`, `00:01 +0 -1: probe: FinalCreatorDashboardScreen focus stops [E]`.
+- Restore dari backup (verifikasi `grep -c "hasLength(2)"` = **0** -> mutasi hilang), backup dihapus (`ls` -> `No such file or directory`), probe dijalankan ulang -> **`All tests passed!`** (2 test) sebelum file probe dihapus. Tidak ada backup yang tertinggal.
+
+### Gate dan bukti
+
+- `flutter test test/features/creator/` -> **`All tests passed!` (78 tests)**, `GATE_EXIT=0` (dijalankan dua kali: pertama saat scan, kedua saat closeout di HEAD `da0ec30`).
+- `dart analyze test/features/creator/presentation/_probe_focus_test.dart` -> **8 issues, semuanya `info - avoid_print`**, exit 0 (dijalankan sebelum file dihapus); tidak ada error/warning.
+- `dart format` / `dart analyze` kontrak: **N/A** - tidak ada file kontrak `.dart` yang dibuat; probe sudah dihapus sebelum gate dan `git status --porcelain -- test` tidak menunjukkan sisa `_*_focus_test.dart`.
+- **Negative control kontrak TIDAK DIJALANKAN** (alasan sama fase 80, 81, 83, 86-101: tidak ada kontrak untuk dimutasi); kontrol pada butir (c) menggantikannya dan tetap membuktikan ekspektasi salah selalu gagal.
+- `git add --` pathspec-scoped hanya laporan ini; tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi **LF murni** (`CRLF=0` pada pembacaan run ini) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+- Insiden toolchain: `taskkill //F //IM ...` tetap gagal di shell ini (`ERROR: Invalid argument/option - '//'`), sehingga dipakai `MSYS2_ARG_CONV_EXCL='*' taskkill /F /IM flutter_tester.exe /T` - bersih, gate hijau tanpa error `sqlite3.dll`.
+
+### Temuan baru (dilaporkan, TIDAK diperbaiki)
+
+- **Dead affordance di `FinalCreatorDashboardScreen`** (`lib/features/creator/presentation/final_creator_dashboard_screen.dart:91-115` `_SidebarItem`, `:155-178` `_MetricTab`): lima item sidebar (Dashboard/Projects/AI Studio/Assets/Portfolio) dan empat pil metrik (Projects/Portfolio/Followers/Earnings) dirender sebagai `Row`/`Container` berisi ikon + teks tanpa `onTap`/`GestureDetector`, sehingga sembilan elemen yang tampak bisa diklik sama sekali tidak menerima fokus keyboard. Pola sama dengan `AboutScreen` (fase 97), `MarketplaceHomeScreen` (fase 98), `ExecutionMonitorScreen` (fase 99), `DiscoveryHomeScreen` (fase 100), dan `CreatorStoreScreen` (fase 101); perbaikan berarti menambahkan handler + tujuan navigasi/tab (keputusan desain Choirudin), jadi tidak dikerjakan secara spekulatif.
+- `FinalCreatorDashboardScreen` adalah layar kelima berturut-turut yang menyumbang tepat 1 stop leaf (tombol back) ketika punya `Scaffold`/`AppBar` sendiri, konsisten dengan 21 layar `leaf=1` hasil pengukuran fase 90/93.
+
+### Kesimpulan
+
+- **Status audit: 60/89 layar in-glob berkontrak focus order; 29 sisanya display-only dan 29/29 sudah terukur live (stops = 0, 1, atau 1 leaf + scope).** Kolam kandidat dengan minimal 2 elemen interaktif = **0**; pengesahan ke-21 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102).
+- Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
+- Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - 21 layar terukur `leaf=1` (termasuk `FinalCreatorDashboardScreen`) kini siap dikontrakkan begitu keputusan itu turun; (2) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel); atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-22.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

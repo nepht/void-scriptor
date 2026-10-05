@@ -6709,4 +6709,92 @@ void main() {
       );
     });
   });
+  group('117.43-44 a digest marker is a whole token, not a substring', () {
+    // Defect 117.43-44, found by hunt 39. The file states that both digest
+    // readers of one line "agree on the grammar" (117.43-28), but they did not
+    // agree on what a marker IS: `_hasWellFormedDigestClaims` matched
+    // `sha-?256\s+(\S+)` as a SUBSTRING anywhere in the line, while the claim
+    // tokenizer `_digestClaimsIn` only accepts a token that is entirely
+    // `_digestMarkerPattern` (`^sha-?256$`). A build input whose path ENDS in
+    // `sha256` — the sidecar checksum file this build writes beside the
+    // lockfile — followed by an ordinary word therefore counted as "announced a
+    // digest and supplied something that is not one" and refused the whole
+    // group, while every tokenizer-based reader on that same line reported no
+    // claim at all.
+    //
+    // The bound is one-way: `_digestClaimsIn` can never read an embedded
+    // marker as a claim, so dropping it here lets nothing escape comparison —
+    // it only stops refusing prose that no reader measures. A marker that IS a
+    // token stays held to the same rule, case and hyphen spellings included
+    // (117.43-11).
+
+    Map<String, Object?> shipped() =>
+        jsonDecode(jsonEncode(_manifest(_kProvenanceManifest)))
+            as Map<String, Object?>;
+
+    List<String> shippedInputs() =>
+        ((shipped()['required_evidence']!
+                    as Map<String, Object?>)['build_inputs']!
+                as List<dynamic>)
+            .cast<String>();
+
+    Sprint117GaArtifactCheck checkOf(List<String> buildInputs) {
+      final manifest = shipped();
+      (manifest['required_evidence']! as Map<String, Object?>)['build_inputs'] =
+          buildInputs;
+      return Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: manifest,
+      );
+    }
+
+    test('117.43-44 the untouched shipped document still passes', () {
+      expect(checkOf(shippedInputs()).status, Sprint117GaArtifactStatus.pass);
+    });
+
+    test(
+      '117.43-44 a path ending in `sha256` followed by prose is not a claim',
+      () {
+        // Both shapes refuse before the fix: the tokenizer reads
+        // `pubspec.lock.sha256` and `checksum_sha256` as one token each and
+        // finds no marker, so no reader measures anything on these lines.
+        for (final prose in <String>[
+          'pubspec.lock.sha256 sidecar written beside the lockfile',
+          'checksum_sha256 published next to the manifest',
+        ]) {
+          final check = checkOf(<String>[...shippedInputs(), prose]);
+          expect(
+            check.status,
+            Sprint117GaArtifactStatus.pass,
+            reason:
+                'prose that states no digest must not refuse the group '
+                '(observed: ${check.observed})',
+          );
+        }
+      },
+    );
+
+    test('117.43-44 a token marker with a broken digest is still refused', () {
+      for (final broken in <String>[
+        'docs/release/notes.md sha256 NOT-A-DIGEST',
+        'docs/release/notes.md SHA256 NOPE',
+        'docs/release/notes.md sha-256 nope',
+      ]) {
+        final check = checkOf(<String>[...shippedInputs(), broken]);
+        expect(
+          check.status,
+          Sprint117GaArtifactStatus.unmet,
+          reason:
+              'a marker that IS a token still announces a digest and must '
+              'carry one (observed: ${check.observed})',
+        );
+        expect(
+          check.observed,
+          contains('missing build_inputs'),
+          reason:
+              'the well-formedness rule is the one that must fire, not a '
+              'neighbouring check',
+        );
+      }
+    });
+  });
 }

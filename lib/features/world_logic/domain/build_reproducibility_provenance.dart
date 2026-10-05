@@ -1325,9 +1325,11 @@ class BuildProvenanceEvidence {
   /// for its digest.
   ///
   /// The rule is deliberately narrow, because over-refusing is the other way
-  /// to make a gate useless. What counts as a claim is a `sha256` (any case,
-  /// hyphen optional) followed by whitespace and a value: that is the form
-  /// `<path> sha256 <digest>` always takes. Merely mentioning the word is not
+  /// to make a gate useless. What counts as a claim is a token that is entirely
+  /// `sha256` (any case, hyphen optional) followed by whitespace and a value:
+  /// that is the form `<path> sha256 <digest>` always takes. The token is the
+  /// marker — `sha256` inside a longer word (`pubspec.lock.sha256`) names
+  /// nothing, exactly as the tokenizer below reads it. Merely mentioning the word is not
   /// a claim, which is what keeps the shipped manifest's own prose entry
   /// honest — `hosted dependencies hash-pinned sha256; 0 git/path source`
   /// names the algorithm as a description of a scan and states no value, so it
@@ -1338,10 +1340,29 @@ class BuildProvenanceEvidence {
   /// between evidence and a promise about it.
   static bool _hasWellFormedDigestClaims(List<String>? items) {
     if (items == null) return true;
-    final values = RegExp(r'sha-?256\s+(\S+)', caseSensitive: false);
     for (final item in items) {
-      for (final match in values.allMatches(item)) {
-        if (!_digestPattern.hasMatch(match.group(1)!)) return false;
+      // Sprint 117.43-44 (fail-closed over-refusal, fixed): this reader used to
+      // match `sha-?256\s+(\S+)` as a SUBSTRING of the line, while the claim
+      // tokenizer `_digestClaimsIn` below only accepts a token that is entirely
+      // `_digestMarkerPattern`. The two digest readers of one line therefore
+      // disagreed about what a marker IS, which is the opposite of the "both
+      // readers agree on the grammar" this method's header claims: a build
+      // input whose path ENDS in `sha256` — the `pubspec.lock.sha256` sidecar
+      // this build writes beside the lockfile — followed by an ordinary word
+      // counted as a half-written claim and refused the whole group, while
+      // every other reader on that line found no claim at all.
+      //
+      // The bound runs one way only: `_digestClaimsIn` can never read an
+      // embedded marker as a claim, so relaxing this reader lets nothing
+      // escape comparison — it only stops refusing prose that no reader
+      // measures. A marker that IS a token keeps the rule, case and hyphen
+      // spellings included (117.43-11).
+      final tokens = item.trim().split(RegExp(r'\s+'));
+      for (var i = 0; i < tokens.length; i++) {
+        if (!_digestMarkerPattern.hasMatch(tokens[i])) continue;
+        // A marker with no value beside it states no digest (117.43-07).
+        if (i + 1 >= tokens.length) continue;
+        if (!_digestPattern.hasMatch(tokens[i + 1])) return false;
       }
     }
     return true;

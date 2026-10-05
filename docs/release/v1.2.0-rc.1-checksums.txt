@@ -3,7 +3,7 @@
 # regenerated: 2026-10-04 by sprint 113.39 re-verification (deterministic /Brepro rebuild, re-signed local self-signed certificate)
 # signed_artifacts: 6 exe/dll Authenticode-SHA256, thumbprint E336967CB949B489B7FE320E80683780C00C4A8A, CurrentUser Root store only
 84534ad09ce5a7f4ab77af29b8fcf4edffc49c4e405f069dc8d35bafbd9a671a  build/windows/x64/runner/Release/dartjni.dll
-fb726589f7876b77d6d869262843b91705c0f49105af6bd0215b892e9725909c  build/windows/x64/runner/Release/data/app.so
+d6aad7d36d9c2fb2603914c966859776d2862b96cf6119376b6ade09469bab0b  build/windows/x64/runner/Release/data/app.so
 1099a55726a60557a81c4f26cb3e2159e733d76dba9c73f0f1b9a3dfbd2d7e37  build/windows/x64/runner/Release/data/flutter_assets/AssetManifest.bin
 91777b3cd2b1ce9aa130b87a2a1ad7dd0a997500fd48db3dc0353115136ceb4c  build/windows/x64/runner/Release/data/flutter_assets/assets/backgrounds/auth_background.png
 6a3a0746f8784e3c16df9c6c4320228133906be8fcdf9cd0b82f98ebbd1909be  build/windows/x64/runner/Release/data/flutter_assets/assets/brands/ai_tech/alibaba_cloud_0.webp

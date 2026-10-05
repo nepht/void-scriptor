@@ -403,6 +403,19 @@ enum RebuildVerdict {
   notBitIdentical,
 }
 
+/// The single grammar a SHA-256 digest value has in this file: exactly 64
+/// hexadecimal characters, in either case.
+///
+/// Sprint 117.43-46: this pattern lived inside [BuildProvenanceEvidence] as
+/// a static, so the claim readers shared it while [RebuildResult] held a
+/// private copy spelled `^[0-9a-f]{64}$`. The two then read one value two
+/// ways: an uppercase hex digest was a measured claim in `build_inputs` and
+/// a malformed record in `rebuild_results`, published as `missing
+/// rebuild_results` - the very word a genuinely broken record produces.
+/// Moving it to the library keeps one value and one grammar: every reader
+/// in this file asks the same object, so they cannot drift apart again.
+final RegExp _digestPattern = RegExp(r'^[0-9a-fA-F]{64}$');
+
 /// Immutable record of one clean rebuild.
 class RebuildResult {
   const RebuildResult({
@@ -455,10 +468,20 @@ class RebuildResult {
   bool get isWellFormed {
     if (label.trim().isEmpty || artifactHashes.isEmpty) return false;
     if (exitCode == null || exitCode != 0) return false;
-    final hashPattern = RegExp(r'^[0-9a-f]{64}$');
+    // Sprint 117.43-46 (fail-closed over-refusal, fixed): this shape
+    // check kept its OWN copy of the hex grammar, spelled
+    // `^[0-9a-f]{64}$`, while the claim readers one class over shared
+    // `_digestPattern` (`^[0-9a-fA-F]{64}$`). One value, two readings:
+    // an uppercase hex digest was a measured claim in `build_inputs` and
+    // a malformed record here, published as `missing rebuild_results` -
+    // the very word a genuinely broken record produces. Hex case is not
+    // part of the value, so this reader now asks the shared pattern.
+    // Width, hex charset, blank keys, exit code and the window checks
+    // are untouched, and every comparison still measures the raw
+    // recorded strings.
     if (!artifactHashes.entries.every(
       (entry) =>
-          entry.key.trim().isNotEmpty && hashPattern.hasMatch(entry.value),
+          entry.key.trim().isNotEmpty && _digestPattern.hasMatch(entry.value),
     )) {
       return false;
     }
@@ -1370,9 +1393,6 @@ class BuildProvenanceEvidence {
     }
     return true;
   }
-
-  /// A SHA-256 digest is exactly 64 hexadecimal characters.
-  static final RegExp _digestPattern = RegExp(r'^[0-9a-fA-F]{64}$');
 
   /// The digest every group claims for one path, when the claim parses.
   ///

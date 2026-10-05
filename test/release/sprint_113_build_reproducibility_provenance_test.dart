@@ -1051,4 +1051,111 @@ void main() {
           'total leaves the honest document well formed',
     );
   });
+
+  // RED-first for defect 117.43-46: `RebuildResult.isWellFormed` validates a
+  // recorded digest with `^[0-9a-f]{64}$` while `_digestPattern` - the one
+  // grammar the four claim readers of this file share
+  // (`_hasWellFormedDigestClaims`, `_digestClaimsIn`, and through it
+  // `_digestsByPath`, `_digestsAgreeWithinGroup` and
+  // `_restatedDigestsAgree`) - accepts `^[0-9a-fA-F]{64}$`. One value, two
+  // verdicts inside ONE evaluation: the same uppercase hex digest is a
+  // measured claim in `build_inputs` and a malformed record in
+  // `rebuild_results`, and the refusal is published as `missing
+  // rebuild_results`, the exact word a genuinely broken record produces.
+  // Measured before the fix: the claim-level fixture below reported no
+  // missing group while the record-level one reported `rebuild_results`.
+  group('117.43-46 a recorded digest obeys the claim hex grammar', () {
+    final lower = 'a1b2c3d4' * 8;
+    final upper = lower.toUpperCase();
+
+    BuildProvenanceEvidence document(String digest, {String? claimDigest}) {
+      final claims = claimDigest ?? digest;
+      return BuildProvenanceEvidence(
+        buildInputs: <String>['pubspec.yaml sha256 $claims'],
+        toolchainVersions: <String>['Flutter 3.x'],
+        dependencyLock: <String>['pubspec.lock sha256 $claims'],
+        rebuildResults: <RebuildResult>[
+          _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': digest}),
+          _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': digest}),
+        ],
+        artifactComparison: ArtifactComparison(
+          method: 'sha256',
+          rebuildA: _rebuild('rebuild_a', <String, String>{
+            'void_scriptor.exe': digest,
+          }),
+          rebuildB: _rebuild('rebuild_b', <String, String>{
+            'void_scriptor.exe': digest,
+          }),
+          verdict: RebuildVerdict.bitIdentical,
+          limits: <String>[],
+        ),
+        provenanceRecord: <String>['source_revision $digest'],
+      );
+    }
+
+    test('the lower-case control document reports no missing group', () {
+      expect(BuildProvenanceEvidence.missingEvidence(document(lower)), isEmpty);
+    });
+
+    test('the claim readers already measure that value in upper hex', () {
+      expect(
+        BuildProvenanceEvidence.missingEvidence(
+          document(lower, claimDigest: upper),
+        ),
+        isEmpty,
+      );
+    });
+
+    test('a record stating the same value in upper hex is not malformed', () {
+      expect(
+        BuildProvenanceEvidence.missingEvidence(document(upper)),
+        isEmpty,
+        reason: 'the claim readers above measure this exact value',
+      );
+    });
+
+    test('a recorded value that is not hex at all stays refused', () {
+      expect(
+        BuildProvenanceEvidence.missingEvidence(document('z' * 64)),
+        contains('rebuild_results'),
+      );
+    });
+
+    test('a recorded value of the wrong width stays refused', () {
+      expect(
+        BuildProvenanceEvidence.missingEvidence(document('ab' * 31)),
+        contains('rebuild_results'),
+      );
+    });
+
+    test('an identity verdict over differing hex values stays refused', () {
+      final other = '0f1e2d3c' * 8;
+      final evidence = document(upper);
+      final differing = BuildProvenanceEvidence(
+        buildInputs: evidence.buildInputs,
+        toolchainVersions: evidence.toolchainVersions,
+        dependencyLock: evidence.dependencyLock,
+        rebuildResults: <RebuildResult>[
+          _rebuild('rebuild_a', <String, String>{'void_scriptor.exe': upper}),
+          _rebuild('rebuild_b', <String, String>{'void_scriptor.exe': other}),
+        ],
+        artifactComparison: ArtifactComparison(
+          method: 'sha256',
+          rebuildA: _rebuild('rebuild_a', <String, String>{
+            'void_scriptor.exe': upper,
+          }),
+          rebuildB: _rebuild('rebuild_b', <String, String>{
+            'void_scriptor.exe': other,
+          }),
+          verdict: RebuildVerdict.bitIdentical,
+          limits: <String>[],
+        ),
+        provenanceRecord: evidence.provenanceRecord,
+      );
+      expect(
+        BuildProvenanceEvidence.missingEvidence(differing),
+        contains('artifact_comparison'),
+      );
+    });
+  });
 }

@@ -805,10 +805,7 @@ abstract final class Sprint117GaArtifactGate {
   static Sprint117GaArtifactCheck measureProvenance({
     required Map<String, Object?> provenanceManifest,
   }) {
-    final evidenceField = _documentField(
-      provenanceManifest,
-      'required_evidence',
-    );
+    final evidenceField = _mapField(provenanceManifest, 'required_evidence');
     if (evidenceField.ambiguous) {
       return Sprint117GaArtifactCheck.unmet(
         outputId: 'provenance',
@@ -826,7 +823,7 @@ abstract final class Sprint117GaArtifactGate {
         observed: 'manifest carries no required_evidence object',
       );
     }
-    final runField = _documentField(provenanceManifest, 'rebuild_run');
+    final runField = _mapField(provenanceManifest, 'rebuild_run');
     if (runField.ambiguous) {
       return Sprint117GaArtifactCheck.unmet(
         outputId: 'provenance',
@@ -942,7 +939,7 @@ abstract final class Sprint117GaArtifactGate {
     );
   }
 
-  /// Resolves a document-level field whatever whitespace surrounds its key.
+  /// Resolves a declared field of [map] whatever whitespace surrounds its key.
   ///
   /// Sprint 117.43-39: every document-level reader in this file matched the
   /// bare key exactly while 117.43-38 taught the members one floor down to
@@ -960,14 +957,26 @@ abstract final class Sprint117GaArtifactGate {
   /// the callers refuse instead of guessing. A key that no amount of trimming
   /// can bring into the shipped vocabulary is not this field's variant at all
   /// (117.43-16); this helper never looks for those.
-  static ({bool present, bool ambiguous, Object? value}) _documentField(
-    Map<String, Object?> document,
+  ///
+  /// Sprint 117.43-40: the helper moved down with 117.43-39's callers and
+  /// became the reader for every key INSIDE `required_evidence` too. Each
+  /// floor had been left matching the bare key exactly while the floor above
+  /// it had not, so a single space still moved claims across the verdict in
+  /// both directions: a per-artifact partition stating the wrong inventory, a
+  /// rebuild command admitting no clean step, and a record duration
+  /// contradicting its own summary each went `unmet` -> `pass`, while an
+  /// honest `required_evidence` group, an honest comparison `method` or
+  /// `verdict`, and an honest record's own fields each went `pass` -> `unmet`.
+  /// The rule is level-independent: whitespace around a key changes no
+  /// meaning wherever the key sits.
+  static ({bool present, bool ambiguous, Object? value}) _mapField(
+    Map<String, Object?> map,
     String field,
   ) {
     var present = false;
     var ambiguous = false;
     Object? value;
-    for (final entry in document.entries) {
+    for (final entry in map.entries) {
       if (entry.key.trim() != field) continue;
       if (present) ambiguous = true;
       present = true;
@@ -995,7 +1004,7 @@ abstract final class Sprint117GaArtifactGate {
   ///    how they relate to the nested comparison limits — that vocabulary
   ///    belongs to the document, so this reader adds no acceptance of its own.
   static String? _documentLimitsRefusal(Map<String, Object?> document) {
-    final field = _documentField(document, 'limits');
+    final field = _mapField(document, 'limits');
     if (field.ambiguous) {
       return 'limits is stated under two keys that trim alike';
     }
@@ -1027,7 +1036,7 @@ abstract final class Sprint117GaArtifactGate {
   ///  * `version`, `canonical_step` and `title` are NOT measured here.
   static String? _headerVerdictRefusal(Map<String, Object?> document) {
     for (final name in const <String>['status', 'decision']) {
-      final field = _documentField(document, name);
+      final field = _mapField(document, name);
       if (field.ambiguous) {
         return '$name is stated under two keys that trim alike';
       }
@@ -1066,7 +1075,7 @@ abstract final class Sprint117GaArtifactGate {
   ///  * nothing is required about WHICH version it states — that vocabulary
   ///    belongs to the document, so this reader adds no acceptance of its own.
   static String? _documentVersionRefusal(Map<String, Object?> document) {
-    final field = _documentField(document, 'version');
+    final field = _mapField(document, 'version');
     if (field.ambiguous) {
       return 'version is stated under two keys that trim alike';
     }
@@ -1106,7 +1115,7 @@ abstract final class Sprint117GaArtifactGate {
   ///  * nothing is required about `title`, which 117.43-19 recorded as prose
   ///    outside acceptance and deliberately left unmeasured.
   static String? _documentStepRefusal(Map<String, Object?> document) {
-    final field = _documentField(document, 'canonical_step');
+    final field = _mapField(document, 'canonical_step');
     if (field.ambiguous) {
       return 'canonical_step is stated under two keys that trim alike';
     }
@@ -1151,9 +1160,23 @@ abstract final class Sprint117GaArtifactGate {
       return records;
     }
 
-    final rebuildList = rebuildRecordsFrom(evidence['rebuild_results']);
+    // Sprint 117.43-40 (fail-open, fixed): every lookup INSIDE
+    // `required_evidence` still matched the bare key exactly while 117.43-39
+    // had closed the document level one floor up. Because absence is a
+    // non-claim (117.43-07), one space around a key moved claims across the
+    // verdict in both directions on the shipped document: a per-artifact
+    // partition stating the wrong inventory, a rebuild command admitting no
+    // clean step, and a record duration contradicting its summary each moved
+    // `unmet` -> `pass`, while an honest group, an honest comparison and an
+    // honest record moved `pass` -> `unmet`. Read this level through the same
+    // helper the document level uses.
+    final rebuildsField = _mapField(evidence, 'rebuild_results');
+    if (rebuildsField.ambiguous) return null;
+    final rebuildList = rebuildRecordsFrom(rebuildsField.value);
     if (rebuildList == null || rebuildList.length < 2) return null;
-    final comparison = evidence['artifact_comparison'];
+    final comparisonField = _mapField(evidence, 'artifact_comparison');
+    if (comparisonField.ambiguous) return null;
+    final comparison = comparisonField.value;
     if (comparison is! Map<String, Object?>) return null;
 
     // Sprint 117.43-12 (fail-open, fixed): these three groups arrived here
@@ -1164,7 +1187,11 @@ abstract final class Sprint117GaArtifactGate {
     // gate, so a malformed manifest escaped the verdict entirely instead of
     // failing closed. Every other decode in this file was written for this
     // (117.43-08/-09/-10); this one was missed. Read the list explicitly.
-    List<String>? strings(String key) => _stringList(evidence[key]);
+    List<String>? strings(String key) {
+      final field = _mapField(evidence, key);
+      if (field.ambiguous) return null;
+      return _stringList(field.value);
+    }
 
     RebuildResult rebuild(RebuildResult source) => RebuildResult(
       label: source.label,
@@ -1305,7 +1332,9 @@ abstract final class Sprint117GaArtifactGate {
     // Parse it as a CLOSED vocabulary: only the two canonical strings produce an
     // enum, and anything else makes the evidence unevaluable so the caller
     // reports `unmet` rather than inventing a claim. Defaulting is the defect.
-    final verdict = switch (comparison['verdict']) {
+    final verdictField = _mapField(comparison, 'verdict');
+    if (verdictField.ambiguous) return null;
+    final verdict = switch (verdictField.value) {
       'BIT_IDENTICAL' => RebuildVerdict.bitIdentical,
       'NOT_BIT_IDENTICAL' => RebuildVerdict.notBitIdentical,
       _ => null,
@@ -1358,16 +1387,17 @@ abstract final class Sprint117GaArtifactGate {
     // verdict instead of a failed one. Decode both shapes: an absent field
     // stays null (a non-claim per 117.43-07) and a present-but-unreadable one
     // makes the evidence unevaluable, which the caller reports as `unmet`.
-    final method = comparison.containsKey('method')
-        ? comparison['method'] is String
-              ? comparison['method'] as String
+    final methodField = _mapField(comparison, 'method');
+    final limitsField = _mapField(comparison, 'limits');
+    if (methodField.ambiguous || limitsField.ambiguous) return null;
+    final method = methodField.present
+        ? methodField.value is String
+              ? methodField.value as String
               : _kUndecodable
         : null;
-    final limits = comparison.containsKey('limits')
-        ? _stringList(comparison['limits'])
-        : null;
+    final limits = limitsField.present ? _stringList(limitsField.value) : null;
     if (identical(method, _kUndecodable)) return null;
-    if (comparison.containsKey('limits') && limits == null) return null;
+    if (limitsField.present && limits == null) return null;
 
     final shipped = BuildProvenanceEvidence(
       buildInputs: buildInputs,
@@ -1419,15 +1449,18 @@ abstract final class Sprint117GaArtifactGate {
   /// partition — a lone `differing_artifacts` is exactly the partial account
   /// 117.43-08 refuses.
   static _ArtifactPartition? _readPartition(Map<String, Object?> comparison) {
-    final hasDiffering = comparison.containsKey('differing_artifacts');
-    final hasIdentical = comparison.containsKey('identical_artifacts');
+    final differingField = _mapField(comparison, 'differing_artifacts');
+    final identicalField = _mapField(comparison, 'identical_artifacts');
+    if (differingField.ambiguous || identicalField.ambiguous) return null;
+    final hasDiffering = differingField.present;
+    final hasIdentical = identicalField.present;
     if (!hasDiffering && !hasIdentical) {
       return const _ArtifactPartition(differing: null, identical: null);
     }
     if (!hasDiffering || !hasIdentical) return null;
 
-    final differing = _namesFrom(comparison['differing_artifacts']);
-    final identical = _namesFrom(comparison['identical_artifacts']);
+    final differing = _namesFrom(differingField.value);
+    final identical = _namesFrom(identicalField.value);
     if (differing == null || identical == null) return null;
     return _ArtifactPartition(differing: differing, identical: identical);
   }
@@ -1488,8 +1521,11 @@ abstract final class Sprint117GaArtifactGate {
   }
 
   static RebuildResult? _rebuildFrom(Map<String, Object?> json) {
-    final label = json['label'];
-    final hashes = json['artifact_hashes'];
+    final labelField = _mapField(json, 'label');
+    final hashesField = _mapField(json, 'artifact_hashes');
+    if (labelField.ambiguous || hashesField.ambiguous) return null;
+    final label = labelField.value;
+    final hashes = hashesField.value;
     if (label is! String || hashes is! Map<String, Object?>) return null;
     // Sprint 117.43-13 (fail-open, fixed): the digest map passed its `is`
     // check but its VALUES were still asserted one at a time by
@@ -1507,10 +1543,9 @@ abstract final class Sprint117GaArtifactGate {
       if (value is! String) return null;
       decodedHashes[entry.key] = value;
     }
-    final exitCode = _durationOrNull(
-      json['exit_code'],
-      json.containsKey('exit_code'),
-    );
+    final exitField = _mapField(json, 'exit_code');
+    if (exitField.ambiguous) return null;
+    final exitCode = _durationOrNull(exitField.value, exitField.present);
     if (identical(exitCode, _kUndecodable)) return null;
 
     final window = _decodeWindow(json);
@@ -1521,8 +1556,11 @@ abstract final class Sprint117GaArtifactGate {
     // claim stayed unmeasured. Decode them under the same rule as the window:
     // a present-but-undecodable field fails closed, an absent one is a
     // non-claim.
-    final command = _stringOrNull(json['command'], json.containsKey('command'));
-    final log = _stringOrNull(json['log'], json.containsKey('log'));
+    final commandField = _mapField(json, 'command');
+    final logField = _mapField(json, 'log');
+    if (commandField.ambiguous || logField.ambiguous) return null;
+    final command = _stringOrNull(commandField.value, commandField.present);
+    final log = _stringOrNull(logField.value, logField.present);
     if (command == _kUndecodable || log == _kUndecodable) return null;
     if (!_logIsReadable(log)) return null;
     return RebuildResult(
@@ -1571,15 +1609,23 @@ abstract final class Sprint117GaArtifactGate {
   /// present field strictly: a number where a string belongs is refused rather
   /// than cast, for the same reason 117.43-08 refuses a mistyped partition.
   static _RebuildWindow? _decodeWindow(Map<String, Object?> json) {
-    final hasStarted = json.containsKey('started_at');
-    final hasFinished = json.containsKey('finished_at');
-    final hasDuration = json.containsKey('duration_seconds');
+    final startedField = _mapField(json, 'started_at');
+    final finishedField = _mapField(json, 'finished_at');
+    final durationField = _mapField(json, 'duration_seconds');
+    if (startedField.ambiguous ||
+        finishedField.ambiguous ||
+        durationField.ambiguous) {
+      return null;
+    }
+    final hasStarted = startedField.present;
+    final hasFinished = finishedField.present;
+    final hasDuration = durationField.present;
     if (!hasStarted && !hasFinished && !hasDuration) {
       return const _RebuildWindow(startedAt: null, finishedAt: null);
     }
-    final startedAt = _stringOrNull(json['started_at'], hasStarted);
-    final finishedAt = _stringOrNull(json['finished_at'], hasFinished);
-    final duration = _durationOrNull(json['duration_seconds'], hasDuration);
+    final startedAt = _stringOrNull(startedField.value, hasStarted);
+    final finishedAt = _stringOrNull(finishedField.value, hasFinished);
+    final duration = _durationOrNull(durationField.value, hasDuration);
     if (startedAt == _kUndecodable ||
         finishedAt == _kUndecodable ||
         duration == _kUndecodable) {
@@ -1641,10 +1687,13 @@ abstract final class Sprint117GaArtifactGate {
       return false;
     }
     // Each recorded duration must agree with the window it summarises.
-    if (!_durationAgrees(first['duration_seconds'], startA, finishA)) {
+    final firstDuration = _mapField(first, 'duration_seconds');
+    final secondDuration = _mapField(second, 'duration_seconds');
+    if (firstDuration.ambiguous || secondDuration.ambiguous) return false;
+    if (!_durationAgrees(firstDuration.value, startA, finishA)) {
       return false;
     }
-    if (!_durationAgrees(second['duration_seconds'], startB, finishB)) {
+    if (!_durationAgrees(secondDuration.value, startB, finishB)) {
       return false;
     }
     return !startB.isBefore(finishA);
@@ -1672,7 +1721,9 @@ abstract final class Sprint117GaArtifactGate {
       final startI = DateTime.tryParse(rebuilds[i].startedAt!.trim());
       final finishI = DateTime.tryParse(rebuilds[i].finishedAt!.trim());
       if (startI == null || finishI == null) return false;
-      if (!_durationAgrees(records[i]['duration_seconds'], startI, finishI)) {
+      final ownDuration = _mapField(records[i], 'duration_seconds');
+      if (ownDuration.ambiguous) return false;
+      if (!_durationAgrees(ownDuration.value, startI, finishI)) {
         return false;
       }
       for (var j = i + 1; j < rebuilds.length; j++) {
@@ -1775,9 +1826,11 @@ abstract final class Sprint117GaArtifactGate {
       // lines, where a rebuild_z line had the same effect.
       if (index < 0) return false;
       final recorded = records[index];
+      final recordedDuration = _mapField(recorded, 'duration_seconds');
+      if (recordedDuration.ambiguous) return false;
       final own = _durationOrNull(
-        recorded['duration_seconds'],
-        recorded.containsKey('duration_seconds'),
+        recordedDuration.value,
+        recordedDuration.present,
       );
       if (identical(own, _kUndecodable)) return false;
       if (own != null) {

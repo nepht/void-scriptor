@@ -6050,4 +6050,275 @@ void main() {
       }
     });
   });
+
+  group('117.43-40 a key below the document is read whatever whitespace '
+      'surrounds it', () {
+    // Sprint 117.43-40 (fail-open). 117.43-38 taught the members of
+    // `rebuild_run` to match after `trim()` and 117.43-39 did the same for
+    // the document-level keys, but every lookup INSIDE `required_evidence`
+    // was still exact. Proven on the shipped document, each case differing
+    // only in the whitespace around one key: the per-artifact partition, a
+    // rebuild command admitting no clean step, and a record duration
+    // contradicting its own summary all moved from `unmet` to `pass`, while
+    // the honest twins - every `required_evidence` group, the comparison's
+    // `method` and `verdict`, and a rebuild record's own fields - moved from
+    // `pass` to `unmet`. One space around a key therefore both switched off
+    // a refusal and manufactured one: the rule 117.43-38/-39 wrote down,
+    // applied one floor lower.
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    Map<String, Object?> evidence(Map<String, Object?> manifest) =>
+        manifest['required_evidence']! as Map<String, Object?>;
+
+    Map<String, Object?> comparison(Map<String, Object?> manifest) =>
+        evidence(manifest)['artifact_comparison']! as Map<String, Object?>;
+
+    List<Map<String, Object?>> recordsOf(Map<String, Object?> manifest) =>
+        (evidence(manifest)['rebuild_results']! as List<dynamic>)
+            .cast<Map<String, Object?>>();
+
+    Map<String, Object?> withEvidence(
+      Map<String, Object?> manifest,
+      Map<String, Object?> next,
+    ) => {...manifest, 'required_evidence': next};
+
+    Map<String, Object?> withComparison(
+      Map<String, Object?> manifest,
+      Map<String, Object?> next,
+    ) => withEvidence(manifest, {
+      ...evidence(manifest),
+      'artifact_comparison': next,
+    });
+
+    Map<String, Object?> withRecord(
+      Map<String, Object?> manifest,
+      int index,
+      Map<String, Object?> record,
+    ) {
+      final next = [...recordsOf(manifest)]..[index] = record;
+      return withEvidence(manifest, {
+        ...evidence(manifest),
+        'rebuild_results': next,
+      });
+    }
+
+    /// [map] publishing [value] only under a key spelled with one leading and
+    /// one trailing space, so nothing bare is left for a reader to find.
+    Map<String, Object?> spaced(
+      Map<String, Object?> map,
+      String key,
+      Object? value,
+    ) {
+      final copy = Map<String, Object?>.from(map);
+      copy.remove(key);
+      copy[' $key '] = value;
+      return copy;
+    }
+
+    /// Every key at every level of [node] already spells itself, so the cases
+    /// below isolate the lookup and not a stray space shipped in the document.
+    bool keysAreBare(Object? node) {
+      if (node is Map) {
+        return node.entries.every((entry) {
+          final key = entry.key as String;
+          return key == key.trim() && keysAreBare(entry.value);
+        });
+      }
+      if (node is List) return node.every(keysAreBare);
+      return true;
+    }
+
+    test('117.43-40 the shipped document states every key bare, so the cases '
+        'below isolate the lookup itself', () {
+      expect(keysAreBare(shipped()), isTrue);
+      expect(outcome(shipped()), 'pass');
+    });
+
+    test('117.43-40 a per-artifact partition stated under whitespace-variant '
+        'keys is still measured', () {
+      final base = shipped();
+      final cmp = comparison(base);
+      final swappedBare = <String, Object?>{
+        ...cmp,
+        'differing_artifacts': <String>['void_scriptor.exe'],
+        'identical_artifacts': <String>[],
+      };
+      final swappedSpaced = spaced(
+        spaced(cmp, 'differing_artifacts', <String>['void_scriptor.exe']),
+        'identical_artifacts',
+        <String>[],
+      );
+      final honestSpaced = spaced(
+        spaced(cmp, 'differing_artifacts', cmp['differing_artifacts']),
+        'identical_artifacts',
+        cmp['identical_artifacts'],
+      );
+      expect(
+        outcome(withComparison(base, swappedBare)),
+        'unmet',
+        reason: 'control: the bare keys reach 117.43-08',
+      );
+      expect(
+        outcome(withComparison(base, swappedSpaced)),
+        isNot('pass'),
+        reason:
+            'the same false partition must be measured whatever '
+            'whitespace surrounds its keys',
+      );
+      expect(outcome(withComparison(base, honestSpaced)), 'pass');
+    });
+
+    test('117.43-40 a rebuild command that admits no clean step is refused '
+        'wherever its key sits', () {
+      final base = shipped();
+      final record = recordsOf(base)[0];
+      const noClean = 'msbuild anything';
+      expect(
+        outcome(withRecord(base, 0, {...record, 'command': noClean})),
+        'unmet',
+        reason: 'control: the bare key reaches 117.43-10',
+      );
+      expect(
+        outcome(withRecord(base, 0, spaced(record, 'command', noClean))),
+        isNot('pass'),
+        reason:
+            'one space around `command` must not switch off the clean '
+            'step the comparison method claims',
+      );
+    });
+
+    test('117.43-40 a record duration contradicting its summary is refused '
+        'wherever its key sits', () {
+      final base = shipped();
+      final record = recordsOf(base)[0];
+      expect(
+        outcome(withRecord(base, 0, {...record, 'duration_seconds': 999})),
+        'unmet',
+        reason: 'control: the bare key reaches 117.43-36',
+      );
+      expect(
+        outcome(withRecord(base, 0, spaced(record, 'duration_seconds', 999))),
+        isNot('pass'),
+        reason:
+            'the record then states 999 where its summary states 145; a '
+            'space around the key must not hide the contradiction',
+      );
+    });
+
+    test('117.43-40 every required_evidence group stated under a '
+        'whitespace-variant key is still evaluated', () {
+      final base = shipped();
+      final ev = evidence(base);
+      final cases = <String, String>{
+        for (final key in const <String>[
+          'build_inputs',
+          'toolchain_versions',
+          'dependency_lock',
+          'rebuild_results',
+          'artifact_comparison',
+          'provenance_record',
+        ])
+          key: outcome(withEvidence(base, spaced(ev, key, ev[key]))),
+      };
+      expect(
+        cases.values,
+        everyElement('pass'),
+        reason:
+            'an honest group whose key gained a space is still the group '
+            'the document states: $cases',
+      );
+    });
+
+    test('117.43-40 a comparison verdict, method or limits stated under a '
+        'whitespace-variant key is still read', () {
+      final base = shipped();
+      final cmp = comparison(base);
+      final cases = <String, String>{
+        for (final key in const <String>['method', 'verdict', 'limits'])
+          key: outcome(withComparison(base, spaced(cmp, key, cmp[key]))),
+      };
+      expect(
+        cases.values,
+        everyElement('pass'),
+        reason:
+            'the honest comparison still passes whatever whitespace '
+            'surrounds its keys: $cases',
+      );
+    });
+
+    test('117.43-40 a rebuild record stated under whitespace-variant keys is '
+        'still read', () {
+      final base = shipped();
+      final record = recordsOf(base)[0];
+      final cases = <String, String>{
+        for (final key in const <String>[
+          'label',
+          'exit_code',
+          'started_at',
+          'finished_at',
+          'duration_seconds',
+          'command',
+          'log',
+          'artifact_hashes',
+        ])
+          key: outcome(withRecord(base, 0, spaced(record, key, record[key]))),
+      };
+      expect(
+        cases.values,
+        everyElement('pass'),
+        reason:
+            'an honest record is the same record whatever whitespace '
+            'surrounds its keys: $cases',
+      );
+    });
+
+    test('117.43-40 two keys that trim alike are refused, not guessed '
+        'between', () {
+      final base = shipped();
+      final cmp = comparison(base);
+      expect(
+        outcome(withComparison(base, {...cmp, ' verdict': 'TOTAL_GARBAGE'})),
+        isNot('pass'),
+        reason:
+            'the comparison then states two verdicts under keys spelling '
+            'the same field; reading only the bare one leaves the '
+            'contradicting twin unread',
+      );
+      final ev = evidence(base);
+      expect(
+        outcome(
+          withEvidence(base, {
+            ...ev,
+            ' build_inputs ': <String>['x'],
+          }),
+        ),
+        isNot('pass'),
+        reason: 'the same coin toss one floor lower',
+      );
+    });
+
+    test('117.43-40 a key no trim can bring into the shipped vocabulary stays '
+        'a non-claim', () {
+      final base = shipped();
+      final cmp = comparison(base);
+      expect(
+        outcome(withComparison(base, {...cmp, ' method2': 'MD5'})),
+        'pass',
+        reason:
+            'trim folds no characters, so ` method2` is not the `method` '
+            'variant and states no claim (117.43-16)',
+      );
+    });
+  });
 }

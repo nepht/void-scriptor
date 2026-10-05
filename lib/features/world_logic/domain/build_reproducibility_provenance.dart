@@ -1325,11 +1325,12 @@ class BuildProvenanceEvidence {
   /// for its digest.
   ///
   /// The rule is deliberately narrow, because over-refusing is the other way
-  /// to make a gate useless. What counts as a claim is a token that is entirely
-  /// `sha256` (any case, hyphen optional) followed by whitespace and a value:
-  /// that is the form `<path> sha256 <digest>` always takes. The token is the
-  /// marker — `sha256` inside a longer word (`pubspec.lock.sha256`) names
-  /// nothing, exactly as the tokenizer below reads it. Merely mentioning the word is not
+  /// to make a gate useless. What counts as a claim is a token that is
+  /// entirely `sha256` (any case, hyphen optional) followed by whitespace and
+  /// a value: that is the form `<path> sha256 <digest>` always takes. The
+  /// token is the marker: `sha256` inside a longer word, as in
+  /// `pubspec.lock.sha256`, names nothing — exactly as the tokenizer below
+  /// reads it. Merely mentioning the word is not
   /// a claim, which is what keeps the shipped manifest's own prose entry
   /// honest — `hosted dependencies hash-pinned sha256; 0 git/path source`
   /// names the algorithm as a description of a scan and states no value, so it
@@ -1342,15 +1343,17 @@ class BuildProvenanceEvidence {
     if (items == null) return true;
     for (final item in items) {
       // Sprint 117.43-44 (fail-closed over-refusal, fixed): this reader used to
-      // match `sha-?256\s+(\S+)` as a SUBSTRING of the line, while the claim
-      // tokenizer `_digestClaimsIn` below only accepts a token that is entirely
-      // `_digestMarkerPattern`. The two digest readers of one line therefore
-      // disagreed about what a marker IS, which is the opposite of the "both
-      // readers agree on the grammar" this method's header claims: a build
-      // input whose path ENDS in `sha256` — the `pubspec.lock.sha256` sidecar
-      // this build writes beside the lockfile — followed by an ordinary word
-      // counted as a half-written claim and refused the whole group, while
-      // every other reader on that line found no claim at all.
+      // match `sha-?256\s+(\S+)` as a SUBSTRING of the line, while every other
+      // digest reader in this file — `_digestsByPath`,
+      // `_digestsAgreeWithinGroup`, `_restatedDigestsAgree` — reads claims with
+      // the `_digestClaimsIn` tokenizer, which accepts only a token that is
+      // entirely `_digestMarkerPattern`. The substring rule also broke this
+      // method's own header rule that merely mentioning the word is not a
+      // claim: a build input whose path ENDS in `sha256` — the
+      // `pubspec.lock.sha256` sidecar this build writes beside the lockfile —
+      // followed by an ordinary word counted as a half-written claim and
+      // refused the whole group, while every other reader on that line found
+      // no claim at all.
       //
       // The bound runs one way only: `_digestClaimsIn` can never read an
       // embedded marker as a claim, so relaxing this reader lets nothing

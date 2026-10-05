@@ -3033,3 +3033,109 @@ doc-nya salah; (c) DITUTUP oleh slice ini; (d) `rebuild_run` `:1834` dan
 `:1928` tetap bukan kandidat; (e) BARU — divergensi lintas-file sisa
 (inventaris checksum sprint `:461` ketat-terkunci vs grammar klaim
 manifest A-F): keputusan operator, jangan disamakan diam-diam.
+
+### Slice 117.43-47 - penolakan header menyebut field yang tidak terbaca
+(defect ke-42, hunt ke-42)
+
+PILIHAN KANDIDAT: dari daftar hunt ke-42, kandidat (a) diukur dan
+DITUTUP di slice ini: `_headerVerdictRefusal`
+(`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`
+`static` `:1037`, cabang "present but unreadable" `:1047`) membangun
+alasan `observed` dari REKAMAN decoder yang dikembalikan `_mapField`
+(`(present, ambiguous, value)`) alih-alih dari NAMA field yang sedang
+diiterasi loop. Dua cabang tetangga di loop yang SAMA memakai `$name`
+(`:1041` "stated under two keys that trim alike", `:1054` "states X
+while the evidence evaluates pass"), dan tiga penolak saudara
+(`_documentLimitsRefusal` `:1016`, `_documentVersionRefusal` `:1086`,
+`_canonicalStepRefusal` `:1126`) menyebut field dengan nama literal.
+Baris `:1047` satu-satunya outlier; ini bukan "pembaca hilang" (field
+memang dibaca) melainkan keluarga "observed tidak bisa membedakan" yang
+117.43-45 tutup satu tingkat di bawah: alasan penolakan harus
+mengidentifikasi klaim yang ditolaknya. Kandidat (b) `parseDigest`
+(`:450`, 0 pemanggil) TIDAK dihapus dari radar; (c) sudah ditutup
+117.43-46; (d) `rebuild_run` `:1834`/`:1928` tetap non-kandidat; (e)
+divergensi lintas-file inventaris checksum `:461` tetap keputusan
+operator.
+
+DEFECT (diagnostic, bukan verdict): `observed` untuk header yang
+nilainya tak terbaca diterbitkan sebagai
+`(ambiguous: false, present: true, value: 42) present without a readable
+verdict (int)` — dump bentuk record internal `_mapField` yang tidak
+pernah menyebut `status`/`decision`, dan yang BYTE-IDENTIK untuk kedua
+field itu kapan pun nilai tak-terbaca punya bentuk sama. Akibatnya
+operator tidak bisa tahu klaim mana yang menolak verdict, dan dua
+dokumen yang rusak di field berbeda tampil sebagai satu alasan yang
+sama. Tidak ada perubahan verdict: penolakan tetap `unmet` sebelum dan
+sesudah; yang diperbaiki adalah kemampuan bukti membedakan.
+
+ARAH: memperbaiki grammar pesan (nama field), bukan melonggarkan
+penolakan. Diverifikasi terukur lewat RED dulu.
+
+RED (test mendahului edit lib, tanpa swap blob): 3 test 117.43-47
+disisipkan byte-eksak di akhir
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart`
+(penutup `  );\n}\n`; file ini ber-CRLF penuh — 6956 `\r\n` — jadi blok
+ikut di-CRLF-kan, konvensi baris diperiksa per file). `--plain-name
+"117.43-47"` terhadap lib pre-fix = `+0 -3` exit 1; pesan kegagalan
+mengutip `Actual: '(ambiguous: false, present: true, value: 42) present
+without a readable verdict (int)'` — bukti langsung record bocor ke
+`observed`.
+
+FIX: `return '$field present without a readable verdict '` ->
+`return '$name present without a readable verdict '` (satu baris kode),
+plus perluasan doc-comment `_headerVerdictRefusal` yang mencatat batas
+baru. Tidak ada perubahan pada jalur evaluasi lain.
+
+GREEN: `--plain-name "117.43-47"` = `+3` All tests passed exit 0.
+
+JEBAKAN YANG DITEMUKAN SENDIRI DI RUN INI: menyunting file lib via
+Python `Path.read_text()/write_text()` MENGUBAH EOL LF->CRLF
+(90443 -> 92406 byte, CRLF 0 -> 1964). File lib ini ber-LF penuh.
+Pemulihan: `git show HEAD:<path> > cache/_head117.dart` (byte identik
+dengan disk pra-edit, keduanya LF), lalu terapkan penggantian
+byte-eksak pada bytes itu. Aturan: untuk file ber-LF, WAJIB edit pada
+`read_bytes()/write_bytes()`; `read_text` default newline translation
+merusak EOL. Diverifikasi ulang: lib `:1974` LF, CRLF 0.
+
+GATES: `dart format` write lalu `--output=none --set-exit-if-changed` =
+0 changed exit 0 (2 file; formatter hanya menyentuh blok test baru);
+`dart analyze` 2 file `No issues found!` exit 0; `git diff --check` rc
+0; scan non-Latin (python re kelas CJK/kana/hangul/fullwidth) +
+trailing whitespace pada 83 baris added = 0 dan 0; regresi DUA file
+provenance (117 + 113) dalam SATU run = `+241` All tests passed exit 0
+tanpa blok `Failing tests` (termasuk 3 test 117.43-47);
+`flutter build windows --debug` exit 0 (46,1 dtk).
+
+COMMITS: fix `bee811c` (2 file, numstat lib 11/1 + test 72/0 murni
+insert). ahead `git rev-list --count origin/master..HEAD`: preflight 0
+@ `8cebaee` -> sesudah fix = 1 (posisi pengukuran, bukan dikejar).
+Patch tool 0 pemakaian; semua edit python replace byte-eksak dengan
+assert count==1 atau pemotongan suffix per-offset. Tidak ada push pada
+run ini.
+
+SHA 4 sisi dari blob commit `bee811c` (bukan working tree):
+`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`
+= `396cccaf35f7c85790894e675d69b36cd7da928999d7dfe238a7f6b795a1b9b2`
+(91071 B, disk == blob). Test file ber-CRLF sehingga blob commit
+di-LF-kan oleh git: blob `f3b3790ff1aedae02b71f4ee41e6433a4da723da8382001c5b527f290812f808`
+vs disk `8708ac9fc9ba4453742d61c6a4712fdda9e63116268420ab0c07a0807567de53`
+(285849 B) — beda sha karena EOL, isi sama setelah normalisasi
+CRLF->LF (bukti 4 sisi untuk file CRLF diukur lewat `git show`,
+canonical).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed
+false, verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR
+117.43-02 masih menunggu keputusan drift manifest. Penomoran: slice
+117.43-47 = hunt ke-42 (defect ke-42).
+
+HUNT BERIKUTNYA ke-43 (probe dulu, jangan klaim sebelum ada baris
+hasil): (a) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart`
+`:450`) 0 pemanggil dan doc `sha256 <hex>` tidak cocok dengan pola
+`<hex> <path>` — kandidat utama; (b) DITUTUP oleh slice ini (pesan
+`:1047` kini bernama field); (c) `rebuild_run` `:1834`/`:1928` tetap
+non-kandidat; (d) divergensi lintas-file inventaris checksum `:461`
+ketat-terkunci vs grammar klaim manifest A-F = keputusan operator;
+(e) audit ulang setiap interpolasi pesan observed lain yang menyisipkan
+objek/record alih-alih nilai/nama (pola yang baru saja ditemukan) —
+periksa `observed` yang memuat `${...}` untuk memastikan ia mencetak
+nilai, bukan `runtimeType`/record internal.

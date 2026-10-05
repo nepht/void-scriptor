@@ -2584,3 +2584,125 @@ E1/E2 kemungkinan fail-closed, jangan dikutip fail-open tanpa probe);
 (c) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart:450`,
 definisi dengan 0 pemanggil) dan `summarised.firstMatch(member.key)`
 (sana :1818). Juga sisa dari -41: pembaca `rebuild_run` top-level.
+
+### Slice 117.43-43 - dua salinan restatement durasi yang tidak pernah dibandingkan satu sama lain (defect ke-38, hunt ke-38)
+
+DEFECT (fail-open, terbukti probe): durasi satu rebuild ditulis di dua
+tempat, yaitu baris ringkasan `provenance_record` dan member `rebuild_run`,
+dan masing-masing pembaca hanya mengukur salinannya ke `duration_seconds`
+rekaman dengan fallback ke jendela rekaman (117.43-36/-42). Ketika rekaman
+tidak men-state keduanya, KEDUA pembaca melewatkan perbandingannya dan tidak
+ada yang membandingkan dua salinan itu satu sama lain.
+`cache/probe_117_43_43_test.dart` dijalankan ulang di run ini: rekaman
+tanpa durasi maupun jendela + ringkasan `rebuild_a exit_code 0
+duration_seconds 999` + member `rebuild_a_duration_seconds: 888` = `pass`
+(probe P1), sementara kontrol rekaman berdurasi dengan ringkasan 999 =
+`unmet` (C4), pasangan yang sepakat = `pass` (C2), ringkasan saja = `pass`
+(C3), shipped = `pass` (C1). Lubang yang sama menyembunyikan dua baris
+ringkasan yang menyebut durasi berbeda untuk satu rebuild, serta key
+`rebuild_run` telanjang vs key ber-spasi (117.43-38 membuat keduanya
+terbaca, tapi masing-masing diukur ke rekaman saja).
+
+TDD. Lima test 117.43-43 DITULIS DULU lewat sisip byte-eksak di EOF (anchor
+`data.endswith('}\r\n')`, badan CRLF, dua assert: endswith dan jumlah
+anchor == 1). RED `flutter test <file> --plain-name "117.43-43"` terhadap
+lib yang belum disentuh = `+2 -3` dengan blok `Failing tests:` persis tiga
+test (tiga asersi defect gagal `Expected unmet / Actual pass`, dua kontrol
+lulus). FIX di commit `00ba6d2`: (1) tokenizer ringkasan di domain dibuka
+sebagai API publik (`RebuildSummary` + `BuildProvenanceEvidence
+.rebuildSummariesIn`) supaya gate memakai GRAMMAR yang sama, bukan
+pembacaan kedua atas baris yang sama; (2) helper baru
+`_restatedDurationConflict(provenanceRecord, rebuildRun)` mengumpulkan
+setiap durasi tertulis per label dan menolak begitu dua angka berbeda
+menyebut satu rebuild; (3) helper dipanggil SETELAH
+`BuildProvenanceEvidence.evaluate` pass - versi pertamanya dipanggil
+sebelumnya dan mengambil alih pesan observed dua test lama (117.43-36 dan
+117.43-42 tetap `unmet`, tapi `expect(check.observed, contains(
+'provenance_record'))` gagal dengan pesan baru); status keduanya tidak
+berubah, hanya urutan pesan, jadi cross-check dipindah ke jalur setelah
+evaluasi lama, bukan pesannya diubah. Ketiadaan tetap bukan klaim
+(117.43-07): SATU restatement di samping rekaman sunyi tetap pass.
+
+AMENDEMEN TEST -42 (dibaca ulang, bukan diam-diam): test `117.43-42 a
+record stating neither duration nor window leaves nothing for a restatement
+to contradict` memakai manifest shipped yang MASIH membawa
+`rebuild_a_duration_seconds: 145`, jadi test itu mem-preserve bentuk defect
+ini (ringkasan 999 vs member 145) di bawah label "nothing to contradict".
+Diamendemen dengan sisip byte-eksak: member itu dihapus dari manifest test
+dan komentar alasan disisipkan, sehingga yang tersisa benar-benar SATU
+restatement di samping rekaman sunyi (tetap pass, tetap maksud semula
+test). Pelajaran: kepatuhan satu test lama bukan bukti kebenaran perilaku
+yang dipinnya - baca manifest yang dikutipnya.
+
+GATES: `dart format` (write, lalu `--output=none --set-exit-if-changed` =
+0 changed exit 0; format hanya menyentuh kode baru di file sprint, numstat
+domain tidak berubah); `dart analyze` 3 file = `No issues found!` exit 0;
+`git diff --check` rc 0; scan non-Latin + trailing whitespace pada 269
+baris added = 0 hit. GREEN `--plain-name "117.43-43"` = `+5 All tests
+passed` exit 0. Regresi file gate penuh = `+211 All tests passed` exit 0
+(206 lama + 5 baru). File 113 provenance solo = `+13 All tests passed`
+exit 0 (termasuk `113.39 dependency lock evidence matches the live
+lockfile` dan `113.39 signed release artifact from 113.38 remains
+intact`). `flutter build windows --debug` exit 0 (72,9 dtk) dengan
+`data/flutter_assets` mtime 2026-10-05 13:38:13 (exe statis tidak
+dihitung). Roadmap guard PASS pre-run dan post-state (canonical
+`b7ef2d35` tidak berubah).
+
+SHA 4 sisi dari blob commit `00ba6d2` (bukan working tree):
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart` =
+`b27e6dafce1c336614ea5b44d73757c584cd147c370033df1b8508fd830ce8cd`
+(77004 B, disk == blob);
+`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`
+= `adcf25bf40dc96658692cb2139930628793136af3b0835f0da8da621f4a0b2a8`
+(89565 B, disk == blob). Test
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` =
+`2de0436fe6675f279cdfff8af22fddc84cbbb2a1bb1204b414394af560c76f22`
+(blob 266112 B; disk 272824 B CRLF dinormalkan CRLF->LF == blob, sesuai
+konvensi file test repo ini). Numstat commit: 269/9 (domain 20/8, sprint
+90/1, test 159/0). ahead 5 diukur dengan
+`git rev-list --count origin/master..HEAD` tepat setelah commit fix; tiap
+commit berikutnya pada run ini menambah satu. Patch tool 0 pemakaian;
+semua edit python replace dengan `assert count == 1`. Tidak ada push pada
+run ini (pola -35..-42).
+
+PROBE YANG DIADOPSI: `cache/probe_117_43_43_test.dart` sudah ada di
+working tree (mtime 2026-10-05 12:25, penulis sebelumnya tidak
+meninggalkan commit; tidak ada proses dart/flutter hidup saat dicek).
+Diadopsi sesuai otorisasi WIP kanonik, dijalankan, hasilnya dikutip di
+baris ini, temuannya dipindahkan ke lima test resmi, lalu file probe
+DIHAPUS (pencatatan penghapusan ada di sini, sesuai syarat adopsi).
+
+PELAJARAN: (1) keluarga hunt bertambah satu lapis - bukan hanya "dua
+pembaca dengan tokenizer beda" (-23) atau "dua pembaca saling
+meniadakan" (-27), tapi "dua pembaca yang masing-masing diukur ke SATU
+referensi bersama": kalau referensi itu diam, keduanya diam serentak dan
+dua klaim yang saling bertentangan lolos. Tambahkan pertanyaan ini ke
+hunt: kalau referensi ukur sebuah klaim hilang, apakah masih ada
+pembanding antar-klaim yang tersisa? (2) Cross-check baru yang dipanggil
+SEBELUM jalur evaluasi lama mengambil alih pesan observed test lama
+walau statusnya sama - perbaiki urutannya (setelah jalur lama pass),
+jangan ubah atau longgarkan pesan bukti test lama. (3) Sebelum
+menjadikan test lama sebagai jangkar yang benar, baca MANIFEST yang
+dipakainya; test -42 memakai manifest shipped penuh yang kebetulan masih
+membawa sibling restatement sehingga mengunci bentuk defect.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02
+masih menunggu keputusan drift manifest. Penomoran: slice 117.43-43 =
+hunt ke-38 (nomor slice tidak sama dengan urutan hunt, lihat catatan
+slice_numbering).
+
+HUNT BERIKUTNYA ke-39 (probe dulu, jangan klaim sebelum ada baris hasil):
+(a) `_hasWellFormedDigestClaims` (`build_reproducibility_provenance.dart`
+def di :1339) masih regex substring sendiri, bukan tokenizer
+`_digestClaimsIn` (keluarga -23); arah yang terlihat dari pembacaan kode
+adalah fail-closed over-refusal (token yang berakhir `sha256` lalu nilai
+non-hex, misal `checksum_sha256 published`) - ukur dulu sebelum menyebut
+fail-open. (b) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart`
+:450) tetap definisi dengan 0 pemanggil. (c) nilai `verdict` tidak
+di-trim di :1337-1340 (`' BIT_IDENTICAL '` -> null -> unmet) padahal
+nilai `status`/`decision` di-trim - arah fail-closed; bandingkan
+perlakuan nilai lain sebelum dikutip. (d) pembaca key `rebuild_run`
+`:1834` (sudah trim, `firstMatch` pada pola ter-anchored) dan duplikat
+pola yang sama di helper baru `:1928` - sengaja satu grammar, bukan
+kandidat defect.

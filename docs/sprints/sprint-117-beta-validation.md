@@ -2504,3 +2504,83 @@ perlakukan sebagai pelengkap, bukan setara.
 `^...$` dengan `(\S+)`: path yang mengandung spasi jatuh ke `malformed` dan
 tetap dihitung, jadi fail-closed dan memang sengaja - jangan dikutip sebagai
 fail-open.
+
+### Slice 117.43-42 - durasi ringkasan tanpa jendela diukur ke jendela rekaman (defect ke-37, hunt ke-37)
+
+DEFECT. `_summaryDurationAgrees`
+(`lib/features/world_logic/domain/build_reproducibility_provenance.dart`,
+cabang `summaryStart == null || summaryFinish == null`) mengukur durasi
+yang dinyatakan ringkasan ke dua hal: `duration_seconds` rekaman (sejak
+117.43-36) dan jendela yang DITULIS ULANG di baris ringkasan (sejak
+117.43-37/-36). Ketika rekaman TIDAK punya `duration_seconds` DAN baris
+ringkasan menulis durasi TANPA mengulang jendela, fungsi return true
+sebelum angka mana pun dibandingkan - padahal rekaman itu sendiri masih
+mencatat `started_at`/`finished_at`, jadi jendela 145 detik tetap ada dan
+itu satu-satunya pengukur tersisa dari detik yang diklaim baris itu.
+Saudaranya di gate, `_rebuildRunAgrees`
+(`sprint_117_ga_artifact_reproducibility.dart:1840-1847`), jatuh ke
+jendela rekaman tepat pada bentuk ini; dua pembaca SATU klaim berbeda
+perlakuan. Bukti probe (kandidat (a) dari catatan run -41): rekaman tanpa
+durasi dengan jendela 145 dtk + ringkasan `rebuild_a exit_code 0
+duration_seconds 999` tanpa jendela = pass; ringkasan yang sama DENGAN
+jendela jujur = unmet; `rebuild_run` top-level 999 = unmet. Satu angka
+999 ditolak hanya kalau barisnya mengulang fakta yang sudah ada di
+rekaman, lolos kalau tidak - fail-open restatement keluarga -23/-29/-36.
+
+TDD. Test 117.43-42 (4 test) DITULIS DULU lewat sisip byte-eksak di EOF
+(anchor `  });\r\n}\r\n`, assert `endswith` + `count==1`, sisip setelah
+penutup group terakhir - jebakan rfind dari catatan run -41 dipatuhi),
+numstat 122/0 dan `git diff -U0` tanpa baris `-`, non-Latin 0 hit.
+`flutter test ... --plain-name "117.43-42"` terhadap lib tak tersentuh =
+1 gagal (Expected `unmet`, Actual `pass`, baris 6485) + 3 kontrol lulus,
+sehingga RED membuktikan cacat pada file yang benar tanpa swap blob.
+FIX: parse `start`/`finish` rekaman dihoist di atas cabang; pada cabang
+jendela-ringkasan-absen, bila `stated != null && recorded == null` dan
+kedua timestamp ada, kembalikan `stated == window length`; jendela
+rekaman yang absen tetap "tidak ada yang membantah" (117.43-07), dan
+rekaman ber-jendela tidak-terbaca sudah ditolak `hasWellFormedWindow`
+sebelum fungsi ini. Kalimat komentar 117.43-37 yang kini setengah salah
+("dua angka di atas adalah satu-satunya ukuran") ditulis ulang, dan
+doc-comment fungsi diberi paragraf 117.43-42. Sisi rekaman TIDAK disentuh:
+durasi rekaman vs jendela rekaman tetap diukur di
+`_windowsArePairwiseIndependent` (`sprint_...dart:1724-1728`).
+
+GATES. `dart format` write lalu `--output=none --set-exit-if-changed` =
+0 changed exit 0 (format hanya menyentuh lib/blok sendiri: numstat test
+TETAP 122/0, deleted tetap 0). `dart analyze` 2 file = `No issues found!`
+exit 0. `git diff --check` rc 0 (warning CRLF->LF file test = normal).
+Scan non-Latin pada baris added: lib 30 = 0 hit, test 122 = 0 hit,
+trailing whitespace 0. GREEN `--plain-name "117.43-42"` =
+`+4 All tests passed` exit 0. Regresi 2 file (gate 117 + file 113) =
+`+219 All tests passed!` exit 0 tanpa blok `Failing tests:` (215 baris
+lama + 4 test baru). `flutter build windows --debug` exit 0, 22,2 dtk,
+bukti mtime `build/windows/x64/runner/Debug/data/flutter_assets` =
+2026-10-05 10:17:19 (exe statis tidak dihitung). Guard PASS pre-run
+dengan canonical_sha256 b7ef2d35.
+
+COMMIT fix `bd2cc7c` (2 path eksplisit, 152 insertions / 3 deletions),
+ahead 62 diukur dengan `git rev-list --count origin/master..HEAD`.
+SHA dari blob commit `bd2cc7c` (bukan working tree):
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart` =
+`b3be00397bd7f08a3aeaf9764db3ba4fb9372e7500392d4232b8d2074e0d0a8f`
+(76317 B, disk == blob). Test
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` =
+`57accbacd40bcf2f619b7081a1ef5a51e936a133cff03526ca5c10d27186c338`
+(blob 259017 B; disk 265570 B CRLF dinormalkan CRLF->LF == blob, sesuai
+konvensi file test repo ini). Numstat: lib 30/3, test 122/0 (murni
+insert). Patch tool 0 pemakaian; semua edit python `str.replace` dengan
+`assert count == 1`. Tidak ada push pada run ini (pola -35..-41).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR
+117.43-02 masih menunggu keputusan drift manifest. Penomoran: slice
+117.43-42 = hunt ke-37 (nomor slice ≠ urutan hunt, lihat catatan
+slice_numbering).
+
+HUNT BERIKUTNYA ke-38 (kandidat sisa dari catatan run -41, probe dulu):
+(b) `_hasWellFormedDigestClaims` (:1234) masih regex substring sendiri,
+bukan tokenizer `_digestClaimsIn` (keluarga -23; arah yang terlihat
+E1/E2 kemungkinan fail-closed, jangan dikutip fail-open tanpa probe);
+(c) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart:450`,
+definisi dengan 0 pemanggil) dan `summarised.firstMatch(member.key)`
+(sana :1818). Juga sisa dari -41: pembaca `rebuild_run` top-level.

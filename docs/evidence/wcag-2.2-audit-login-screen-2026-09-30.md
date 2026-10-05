@@ -4705,6 +4705,38 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 - Batasan keputusan Choirudin (opsi 1-3 fase 86) tetap tertunda: (1) perluas ke widget non-`*_screen.dart` (24 kandidat), (2) turunkan ambang jadi ">= 1 stop" plus audit affordance back, (3) berhenti sampai layar interaktif baru muncul.
 - Catatan mekanis: file report ini terbukti LF (0 byte CRLF); penyisipan memakai mode `newline=''` sehingga ending yang ada dipertahankan (asumsi "pertahankan CRLF" di instruksi run tidak berlaku untuk file ini).
 
+## 89. Fase 89 - Re-verifikasi independen kolam kandidat + probe live 2 layar non-glob (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` yang memenuhi kriteria pemilihan (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order yang dibuat, tidak ada kode produksi yang diubah, probe sementara sudah dihapus. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Metode (berbeda dari fase 86-88, empat penyaringan independen):**
+
+1. **Import-graph** (bukan pencarian nama kelas di dalam test): 76 file `test/**/*_focus_order_test.dart` dibaca, seluruh `import 'package:void_scriptor/...'` dikumpulkan. Hasil: dari 95 file `lib/**/*_screen.dart`, 65 di-import oleh kontrak fokus; in-glob `lib/features/*/presentation/*_screen.dart` = 89 file -> **61 berkontrak, 28 tanpa**; ditambah 2 layar non-glob tanpa kontrak (`app/routing/foundation_route_screen.dart`, `core/plugin/presentation/plugin_manager_screen.dart`) -> **30 file tanpa kontrak** (angka 28 in-glob identik dengan fase 86-88).
+2. **Scan token handler mentah**: regex `on[A-Z]\w*\s*:` pada isi file dengan baris komentar dipisahkan -> **0 dari 30 file** punya satu pun token handler di luar komentar. Bukan cuma `onTap`/`onPressed` yang nol - `on[A-Z]` bentuk apa pun nol, jadi hasilnya bukan artefak pilihan regex.
+3. **Resolusi widget child eksternal**: kelas yang diinstansiasi oleh 30 layar dicocokkan ke definisinya di seluruh `lib/**/*.dart`, lalu kelas definisi itu di-scan untuk handler non-null -> **0 hit**. Tidak ada layar sisa yang menyembunyikan interaktivitas di widget luar file.
+4. **Basis git untuk angka live fase 88**: `git log --oneline f7ee6dd..HEAD -- lib/` = kosong (0 commit), `git status --porcelain -- lib` = kosong -> tree `lib/` byte-identik dengan basis pengukuran live fase 88, sehingga distribusi 21 layar `leaf=1` + 6 layar `leaf=0` masih berlaku tanpa re-probe ulang.
+
+**Probe live baru (satu-satunya angka yang belum pernah diukur fase mana pun):** fase 88 hanya memompa layar in-glob, sehingga 2 layar non-glob di atas belum pernah dipompa. Probe sekali pakai `test/_probe_focus_test.dart` (viewport 1536x1024, dpr 1.0, layar didorong lewat `MaterialPageRoute` supaya affordance back ikut terukur, `LogicalKeyboardKey.tab` maksimal 16 kali, loop berhenti saat Rect berulang, label = `Text` non-Icon pertama) dijalankan lalu **DIHAPUS** setelah hasil dibaca:
+
+- `flutter test test/_probe_focus_test.dart` -> `All tests passed!` (2 tests), exit 0.
+- `FoundationRouteScreen` -> `raw=1 leaf=0 :: LIBRARY@0,0 1536x1024`. Satu-satunya entri = rect viewport penuh dari `FocusScopeNode` root; layar ini tanpa AppBar sehingga tidak ada tombol back, dan tidak ada satu pun kontrol yang bisa difokus.
+- `PluginManagerScreen` -> `raw=1 leaf=1 :: <non-text>@8,8 40x40` = tombol back AppBar. `ListTile` di dalamnya tanpa `onTap` sehingga tidak masuk rantai fokus - bukti langsung bahwa keberadaan `ListTile` bukan ukuran interaktivitas.
+- Keduanya `tester.takeException()` null dan keduanya di bawah ambang `>= 2 stop` / `>= 2 elemen interaktif` -> tetap tidak eligible.
+
+**Kandidat terdekat dan alasan ditolak:**
+
+- `features/creatures/presentation/creature_workspace_screen.dart` -> 5 `ListTile`, **semuanya tanpa `onTap`/`onPressed`** (0 token handler), dan pemompaannya butuh fixture `projectSessionProvider` + `creatureWorkspaceProvider(creatureId)` -> tertolak dua kali (tidak interaktif + fixture).
+- `features/marketplace/presentation/marketplace_home_screen.dart` dan `features/release/presentation/discovery_home_screen.dart` -> masing-masing hanya punya `ListTile` + `Chip`, 0 handler.
+- `features/workflow/presentation/automation_center_screen.dart` -> file ini memuat 3 kelas layar: `RuleEditorScreen` dan `AutomationTemplatesScreen` **sudah berkontrak** (`test/features/workflow/presentation/rule_editor_focus_order_test.dart`, `automation_templates_focus_order_test.dart`), sedangkan `AutomationCenterScreen` sendiri 0 handler (`Switch(onChanged: null)` di `automation_center_screen.dart:49` + `ListTile` tanpa `onTap` di `:42`).
+
+**Gate & negative control:**
+
+- `flutter test test/features/workflow/presentation/` -> `All tests passed!` (11 tests), exit 0 - region yang dianalisis run ini.
+- **Negative control: TIDAK DIJALANKAN** - tidak ada file kontrak yang dibuat sehingga tidak ada ekspektasi untuk dimutasi; alasan sama dengan fase 80/81/83/88. Ini bukan pass dan bukan fail.
+- `dart format` / `dart analyze` kontrak: N/A karena tidak ada kontrak. `dart format`/`dart analyze` pada probe tidak dijadikan bukti karena file itu dihapus.
+
+**Status:** 61/89 layar in-glob berkontrak focus order; 28 sisanya display-only (0 handler); 2 layar non-glob display-only kini ikut ter-probe live. Kolam kandidat in-glob = **0**, pengesahan ke-9 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89). Keputusan Choirudin atas opsi 1-3 fase 86 (perluas audit ke 24 widget non-`*_screen.dart` / turunkan ambang jadi `>= 1 stop` + audit affordance back / hentikan audit sampai ada layar interaktif baru) masih tertunda.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

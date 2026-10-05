@@ -5144,6 +5144,67 @@ Karena tidak ada kontrak yang dibuat, tidak ada ekspektasi kontrak untuk dimutas
 - Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
 - Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop`, (2) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel), atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-18.
 
+## 99. Fase 99 - Re-verifikasi independen kolam kandidat + probe live ExecutionMonitorScreen (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` tanpa kontrak yang memenuhi kriteria pemilihan run (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order baru yang dibuat, tidak ada file probe yang tersisa di tree, dan tidak ada kode produksi yang diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** HEAD `91bf1e4` (`91bf1e4d1b5c21a1cd2ea3956cce8f4b94b0c7d0`, commit fase 98). `git status --short` saat langkah 1 hanya menunjukkan file milik sibling (`docs/evidence/sprint-117-35-manifest-20261002.json`, `docs/evidence/sprint-117-36-manifest-20261002.json`, 9 file `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) - tidak ada yang disentuh, tanpa `git add -A`. Setelah probe dihapus, `git status --porcelain -- lib test` hanya menunjukkan satu entri milik sibling (`?? test/core/security/presentation/`); folder `lib/` bersih dan tidak ada sisa `_*_focus_test.dart`.
+
+### Pemilihan layar
+
+Dari 29 layar tanpa kontrak, run ini memilih `lib/features/workflow/presentation/execution_monitor_screen.dart` (`ExecutionMonitorScreen`): constructor `const` murni (snapshot in-memory, tanpa database/provider/network), `Scaffold` + `AppBar` sendiri, dan satu `ListTile` pada baris 25. Fase 95 menyebut layar ini sebagai satu-satunya "kandidat tersisa" bila ambang kontrak diturunkan ke `>= 1 stop`, sehingga di-probe ulang secara independen pada run ini.
+
+### (a) Scan kandidat independen, dijalankan dari nol di HEAD 91bf1e4 (4 metode + 1 kontrol)
+
+1. **Primary-class census:** nama kelas primer diturunkan dari stem filename (`execution_monitor_screen.dart` -> `ExecutionMonitorScreen`); layar dihitung berkontrak hanya jika kelas primer itu benar-benar diinstansiasi oleh sebuah `test/**/*_focus_order_test.dart`. Hasil: **89 layar in-glob -> 60 berkontrak / 29 tanpa kontrak** — identik fase 96, 97, dan 98.
+2. **Token handler `on[A-Z]\w*[:=]` setelah strip komentar:** di seluruh 29 file hanya **4 token**, semuanya di `automation_center_screen.dart`. Kepemilikan diverifikasi per baris: baris 49 `onChanged: null` = `AutomationCenterScreen` (Switch disabled), baris 159 `onChanged` + 165 `onPressed` = `_RuleEditorScreenState`, baris 202 `onTap` = `AutomationTemplatesScreen` — tiga kelas terakhir sudah punya kontrak sendiri. **28 file lain = 0 token**, dan token non-null milik kelas primer = **0**.
+3. **Token widget fokus SDK** (daftar 37: TabBar, TabBarView, NavigationBar, NavigationRail, BottomNavigationBar, ExpansionTile, ExpansionPanel, Stepper, ReorderableListView, SegmentedButton, ToggleButtons, DropdownMenu, PopupMenuButton, SearchAnchor, Autocomplete, CheckboxListTile, SwitchListTile, RadioListTile, Slider, TextField, TextFormField, EditableText, InkWell, GestureDetector, IconButton, TextButton, ElevatedButton, OutlinedButton, FilledButton, ActionChip, FilterChip, InputChip, DropdownButton, ListTile, Chip, Switch, Checkbox, Radio, Shortcuts, Actions): di 29 layar hanya menghasilkan **`ListTile` (9 file)** dan **`Chip` (2 file)**, semuanya tanpa handler; **0 kemunculan TextField/TabBar/NavigationBar/Slider/InkWell/IconButton/dll.**
+4. **Stabilitas basis:** `git diff --name-status 85ccb56..HEAD -- 'lib/features/**/*_screen.dart'` = **kosong**, sehingga byte layar identik dengan basis scan fase 97 dan 98.
+5. **Kontrol positif detektor** (bukti detektor tidak buntu): `lib/features/authentication/presentation/login_screen.dart` -> **15 token handler** + widget fokus `TextFormField`, `IconButton`, `TextButton`, `FilledButton`.
+
+### (b) Probe live ExecutionMonitorScreen (Flutter 3.44.9, viewport 1536x1024, dpr 1.0)
+
+Probe sekali pakai `test/features/workflow/presentation/_probe_focus_test.dart` (DIHAPUS setelah hasil dibaca): fixture `WorkflowMonitorSnapshot(executions: [WorkflowMonitorEntry(executionId: 'exec-1', state: 'running', completedSteps: 2, totalSteps: 5)])`, layar didorong lewat `MaterialPageRoute` dari launcher agar affordance back ikut terukur, `LogicalKeyboardKey.tab` maksimal 16 kali, loop berhenti ketika Rect + label berulang, label = `Text`/`EditableText` leluhur pertama (fallback `widget:<debugLabel>`), rect = `localToGlobal(Offset.zero) & size` dari render object fokus.
+
+- `flutter test test/features/workflow/presentation/_probe_focus_test.dart` -> **`All tests passed!`**, exit 0.
+- **`PROBE_STOP[0] label=widget:_ModalScopeState<dynamic> Focus Scope rect=Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0)`** — focus scope route, bukan kontrol.
+- **`PROBE_STOP[1] label=widget:FocusNode rect=Rect.fromLTRB(8.0, 8.0, 48.0, 48.0)`** — tombol back `AppBar` (40x40 di kiri-atas).
+- `PROBE_REPEAT at i=2 key=Rect.fromLTRB(8.0, 8.0, 48.0, 48.0)|widget:FocusNode`
+- **`PROBE_EXECUTION_MONITOR_STOP_COUNT=2`**, **`PROBE_EX=null`**.
+
+Interpretasi: **1 stop leaf** (tombol back) + 1 focus scope root. `ListTile` baris 25 tidak punya `onTap` sehingga tidak menghasilkan stop; tidak ada kontrol lain di layar ini. Leaf stop = 1 < ambang `>= 2`, sehingga tidak ada kontrak yang bisa dibuat.
+
+**Temuan toolchain (dari dua kegagalan kompilasi probe):** di Flutter 3.44.9 `Element.parent` dan `Element.visitAncestor` **tidak ada** — compiler melaporkan `The getter 'parent' isn't defined for the type 'Element'` lalu `The method 'visitAncestor' isn't defined for the type 'Element'`. Pekerjaan probe focus order yang menelusuri leluhur widget HARUS memakai `BuildContext.visitAncestorElements`. Metode yang lolos kompilasi dan dipakai untuk hasil di atas: loop `el.visitAncestorElements((c) { next = c; return false; })`.
+
+### (c) Negative control (LANGKAH 6): ekspektasi salah dipastikan gagal
+
+Karena tidak ada kontrak yang dibuat, tidak ada ekspektasi kontrak untuk dimutasi; sebagai gantinya satu ekspektasi sengaja dipalsukan di dalam file probe (`expect(stops, hasLength(5))`, tanpa backup `cp` karena file itu memang probe sementara yang dihapus setelah control) lalu dijalankan:
+
+- `flutter test ..._probe_focus_test.dart --plain-name "probe: ExecutionMonitorScreen focus stops"` -> **`Some tests failed.`**, **exit 1** (`FLUTTER_EXIT=1`).
+- Bukti kegagalan: `Expected: an object with length of <5>` / `Actual: [...]` / `Which: has length of <2>` / `00:01 +0 -1: probe: ExecutionMonitorScreen focus stops [E]`.
+- Setelah kontrol dibaca, baris itu dihapus dan file probe dihapus; tidak ada backup yang tertinggal.
+
+### Gate dan bukti
+
+- `flutter test test/features/workflow/` -> **`All tests passed!` (27 tests)**, `GATE_EXIT=0` (2026-10-05).
+- `dart format` / `dart analyze` kontrak: **N/A** - tidak ada file kontrak `.dart` yang dibuat; file probe sudah dihapus sebelum gate dan `ls test/features/workflow/presentation/` hanya menunjukkan 3 file kontrak lama (`automation_templates_`, `rule_editor_`, `workflow_library_`).
+- **Negative control kontrak TIDAK DIJALANKAN** (alasan sama fase 80, 81, 83, 86-98: tidak ada kontrak untuk dimutasi); kontrol pada butir (c) menggantikannya dan tetap membuktikan ekspektasi yang salah selalu gagal.
+- `git add --` pathspec-scoped hanya laporan ini; tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi **LF murni** (`CRLF=0`, 5278 baris) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
+### Temuan baru (dilaporkan, TIDAK diperbaiki)
+
+- **Dead affordance di `ExecutionMonitorScreen`** (`lib/features/workflow/presentation/execution_monitor_screen.dart:25-31`): `ListTile` menampilkan `LinearProgressIndicator` progres eksekusi + `trailing` rasio step, tetapi tanpa `onTap` sehingga baris tidak menerima fokus keyboard sama sekali. Pola yang sama dengan `AboutScreen` (fase 97) dan `MarketplaceHomeScreen` (fase 98); perbaikan berarti menambahkan handler + tujuan detail (keputusan desain Choirudin), jadi tidak dikerjakan secara spekulatif.
+- `ExecutionMonitorScreen` juga satu-satunya dari 29 layar tanpa kontrak yang punya `Scaffold`/`AppBar` sendiri, sehingga satu-satunya yang menyumbang stop leaf (tombol back) — tetap di bawah ambang 2.
+
+### Kesimpulan
+
+- **Status audit: 60/89 layar in-glob berkontrak focus order; 29 sisanya display-only dan 29/29 sudah terukur live (stops = 0, 1, atau 1 leaf + scope).** Kolam kandidat dengan minimal 2 elemen interaktif = **0**; pengesahan ke-18 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97, 98, 99).
+- Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
+- Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` — kandidat `ExecutionMonitorScreen` kini terukur live **1 leaf stop**, jadi kontrak bisa dibuat begitu keputusan itu turun, (2) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel), atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-19.
+
 
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 

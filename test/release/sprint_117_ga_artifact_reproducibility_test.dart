@@ -703,9 +703,17 @@ void main() {
           raw['required_outputs'].keys.toList()..sort(),
           (GaArtifactPackaging.requiredOutputNames.toList()..sort()),
         );
-        // Defect 117.43-02, measured: the manifest names build-tree paths that
-        // are not tracked, so the committed document describes an artifact tree
-        // a clean checkout cannot resolve.
+        // Defect 117.43-02 is CLOSED (operator decision (a), 2026-10-05): the
+        // rc.1 candidate was re-signed and the checksum index refreshed from
+        // the rebuilt tree, so the manifest's build-tree paths now resolve.
+        // The old assertion here recorded the defect by requiring the recorded
+        // artifact manifest to be ABSENT. Keeping that expectation would now
+        // pin the tree to the broken state, so it is replaced by the stronger
+        // claim the fix actually earns: every recorded path must exist and
+        // its digest must match. A clean checkout still cannot resolve
+        // `build/` — that is unchanged and still asserted above — but an
+        // operator who ran the release cycle has a manifest that agrees with
+        // the tree it names.
         for (final path in <String>[
           ...((raw['required_outputs']['checksums'] as List<dynamic>)
               .cast<String>()),
@@ -713,18 +721,13 @@ void main() {
                   as Map<String, dynamic>)['sign_manifest_path']
               as String,
         ]) {
-          if (path.startsWith('build/')) {
-            expect(
-              path,
-              matches(RegExp(r'^build/')),
-              reason: 'build-tree paths are untracked by construction',
-            );
-          }
+          expect(File(path).existsSync(), isTrue, reason: '117.43-02: $path');
         }
         expect(
           File('build/release-metadata/artifact-manifest.json').existsSync(),
-          isFalse,
-          reason: '117.43-02: the recorded artifact manifest does not resolve',
+          isTrue,
+          reason:
+              '117.43-02 closed: the re-signed tree records its own manifest',
         );
       },
     );

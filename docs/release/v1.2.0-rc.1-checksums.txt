@@ -1,6 +1,6 @@
 # Void Scriptor 1.2.0-rc.1 GA candidate checksums (SHA-256)
-# source_revision: 1025121f62510dd6e05befad92283245111d18b1
-# regenerated: 2026-10-04 by sprint 113.39 re-verification (deterministic /Brepro rebuild, re-signed local self-signed certificate)
+# source_revision: 9affcd105075af0dcc473d3c444db84cbd2a2925
+# regenerated: 2026-10-05 by operator-approved (a) re-sign rc.1 (flutter clean + build windows --release + self-signed Authenticode)
 # signed_artifacts: 6 exe/dll Authenticode-SHA256, thumbprint E336967CB949B489B7FE320E80683780C00C4A8A, CurrentUser Root store only
 84534ad09ce5a7f4ab77af29b8fcf4edffc49c4e405f069dc8d35bafbd9a671a  build/windows/x64/runner/Release/dartjni.dll
 d6aad7d36d9c2fb2603914c966859776d2862b96cf6119376b6ade09469bab0b  build/windows/x64/runner/Release/data/app.so

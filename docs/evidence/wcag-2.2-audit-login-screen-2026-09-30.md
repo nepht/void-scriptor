@@ -5032,6 +5032,64 @@ Karena tidak ada kontrak, tidak ada ekspektasi yang bisa dimutasi. Sebagai ganti
 - Probe dan control file sudah dihapus; run ini hanya menyentuh laporan ini (file WIP sibling tidak disentuh, `git add` pathspec-scoped).
 - Karena DEFERRED, tidak ada commit kontrak; negative control kontrak tetap terbukti pada run-run sebelumnya dan control run di atas mempertahankan bukti bahwa ekspektasi salah selalu gagal.
 
+## 97. Fase 97 — Re-verifikasi kolam kandidat independen + probe live AboutScreen (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** — kolam kandidat in-glob masih 0, sehingga tidak ada kontrak focus order baru yang dibuat, tidak ada file probe yang tersisa di tree, dan tidak ada kode produksi yang diubah. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** HEAD `85ccb56` (`85ccb56461e08e2835b2d1d9cfb266ba0b1d909f`). `git status --short` saat langkah 1 hanya menunjukkan file milik sibling (`docs/evidence/sprint-117-35-manifest-20261002.json`, 9 file `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) — tidak ada yang disentuh, tanpa `git add -A`.
+
+### Pemilihan layar
+
+Dari 29 layar tanpa kontrak, layar dengan affordance paling kaya dipilih untuk probe live: `lib/features/platform/presentation/about_screen.dart` (`AboutScreen`) — 4 `ListTile` dengan `leading` ikon dan `trailing: Icons.chevron_right` (baris 68-77) plus `AppBar`. Secara statis ia satu-satunya layar non-workflow yang tampak punya beberapa "aksi"; probe menentukan status sebenarnya di bawah.
+
+### (a) Scan kandidat independen, dijalankan dari nol (4 metode + 1 kontrol)
+
+1. **Instansiasi kelas** (nama kelas layar yang benar-benar dipompa oleh sebuah `test/**/*_focus_order_test.dart`, bukan import-graph): 89 layar in-glob -> **60 berkontrak / 29 tanpa kontrak** — identik koreksi sensus fase 96 (`rule_editor_focus_order_test.dart` meng-import `automation_center_screen.dart` tetapi hanya memompa `RuleEditorScreen`).
+2. **Token handler `on[A-Z]\w*[:=]` setelah strip komentar**, di 29 file: hanya SATU file yang punya token, `automation_center_screen.dart` (4 token). Kepemilikan per kelas diverifikasi baris per baris: `onChanged: null` baris 49 = `AutomationCenterScreen` (Switch disabled, bukan stop fokus); `onChanged` baris 159 dan `onPressed` baris 165 = `_RuleEditorScreenState`; `onTap` baris 202 = `AutomationTemplatesScreen` — tiga kelas terakhir sudah punya kontrak sendiri. **28 file lain = 0 token handler.**
+3. **Token widget interaktif** dengan daftar diperluas (termasuk `FilledButton`, `ActionChip`, `PopupMenuButton`, `DropdownMenu` yang lolos dari regex run sebelumnya): hit berarti hanya `ListTile` (10 file — 9 di antaranya tanpa `onTap` sama sekali, satu lagi `automation_center_screen.dart` yang `onTap`-nya milik `AutomationTemplatesScreen`), `Chip` non-fokus (2 file), dan string teks `'Shortcuts'` (bukan widget). `splash_screen.dart` = **false positive dua-duanya**: `Listener(` berasal dari `addStatusListener(` / `removeStatusListener(` (method `AnimationController`), `Semantics(` = `label/image` logo non-fokus. `automation_center_screen.dart` = token milik kelas saudara seperti pada butir 2.
+4. **Resolusi kelas child eksternal 2 level:** untuk setiap `Name(` yang terinstansiasi di 29 file -> resolusi ke definisi `class Name` di `lib/**` (1483 file Dart, 3991 kelas terindeks) -> **0 kelas terdefinisi yang berisi token handler atau widget interaktif**. Nama yang tidak terdefinisi di repo semuanya widget SDK Flutter / tipe inti (Align, AppBar, Card, Chip, Column, Container, FilledButton, Icon, ListTile, ListView, Row, Scaffold, Text, TextStyle, dst) dan tidak ada satu pun dipanggil bersama handler.
+
+**Kontrol positif detektor** (bukti detektor tidak buntu): `login_screen.dart` -> **30 token** (termasuk 3 `OutlinedButton`, 2 `TextButton`); `settings_hub_screen.dart` -> **4 `onTap:`**.
+
+### (b) Probe live AboutScreen (Flutter 3.44.9, viewport 1536x1024, dpr 1.0)
+
+Probe sementara `test/features/platform/presentation/_probe_focus_test.dart` (dihapus setelah selesai): memompa `ProviderScope(MaterialApp(Scaffold(body: AboutScreen()))`, menekan `LogicalKeyboardKey.tab` berulang sampai Rect berulang:
+
+- `STOP[0] label=VOID SCRIPTOR rect=Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0)`
+- `PROBE_STOPS=1`, `PROBE_EX=null`
+- probe run: `All tests passed!`, exit 0.
+
+Interpretasi: **0 stop fokus nyata.** Satu-satunya entri = focus scope root (rect = seluruh viewport), bukan kontrol. `AppBar` tidak menghasilkan tombol back (tidak ada route poppable saat dipompa sebagai `home`), dan keempat `ListTile` tidak punya `onTap` sehingga tidak punya focus node.
+
+### (c) Control run (menggantikan negative control kontrak)
+
+Karena tidak ada kontrak, tidak ada ekspektasi yang bisa dimutasi. Dijalankan test kontrol positif (di file probe) dan `_control_focus_test.dart` (keduanya dihapus setelah selesai):
+
+- **Positif (A):** `UpdateScreen` dengan collector yang sama -> `CONTROL_A stops=[Later, Download] length=2`, `expect(length, greaterThanOrEqualTo(2))` PASS, exit 0. Collector terbukti membaca stop ketika layar punya kontrol fokus, sehingga hasil 0 pada layar ini bukan artefak harness.
+- **Negatif (B):** `expect(stops, hasLength(2))` pada `AboutScreen` -> `Expected: an object with length of <2>` / `Actual: [({String label, Rect rect}):(label: VOID SCRIPTOR, rect: Rect.fromLTRB(0.0, 0.0, 1536.0, 1024.0))]`, `00:01 +0 -1: ... [E]`, `Some tests failed.`, **exit 1**. Ekspektasi yang salah dipastikan gagal.
+
+### Temuan baru (dilaporkan, TIDAK diperbaiki)
+
+- **Dead affordance di `AboutScreen`** (`lib/features/platform/presentation/about_screen.dart:68-77`): 4 `ListTile` menampilkan `trailing: const Icon(Icons.chevron_right)` tetapi tidak punya `onTap`/`onPressed` apa pun — tampilan menjanjikan navigasi yang tidak bisa dieksekusi, dan tidak menerima fokus keyboard sama sekali. Ini layar paling "kaya" di antara 29 layar tanpa kontrak, tapi tetap 0 stop. Perbaikan berarti menambahkan handler + tujuan navigasi (keputusan desain Choirudin), jadi tidak dikerjakan secara spekulatif pada run ini.
+- `KeyboardNavigationScreen` (`lib/features/platform/presentation/keyboard_navigation_screen.dart`) juga murni display: baris 41 hanya `Text('Shortcuts')` berisi pasangan teks, tanpa kontrol fokus.
+
+### Gate dan bukti
+
+- `flutter test test/features/platform/` -> **`All tests passed!` (75 tests)**, exit 0 (2026-10-05).
+- Insiden gate yang dicatat jujur: dua percobaan pertama gagal di tahap native assets dengan `Flutter failed to delete file at "build/native_assets/windows/sqlite3.dll"` (kunci file sisa). Ternyata perintah `taskkill //F //IM ...` tidak dieksekusi di shell ini (`ERROR: Invalid argument/option - '//'`), sehingga `flutter_tester.exe` tersisa; `rm -f build/native_assets/windows/sqlite3.dll` berhasil (lock sudah lepas), gate diulang -> hijau.
+- `dart format` / `dart analyze` kontrak: **N/A** — tidak ada file kontrak `.dart` yang dibuat; file probe dan control sudah dihapus sebelum gate, `git status` tidak menunjukkan sisa `_*_focus_test.dart`.
+- **Negative control kontrak TIDAK DIJALANKAN** (alasan sama fase 80/81/83, 86-96: tidak ada kontrak untuk dimutasi); control run pada butir (c) menggantikannya dan tetap membuktikan bahwa ekspektasi yang salah selalu gagal.
+- `git add --` pathspec-scoped hanya laporan ini; tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi **LF murni** (`CRLF=0`, 5165 baris) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
+### Kesimpulan
+
+- **Status audit: 60/89 layar in-glob berkontrak focus order; 29 sisanya display-only dan 29/29 sudah terukur live.** Kolam kandidat dengan minimal 2 elemen interaktif fokus = **0**; pengesahan ke-16 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95, 96, 97).
+- Tidak ada kontrak baru, tidak ada perubahan kode produksi; temuan dead affordance di atas dicatat sebagai opsi perbaikan, bukan dikerjakan.
+- Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop`, (2) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel), atau (3) tutup audit in-glob di 60/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-17.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

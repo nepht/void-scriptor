@@ -4737,6 +4737,48 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 
 **Status:** 61/89 layar in-glob berkontrak focus order; 28 sisanya display-only (0 handler); 2 layar non-glob display-only kini ikut ter-probe live. Kolam kandidat in-glob = **0**, pengesahan ke-9 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89). Keputusan Choirudin atas opsi 1-3 fase 86 (perluas audit ke 24 widget non-`*_screen.dart` / turunkan ambang jadi `>= 1 stop` + audit affordance back / hentikan audit sampai ada layar interaktif baru) masih tertunda.
 
+## 90. Fase 90 - Re-verifikasi independen kolam kandidat + probe live 27 dari 28 layar sisa (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - tidak ada satu pun layar `lib/features/*/presentation/*_screen.dart` tanpa kontrak yang memenuhi kriteria pemilihan (tanpa `test/**/*_focus_order_test.dart` + minimal 2 elemen interaktif). Tidak ada kontrak focus order yang dibuat, tidak ada kode produksi yang diubah, kedua file probe sementara sudah DIHAPUS. Satu-satunya perubahan yang di-commit run ini = section ini.
+
+**Basis:** fase 80-89. Pembeda run ini: (a) seluruh filter statis dijalankan ulang dari nol (bukan membaca angka laporan lama), (b) probe LIVE diulang untuk **27 dari 28** layar sisa di HEAD saat probe `2300678`. Sejak basis pengukuran fase 88 (`f7ee6dd`) `lib/` hanya bertambah satu commit `6eb9fff` yang menyentuh `lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart` (bukan `*_screen.dart`), dan saat penulisan section ini HEAD sudah bergerak ke `ab800ae` lewat 2 commit docs-only (`4cae93b`, `ab800ae`) dengan `git diff --name-only 2300678..HEAD -- lib/` = kosong, sehingga basis probe masih berlaku.
+
+### Filter statis (dijalankan ulang dari nol, tiga metode independen)
+
+1. **Import-graph** 76 file `test/**/*focus_order*.dart` (75 berpola `*_focus_order_test.dart` plus `test/features/authentication/focus_order_test.dart`): regex import WAJIB menangani kutip ganda maupun kutip tunggal - versi kutip-tunggal saja memberi 59 berkontrak / 30 tanpa (**SALAH**, dilewati `dashboard_screen_focus_order_test.dart` yang memakai `import "package:..."`); dengan kedua gaya kutip hasilnya **61 berkontrak / 28 tanpa**.
+2. **Pencocokan nama kelas ber-word-boundary** (`\bClassName\b` atas seluruh `class X extends` di tiap layar, dicocokkan ke isi semua kontrak) = **28 tanpa kontrak**, daftar identik dengan metode 1 yang benar. Pencocokan substring menghasilkan 27 = false positive `AiStudioScreen` dihitung tertutup oleh `AdvancedAiStudioScreen` - substring tidak boleh dipakai untuk klasifikasi.
+3. **Scan token handler** `on[A-Z]\w*:` pada 28 file (komentar dipisahkan dulu) = **0 token di semua 28 file**, sehingga token non-null juga 0. Tidak ada layar sisa yang menyembunyikan interaktivitas lewat widget luar file (diverifikasi ulang dengan membaca definisi kelas child yang diinstansiasi).
+
+### Probe live (angka baru di HEAD 2300678)
+
+**Metode** (identik fase 88): viewport 1536x1024, dpr 1.0, `ProviderScope` + `MaterialApp(home: Scaffold())`, layar didorong lewat `MaterialPageRoute` supaya affordance back AppBar ikut terukur, `LogicalKeyboardKey.tab` maksimal 16 kali, loop berhenti ketika Rect berulang, label = `Text` non-Icon pertama, rect >= 1500x1000 dihitung root scope (bukan leaf). Hasil per layar ditulis ke JSONL di Windows Temp lalu dibaca; kedua file probe dihapus setelah dibaca.
+
+- `flutter test test/_probe_focus_test.dart` -> `All tests passed!` (26 tests), exit 0.
+- `flutter test test/_probe2_focus_test.dart` -> `All tests passed!` (1 test, `AiStudioScreen`), exit 0.
+- `CreatureWorkspaceScreen` **tidak dipompa**: butuh fixture `projectSessionProvider` + `creatureWorkspaceProvider(creatureId)` -> tetap DEFERRED (dan statis tetap 0 handler: 5 `ListTile` tanpa `onTap`).
+
+**Hasil (27 layar):**
+
+- **21 layar `raw=1 leaf=1`** - satu-satunya stop = tombol back AppBar (rect 40x40 di 9,8): AnimaticPreviewScreen, BranchPreviewScreen, CinematicContinuityCheckerScreen, ShotStatusDashboardScreen, DashboardMetricsScreen, FinalCreatorDashboardScreen, PortfolioBuilderScreen, CreatorStoreScreen, MarketplaceHomeScreen, SellerCenterScreen, MultiverseWorkspaceScreen, AboutScreen, KeyboardNavigationScreen, DiscoveryHomeScreen, PublishingWorkspaceScreen, RevenueDashboardScreen, ExecutionMonitorScreen, EventFeedScreen, SimulationInspectorScreen, WorldHealthDashboardScreen, WorldSimulationWorkspaceScreen.
+- **6 layar `raw=1 leaf=0`** - satu-satunya stop = rect viewport penuh (FocusScope root), nol kontrol yang bisa difokus: AiStudioScreen, CreatorDashboardScreen, CreatorSidebarScreen, DonationDashboardScreen, DonationScreen, SplashScreen.
+- **Exception:** WorldSimulationWorkspaceScreen -> `A RenderFlex overflowed by 4.5 pixels on the right` (overflow yang sudah DEFERRED sejak fase 87, ter-reproduksi); 26 layar lainnya `ex=null`.
+- Distribusi 21 `leaf=1` + 6 `leaf=0` **identik** dengan pengukuran fase 88 -> re-produksi independen, bukan kutipan angka lama.
+
+### Gate & negative control
+
+- `flutter test test/features/platform/` -> `All tests passed!` (75 tests), exit 0.
+- `dart analyze` penuh -> `210 issues found`, exit 2 = baseline identik fase 81/82/88; run ini tidak mengubah satu file `.dart` pun (kedua probe dihapus sebelum gate) -> kontribusi analyzer run ini = 0.
+- `git diff --check` -> bersih (exit 0). `git status --porcelain -- lib` -> bersih.
+- **Negative control: TIDAK DIJALANKAN** - tidak ada file kontrak yang dibuat sehingga tidak ada ekspektasi untuk dimutasi; alasan sama dengan fase 80/81/83/88/89. Ini bukan pass dan bukan fail.
+- `dart format` / `dart analyze` kontrak: N/A karena tidak ada kontrak.
+
+### Kesimpulan
+
+- Kriteria pemilihan run (>= 2 elemen interaktif) maupun ambang kebijakan fase 81 (>= 2 stop terukur) tetap tidak terpenuhi oleh SATU pun dari 89 layar in-glob -> **tidak ada kontrak, tidak ada perubahan kode produksi, file yang di-commit hanya report ini**.
+- **Status audit: 61/89 layar in-glob** berkontrak focus order; 28 sisanya display-only (0 handler token; 27 sudah diverifikasi ulang lewat probe live di run ini, 1 DEFERRED karena fixture database). Pengesahan ke-10 bahwa kolam kandidat kosong (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90).
+- Keputusan Choirudin atas opsi 1-3 fase 86 (perluas ke 24 widget non-`*_screen.dart` / turunkan ambang jadi `>= 1 stop` + audit affordance back / hentikan audit sampai ada layar interaktif baru) masih tertunda.
+- Catatan mekanis: file report ini terverifikasi murni LF saat run ini (4870 baris, 0 byte CR), sehingga penyisipan memakai mode `newline=''` - instruksi "pertahankan CRLF" tidak berlaku untuk file ini.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

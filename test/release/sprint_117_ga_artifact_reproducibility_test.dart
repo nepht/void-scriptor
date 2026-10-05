@@ -6321,4 +6321,111 @@ void main() {
       );
     });
   });
+
+  group('117.43-41 a rebuild restatement is read whichever of its two numbers '
+      'it states', () {
+    Map<String, Object?> shipped() =>
+        jsonDecode(
+              jsonEncode(
+                Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+              ),
+            )
+            as Map<String, Object?>;
+
+    String outcome(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status.name;
+
+    Map<String, Object?> evidenceOf(Map<String, Object?> manifest) =>
+        manifest['required_evidence']! as Map<String, Object?>;
+
+    List<String> linesOf(Map<String, Object?> manifest) =>
+        (evidenceOf(manifest)['provenance_record']! as List<dynamic>)
+            .cast<String>();
+
+    Map<String, Object?> restated(List<String> lines) {
+      final manifest = shipped();
+      return {
+        ...manifest,
+        'required_evidence': {
+          ...evidenceOf(manifest),
+          'provenance_record': lines,
+        },
+      };
+    }
+
+    test('117.43-41 baseline shipped document still passes', () {
+      expect(outcome(shipped()), 'pass');
+    });
+
+    test(
+      '117.43-41 a restatement stating only a wrong exit code is refused',
+      () {
+        expect(
+          outcome(restated([...linesOf(shipped()), 'rebuild_a exit_code 1'])),
+          'unmet',
+          reason:
+              'the exit code is measured on the record, so a restatement '
+              'contradicting it has to be read even when the line omits the '
+              'duration that normally sits beside it',
+        );
+      },
+    );
+
+    test('117.43-41 a restatement stating only a wrong duration is refused', () {
+      expect(
+        outcome(
+          restated([...linesOf(shipped()), 'rebuild_a duration_seconds 999']),
+        ),
+        'unmet',
+        reason:
+            'the duration is measured on the record too, and reading it '
+            'must not depend on the exit code being restated on the same line',
+      );
+    });
+
+    test('117.43-41 the agreeing half of a restatement still passes', () {
+      expect(
+        outcome(restated([...linesOf(shipped()), 'rebuild_a exit_code 0'])),
+        'pass',
+      );
+      expect(
+        outcome(
+          restated([...linesOf(shipped()), 'rebuild_b duration_seconds 152']),
+        ),
+        'pass',
+      );
+    });
+
+    test('117.43-41 prose naming a rebuild without a number stays unread', () {
+      expect(
+        outcome(restated([...linesOf(shipped()), 'rebuild_a rebuilt cleanly'])),
+        'pass',
+        reason:
+            'only the two numbers are claims (117.43-15); a sentence '
+            'about a rebuild states no measurement and must not be read',
+      );
+    });
+
+    test('117.43-41 a provenance_logs claim sharing its line with a partial '
+        'restatement still names only its paths', () {
+      final lines = linesOf(shipped())
+          .map(
+            (line) => line.startsWith('provenance_logs ')
+                ? '$line rebuild_a exit_code 0'
+                : line,
+          )
+          .toList();
+      expect(
+        outcome(restated(lines)),
+        'pass',
+        reason:
+            'the segment the log reader takes ends where the '
+            'restatement begins; a restatement carrying one number instead of '
+            'two is still a restatement, and reading it as log paths refused '
+            'an honest document',
+      );
+    });
+  });
 }

@@ -34,7 +34,8 @@ const String _kLogSummaryPrefix = 'provenance_logs ';
 const String _kCitationPrefix = 'signed_candidate ';
 
 /// The grammar a `provenance_record` line uses to restate a rebuild's
-/// measurements: label, exit code, duration, and an optional window.
+/// measurements: a label followed by the exit code, the duration, or
+/// both, and an optional window.
 ///
 /// The grammar is deliberately NOT anchored at either end of the line: a claim
 /// may sit behind a heading or carry a note after it, and a line may state more
@@ -53,13 +54,56 @@ const String _kCitationPrefix = 'signed_candidate ';
 /// and a window the line DOES state but cannot read fails closed like any
 /// other present-but-unreadable field (117.43-13).
 ///
+/// Sprint 117.43-41 (fail-open and fail-closed, fixed): the TWO NUMBERS
+/// were still bundled, so each half of the pair was the price of
+/// admitting the other — the same requirement 117.43-37 removed for the
+/// window, one fact further out. Two failures ran opposite ways from that
+/// single requirement:
+///
+///  * `rebuild_a exit_code 1` and `rebuild_a duration_seconds 999`
+///    matched nothing, so a restatement contradicting a number this file
+///    already measures reached the verdict as prose while the group
+///    printed its item count; and
+///  * `_logSummariesIn` hands the line to the rebuild reader at the point
+///    where it starts restating a rebuild, so a restatement that never
+///    matched never handed the line over: the log reader ran to the end
+///    of the line, read `rebuild_a exit_code 0` as three more log paths,
+///    found paths no record cites, and refused a document whose
+///    `provenance_logs` claim was honest.
+///
+/// Each number is now admitted on its own, in either order, and a label
+/// carrying NEITHER still matches nothing: `rebuild_a rebuilt cleanly`
+/// stays the prose 117.43-15 pinned, because a sentence about a rebuild
+/// restates no measurement. The window keeps the rule 117.43-37 wrote:
+/// optional, and a refusal when it is stated but cannot be read.
+///
 /// A 40-hex source revision is deliberately NOT part of this pattern — whether
 /// such a revision names a real tree is not decidable without resolving a git
 /// object, which this layer does not do.
 final RegExp _kRebuildSummaryPattern = RegExp(
-  r'(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)'
+  r'(\S+)\s+'
+  r'(?:exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)'
+  r'|duration_seconds\s+(-?\d+)\s+exit_code\s+(-?\d+)'
+  r'|exit_code\s+(-?\d+)'
+  r'|duration_seconds\s+(-?\d+))'
   r'(?:\s+\((.+?)\s+\.\.\s+(.+?)\))?',
 );
+
+/// The exit code a [_kRebuildSummaryPattern] match states, or null when
+/// the restatement gives only its duration.
+///
+/// The four branches park the two numbers in different group positions
+/// because the document may write them in either order; both spellings
+/// are read here so no call site has to know which one it is holding.
+/// Order must not decide which claim of a line reaches the verdict —
+/// that is the split 117.43-29 closed for claims in sequence.
+int? _summaryExitCode(RegExpMatch match) =>
+    int.tryParse(match.group(2) ?? match.group(5) ?? match.group(6) ?? '');
+
+/// The duration a [_kRebuildSummaryPattern] match states, or null when
+/// the restatement gives only its exit code.
+int? _summaryDuration(RegExpMatch match) =>
+    int.tryParse(match.group(3) ?? match.group(4) ?? match.group(7) ?? '');
 
 /// A `provenance_logs` line and the paths it names.
 final class _LogSummary {
@@ -69,6 +113,10 @@ final class _LogSummary {
 }
 
 /// One `rebuild_<label> ...` restatement, decoded.
+///
+/// [exitCode] and [duration] are null when the line restates only the
+/// other number (117.43-41): null there is an absent claim, not an
+/// unreadable one (117.43-07).
 ///
 /// [start] and [finish] are null when the line states no window at all. A
 /// window the line DOES state but nobody can parse is never decoded: 117.43-37
@@ -83,8 +131,8 @@ final class _RebuildSummary {
   );
 
   final String label;
-  final int exitCode;
-  final int duration;
+  final int? exitCode;
+  final int? duration;
   final DateTime? start;
   final DateTime? finish;
 }
@@ -806,7 +854,12 @@ class BuildProvenanceEvidence {
         // had chosen rather than read, and this adds a count it never read.
         if (matches.isEmpty) return false;
         for (final rebuild in matches) {
-          if (rebuild.exitCode != summary.exitCode) return false;
+          // An absent number states no claim to contradict (117.43-07),
+          // so only a number the line actually gives is held to the record.
+          if (summary.exitCode != null &&
+              rebuild.exitCode != summary.exitCode) {
+            return false;
+          }
           if (!_summaryDurationAgrees(rebuild, summary)) return false;
         }
       }
@@ -981,11 +1034,15 @@ class BuildProvenanceEvidence {
   /// a segment each; 117.43-33 then moved `signed_candidate` off index 0 and
   /// gave every citation on a shared line its own segment.
   ///
-  /// The claim grammar itself is unchanged, so nothing new becomes a claim: the
-  /// window still has to parse as the pair of timestamps it is, an exit code
-  /// and a duration still have to be present, and the label still has to name a
-  /// rebuild. `rebuild_a rebuilt cleanly after ...` matches nothing, exactly as
-  /// 117.43-15 pinned it.
+  /// Sprint 117.43-41: the grammar no longer asks for BOTH numbers, because
+  /// requiring each one was the price of admitting the other — a line
+  /// restating only its exit code was prose, so an exit code written on its
+  /// own was never compared. What still has to be present is a claim to
+  /// read: the label has to name a rebuild and at least one of the two
+  /// numbers has to be there, so `rebuild_a rebuilt cleanly after ...`
+  /// matches nothing, exactly as 117.43-15 pinned it, and the window still
+  /// has to parse as the pair of timestamps it is when the line states one
+  /// (117.43-37).
   /// Null when the line states a restatement this reader cannot decode: a
   /// number or a window it gives in a shape nobody can read. The caller then
   /// treats the evidence as unevaluable rather than treating the line as
@@ -1005,14 +1062,17 @@ class BuildProvenanceEvidence {
       // that merely contains `rebuild_` somewhere and states no measurement is
       // prose.
       if (!label.startsWith('rebuild_')) continue;
-      final exitCode = int.tryParse(match.group(2)!);
-      final duration = int.tryParse(match.group(3)!);
-      if (exitCode == null || duration == null) return null;
+      final exitCode = _summaryExitCode(match);
+      final duration = _summaryDuration(match);
+      // Every branch of the pattern states at least one number, so this
+      // can only fire if the grammar changes underneath this reader.
+      // Refuse the line rather than publish a comparison never made.
+      if (exitCode == null && duration == null) return null;
       DateTime? start;
       DateTime? finish;
-      if (match.group(4) != null) {
-        start = DateTime.tryParse(match.group(4)!);
-        finish = DateTime.tryParse(match.group(5)!);
+      if (match.group(8) != null) {
+        start = DateTime.tryParse(match.group(8)!);
+        finish = DateTime.tryParse(match.group(9)!);
         if (start == null || finish == null) return null;
       }
       summaries.add(_RebuildSummary(label, exitCode, duration, start, finish));
@@ -1070,8 +1130,11 @@ class BuildProvenanceEvidence {
     RebuildResult rebuild,
     _RebuildSummary summary,
   ) {
+    final stated = summary.duration;
     final recorded = rebuild.durationSeconds;
-    if (recorded != null && recorded != summary.duration) return false;
+    if (stated != null && recorded != null && recorded != stated) {
+      return false;
+    }
     // Sprint 117.43-37: a restatement that gives no window makes no window
     // claim, so the two numbers above are all it can be held to. The window
     // must not decide whether those numbers are read at all.
@@ -1091,7 +1154,10 @@ class BuildProvenanceEvidence {
     // copied from the record: a summary restating a correct duration while
     // the record disagrees with its own window is still caught, because the
     // gate measures the record against that same window separately.
-    return summary.duration == finish.difference(start).inSeconds;
+    // A line restating the window without its duration states no number of
+    // its own to hold to the interval (117.43-41).
+    if (stated == null) return true;
+    return stated == finish.difference(start).inSeconds;
   }
 
   static bool _samePathSet(Set<String> left, Set<String> right) {

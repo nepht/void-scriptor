@@ -2812,3 +2812,110 @@ bukan `name` seperti baris `:1041` dan `:1054` — observed jadi cacat; belum
 ada test yang mengunci teks pesan itu, jadi belum diukur;
 (e) `rebuild_run` `:1834` dan duplikat grammar `:1928` tetap bukan kandidat
 (satu grammar, disengaja).
+
+### Slice 117.43-45 - nilai `verdict` dibaca apa pun whitespace di
+sekelilingnya (defect ke-40, hunt ke-40)
+
+DEFECT: `_evaluateShippedProvenance`
+(`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`,
+def `:1337` sebelum fix, kini `:1349-1350`) mencocokkan nilai `verdict`
+lewat `switch (verdictField.value)` TANPA trim, sedangkan semua pembaca
+nilai vocabulary lain di file itu memangkas dulu: `status`/`decision`
+(`:1051-1052`) dan `canonical_step` (`:1130`) memakai `value.trim()`, dan
+`_mapField` (`:980`) sudah memangkas kunci (key) sejak 117.43-40. Jadi
+`verdict` satu-satunya nilai vocabulary di file itu yang dituntut eja
+persis. Bentuk konkritnya: verdict shipped `BIT_IDENTICAL` yang kehilangan
+atau kelebihan satu spasi membuat SELURUH evaluasi provenance jatuh ke
+`shipped evidence did not evaluate` (unmet), sementara setiap pembaca lain
+dokumen yang sama terus membaca — dan `measured`/`observed` tidak bisa
+membedakannya dari verdict yang benar-benar absen atau typo. Hanya ada SATU
+pembaca field ini (tidak ada silang-pembaca); cacatnya murni grammar
+pembaca penolak yang lebih ketat dari saudaranya.
+
+ARAH: fail-closed over-refusal (dokumen jujur -> unmet), bukan fail-open.
+Diukur sebelum fix lewat test yang menulis `' $bare '` pada manifest shipped:
+`--plain-name "117.43-45"` menghasilkan `+4 -1` exit 1 dengan observed
+`shipped evidence did not evaluate`, sementara shipped tanpa padding tetap
+pass. Bound satu arah dipertahankan: trim hanya MEMILIHKAN enum mana yang
+disebut token — enum itu tetap diukur terhadap digest yang direkam
+(117.43-01/-08), jadi klaim identitas berpadded yang digest-nya bertentangan
+tetap ditolak (dikunci test), dan padded typo (`' BIT_IDENTITY '`), nilai
+non-string, key absen, dan null eksplisit tetap menolak (117.43-07).
+
+RED/GREEN: test 117.43-45 (5 test) ditulis DULU lewat sisip byte-eksak di
+akhir file test (badan CRLF, suffix anchor `  });\r\n}\r\n` dipotong per
+posisi EOF dengan assert endswith; dua kejadian `\r\n}\r\n` di file membuat
+assert count==1 gugur, sehingga pemotongan dilakukan per-offset dari ujung
+yang deterministik). numstat test 148/0 saat sisip -> 151/0 setelah cast
+harness diperbaiki -> 156/0 setelah `dart format` (formatter hanya merework
+blok baru; deleted tetap 0), `git diff -U0` tanpa satu pun baris `-`.
+RED: `+4 -1` exit 1; keempat test lain lulus — satu failure adalah defeknya,
+satu failure kedua saat RED pertama (`Map<String, dynamic>` tidak bisa
+di-cast ke `Map<String, String>`) adalah kesalahan harness saya sendiri dan
+diperbaiki sebelum RED final, bukan bagian dari defect. Karena test
+mendahului edit lib, tidak ada swap blob. FIX: nilai diambil, dipangkas
+bila String, baru masuk switch; komentar kepala metode diperbarui
+menyebut trim.
+
+GATES: `dart format` write 2 file lalu `--output=none --set-exit-if-changed`
+= 0 changed exit 0; `dart analyze` 2 file `No issues found!` exit 0
+(1 warning `unnecessary_cast` pada baris harness diperbaiki dulu); `git
+diff --check` rc 0; scan non-Latin (python re, kelas CJK/kana/hangul/
+fullwidth) + trailing whitespace pada 173 baris added = 0 dan 0; GREEN
+`--plain-name "117.43-45"` = `+5` All tests passed exit 0; regresi file
+gate penuh = `+219` All tests passed exit 0 (214 lama + 5 baru, tanpa blok
+`Failing tests`); file 113 provenance solo = `+13` All tests passed exit 0
+(termasuk `113.39 dependency lock evidence matches the live lockfile`
+yang LULUS pada run ini); `flutter build windows --debug` exit 0 (31,7 dtk)
+dengan `build/windows/x64/runner/Debug/data/flutter_assets` mtime
+2026-10-05 15:18:53 (exe statis tidak dihitung).
+
+COMMITS: fix `0b0b374` (2 file, numstat lib 17/4 + test 156/0 murni
+insert). ahead dengan `git rev-list --count origin/master..HEAD`: pre-run
+14 @ `9a07949`, sibling a11y `ae745e4` mendarat di tengah run (1 file
+dokumen wcag, 0 path slice tersentuh), sesudah fix = 16; angka ditanam
+sebagai posisi pengukuran. Patch tool 0 pemakaian; semua edit python
+replace eksak dengan `assert count == 1` atau pemotongan suffix. Tidak ada
+push pada run ini (pola -35..-44).
+
+SHA 4 sisi dari blob commit `0b0b374` (bukan working tree):
+`lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart`
+= `8c90afcba346085763a55580ae9d9e4df8a4b5142e6050459744c5b0a8f47af6`
+(90443 B, disk == blob);
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` =
+`0645a5e67cc428238133881d66934a2c64664d0c9960d758234db81856e855c0` (blob
+275791 B; disk 282747 B, CRLF dinormalkan CRLF->LF == blob, konvensi file
+test repo ini).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02
+masih menunggu keputusan drift manifest. Penomoran: slice 117.43-45 =
+hunt ke-40 (defect ke-40).
+
+KOREKSI UKURAN atas kandidat (d) run sebelumnya: klaim bahwa
+`':1016'` juga menyisipkan rekaman adalah SALAH — baris itu memakai literal
+`'limits present without a readable group (${value.runtimeType})'` (nama
+field benar), dan `git grep "'$field present without a readable group'"
+HEAD~20` tidak menemukan string itu di mana pun. Hanya ADA SATU kejadian
+`$field present`, yaitu `:1047`; jadi kandidat (d) tinggal satu baris.
+
+HUNT BERIKUTNYA ke-41 (probe dulu, jangan klaim sebelum ada baris hasil):
+(a) `'$field present without a readable verdict'`
+(`sprint_117_ga_artifact_reproducibility.dart` `:1047`) menyisipkan REKAMAN
+`(present:, ambiguous:, value:)` alih-alih `name`, sementara saudara
+`:1016`/`:1086`/`:1126` memakai nama literal dan `:1041` memakai `$name` —
+observed jadi cacat dan tidak menyebut `status` vs `decision`; belum ada
+test yang mengunci teks pesan itu;
+(b) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart` `:450`)
+tetap 0 pemanggil dan doc-nya mengklaim membaca `sha256 <hex>` padahal
+pola `^([0-9a-f]{64})\s+(\S+)$` = `<hex> <path>` (doc vs kode; tidak
+pernah teruji karena tidak dipanggil siapa pun);
+(c) `RebuildResult.isWellFormed`
+(`build_reproducibility_provenance.dart` `:458`) memakai `^[0-9a-f]{64}$`
+(huruf besar ditolak) sementara `_digestPattern` (`:1375`) memakai
+`^[0-9a-fA-F]{64}$` — dua definisi "64 hex" dalam satu file; arah terlihat
+fail-closed, tapi ada precedent berlawanan: `readChecksumIndex` (sprint
+`:461`) sengaja menganggap digest huruf besar malformed — putuskan dengan
+ukuran, jangan menambah penerimaan tanpa bukti;
+(d) `rebuild_run` `:1834` dan duplikat grammar `:1928` tetap bukan
+kandidat (satu grammar, disengaja).

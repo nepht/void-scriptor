@@ -2363,3 +2363,144 @@ pembaca kalimat di `build_reproducibility_provenance.dart`, terutama
 `_statedArtifactScope` (:139) dan sekitarnya - dua kandidat lama `parseDigest`
 (:450) dan `summarised.firstMatch(member.key)` (:1671) SUDAH TIDAK ADA di file
 itu saat dicari ulang run ini, jangan dikutip lagi.
+
+### Slice 117.43-41 - restatement dibaca untuk angka yang dinyatakannya (defect ke-36 fail-open hunt)
+
+DEFECT. `_kRebuildSummaryPattern`
+(`lib/features/world_logic/domain/build_reproducibility_provenance.dart:59`)
+mengikat DUA fakta ke dalam satu pola: `(\S+)\s+exit_code\s+(-?\d+)\s+duration_seconds\s+(-?\d+)`
+plus jendela opsional. Padahal exit code dan durasi adalah dua klaim terpisah,
+keduanya sudah diukur di rekaman, dan 117.43-37 sudah menurunkan jendela jadi
+opsional karena jendela bukan bagian dari klaim - tetapi angka berdua masih
+saling jadi syarat masuk. Akibatnya dua arah kegagalan lahir dari SATU
+keharusan itu.
+
+FAIL-OPEN (klaim salah tidak pernah dibandingkan): `rebuild_a exit_code 1`
+(exit rekaman 0) dan `rebuild_a duration_seconds 999` (rekaman 145) keduanya
+tidak match pola, jatuh jadi prosa, tidak dibandingkan dengan apa pun, lalu
+gate tetap `pass` sementara ringkasan tetap mencetak `provenance_record: N
+item`. Dokumen cukup menulis restatement-nya tanpa angka satunya untuk
+menghapus satu pembaca.
+
+FAIL-CLOSED (dokumen jujur ditolak): `_logSummariesIn` menyerahkan baris ke
+pembaca rebuild pada titik baris mulai men-statement ulang sebuah rebuild, dan
+titik itu dicari lewat pola yang sama. Restatement parsial tidak pernah match,
+jadi potongan tidak pernah terjadi: segmen log lari sampai akhir baris, membaca
+`rebuild_a exit_code 0` sebagai tiga path log tambahan, lalu `_samePathSet`
+menemukan path yang tidak ada rekaman dan menolak. Satu baris jujur
+`provenance_logs A B rebuild_a exit_code 0` menghasilkan `unmet`.
+
+PROBE (`cache/probe_117_43_41_test.dart` dan `_v2`, kini dihapus setelah
+temuannya menjadi test resmi; keduanya diparkir dulu di
+`%LOCALAPPDATA%/hermes/cache/scratch/` lalu disalin ke `cache/` karena
+import package tidak resolve di luar repo). Hasil terhadap dokumen shipped:
+baseline `pass`; `rebuild_a exit_code 1` `pass` (fail-open);
+`rebuild_a duration_seconds 999` `pass` (fail-open); `rebuild_a exit_code 0`
+`pass` (jujur, wajib tetap pass); `rebuild_a rebuilt cleanly` `pass` (prosa
+117.43-15, wajib tetap pass); `provenance_logs A B` + `rebuild_a exit_code 0`
+`unmet` (fail-closed); `rebuild_a exit_code 0 duration_seconds 145
+(not-a-date .. also-not)` `unmet` (aturan 117.43-37 tetap tertutup).
+
+RED. Test resmi DULAN, lib belum disentuh: sisip byte-eksak di akhir
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` (anchor
+`  });\r\n}\r\n`, assert `endswith` + `count==1`), numstat 104/0 dan
+`git diff -U0` tanpa baris `-`. `flutter test <file> --plain-name
+"117.43-41"` = `+3 -3` exit 1; blok `Failing tests:` berisi persis tiga
+assertion defect (exit salah, durasi salah, baris logs jujur) dan tiga kontrol
+lulus.
+
+FIX. Pola jadi empat cabang supaya tiap angka bisa berdiri sendiri dan pasangan
+bisa datang exit-dulu atau durasi-dulu: `exit+dur`, `dur+exit`, `exit saja`,
+`dur saja`, ditambah suffix jendela yang tetap opsional; label tetap group(1)
+sehingga pemotongan di `_logSummariesIn` tidak berubah tata bahasanya. Dua
+accessor baru `_summaryExitCode`/`_summaryDuration` membaca posisi group yang
+berbeda per cabang supaya tidak ada call site yang tahu urutan dipilih dokumen.
+`_RebuildSummary.exitCode` dan `.duration` jadi `int?` (null = klaim tidak
+dinyatakan, bukan klaim tak terbaca); `_rebuildSummariesIn` menolak baris kalau
+keduanya null (pertahanan, cabang mana pun selalu memberi minimal satu angka);
+pembanding exit dijaga `summary.exitCode != null`; `_summaryDurationAgrees`
+memakai `stated` dan melewatkan perbandingan durasi-vs-panjang-window kalau
+durasi tidak dinyatakan. Doc-comment pola, doc-comment `_RebuildSummary`, dan
+doc-comment `_rebuildSummariesIn` ikut ditulis ulang - kalimat lama "an exit
+code and a duration still have to be present" jadi salah setelah perubahan.
+
+GATES. `dart format` (write) pada 2 file lalu `--output=none
+--set-exit-if-changed` = `0 changed` exit 0 - format hanya mengubah file test
+dan hanya blok baru: numstat test naik 104/0 -> 107/0 (baris lama tidak ada
+yang ikut ter-reflow, terbukti dari deleted yang tetap 0), lib tetap 84/18.
+`dart analyze` 2 file = `No issues found!` exit 0. `git diff --check` rc 0.
+Scan non-Latin (python re kelas CJK/kana/hangul/fullwidth) pada baris added:
+lib 84 = 0 hit, test 107 = 0 hit, trailing whitespace 0. GREEN `--plain-name
+"117.43-41"` = `+6 All tests passed` exit 0. Regresi 2 file =
+`+215 All tests passed!` exit 0 (gate file solo `+202`, file 113.39 solo
+`+13`), tanpa blok `Failing tests:`. `flutter build windows --debug` exit 0,
+26,2 dtk, bukti mtime `build/windows/x64/runner/Debug/data/flutter_assets` =
+2026-10-05 09:37:45 (exe statis dan mtime Release tidak dihitung karena build
+ini Debug). `dart run tool/roadmap_guard.dart` PASS pre-run dengan
+canonical_sha256 b7ef2d35.
+
+KOREKSI BUKTI YANG SELAMA INI DIKLAIM PRE-EXISTING. Catatan run -40 menyebut
+dua failure 113.39 (`dependency lock evidence` dan artifact signature) pre-
+existing dengan 6 failure di suite. Ukur ulang di run ini:
+`flutter test test/release/sprint_113_build_reproducibility_provenance_test.dart`
+solo = `+13 All tests passed!` exit 0, termasuk `113.39 dependency lock
+evidence matches the live lockfile` dan `113.39 signed release artifact from
+113.38 remains intact`. Jadi ketidakcocokan itu TIDAK terulang pada HEAD ini.
+Penyebabnya tidak saya selidiki (di luar scope slice), dan jangan dikutip
+sebagai "6 failure pre-existing" tanpa ukur ulang.
+
+SHA (diambil dari blob commit `d5203b7`, bukan working tree).
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart` =
+`90ba9e84100def0eb4b08529adb3d5ea7fae892b6fb6594f13c377b8a88bbf90`
+(74741 B, disk == blob). Test
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` =
+`8377235f025c8b02ca663d9b501c5b84ec05baa8d012d1660655bdae4345eaf9`
+(blob 253620 B; disk 260051 B dinormalkan CRLF -> LF == blob, sesuai catatan
+format EOL). Keduanya muncul 1x di ledger ini dan 1x di state.
+
+NUMSTAT saat commit: lib 84/18, test 107/0. Commit fix `d5203b7` = 2 files,
+191 insertions, 18 deletions, path eksplisit (`git commit -- <paths>`), tanpa
+`git add -A`. Patch tool 0 pemakaian pada file repo (semua edit lewat python
+`str.replace` dengan assert count==1); satu pemakaian patch tool hanya untuk
+file probe di scratch. Tidak ada push pada run ini (pola -35..-40).
+
+PELAJARAN. (1) Probe yang key-nya ditaruh di luar tempat aslinya menghasilkan
+hasil salah sasaran: `rebuild_run` saya masukkan ke DALAM `required_evidence`
+dan hasilnya `pass`; setelah dipindah ke root dokumen (posisi aslinya) hasilnya
+`unmet`. Sebelum mengklaim hasil probe, cocokkan posisi key yang dimutasi
+dengan posisi key itu di dokumen sungguhan. (2) Jebakan anchor EOF: mencari
+`});\r\n}\r\n` dengan `rfind` menemukan penutup GROUP (`  });`), bukan penutup
+`main()`, sehingga blok baru berpotensi masuk ke dalam group sebelumnya; anchor
+yang benar memakai `data.endswith(tail)` plus `count==1`, lalu blok disisipkan
+SETELAH penutup group terakhir. (3) `write_file` menolak menimpa script yang
+pernah dipatch tanpa read ulang - tulis script baru dengan nama lain, jangan
+dipaksa. (4) Satu syarat pola bisa memunculkan dua arah kegagalan; perbaiki
+keduanya dalam satu slice (empat cabang menutup fail-open sekaligus
+fail-closed). (5) Koreksi catatan run -40: `parseDigest` (:450) MASIH ADA
+sebagai definisi dengan 0 pemanggil, dan `summarised.firstMatch` kini ada di
+:1818 (bukan :1671) - kalimat "SUDAH TIDAK ADA" tidak benar, jangan dikutip
+lagi.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 masih
+menunggu keputusan drift manifest. Angka ahead di state tidak ditimpa;
+posisi pengukuran dicatat di state.
+
+Kandidat hunt ke-37 (probe dulu, jangan klaim sebelum ada baris hasil).
+(a) `_summaryDurationAgrees` (build_reproducibility_provenance.dart:1069)
+tidak punya fallback ke window ketika rekaman tidak punya `duration_seconds`,
+sedangkan saudaranya `_rebuildRunAgrees`
+(sprint_117_ga_artifact_reproducibility.dart:1840-1847) punya. Bukti probe v2:
+rekaman tanpa `duration_seconds` (window 145 dtk) + `provenance_record`
+`rebuild_a exit_code 0 duration_seconds 999` tanpa jendela = `pass`, sedangkan
+menambahkan jendela yang jujur ke ringkasan yang sama = `unmet`; `rebuild_run`
+top-level yang men-state 999 = `unmet`. Satu klaim, dua pembaca, satu mengukur.
+(b) `_hasWellFormedDigestClaims` (:1234) masih memakai regex substring
+`sha-?256\s+(\S+)` miliknya sendiri, bukan tokenizer `_digestClaimsIn` - ini
+keluarga 117.43-23 (dua pembaca beda tata bahasa). Arah yang terlihat dari
+probe E1/E2 hanya fail-closed (prosa `sha256 0 git/path` -> `unmet`), jadi
+perlakukan sebagai pelengkap, bukan setara.
+(c) `readChecksumIndex` (sprint_117_ga_artifact_reproducibility.dart:475) memakai
+`^...$` dengan `(\S+)`: path yang mengandung spasi jatuh ke `malformed` dan
+tetap dihitung, jadi fail-closed dan memang sengaja - jangan dikutip sebagai
+fail-open.

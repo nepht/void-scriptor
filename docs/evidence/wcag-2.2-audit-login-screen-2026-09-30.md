@@ -4926,6 +4926,63 @@ Probe sekali pakai `test/_probe_focus_test.dart` (DIHAPUS setelah hasil dibaca):
 - Kriteria pemilihan run (>= 2 elemen interaktif pada layar tanpa kontrak) tetap tidak terpenuhi oleh SATU pun dari 89 layar in-glob -> tidak ada kontrak, tidak ada perubahan kode produksi.
 - Keputusan Choirudin atas opsi 1-3 fase 86 (perluas audit ke widget non-`*_screen.dart` termasuk `ExplorerPanel`, atau turunkan ambang jadi `>= 1 stop` plus audit affordance back, atau hentikan audit sampai ada layar interaktif baru) **masih tertunda** - selama itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED yang sama.
 
+## 95. Fase 95 - Probe live terakhir (ExecutionMonitorScreen) + sensus kualitas 76 kontrak (2.4.3) - DEFERRED
+
+**Tanggal:** 2026-10-05. **Status: DEFERRED** - kolam kandidat in-glob masih 0, sehingga tidak ada kontrak focus order baru yang bisa dibuat. Tiga hal BARU terukur run ini: (a) probe live layar terakhir yang belum pernah dipompa, (b) sensus kualitas seluruh kontrak focus order yang sudah ada, (c) re-verifikasi hijau untuk 3 layar yang berubah sejak basis fase 94. File probe `test/_probe_focus_test.dart` sudah DIHAPUS. Tidak ada kode produksi diubah; satu-satunya perubahan yang di-commit = section ini.
+
+**Basis:** HEAD `905bf38`. `git status --short --branch` saat langkah 1 hanya menunjukkan file dirty/untracked milik sibling (`docs/evidence/sprint-117-35-manifest-20261002.json`, `.hermes/ROADMAP_STATE.json.slice11743_*.bak`, `cache/`, `test/core/security/presentation/`) - tidak ada yang disentuh, tanpa `git add -A`.
+
+### (a) Probe live: ExecutionMonitorScreen - layar terakhir yang DEFERRED karena fixture
+
+Fase 93 mencatat `execution_monitor_screen` "tidak dipompa" karena constructor `required this.snapshot`. Run ini membangun fixture nyata `WorkflowMonitorSnapshot` berisi 2 `WorkflowMonitorEntry` (state `succeeded` 3/3 step dan `failed` 1/4 step), memompanya pada viewport 1536x1024 / dpr 1.0, mendorong layar lewat `MaterialPageRoute`, lalu menekan `LogicalKeyboardKey.tab` berulang sampai Rect berulang.
+
+- `flutter test test/_probe_focus_test.dart` -> `All tests passed!`, exit 0.
+- Output probe: `PROBE_STOPS=1`, `STOP[0]=widget:Focus @ Rect.fromLTRB(8.0, 8.0, 48.0, 48.0)`, `PROBE_EX=null`.
+- Pembacaan: **1 stop** = tombol back AppBar (40x40 di kiri-atas, x=8..48, y=8..48). Baris `ListTile` daftar eksekusi TIDAK menjadi stop karena `ListTile` di file itu tidak membawa `onTap` (konsisten dengan scan token handler = 0). Label jatuh ke `widget:Focus` karena sub-pohon tombol back hanya berisi `Icon`, bukan `Text`.
+- **Implikasi:** satu-satunya layar yang status live-nya tertunda kini terukur, dan hasilnya di bawah ambang kebijakan `>= 2 stop`. Dengan ini **28/28 layar tanpa kontrak sudah di-probe live** (26 pada fase 93, 1 `CreatureWorkspaceScreen` pada fase 92, 1 `ExecutionMonitorScreen` pada run ini) -> tidak ada layar tersisa yang belum terukur live.
+
+### (b) Sensus kualitas seluruh kontrak focus order (76 file, pengukuran baru)
+
+Dilakukan karena kriteria pemilihan run (layar tanpa kontrak + >= 2 elemen interaktif) kosong 14 kali berturut-turut; diverifikasi apakah kontrak yang sudah ada benar-benar mengunci kontraknya.
+
+- **76 file** `test/**/*focus_order*.dart`.
+- **Stop-count terkunci: 76/76 (100%).** Metode kuncinya terpecah: 51 file pakai `hasLength(N)` / `.length, N`; 25 file lain mengunci jumlah lewat label-list literal (`expect(_labelsOf(stops), <String>[...])`, `expect(stops.map((s) => s.label).toList(), [...])`), `stops.single`, atau `expect(labels, isEmpty)`.
+- **Tab traversal (`LogicalKeyboardKey.tab`) ada di 76/76.**
+- **Assert posisi/rect (`rect.left|right|top|bottom|width|height`) ada di 76/76.**
+- **Koreksi diri (wajib dicatat):** dua sensus awal run ini (`wcag_quality.py` lalu `wcag_quality2.py`) melaporkan "16 file tanpa count" dan "2 file tanpa count sama sekali" (`task_center_screen_focus_order_test.dart`, `environment_workspace_screen_focus_order_test.dart`). Keduanya **FALSE POSITIVE regex** - pemeriksaan manual menunjukkan `task_center` mengunci jumlah via `expect(_labelsOf(stops), <String>[...])` (4 kemunculan) dan `environment_workspace` via `stops.single` / `expect(labels, isEmpty)`. Sensus final (`wcag_quality6.py`, regex diperluas menangani literal bertipe `<String>[]` dan pemanggilan bersubjek `_labelsOf(stops)`) = **count lock missing: 0**. Angka yang berlaku adalah **0 lemah**, bukan 16 atau 2.
+
+### (c) Re-verifikasi 3 layar in-glob yang berubah sejak basis fase 94
+
+`git diff --name-only b827c43..HEAD -- 'lib/features/**/*_screen.dart'` = **3 file** (bukan 0 lagi): `project_bible_workspace_screen.dart` (6 +/-), `environment_workspace_screen.dart` (4 +/-), `project_resilience_center_screen.dart` (3 +/-). Ketiganya **sudah berkontrak** (cek impor `package:void_scriptor/<path>` -> file kontrak ditemukan), sehingga tidak menjadi kandidat baru. Kontraknya dijalankan ulang terhadap layar yang sudah berubah:
+
+- `flutter test` atas 3 file kontrak itu -> **`All tests passed!` (4 tests)**, exit 0. Termasuk bukti live kecil dari kontrak environment: `FOCUS_STOPS=[Add Image]` (session aktif) dan `FOCUS_STOPS_NO_SESSION=[]` (tanpa session).
+
+### (d) Re-verifikasi kolam kandidat: 6 metode, hasil 0
+
+1. **Import graph:** 76 file focus_order di-match ke 89 layar in-glob -> **61 berkontrak / 28 tanpa kontrak** (identik fase 94).
+2. **Token handler `on[A-Z]\w*[:=]` setelah strip komentar:** **0 token di seluruh 28 file**.
+3. **Token widget fokus** (TextField, InkWell, GestureDetector, Switch, Checkbox, Slider, DropdownButton, IconButton, TextButton, Elevated/Outlined/FloatingActionButton, Listener, MouseRegion, Focus): **0 kemunculan di 28 file**.
+4. **Resolusi class child eksternal, kini dengan regex instansiasi generic** `Name<T,...>(`: 74 nama kapital unik -> 31 terdefinisi di `lib/**` -> **0 punya token handler/widget fokus**; 43 sisanya widget SDK Flutter / tipe inti Dart (Align, AppBar, Card, Column, Container, Icon, ListTile, Row, Scaffold, Text, dst). Regex fase 94 tidak menangkap `Foo<Bar>(` - run ini sudah diperbaiki dan hasilnya identik.
+5. **Pemanggilan fungsi builder lowercase** (`emptyState(...)`, dst): satu-satunya hit = false positive lifecycle `build`/`initState`/`dispose`/`paint` yang cocok dengan definisi di `lib/app/project_exit_guard.dart` - bukan widget interaktif.
+6. **Kontrol positif (baru, untuk membuktikan detektor tidak buntu):** `lib/features/authentication/presentation/login_screen.dart` yang sudah pasti interaktif -> **4 handler + 5 token widget** terdeteksi. Tanpa kontrol ini, angka "0 di 28 file" bisa saja artifact detektor mati.
+
+### Gate dan negative control
+
+- `flutter test test/features/workflow/` -> **`All tests passed!` (27 tests)**, exit 0 (suite fitur tempat layar yang di-probe berada).
+- `flutter test` 3 kontrak layar berubah -> **All tests passed (4 tests)**, exit 0.
+- `dart format` / `dart analyze` kontrak: **N/A** - tidak ada file `.dart` yang tersisa di tree (probe dihapus sebelum gate).
+- **Negative control TIDAK DIJALARKAN** - tidak ada ekspektasi kontrak untuk dimutasi karena kontrak tidak dibuat (alasan sama fase 80/81/83/86-94). Bukan pass, bukan fail.
+- `git add --` pathspec-scoped hanya laporan ini; tanpa `git add -A`.
+- Scan CJK/Cyrillic pada section ini dan pesan commit: **none**.
+- Line ending laporan: terverifikasi **LF murni** (`CRLF=0`, 5059 baris) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+
+### Kesimpulan
+
+- **Status audit: 61/89 layar in-glob berkontrak focus order; 28 sisanya display-only dan semuanya sudah di-probe live (stops=1 atau 0).** Kolam kandidat = **0**; pengesahan ke-14 (fase 80, 81, 83, 84, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95).
+- **Kualitas kontrak terukur penuh: 76/76 mengunci jumlah stop, urutan via tab traversal, dan rect posisi** - jadi 61 layar berkontrak bukan hanya "punya file", tapi benar-benar terkunci.
+- Kriteria pemilihan run (>= 2 elemen interaktif pada layar tanpa kontrak) tetap tidak terpenuhi oleh SATU pun dari 89 layar in-glob -> tidak ada kontrak baru, tidak ada perubahan kode produksi.
+- **Tidak ada lagi layar tersisa yang bisa dipompa**: seluruh 28 layar tanpa kontrak kini berstatus terukur live. Opsi Choirudin (fase 86, masih tertunda): (1) perluas audit ke widget non-`*_screen.dart` (`ExplorerPanel`, dialog, panel), (2) turunkan ambang jadi `>= 1 stop` plus audit affordance back, atau (3) hentikan audit sampai ada layar interaktif baru. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED yang sama ke-15.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

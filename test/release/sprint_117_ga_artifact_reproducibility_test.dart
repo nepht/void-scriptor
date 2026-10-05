@@ -705,30 +705,85 @@ void main() {
         );
         // Defect 117.43-02 is CLOSED (operator decision (a), 2026-10-05): the
         // rc.1 candidate was re-signed and the checksum index refreshed from
-        // the rebuilt tree, so the manifest's build-tree paths now resolve.
+        // the rebuilt tree, so the committed inventory now agrees with the
+        // signed artifacts it names.
+        //
         // The old assertion here recorded the defect by requiring the recorded
-        // artifact manifest to be ABSENT. Keeping that expectation would now
-        // pin the tree to the broken state, so it is replaced by the stronger
-        // claim the fix actually earns: every recorded path must exist and
-        // its digest must match. A clean checkout still cannot resolve
-        // `build/` — that is unchanged and still asserted above — but an
-        // operator who ran the release cycle has a manifest that agrees with
-        // the tree it names.
-        for (final path in <String>[
+        // artifact manifest to be ABSENT. Keeping that expectation would pin
+        // the tree to the broken state, so it is replaced by the claim the fix
+        // actually earns — stated so it holds on a CLEAN CHECKOUT, not only on
+        // the machine that ran the release cycle.
+        //
+        // What the re-sign actually changed, measured rather than assumed:
+        // the committed 493-entry index describes the `build/windows/...`
+        // payload tree, and the six signed artifacts it must agree with now
+        // MATCH the packaging manifest (6/6, was 0/6). It does NOT cover the
+        // two `build/release-metadata/*` files named by the manifest, and it
+        // never claimed to — those are build outputs, and `build/` is
+        // gitignored (`.gitignore` line 33), so they can never exist in CI.
+        // An earlier draft of this fix asserted their presence unconditionally
+        // and their coverage by the index; both assertions were false, and the
+        // second one was false even on the machine that built them. They are
+        // not re-stated here in any form.
+        final recordedPaths = <String>[
           ...((raw['required_outputs']['checksums'] as List<dynamic>)
               .cast<String>()),
           (raw['signing_evidence']
                   as Map<String, dynamic>)['sign_manifest_path']
               as String,
-        ]) {
+        ];
+        final committed = recordedPaths
+            .where((p) => !p.startsWith('build/'))
+            .toList();
+        final buildTree = recordedPaths
+            .where((p) => p.startsWith('build/'))
+            .toList();
+
+        // (1) The committed half of the contract is unconditional, and it is
+        // the half a clean checkout can actually honour.
+        expect(committed, isNotEmpty, reason: '117.43-02: no committed path');
+        for (final path in committed) {
           expect(File(path).existsSync(), isTrue, reason: '117.43-02: $path');
         }
+
+        // (2) Every build-tree path named by the manifest must exist WHENEVER
+        // a release tree exists. On a clean checkout none of them do, and that
+        // is the documented, pre-existing state — not a defect, and not
+        // something this test may demand.
+        for (final path in buildTree) {
+          if (!_signedBuildTreePresent) continue;
+          expect(
+            File(path).existsSync(),
+            isTrue,
+            reason: '117.43-02: $path recorded but absent from a built tree',
+          );
+        }
+
+        // (3) The refreshed inventory is committed and must stay consistent
+        // with the packaging manifest it backs: every signed artifact the
+        // manifest records has to be covered by the index. This is exactly
+        // what the defect broke (MATCH=0) and what the re-sign repaired
+        // (MATCH=6), and unlike the digests it is measurable on CI because the
+        // committed index pins the paths.
+        final index = Sprint117GaArtifactGate.readChecksumIndex(
+          File(_kChecksums).readAsLinesSync(),
+        ).index;
         expect(
-          File('build/release-metadata/artifact-manifest.json').existsSync(),
-          isTrue,
-          reason:
-              '117.43-02 closed: the re-signed tree records its own manifest',
+          index,
+          isNotEmpty,
+          reason: '117.43-02 closed: the refreshed inventory is committed',
         );
+        for (final artifact
+            in (raw['required_outputs']['signed_artifacts'] as List<dynamic>)
+                .cast<String>()) {
+          expect(
+            index.keys,
+            contains(artifact),
+            reason:
+                '117.43-02: signed artifact $artifact is not covered by the '
+                'committed checksum index',
+          );
+        }
       },
     );
   });

@@ -2271,3 +2271,95 @@ diprediksi jadi non-claim; (b) field objek rekaman (`started_at`,
 membandingkan `document['canonical_step'] != canonicalStep`) sengaja tetap
 persis - di situ ketidakhadiran menolak, jadi arah kegagalannya berkebalikan
 dan tidak otomatis ikut di-trim.
+
+### Slice 117.43-40 - kunci di bawah tingkat dokumen hanya terbaca kalau spasi
+di sekelilingnya nol (defect ke-35 fail-open hunt)
+
+DEFECT. 117.43-39 menutup tingkat dokumen dan 117.43-38 menutup anggota
+`rebuild_run`, tetapi seluruh lookup DI DALAM `required_evidence` masih
+pencocokan persis: `evidence['rebuild_results']` dan
+`evidence['artifact_comparison']`, closure `strings(key) =>
+_stringList(evidence[key])` untuk `build_inputs`, `toolchain_versions`,
+`dependency_lock`, `provenance_record`, `comparison['verdict']`,
+`comparison.containsKey('method')` dan `containsKey('limits')`,
+`containsKey('differing_artifacts')`/`containsKey('identical_artifacts')`,
+anggota rekaman `label`, `artifact_hashes`, `exit_code`, `command`, `log`,
+`started_at`, `finished_at`, `duration_seconds`, plus empat pembaca
+`duration_seconds` di `_windowsAreIndependent`,
+`_windowsArePairwiseIndependent` dan `_rebuildRunAgrees`. Karena
+ketidakhadiran = non-claim (117.43-07), satu spasi menggeser klaim melintasi
+verdict di dua arah sekaligus.
+
+PROBE (`cache/probe_117_43_40_test.dart`, kini dihapus setelah seluruh
+temuannya menjadi test resmi; 34 baris, dokumen shipped yang sama dengan
+hanya satu kunci digeser jadi `' <nama> '`). FAIL-OPEN: partition per-artefak
+dengan `differing_artifacts`/`identical_artifacts` saling bertukar nilai -
+kunci polos `unmet` (117.43-08), kunci berspasi `pass`; `command: 'msbuild
+anything'` - polos `unmet` (117.43-10), berspasi `pass`;
+`duration_seconds: 999` di depan ringkasan 145 dtk - polos `unmet`
+(117.43-36), berspasi `pass`. FAIL-CLOSED (dokumen jujur ditolak): enam
+group `required_evidence` jujur `unmet` padahal polos `pass`; `method` jujur
+`unmet`; `verdict` jujur `unmet`; `label`, `exit_code`, `started_at`,
+`finished_at`, `log`, `artifact_hashes` jujur `unmet`. Ketidaktertiban juga
+terbuka: `verdict` polos yang ditemani kembaran `' verdict': 'TOTAL_GARBAGE'`
+lolos `pass` karena hanya kunci polos yang dibaca.
+
+FIX: `_documentField` di-rename menjadi `_mapField` (doc dilevelkan jadi
+"declared field of [map]", riwayat 117.43-39 dan -40 ikut ditulis), lalu
+helper yang sama membaca 12 titik baru di bawah `required_evidence`. Dua kunci
+yang trim-nya sama = ambigu, dan SETIAP pembaca menolak (return null / return
+false) alih-alih memilih salah satu. Kunci yang `trim()` tak bisa masukkan ke
+vocabulary tetap non-claim (117.43-16) dan dipin eksplisit di test.
+
+RED: `flutter test test/release/sprint_117_ga_artifact_reproducibility_test.dart
+--plain-name "117.43-40"` terhadap lib yang belum disentuh = `+2 -7` exit 1
+(7 gagal: partition, command, durasi, enam group, comparison, field rekaman,
+dua kunci trim-sama; 2 lulus = baseline kunci polos dan kunci non-vocabulary).
+GREEN: perintah yang sama setelah fix = `+9 All tests passed` exit 0.
+
+GATES: `dart format` write lalu `--output=none --set-exit-if-changed` ->
+`0 changed` exit 0; efek format di lib terbukti HANYA tiga pemanggilan
+`_mapField(provenanceManifest, 'required_evidence')` yang menyempit dari empat
+baris jadi satu setelah rename memendekkan nama helper (bandingkan pre-format
+vs post-format: numstat `100/44` -> `100/47`, tidak ada baris lama di luar
+pemanggilan itu yang tersentuh); `dart analyze` 2 file -> `No issues found!`
+exit 0; `git diff --check` exit 0; scan non-Latin (python re kelas
+CJK/kana/hangul/fullwidth) pada baris added: lib 100 + test 271 = 0 hit dan 0
+trailing whitespace; regresi terarah 2 file (gate 117 + provenance 113) ->
+`+209 All tests passed!` exit 0 (200 pada run -39 ditambah 9 test baru);
+`flutter build windows --debug` exit 0 dalam 48,5 dtk, `flutter_assets` mtime
+2026-10-05 07:28:24 (exe statis 02:22:55 tidak dihitung); `roadmap_guard`
+PASS sebelum commit dengan canonical_sha256 `b7ef2d35` yang tidak berubah.
+
+SHA 4 sisi sama: lib
+`ce54914ecd00651c5d50faac6cf185c1dea26ebbeb2b42539089c8e506923dfe`
+(85226 B, disk == blob); test
+`0f86ec63f631eb69d0b6614e158e770a376c0743a1c2b409cdb3a12efaa49852`
+(250152 B blob; disk 256476 B dinormalkan CRLF -> LF == blob karena
+`test/release/*.dart` memang CRLF) == `git show 6eb9fff:<path>` == kutipan
+ledger == kutipan state. Numstat: lib 100/47, test 271/0 (murni insert),
+ledger ini 0 deletions.
+
+Commit fix `6eb9fff` (2 files, 371 insertions, 47 deletions). HEAD awal
+tercatat di preflight `74aff23` (ahead 48); sibling a11y `f7ee6dd` mendarat
+sebelum mutasi dan tidak menyentuh 2 path slice; sesudah fix
+`git rev-list --count origin/master..HEAD` = 50. Patch tool 0 pemakaian
+(sisip byte-eksak anchor EOF untuk file test, str.replace dengan assert
+count==1 untuk lib). Tidak ada push pada run ini.
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, `next_step` 117.43, `step_closed`
+false, verdict `GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE`, TODO-OPERATOR
+117.43-02 tetap menunggu keputusan drift manifest.
+
+Kandidat hunt berikutnya ke-36 (probe dulu, jangan klaim sebelum ada baris
+hasil): (a) gates saudara yang membaca `document['canonical_step'] != X` -
+15 file di `lib/features/world_logic/domain`, mis.
+`beta_reader_spoiler_validation.dart:59` - di sana ketidakhadiran MENOLAK,
+sehingga arah kegagalannya berkebalikan dengan file ini dan keputusan trim-nya
+jangan diambil diam-diam (juga di luar scope 117.43); (b) di file yang sama,
+sisa pembaca non-kunci pada `rebuildRecordsFrom` dan cabang `provenance_record`
+yang belum dipastikan bebas dari keluarga posisi-baris (-25/-27/-29); (c)
+pembaca kalimat di `build_reproducibility_provenance.dart`, terutama
+`_statedArtifactScope` (:139) dan sekitarnya - dua kandidat lama `parseDigest`
+(:450) dan `summarised.firstMatch(member.key)` (:1671) SUDAH TIDAK ADA di file
+itu saat dicari ulang run ini, jangan dikutip lagi.

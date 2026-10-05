@@ -2706,3 +2706,109 @@ perlakuan nilai lain sebelum dikutip. (d) pembaca key `rebuild_run`
 `:1834` (sudah trim, `firstMatch` pada pola ter-anchored) dan duplikat
 pola yang sama di helper baru `:1928` - sengaja satu grammar, bukan
 kandidat defect.
+
+### Slice 117.43-44 - penanda `sha256` dibaca sebagai token utuh, bukan
+substring (defect ke-39, hunt ke-39)
+
+DEFECT: `_hasWellFormedDigestClaims`
+(`lib/features/world_logic/domain/build_reproducibility_provenance.dart`, def
+`:1339` sebelum fix, kini `:1342`) mencari `sha-?256\s+(\S+)` sebagai
+SUBSTRING di dalam baris, sedangkan semua pembaca digest lain di file yang
+sama (`_digestsByPath`, `_digestsAgreeWithinGroup`, `_restatedDigestsAgree`)
+membaca klaim lewat tokenizer `_digestClaimsIn` yang hanya menerima token yang
+seluruhnya cocok `_digestMarkerPattern` (`^sha-?256$`). Jadi pembaca
+well-formedness ini tidak memakai grammar yang sama dengan saudara-saudaranya,
+dan regex-nya juga melanggar aturan di kepalanya sendiri ("merely mentioning
+the word is not a claim"). Bentuk konkritnya: entry `build_inputs` yang
+path-nya BERAKHIR dengan `sha256` (file sidecar `pubspec.lock.sha256` yang
+memang ditulis build ini di samping lockfile) lalu diikuti kata biasa dihitung
+"mengumumkan digest lalu memberi sesuatu yang bukan digest", sehingga SELURUH
+grup `build_inputs` ditolak, padahal setiap pembaca tokenizer pada baris yang
+sama tidak menemukan klaim apa pun — dan ringkasan tetap mencetak jumlah
+itemnya.
+
+ARAH: fail-closed over-refusal (dokumen jujur -> unmet), bukan fail-open.
+Diukur sebelum fix pada manifest shipped dengan satu baris tambahan
+`pubspec.lock.sha256 sidecar written beside the lockfile` -> status unmet,
+observed `fail: build provenance incomplete: missing build_inputs`; tanpa
+baris itu -> pass. Bound satu arah: `_digestClaimsIn` tidak pernah bisa
+membaca penanda tertanam sebagai klaim, jadi melonggarkan pembaca ini tidak
+membuat satu pun klaim lewat perbandingan — ia hanya berhenti menolak prosa
+yang tidak diukur siapa pun. Penanda berbentuk token utuh tetap dipegang
+aturan yang sama: tiga bukti (`docs/release/notes.md sha256 NOT-A-DIGEST`,
+`SHA256 NOPE`, `sha-256 nope`) tetap ditolak dengan observed `missing build_inputs`,
+sesuai 117.43-11, dan penanda tanpa nilai tetap non-claim (-07).
+
+RED/GREEN: test 117.43-44 ditulis DULU lewat sisip byte-eksak di akhir file
+test (badan CRLF, anchor ` });\r\n}\r\n` dengan `count == 1`), numstat test
+87/0 saat sisip dan TETAP 88/0 sesudah `dart format` (formatter hanya merework
+blok baru), `git diff -U0` tanpa satu pun baris `-`. RED: `--plain-name "117.43-44"`
+= `+2 -1` exit 1; satu-satunya failure test prosa (Expected pass / Actual
+unmet) sementara baseline shipped dan kontrol bukti lulus. FIX: badan fungsi
+diganti tokenizer berbasis token (`item.trim().split(RegExp(r'\s+'))`, cek
+`_digestMarkerPattern` lalu `_digestPattern` pada token berikutnya, `continue`
+kalau penanda berada di ujung baris) plus perbaikan kalimat kepala metode yang
+keliru menyebut grammar pembaca lain.
+
+GATES: `dart format` write 2 file lalu `--output=none --set-exit-if-changed` =
+0 changed exit 0; `dart analyze` 2 file `No issues found!` exit 0; `git diff --check`
+rc 0; scan non-Latin (python re, kelas CJK/kana/hangul/fullwidth) + trailing
+whitespace pada 115 baris added = 0 dan 0; GREEN `--plain-name "117.43-44"` =
+`+3` All tests passed exit 0; regresi file gate penuh = `+214` All tests
+passed exit 0 (211 lama + 3 baru, tanpa blok `Failing tests`); file 113
+provenance solo = `+13` All tests passed exit 0; `flutter build windows --debug`
+exit 0 (32,7 dtk) dengan `build/windows/x64/runner/Debug/data/flutter_assets`
+mtime 2026-10-05 14:29:15 (exe statis 2026-10-05 02:22:55 tidak dihitung).
+Sesudah koreksi dokumen: format 0 changed, analyze bersih, test 117.43-44
+diulang `+3` exit 0.
+
+COMMITS: fix `76e85be` (2 file, numstat 115/6 = domain 27/6, test 88/0 murni
+insert) lalu koreksi dokumen `6752e92` (1 file, 17/14, seluruh baris diff
+berawalan `//`/`///`, diverifikasi). ahead dengan `git rev-list --count origin/master..HEAD`:
+pre-run 8 @ `3ea6fcf`, sibling a11y `3c8a4ef` mendarat di tengah run tanpa
+menyentuh 2 path slice, sesudah dua commit = 11; angka ditanam sebagai posisi
+pengukuran, bukan dikejar. Patch tool 0 pemakaian; semua edit python replace
+dengan `assert count == 1`. Tidak ada push pada run ini (pola -35..-43).
+
+SHA 4 sisi dari blob commit `6752e92` (bukan working tree):
+`lib/features/world_logic/domain/build_reproducibility_provenance.dart` =
+`8d278a0b4e6657c4e249941487f355ccf17b9f6f2813033d448f9717464ec9bd` (78558 B,
+disk == blob); `test/release/sprint_117_ga_artifact_reproducibility_test.dart`
+= `3235c35854b2060f246fb5d5e11a181d58902cf7d35df8a3b8e0ce2fff92980b` (blob
+269807 B; disk 276607 B, CRLF dinormalkan CRLF->LF == blob, konvensi file test
+repo ini).
+
+STATUS TIDAK BERUBAH: PARTIAL-LOCAL, next_step 117.43, step_closed false,
+verdict GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE, TODO-OPERATOR 117.43-02 masih
+menunggu keputusan drift manifest. Penomoran: slice 117.43-44 = hunt ke-39.
+
+HUNT BERIKUTNYA ke-40 (probe dulu, jangan klaim sebelum ada baris hasil):
+(a) daftar -39 huruf (a) SELESAI lewat fix ini; huruf (c) sudah DIBANDINGKAN
+pada run ini dan belum diukur: `status`/`decision`
+(`sprint_117_ga_artifact_reproducibility.dart` `:1051-1052`) dan
+`canonical_step` (`:1130`) membaca nilai dengan `.trim()`, sedangkan `verdict`
+(`:1337`) membaca objek mentah lewat switch — verdict satu-satunya nilai
+vocabulary di file itu yang tidak di-trim, arah fail-closed (`' NOT_BIT_IDENTICAL '`
+-> null -> unmet), ukur dulu dengan verdict shipped yang dipadding sebelum
+dikutip;
+(b) `parseDigest` (`sprint_117_ga_artifact_reproducibility.dart` `:450`) tetap
+0 pemanggil dan doc-nya mengklaim membaca `sha256 <hex>` padahal polanya
+`^([0-9a-f]{64})\s+(\S+)$` = `<hex> <path>` (doc vs kode; tidak pernah teruji
+karena tidak dipanggil siapa pun);
+(c) TEMUAN BARU run ini, belum diukur: `RebuildResult.isWellFormed`
+(`build_reproducibility_provenance.dart` `:458`) memakai `^[0-9a-f]{64}$`
+(huruf besar ditolak) sementara `_digestPattern` (`:1375`) memakai
+`^[0-9a-fA-F]{64}$` — dua definisi "64 hex" dalam satu file, jadi digest
+`artifact_hashes` huruf besar -> unmet sedangkan digest `build_inputs` huruf
+besar -> lolos; arah terlihat fail-closed, tetapi ada precedent berlawanan:
+`readChecksumIndex` (sprint `:461`) sengaja menganggap digest huruf besar
+malformed pada file checksums — putuskan dengan ukuran, jangan menambah
+penerimaan tanpa bukti;
+(d) pesan `'$field present without a readable verdict'` di
+`_headerVerdictRefusal` (`sprint_117_ga_artifact_reproducibility.dart`
+`:1047`) dan `'$field present without a readable group'` di
+`_documentLimitsRefusal` (`:1016`) menyisipkan REKAMAN `(present:, ambiguous:, value:)`,
+bukan `name` seperti baris `:1041` dan `:1054` — observed jadi cacat; belum
+ada test yang mengunci teks pesan itu, jadi belum diukur;
+(e) `rebuild_run` `:1834` dan duplikat grammar `:1928` tetap bukan kandidat
+(satu grammar, disengaja).

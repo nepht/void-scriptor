@@ -114,6 +114,11 @@ final class _LogSummary {
 
 /// One `rebuild_<label> ...` restatement, decoded.
 ///
+/// Public since 117.43-43: the GA gate collects these restatements too,
+/// to check that the two places which restate one rebuild's duration
+/// agree with each other. It is this same tokenizer reading the line --
+/// not a second reading with its own grammar.
+///
 /// [exitCode] and [duration] are null when the line restates only the
 /// other number (117.43-41): null there is an absent claim, not an
 /// unreadable one (117.43-07).
@@ -121,8 +126,8 @@ final class _LogSummary {
 /// [start] and [finish] are null when the line states no window at all. A
 /// window the line DOES state but nobody can parse is never decoded: 117.43-37
 /// refuses the whole line instead of dropping the claims beside it.
-final class _RebuildSummary {
-  const _RebuildSummary(
+final class RebuildSummary {
+  const RebuildSummary(
     this.label,
     this.exitCode,
     this.duration,
@@ -833,7 +838,7 @@ class BuildProvenanceEvidence {
       // while a line that carries both claims is split between the two
       // readers rather than handed to whichever ran first.
       if (_logSummaryNamesUnknownLogs(line, rebuilds)) return false;
-      final summaries = _rebuildSummariesIn(line.trim());
+      final summaries = rebuildSummariesIn(line.trim());
       // Sprint 117.43-37: a restatement whose numbers or window cannot be
       // read is unevaluable evidence, not prose that happens to sit there.
       if (summaries == null) return false;
@@ -1043,6 +1048,10 @@ class BuildProvenanceEvidence {
   /// matches nothing, exactly as 117.43-15 pinned it, and the window still
   /// has to parse as the pair of timestamps it is when the line states one
   /// (117.43-37).
+  /// Public since 117.43-43 for the same reason as [RebuildSummary]: the
+  /// gate needs the restatements a line states so it can compare them
+  /// against the ones `rebuild_run` states (117.43-43).
+  ///
   /// Null when the line states a restatement this reader cannot decode: a
   /// number or a window it gives in a shape nobody can read. The caller then
   /// treats the evidence as unevaluable rather than treating the line as
@@ -1054,8 +1063,8 @@ class BuildProvenanceEvidence {
   /// already measures on the record, so comparing the restatement invents no
   /// acceptance; only an ABSENT window stays a non-claim (117.43-07), and it
   /// now costs the line nothing.
-  static List<_RebuildSummary>? _rebuildSummariesIn(String line) {
-    final summaries = <_RebuildSummary>[];
+  static List<RebuildSummary>? rebuildSummariesIn(String line) {
+    final summaries = <RebuildSummary>[];
     for (final match in _kRebuildSummaryPattern.allMatches(line)) {
       final label = match.group(1)!;
       // Only the summary lines that name a rebuild are restatements. A line
@@ -1075,7 +1084,7 @@ class BuildProvenanceEvidence {
         finish = DateTime.tryParse(match.group(9)!);
         if (start == null || finish == null) return null;
       }
-      summaries.add(_RebuildSummary(label, exitCode, duration, start, finish));
+      summaries.add(RebuildSummary(label, exitCode, duration, start, finish));
     }
     return summaries;
   }
@@ -1136,10 +1145,13 @@ class BuildProvenanceEvidence {
   /// identical claim to the identical window. The record's window is the sole
   /// measure left of the seconds the line claims, so the summary is held to
   /// it; with neither a duration nor a window on the record there is nothing
-  /// to contradict (117.43-07), the rule the gate states outright.
+  /// to contradict (117.43-07), the rule the gate states outright. What such
+  /// a record cannot do is arbitrate between TWO restatements of its own
+  /// duration that disagree; the gate now holds those to each other
+  /// (117.43-43), so this silence still claims nothing by itself.
   static bool _summaryDurationAgrees(
     RebuildResult rebuild,
-    _RebuildSummary summary,
+    RebuildSummary summary,
   ) {
     final stated = summary.duration;
     final recorded = rebuild.durationSeconds;

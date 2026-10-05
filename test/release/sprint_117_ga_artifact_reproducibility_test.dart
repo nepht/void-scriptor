@@ -6539,6 +6539,15 @@ void main() {
           .cast<Map<String, Object?>>();
       records[0].remove('started_at');
       records[0].remove('finished_at');
+      // 117.43-43: the shipped manifest also restates rebuild_a's
+      // duration in `rebuild_run` (145 seconds). Leaving that sibling
+      // in place pairs this line's 999 seconds with a SECOND written
+      // duration for the same rebuild -- the contradiction 117.43-43
+      // now refuses -- so the sibling restatement is removed and the
+      // case under test stays what its name says: one restatement
+      // beside a record that measures nothing.
+      final run = manifest['rebuild_run']! as Map<String, Object?>;
+      run.remove('rebuild_a_duration_seconds');
       expect(
         statusOf(manifest),
         Sprint117GaArtifactStatus.pass,
@@ -6547,6 +6556,156 @@ void main() {
             'neither a duration nor a window on the record there is nothing '
             'to contradict (117.43-07), and the fix must not invent a claim '
             'the document never made',
+      );
+    });
+  });
+
+  // RED-first for defect 117.43-43 (hunt ke-38): two readers restate one
+  // rebuild's duration -- the `provenance_record` summary line and the
+  // `rebuild_run` member -- and each holds its restatement only to the
+  // record's own `duration_seconds`, falling back to the record's window
+  // (117.43-36/-42). When the record states NEITHER, both readers skip,
+  // so the two written restatements are never compared with each other:
+  // a document claiming 999 seconds in one place and 888 in the other
+  // published `pass` while the group still printed `rebuild_results: 2
+  // item`. The same hole exists between two summary lines naming one
+  // rebuild, and between a bare and a whitespace-padded `rebuild_run`
+  // key (117.43-38 made both spellings readable but compared each to the
+  // record alone). Absence on the record still means there is nothing to
+  // contradict (117.43-07): a SINGLE restatement beside a silent record
+  // keeps passing; what is refused is two written numbers for one
+  // rebuild that cannot both be true.
+  group('117.43-43 restatements of one duration must agree with each '
+      'other when the record measures none', () {
+    /// The shipped manifest with every rebuild record stripped of its own
+    /// duration and window, so the record side offers no measure at all.
+    Map<String, Object?> silentRecordManifest() {
+      final manifest =
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+      final evidence = manifest['required_evidence']! as Map<String, Object?>;
+      final records = (evidence['rebuild_results']! as List<dynamic>)
+          .cast<Map<String, Object?>>();
+      for (final record in records) {
+        record.remove('started_at');
+        record.remove('finished_at');
+        record.remove('duration_seconds');
+      }
+      return manifest;
+    }
+
+    Map<String, Object?> evidenceOf(Map<String, Object?> manifest) =>
+        manifest['required_evidence']! as Map<String, Object?>;
+
+    List<dynamic> recordLines(Map<String, Object?> manifest) =>
+        evidenceOf(manifest)['provenance_record']! as List<dynamic>;
+
+    Map<String, Object?> rebuildRunOf(Map<String, Object?> manifest) =>
+        manifest['rebuild_run']! as Map<String, Object?>;
+
+    Sprint117GaArtifactStatus statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status;
+
+    test('117.43-43 baseline shipped document still passes', () {
+      final manifest =
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+      expect(statusOf(manifest), Sprint117GaArtifactStatus.pass);
+    });
+
+    test('117.43-43 a summary duration disagreeing with the rebuild_run '
+        'member of the same rebuild is refused', () {
+      final manifest = silentRecordManifest();
+      final lines = recordLines(manifest);
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = 'rebuild_a exit_code 0 duration_seconds 999';
+      rebuildRunOf(manifest)['rebuild_a_duration_seconds'] = 888;
+      expect(
+        statusOf(manifest),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the record states neither a duration nor a window, so each '
+            'reader skipped its own comparison -- but the document still '
+            'says 999 seconds in one place and 888 in the other, and two '
+            'written numbers for one rebuild cannot both be true',
+      );
+    });
+
+    test('117.43-43 the agreeing pair of restatements still passes', () {
+      final manifest = silentRecordManifest();
+      final lines = recordLines(manifest);
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = 'rebuild_a exit_code 0 duration_seconds 999';
+      rebuildRunOf(manifest)['rebuild_a_duration_seconds'] = 999;
+      expect(
+        statusOf(manifest),
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'the control: both written restatements say 999 seconds, so a '
+            'silent record leaves them no contradiction to refuse',
+      );
+    });
+
+    test('117.43-43 two summary lines stating different durations for one '
+        'rebuild are refused', () {
+      final manifest = silentRecordManifest();
+      final run = rebuildRunOf(manifest);
+      run.remove('rebuild_a_duration_seconds');
+      run.remove('rebuild_b_duration_seconds');
+      final lines = recordLines(manifest);
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = 'rebuild_a exit_code 0 duration_seconds 999';
+      lines.add('rebuild_a exit_code 0 duration_seconds 888');
+      expect(
+        statusOf(manifest),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the same defect one floor down: with the record silent each '
+            'summary line was compared only against that silence, so the '
+            'second line restating 888 seconds beside the first line '
+            'restating 999 went unread as a contradiction',
+      );
+    });
+
+    test('117.43-43 a padded rebuild_run key restating a different duration '
+        'is refused', () {
+      final manifest = silentRecordManifest();
+      final lines = recordLines(manifest);
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = 'rebuild_a exit_code 0 duration_seconds 999';
+      final run = rebuildRunOf(manifest);
+      run['rebuild_a_duration_seconds'] = 999;
+      run[' rebuild_a_duration_seconds '] = 888;
+      expect(
+        statusOf(manifest),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            '117.43-38 made a whitespace-padded key state the claim its '
+            'bare twin states; with the record silent both spellings were '
+            'checked against that silence alone, so they could disagree '
+            'with each other and still publish pass',
       );
     });
   });

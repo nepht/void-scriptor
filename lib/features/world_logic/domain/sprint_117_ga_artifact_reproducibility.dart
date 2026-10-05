@@ -1416,6 +1416,22 @@ abstract final class Sprint117GaArtifactGate {
       provenanceRecord: provenanceRecord,
     );
     final result = BuildProvenanceEvidence.evaluate(shipped);
+    if (result.state.name != 'pass') {
+      return (result.state.name, result.notes.join('; '));
+    }
+    // Sprint 117.43-43 (fail-open, fixed): only once the record side has
+    // passed -- and therefore only when the record measures nothing that
+    // contradicts -- do the two written copies of a rebuild's duration
+    // face each other. Running earlier would take the observed message
+    // away from the record-based refusals 117.43-36/-42 already publish,
+    // which compare the summary against a record that does state its
+    // duration. Here the record is silent, both readers stood down, and
+    // two written numbers for one rebuild passed side by side.
+    final durationConflict = _restatedDurationConflict(
+      provenanceRecord,
+      rebuildRun,
+    );
+    if (durationConflict != null) return ('unmet', durationConflict);
     return (result.state.name, result.notes.join('; '));
   }
 
@@ -1838,7 +1854,10 @@ abstract final class Sprint117GaArtifactGate {
         continue;
       }
       // The record states no duration of its own, so fall back to the window
-      // it does state. With neither, there is nothing to contradict.
+      // it does state. With neither, there is nothing ON THE RECORD to
+      // contradict -- the restatements written elsewhere for this same
+      // rebuild are held to each other in `_restatedDurationConflict`
+      // (117.43-43).
       if (!_hasWindow(rebuilds[index])) continue;
       final rebuild = rebuilds[index];
       final start = DateTime.tryParse(rebuild.startedAt!.trim());
@@ -1847,6 +1866,76 @@ abstract final class Sprint117GaArtifactGate {
       if (finish.difference(start).inSeconds != seconds) return false;
     }
     return true;
+  }
+
+  /// The first duration this document restates twice with different
+  /// seconds, or null when every restatement of one rebuild agrees.
+  ///
+  /// Sprint 117.43-43 (fail-open, fixed): a rebuild's duration is written
+  /// in two places -- the `provenance_record` summary lines and the
+  /// `rebuild_run` members -- and each reader held its own copy only to
+  /// the record's `duration_seconds`, falling back to the record's window
+  /// (117.43-36/-42). When the record stated NEITHER, both readers
+  /// skipped and nothing compared the two copies with each other: 999
+  /// seconds in one place and 888 in the other published `pass` while the
+  /// group still printed `rebuild_results: 2 item`. The same silence hid
+  /// a disagreement between two summary lines naming one rebuild, and
+  /// between a bare and a whitespace-padded `rebuild_run` key (117.43-38
+  /// made both spellings readable but measured each against the record
+  /// alone).
+  ///
+  /// Only the values those two readers already parse are collected here:
+  /// the summary side goes through the domain's own tokenizer (one
+  /// grammar, not a second reading of the same line) and the member side
+  /// uses the same `rebuild_<label>_duration_seconds` key `_rebuildRunAgrees`
+  /// reads. Absence still claims nothing (117.43-07): a single
+  /// restatement beside a record that measures nothing passes, and a
+  /// number that contradicts the record is refused where it was already
+  /// refused. What is refused here is two written numbers for one rebuild
+  /// that cannot both be true, which invents no acceptance -- the record
+  /// already measures this quantity everywhere it states it.
+  static String? _restatedDurationConflict(
+    List<String> provenanceLines,
+    Object? rebuildRun,
+  ) {
+    final stated = <String, int>{};
+    String? note(String label, int seconds) {
+      final prior = stated[label];
+      if (prior == null) {
+        stated[label] = seconds;
+        return null;
+      }
+      if (prior == seconds) return null;
+      return 'rebuild duration restated twice with different seconds: '
+          '$label $prior vs $seconds';
+    }
+
+    for (final line in provenanceLines) {
+      final summaries = BuildProvenanceEvidence.rebuildSummariesIn(line.trim());
+      // A line this reader cannot decode is unevaluable on its own and
+      // carries no duration to cross-check here; the domain reports it.
+      if (summaries == null) continue;
+      for (final summary in summaries) {
+        final seconds = summary.duration;
+        if (seconds == null) continue;
+        final conflict = note(summary.label, seconds);
+        if (conflict != null) return conflict;
+      }
+    }
+    if (rebuildRun is! Map<String, Object?>) return null;
+    final summarised = RegExp(r'^(rebuild_.+)_duration_seconds$');
+    for (final member in rebuildRun.entries) {
+      final label = summarised.firstMatch(member.key.trim())?.group(1);
+      if (label == null) continue;
+      final seconds = _durationOrNull(member.value, true);
+      // Undecodable values are refused by `_rebuildRunAgrees`; here they
+      // simply state no number to put beside the others.
+      if (seconds is int) {
+        final conflict = note(label, seconds);
+        if (conflict != null) return conflict;
+      }
+    }
+    return null;
   }
 
   /// Reads a JSON manifest, returning null when absent or undecodable.

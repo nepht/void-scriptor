@@ -4779,6 +4779,36 @@ Ketiganya mengunci `tester.takeException()` isNull dan area stop non-zero dalam 
 - Keputusan Choirudin atas opsi 1-3 fase 86 (perluas ke 24 widget non-`*_screen.dart` / turunkan ambang jadi `>= 1 stop` + audit affordance back / hentikan audit sampai ada layar interaktif baru) masih tertunda.
 - Catatan mekanis: file report ini terverifikasi murni LF saat run ini (4870 baris, 0 byte CR), sehingga penyisipan memakai mode `newline=''` - instruksi "pertahankan CRLF" tidak berlaku untuk file ini.
 
+## 91. Fase 91 - Focus Order di Asset Browser Screen: jalur List & Compact view (2.4.3)
+
+**Tanggal:** 2026-10-05. **Status: PASS (perluasan kontrak pada layar yang sudah berkontrak)** - satu kontrak diperluas dengan dua state yang belum pernah diukur, negative control hijau-ke-merah terbukti, tanpa mengubah kode produksi.
+
+**Mengapa fase ini ada setelah fase 90 menyatakan kolam kosong:** basis fase 90 mengklasifikasi cakupan setingkat *file* (import-graph `test/**/*focus_order*.dart` ke `*_screen.dart`) sehingga 28 layar tersisa dianggap statis dan kolam kandidat ditutup. Fase ini mengulang klasifikasi setingkat *kelas*: setiap `class X extends` di seluruh `lib/**/*_screen.dart` dicocokkan dengan word-boundary `\bClassName\s*\(` ke gabungan isi 76 file kontrak, lalu hitung ulang token handler per badan kelas. Hasilnya 39 kelas tak pernah dipompa kontrak mana pun, dan 7 di antaranya membawa handler non-null.
+
+**Triage ketujuh kelas (dibaca + diprobe, bukan disimpulkan dari nama):**
+
+1. `AssetCard` (nn=2, h=9) - **false positive**: dirender transitif oleh `AssetBrowserScreen` pada state default (grid), terbukti dari stop 6/7 kontrak grid (rect 206x210, label `Qowner`/`Void Sword`).
+2. `AssetListTile` (nn=2, h=8) - **GAP NYATA**: hanya dirender pada mode list/compact. Kontrak `asset_browser_focus_order_test.dart` (commit `3ddc24b`) hanya memompa state default dan tidak pernah menekan tombol view mode, sehingga `onTap` pada baris daftar tak pernah masuk traversal fokus.
+3. `ReferenceCard` (nn=2, h=2) - dirender transitif oleh `ReferenceLibraryScreen` di state default (kontrak `reference_library_focus_order_test.dart` memang menghasilkan 20 stop dengan `Add reference` pada akhir traversal).
+4. `TimelineClip` / `TimelineHeader` / `TimelineRuler` (nn=1/1/1) - dirender transitif oleh `TimelineWorkspaceScreen`; kontrak `timeline_workspace_focus_order_test.dart` terkunci pada 30 stop yang sudah mencakup `Timeline 1`/`Timeline 2`.
+5. `CinematicProductionWorkspaceScreen` - **false positive nama-file**: dipompa di `test/features/cinematic_production/cinematic_production_focus_order_test.dart:44`, hanya namanya tidak berpola `<stem>_focus_order_test.dart`.
+6. `AutomationCenterScreen` (nn file-level=3, class-level=0) - probe live `raw=1 leaf=0`: satu-satunya toggle ada di baris 49 dengan `onChanged: null // alpha scope: display-only toggle`, sehingga layar ini nol kontrol yang bisa difokus. Tidak memenuhi syarat minimal 2 elemen interaktif -> **tidak layak kontrak** (setara `about_screen.dart`/`splash_screen.dart`), jadi statusnya tetap tanpa kontrak karena bukan layar interaktif, bukan karena terlewat.
+7. Sisanya (`CreatureWorkspaceScreen`, `AiStudioScreen`, 21 layar `leaf=1`/`leaf=0` hasil probe fase 90) - sudah terbukti tanpa handler; tidak diulang.
+
+**Probe (2026-10-05, viewport 1536x1024 @ dpr 1.0, fixture identik kontrak grid: 2 aset `Qowner` + `Void Sword`, `find.byTooltip` untuk tombol toolbar, `flutter test test/features/assets/_probe_viewmode_focus_test.dart` -> `All tests passed!` 2 tests):**
+
+- **List view -> 9 stop, `EXC=null`:** 0 `Grid view` (1396,8, 40x40), 1 `List view` (1444,8, 40x40), 2 `Compact view` (1492,8, 40x40), 3 `Search everything...` (64,84, 1049x24), 4 `Favorites` (1137,77, 161x38), 5 `All types` (1306,72, 218x48), 6 `Qowner` (0,136, **1536x72**), 7 `Void Sword` (0,208, **1536x72**), 8 `Create stand-alone asset` (1283,952, 237x56).
+- **Compact view -> 9 stop, `EXC=null`:** stop 0-5 identik; 6 `Qowner` (0,136, **1536x48**), 7 `Void Sword` (0,184, **1536x48**), 8 `Create stand-alone asset` (1283,952, 237x56).
+- Kunci pembeda terhadap grid: baris daftar selebar viewport (1536, `left=0`) dan bertumpuk `top` menaik, sedangkan kartu grid 206x210 berdampingan `left` menaik dengan `top` sama. **Urutan label kedua mode identik dengan grid (9 stop)**, jadi label saja tidak cukup sebagai kontrak - geometri yang membedakan mode.
+
+**Kontrak baru** (`test/features/assets/asset_browser_focus_order_test.dart`, helper `collectStopsInMode` + `expectStackedRows`): dua `testWidgets` baru mengunci (a) jumlah stop = 9 dan urutan label identik `listModeLabels`, (b) seluruh area fokus non-zero dan berada dalam viewport 1536x1024, (c) toolbar stop 0-2 segaris horizontal kiri-ke-kanan dan filter 3-5 di bawah toolbar, (d) stop 6/7 selebar 1536 dengan `left=0` dan `top` menaik (baca atas-ke-bawah), (e) tinggi baris **72 untuk List view** dan **48 untuk Compact view**, (f) `Create stand-alone asset` tetap stop terakhir di bawah baris. Dua test lama (grid 9 stop + wrap) tidak diubah.
+
+**Negative control (LANGKAH 6):** backup `cp` ke `/c/Users/nepht/AppData/Local/Temp/asset_browser_focus_order_test.dart.bak` (12.055 byte), mutasi satu ekspektasi berupa penukaran `Favorites` <-> `All types` di `listModeLabels` (dijalankan lewat file `.py` scratch; versi inline `python -c` gagal `SyntaxError` karena quoting bash, sehingga run pertama tidak bermutasi dan **tidak dihitung** sebagai kontrol), lalu `flutter test` yang sama -> **`Some tests failed.` `00:03 +2 -2`**, kedua test mode baru gagal pada `Expected:`/`Actual:` sedangkan dua test grid tetap lulus (mutasi terbukti terbatas pada kontrak baru). File dikembalikan dari backup, backup dihapus (`backup_exists_after=NO`).
+
+**Gate (LANGKAH 5/9):** `dart format` -> 1 file berubah; `dart analyze test/features/assets/asset_browser_focus_order_test.dart` -> `No issues found!`; `flutter test test/features/assets/` -> semua lulus dengan 4 test pada file kontrak (`focus order: 9 stops...`, `focus order: traversal wraps...`, `focus order (list view)...`, `focus order (compact view)...`). Kedua file probe (`_probe_viewmode_focus_test.dart` dan `_probe_focus_test.dart` sisa fase sebelumnya) dihapus, tanpa perubahan `lib/`.
+
+**Catatan line ending:** instruksi menyebut mempertahankan CRLF, tetapi pemeriksaan langsung `crlf=0, lf_only=4912` membuktikan dokumen ini ber-**LF**; pembacaan/pengisian memakai `newline=''` sehingga ending yang ada (LF) dipertahankan apa adanya.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

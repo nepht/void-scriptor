@@ -6428,4 +6428,126 @@ void main() {
       );
     });
   });
+
+  // RED-first for defect 117.43-42 (hunt ke-37): `_summaryDurationAgrees`
+  // holds a restated duration to the record's `duration_seconds`, and when
+  // the summary line carries a window it holds it to that window too
+  // (117.43-36) — but a record stating NO duration beside a summary stating
+  // NO window meets no measure at all, even though the record does state a
+  // window. The gate's own `rebuild_run` reader falls back to exactly that
+  // window in the same situation (its record-side duration absent -> hold
+  // the claim to the window the record does state), so the two readers of
+  // one claim disagreed: `rebuild_a_duration_seconds 145` beside a summary
+  // `duration_seconds 999` published `pass`, while the same 999 WITH an
+  // honest window restated beside it was already `unmet`. The probe that
+  // found this printed `pass` for the window-less line and `unmet` for the
+  // same number with the window written out — one number measured only when
+  // the line repeats a fact the record already states elsewhere.
+  group('117.43-42 a summary duration is held to the window its record '
+      'states when the record states no duration', () {
+    /// The shipped document with rebuild_a's own duration removed — the
+    /// window (145 seconds) stays, so the record still places the rebuild in
+    /// time and only the number the summary states has nothing beside it.
+    Map<String, Object?> recordWithoutDuration({required String summaryLine}) {
+      final manifest =
+          jsonDecode(
+                jsonEncode(
+                  Sprint117GaArtifactGate.readManifest(_kProvenanceManifest),
+                ),
+              )
+              as Map<String, Object?>;
+      final evidence = manifest['required_evidence']! as Map<String, Object?>;
+      final records = (evidence['rebuild_results']! as List<dynamic>)
+          .cast<Map<String, Object?>>();
+      records[0].remove('duration_seconds');
+      final lines = (evidence['provenance_record']! as List<dynamic>)
+          .cast<String>();
+      final index = lines.indexWhere(
+        (line) => line.startsWith('rebuild_a exit_code'),
+      );
+      expect(index, greaterThanOrEqualTo(0));
+      lines[index] = summaryLine;
+      return manifest;
+    }
+
+    Sprint117GaArtifactStatus statusOf(Map<String, Object?> manifest) =>
+        Sprint117GaArtifactGate.measureProvenance(
+          provenanceManifest: manifest,
+        ).status;
+
+    test('117.43-42 a window-less restatement contradicting the window its '
+        'record states is refused', () {
+      final check = Sprint117GaArtifactGate.measureProvenance(
+        provenanceManifest: recordWithoutDuration(
+          summaryLine: 'rebuild_a exit_code 0 duration_seconds 999',
+        ),
+      );
+      expect(
+        check.status,
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the record places rebuild_a in a 145-second window and states '
+            'no duration of its own, so that window is the only measure left '
+            'of the 999 seconds this line restates; omitting the window must '
+            'not escape the measurement the same number with a window beside '
+            'it already faces (117.43-36)',
+      );
+      expect(check.observed, contains('provenance_record'));
+    });
+
+    test('117.43-42 the agreeing window-less restatement still passes', () {
+      expect(
+        statusOf(
+          recordWithoutDuration(
+            summaryLine: 'rebuild_a exit_code 0 duration_seconds 145',
+          ),
+        ),
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'the control: 145 seconds is exactly the window the record '
+            'states, so holding the restatement to that window must measure '
+            'it without refusing it',
+      );
+    });
+
+    test('117.43-42 a restatement carrying the window is still measured the '
+        'way 117.43-36 measures it', () {
+      expect(
+        statusOf(
+          recordWithoutDuration(
+            summaryLine:
+                'rebuild_a exit_code 0 duration_seconds 999 '
+                '(2026-10-04T20:40:12.334+07:00 '
+                '.. 2026-10-04T20:42:37.771+07:00)',
+          ),
+        ),
+        Sprint117GaArtifactStatus.unmet,
+        reason:
+            'the same contradiction with the window written out must stay '
+            'refused; the fallback closes the window-less path without '
+            'widening or narrowing the one 117.43-36 already pinned',
+      );
+    });
+
+    test('117.43-42 a record stating neither duration nor window leaves '
+        'nothing for a restatement to contradict', () {
+      final manifest = recordWithoutDuration(
+        summaryLine: 'rebuild_a exit_code 0 duration_seconds 999',
+      );
+      final evidence = manifest['required_evidence']! as Map<String, Object?>;
+      final records = (evidence['rebuild_results']! as List<dynamic>)
+          .cast<Map<String, Object?>>();
+      records[0].remove('started_at');
+      records[0].remove('finished_at');
+      expect(
+        statusOf(manifest),
+        Sprint117GaArtifactStatus.pass,
+        reason:
+            'the sibling rule the rebuild_run reader states outright: with '
+            'neither a duration nor a window on the record there is nothing '
+            'to contradict (117.43-07), and the fix must not invent a claim '
+            'the document never made',
+      );
+    });
+  });
 }

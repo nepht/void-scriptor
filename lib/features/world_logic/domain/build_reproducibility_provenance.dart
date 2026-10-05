@@ -1126,6 +1126,17 @@ class BuildProvenanceEvidence {
   /// own duration first, so the comparison survives the missing window; the
   /// window checks below still hold both copies to the interval when one is
   /// stated.
+  ///
+  /// Sprint 117.43-42: the mirror shape of that fix. When the record states
+  /// no duration of its own but DOES state a window, and the summary line
+  /// states a duration without repeating the window, the branch below used to
+  /// return before any number was compared — so the same 999 seconds was
+  /// refused when the line carried the window (117.43-36) and accepted when
+  /// it did not, while the gate's `rebuild_run` reader already held the
+  /// identical claim to the identical window. The record's window is the sole
+  /// measure left of the seconds the line claims, so the summary is held to
+  /// it; with neither a duration nor a window on the record there is nothing
+  /// to contradict (117.43-07), the rule the gate states outright.
   static bool _summaryDurationAgrees(
     RebuildResult rebuild,
     _RebuildSummary summary,
@@ -1136,17 +1147,33 @@ class BuildProvenanceEvidence {
       return false;
     }
     // Sprint 117.43-37: a restatement that gives no window makes no window
-    // claim, so the two numbers above are all it can be held to. The window
-    // must not decide whether those numbers are read at all.
+    // claim, so no window of its own can decide whether the numbers it does
+    // state are read at all. The record's own duration above is the first
+    // measure; 117.43-42 below adds the record's window as the last.
     final summaryStart = summary.start;
     final summaryFinish = summary.finish;
-    if (summaryStart == null || summaryFinish == null) return true;
     final start = rebuild.startedAt == null
         ? null
         : DateTime.tryParse(rebuild.startedAt!.trim());
     final finish = rebuild.finishedAt == null
         ? null
         : DateTime.tryParse(rebuild.finishedAt!.trim());
+    if (summaryStart == null || summaryFinish == null) {
+      // Sprint 117.43-42: with no window of its own the line can only be
+      // held to the numbers it states — and when the record states no number
+      // either, the window the record DOES state is the last measure of the
+      // seconds this line claims. Both timestamps parse only when the record
+      // places the rebuild in time at all: `hasWellFormedWindow` has already
+      // refused a window present in a shape nobody can read, and an absent
+      // window leaves both null, so there is nothing to contradict.
+      if (stated != null &&
+          recorded == null &&
+          start != null &&
+          finish != null) {
+        return stated == finish.difference(start).inSeconds;
+      }
+      return true;
+    }
     if (start == null || finish == null) return true;
     if (!start.isAtSameMomentAs(summaryStart)) return false;
     if (!finish.isAtSameMomentAs(summaryFinish)) return false;

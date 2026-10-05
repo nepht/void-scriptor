@@ -3223,3 +3223,88 @@ sebagai "missing" ketika objeknya ADA dan hanya sub-kunci `method`/`limits`
 yang absen, sedangkan pesan itu juga dipakai untuk objek yang benar-benar
 null: dua kondisi berbeda, satu label — putuskan apakah labelnya
 diperbaiki atau diterima sebagai bahasa evaluasi.
+
+### Slice 117.44 - Staged GA Rollout Plan: delapan field kanonik dibaca dari bukti ter-commit (step kanonik 117.44)
+
+Step kanonik `117.44` (Staged GA Rollout Plan) mengikat delapan field:
+`stages`, `connector_subset`, `exposure`, `health_criteria`, `stop_conditions`,
+`kill_switches`, `rollback`, `support`. Gate baru
+`lib/features/world_logic/domain/sprint_117_staged_ga_rollout_plan.dart`
+membaca field-field itu dari bukti ter-commit, bukan mengetikkannya: 116.50
+(`sprint_116_staged_beta_rollout_monitoring.json`) menyediakan flags, stages,
+health metrics, stop conditions, kill switches, rollback, dan default; 117.4
+menyediakan certified subset; 117.5 menyediakan determined exposure; 117.6
+menyediakan support path; 117.8 menyediakan rollback drill dan status drill kill
+switch.
+
+Dua aturan yang menanggung beban. Pertama, rollout hanya boleh mengekspos
+certified subset - subset adalah irisan connector yang 117.4 certifikasi dan
+yang 116.50 stage; stage yang mengekspos provider di luar itu adalah
+`uncertified_connector` (violation), bukan beta yang lebih luas. Kedua, plan
+ditentukan (determined), tidak pernah diaktifkan: 117.5 sudah menentukan local
+exposure untuk connector yang di-stage dan mengaktifkan nol karena 117.3 tidak
+mencatat kohort peserta terverifikasi, sehingga plan yang melaporkan enabled
+exposure akan mengklaim kohort yang tidak ada. Karena itu `enabled_subset` tetap
+kosong, `live_rollout_executed` false, dan seluruh gerbang eksternal tetap
+`DEFERRED-EXTERNAL`.
+
+Hasil terhadap bukti ter-commit: state `pass`, verdict
+`STAGED_GA_ROLLOUT_PLAN_DEFINED_LOCAL`, 3 stage (stage_internal 5% -> stage_alpha
+25% -> stage_waitlist 100%), connector subset `[openai, gemini]` (certified
+subset 31 provider, hanya dua yang juga di-stage 116.50), master flag
+`beta.connectors.enabled`, recorded default `OFF`, dan field coverage 3/3 untuk
+kedelapan field. Exposure percent naik monoton dengan urutan stage; setiap stage
+menyebut rollback yang menargetkannya; setiap provider yang diekspos punya kill
+switch; setiap stop condition memakai action di vocabulary
+(`halt_rollout`/`rollback_stage`/`page_oncall`) dan metric yang direkam 116.50.
+Open items jujur tetap dibawa: `live_rollout_not_executed`,
+`cohort_not_verified`, `rollback_drill_not_executed`,
+`kill_switch_not_drilled:kill_openai`/`:kill_gemini`, dan item yang diwarisi dari
+117.5.
+
+Negatif fail-closed diuji satu per satu: connector tak tersertifikasi =
+violation; stage tanpa exposure = undetermined; exposure percent yang turun =
+violation; stop action di luar vocabulary = violation; provider terekspos tanpa
+kill switch = undetermined; rollback yang menarget stage lain = violation;
+anchor absen = blocked (bukan fail); verdict certified subset yang drift =
+violation. Satu defect pada draft gate sendiri tertangkap RED pertama: saat
+`anchor == null` loop stage tetap berjalan dan memfabrikasi violation sehingga
+kasus bukti-hilang dilaporkan `fail` padahal seharusnya `blocked` - diperbaiki
+dengan menghentikan loop saat anchor null (plan tanpa bukti bukan plan yang
+salah, melainkan plan yang belum ditentukan), lalu dianalisis ulang dan
+flow-promotion membuat sembilan `?.` jadi tak perlu dan dibersihkan.
+
+GATES: `dart format` write lalu `--output=none --set-exit-if-changed` = 0
+changed exit 0 (2 file); `dart analyze` 2 file `No issues found!` exit 0;
+`git diff --check` rc 0; scan non-Latin (python re kelas CJK/kana/hangul/
+fullwidth) + trailing whitespace pada 3 file = 0 dan 0; test slice 20/20
+`All tests passed`; regresi LIMA file gate 117 sibling (117.44 + 117.5 + 117.4 +
+117.6 + 117.8) dalam SATU run = `+193` All tests passed exit 0 tanpa blok
+`Failing tests`; manifest deterministik (dua generate = sha sama);
+`roadmap_guard.dart` PASS (recommended_step 117.44, canonical_sha256
+`b7ef2d35...`). Scratch probe dan generator dihapus setelah asersi resmi
+dipindahkan (gitignored).
+
+COMMITS: `4d7074b` (3 file, 1724 insertions, 0 delete; tidak ada reflow kode
+lain). ahead `git rev-list --count origin/master..HEAD`: preflight 0 @ `55d372d`
+-> sesudah commit = 1. Tidak ada push pada run ini. Perubahan `M` pada
+`test/release/sprint_117_ga_artifact_reproducibility_test.dart` dan `??`
+`test/core/security/presentation/` adalah milik writer lain dan dipertahankan
+utuh (tidak disentuh, tidak di-commit).
+
+SHA 4 sisi dari blob commit `4d7074b` (bukan working tree):
+`docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json` =
+`d73601a0f8bbe437dd0f32111240827bf70644feca6fdec85abdad36fe7481da`
+(7189 B, disk == blob);
+`lib/features/world_logic/domain/sprint_117_staged_ga_rollout_plan.dart` =
+`d485630cbab1f8242b4b711fc0245a4e493e005bd889dc7bc37e7c8b95cd93ac`
+(38284 B, disk == blob). File test ber-CRLF sehingga blob commit di-LF-kan git:
+blob `2bf58388f6b7ce82e9c1d368841c3f62220aed96456f96837d39dbc918f25d26`
+vs disk `5233f58781abd4b12f9b5916b32a24eff6d1755b74d099304ca5720a6b5cdf14`
+- beda sha karena EOL, isi sama setelah normalisasi CRLF->LF (blob size 16055 ==
+normalized size 16055, bukti 4 sisi untuk file CRLF diukur lewat `git show`).
+
+STATUS: step kanonik 117.44 ditutup VERIFIED-LOCAL (gate + manifest + test
+ter-commit). Sisa gerbang tetap eksternal: tidak ada flag di-flip, tidak ada
+stage dimajukan, tidak ada stop condition yang menyala, tidak ada kill switch
+yang di-drill terhadap provider live, dan tidak ada rollback yang dieksekusi.

@@ -12,13 +12,19 @@
 /// to say `pass` by the very code it is supposed to police. That is exactly
 /// how a sprint reports a release that never happened.
 ///
-/// Two rules carry the weight:
+/// Three rules carry the weight:
 ///
 /// * The gate reads the committed execution manifest. A `verified` output is
 ///   only accepted when the evidence path it cites exists on disk, and a
 ///   blocking release decision forbids `pass` however the output records
 ///   read. A record that claims `verified` while the committed manifest
 ///   records `UNVERIFIABLE` is an overclaim and fails the gate, not passes it.
+/// * The committed approval gate (117.45) is read through both of its
+///   witnesses: the boolean `execution_authorized` *and* the decision word.
+///   Consulting only the flag lets a source that records a blocking decision
+///   (delay/rollback) still authorize execution through a contradictory
+///   boolean, so the decision word is gated too and an unrecognised decision
+///   word is drift, not permission.
 /// * Absent evidence is undetermined, never permission. A missing or
 ///   malformed manifest, an unknown status word, or an unknown release
 ///   decision keeps the gate closed (`blocked`/`fail`), never `pass`.
@@ -81,6 +87,30 @@ abstract final class Sprint117GaReleaseContract {
     'AUTHORIZED',
     'AUTHORIZED_FOR_EXECUTION',
     'RELEASED',
+  };
+
+  /// Approval-source decision words, matched case-insensitively: the committed
+  /// 117.45 approval gate records its decision in lowercase (e.g. "delay").
+  /// The decision word is a second witness in the same source as the boolean
+  /// authorization flag, so it must be consulted, not just loaded.
+  static const Set<String> approvalDecisionVocabulary = <String>{
+    'BLOCKED_EXTERNAL_GATES',
+    'DELAY',
+    'DELAYED',
+    'ROLLED_BACK',
+    'AUTHORIZED',
+    'AUTHORIZED_FOR_EXECUTION',
+    'RELEASED',
+  };
+
+  /// Approval-source decisions that forbid a `pass`: an approval gate that
+  /// records a delay/rollback has decided *not* to authorize execution,
+  /// whatever its boolean flag happens to read.
+  static const Set<String> blockingApprovalDecisions = <String>{
+    'BLOCKED_EXTERNAL_GATES',
+    'DELAY',
+    'DELAYED',
+    'ROLLED_BACK',
   };
 
   /// Map a manifest status word to the enum, tolerating case.
@@ -404,6 +434,27 @@ class Sprint117GaReleaseGate {
           'authorization_disagrees_with_approval_gate:'
           '${evidence.approvalSourceDecision ?? 'unknown'}',
         );
+      }
+      // The approval source records its decision as a word, not only as a
+      // boolean. The word is a second witness in the same source: even when
+      // the boolean reads authorized, a recorded blocking decision (delay or
+      // rollback) forbids pass, and an unrecognised decision word is drift,
+      // not permission. Consulting only the flag lets the two readers of one
+      // question disagree unnoticed.
+      final approvalDecision = evidence.approvalSourceDecision;
+      if (approvalDecision != null && approvalDecision.trim().isNotEmpty) {
+        final normalized = approvalDecision.trim().toUpperCase();
+        if (!Sprint117GaReleaseContract.approvalDecisionVocabulary.contains(
+          normalized,
+        )) {
+          violations.add('unknown_approval_source_decision:$approvalDecision');
+        } else if (Sprint117GaReleaseContract.blockingApprovalDecisions
+            .contains(normalized)) {
+          violations.add(
+            'authorization_source_decision_blocks_execution:'
+            '$approvalDecision',
+          );
+        }
       }
     }
 

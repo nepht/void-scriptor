@@ -396,6 +396,86 @@ void main() {
       );
     });
 
+    test('117.46-GATE-AUTH-DECISION a blocking approval-source decision forbids '
+        'pass even when the approval flag reads authorized', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The committed approval gate (117.45) records decision "delay". The
+      // decision word is a second witness in the same source as the boolean
+      // flag: even if the flag read true, a gate that says delay cannot
+      // authorize execution.
+      final blocking = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'delay',
+        ),
+      );
+      expect(blocking.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        blocking.violations.any(
+          (v) =>
+              v.startsWith('authorization_source_decision_blocks_execution:'),
+        ),
+        isTrue,
+      );
+
+      // An unrecognised approval-source decision word is drift, not permission.
+      final unknown = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'MAYBE_LATER',
+        ),
+      );
+      expect(unknown.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        unknown.violations.any(
+          (v) => v.startsWith('unknown_approval_source_decision:'),
+        ),
+        isTrue,
+      );
+
+      // Control: a genuinely authorized approval source still passes, so the
+      // gate is not simply always-fail.
+      final authorized = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+        ),
+      );
+      expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
+    });
+
     test('117.46-STATUS-VOCABULARY partial is a representable status and is '
         'never silently promoted to verified', () {
       expect(

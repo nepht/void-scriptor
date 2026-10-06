@@ -3701,7 +3701,8 @@
     ],
     "missing_outputs": 7,
     "violations": 0,
-    "note": "Gate hardening only; the step itself stays external-blocked. evaluate() now reads the committed execution manifest and cross-checks the authorization claim against the committed 117.45 approval gate, so the gate can no longer pass on a synthetic record while the evidence says BLOCKED_EXTERNAL_GATES. A verified output is accepted only when the path it cites exists on disk (verified_without_evidence otherwise); an unknown status word or release decision is drift and fails the gate; absent/malformed evidence yields blocked, never pass; a blocking release decision forbids pass however the records read. Approval, publication, monitoring, support notification, certified-subset enforcement, and rollback against a published artifact remain unverified/DEFERRED-EXTERNAL. Go/no-go remains the operator's decision."
+    "note": "Gate hardening only; the step itself stays external-blocked. evaluate() now reads the committed execution manifest and cross-checks the authorization claim against the committed 117.45 approval gate, so the gate can no longer pass on a synthetic record while the evidence says BLOCKED_EXTERNAL_GATES. A verified output is accepted only when the path it cites exists on disk (verified_without_evidence otherwise); an unknown status word or release decision is drift and fails the gate; absent/malformed evidence yields blocked, never pass; a blocking release decision forbids pass however the records read. Approval, publication, monitoring, support notification, certified-subset enforcement, and rollback against a published artifact remain unverified/DEFERRED-EXTERNAL. Go/no-go remains the operator's decision. 2026-10-07 (slice 853877c): the approval-source decision word is now gated too, not only the boolean flag. The committed 117.45 approval gate records decision 'delay' (lowercase) alongside execution_authorized=false; the gate now fails unknown_approval_source_decision:<word> and authorization_source_decision_blocks_execution:<word> even when the flag reads authorized. RED 117.46-GATE-AUTH-DECISION +0 -1 exit 1; GREEN 14/14 slice, 21/21 with 117.45 gate; analyze No issues; format idempotent; diff --check rc 0; emitter output byte-identical (43e3f156). Step remains PARTIAL-LOCAL-EXTERNAL-BLOCKED; execution_authorized=false and approval_state=PENDING_CHOIRUDIN unchanged.",
+    "last_slice_commit": "853877c"
   },
   "sprint_117_step_11747": {
     "status": "VERIFIED-LOCAL",
@@ -3816,7 +3817,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "45c1f0e",
+  "last_slice_commit": "853877c",
   "last_verified_on": "2026-10-07",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3933,7 +3934,7 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "07145b9",
-  "ahead": 15,
+  "ahead": 17,
   "defect_117_43_27": {
     "date": "2026-10-04",
     "hunt_ordinal": 22,
@@ -4576,5 +4577,6 @@
   },
   "defect_117_46_ga_gate_path_collision": "REGRESSION: 117.46 overwrote the closed step 113.44 gate file lib/features/world_logic/domain/ga_release_execution.dart; both steps and both tests share the path while declaring different contracts (113.44 = 6 outputs, 117.46 = 7). Fixed in cb60570: 113.44 restored byte-identical to 28a7a65; 117.46 moved to sprint_117_ga_release_execution.dart with Sprint117Ga* prefixed symbols. RED 113.44 -2 exit 1 vs pre-117.46 blob +4 exit 0.",
   "defect_117_46_canonical_order_drift": "Gate declared support_ready before monitoring_active while canonical steps[45].requirements lists monitoring_active at position 5; the old test pinned the drifted order as expected, so the defect passed as green. Fixed in cb60570 and pinned by the 117.46-GATE-ORDER assertion.",
-  "defect_117_46_unmeasured_evidence_topicality": "Manifest 117.46 inherited evidence assignment from 113.44 when the contract grew 6->7 outputs: connector_subset_enforced cited release-notes (substring 'subset' count 0) and uncertified_hidden cited support-playbook ('hidden' count 0), so structure-only checks passed while claims stayed unmeasured. Fixed in 63c6e67: new 117.46-EVIDENCE-TOPIC gate requires every cited file to exist and its combined body to contain the output's topical keyword; both outputs remapped to the Sprint 116 beta acceptance gate plus the 117 certification snapshot lock. Status stays PARTIAL-LOCAL-EXTERNAL-BLOCKED."
+  "defect_117_46_unmeasured_evidence_topicality": "Manifest 117.46 inherited evidence assignment from 113.44 when the contract grew 6->7 outputs: connector_subset_enforced cited release-notes (substring 'subset' count 0) and uncertified_hidden cited support-playbook ('hidden' count 0), so structure-only checks passed while claims stayed unmeasured. Fixed in 63c6e67: new 117.46-EVIDENCE-TOPIC gate requires every cited file to exist and its combined body to contain the output's topical keyword; both outputs remapped to the Sprint 116 beta acceptance gate plus the 117 certification snapshot lock. Status stays PARTIAL-LOCAL-EXTERNAL-BLOCKED.",
+  "defect_117_46_approval_source_decision_unread": "2026-10-07 (slice 117.46, commit 853877c). Defect family: two readers of one question, only one consulted. The GA release gate loaded the committed 117.45 approval gate's decision word (approvalSourceDecision, from approval.decision) but never gated it; only the boolean execution_authorized was gated. A source that records a blocking decision (delay/BLOCKED_EXTERNAL_GATES) could still authorize execution through a contradictory boolean, and an unknown decision word was read as permission. Probe proved pass for delay+flag-true, BLOCKED_EXTERNAL_GATES+flag-true, and null-decision+flag-true. Fixed: contract gains approvalDecisionVocabulary + blockingApprovalDecisions; the gate now fails with unknown_approval_source_decision:<word> (drift) or authorization_source_decision_blocks_execution:<word> (blocking), case-insensitive so 'delay' matches. RED 117.46-GATE-AUTH-DECISION +0 -1 exit 1; GREEN 14/14 slice, 21/21 with 117.45 gate; emitter output byte-identical 43e3f156. Step stays PARTIAL-LOCAL-EXTERNAL-BLOCKED."
 }

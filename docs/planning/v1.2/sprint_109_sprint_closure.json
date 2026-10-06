@@ -1,0 +1,97 @@
+{
+  "canonical_step": "109.52",
+  "title": "Sprint Closure",
+  "status": "VERIFIED-LOCAL",
+  "release_path": "LOCAL_ALPHA",
+  "closure_decision": "CLOSED_LOCAL_DEFERRED_EXTERNAL",
+  "alpha_decision": "GO_WITH_DOCUMENTED_RISK",
+  "definition_of_done": [
+    "entry_gate_passed",
+    "scope_contracts_delivered",
+    "shared_architecture_and_schema_enforced",
+    "migration_backup_verified",
+    "features_wave1_implemented",
+    "quality_gates_complete",
+    "alpha_packaging_verified",
+    "alpha_acceptance_decision_recorded"
+  ],
+  "criteria": {
+    "entry_gate_passed": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/discovery/v1.2/scope-non-goals-draft.md",
+        "docs/discovery/v1.2/direction-approval.md",
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "summary": "Step 109.1 verified: direction approval, scope, success metrics, and risk register R-01..R-09 verified."
+    },
+    "scope_contracts_delivered": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/feature_contracts.md",
+        "docs/planning/v1.2/non_goals_and_open_decisions.md",
+        "docs/planning/v1.2/acceptance_matrix.md",
+        "docs/planning/v1.2/dependency_map.md"
+      ],
+      "summary": "Step 109.2 verified: 13 capabilities scoped under ADR-WS-001, NG-1..7 mapped, 170 acceptance criteria defined."
+    },
+    "shared_architecture_and_schema_enforced": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/architecture_ownership_review.md",
+        "docs/planning/v1.2/shared_data_schema.md",
+        "docs/planning/v1.2/feature_flags_observability.md"
+      ],
+      "summary": "Steps 109.3, 109.4, 109.8 verified: workspace boundary separation enforced, schema evolutions additive, feature flags default OFF."
+    },
+    "migration_backup_verified": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/migration_backup_rollback_plan.md",
+        "docs/planning/v1.2/permission_privacy_model.md"
+      ],
+      "summary": "Steps 109.5 and 109.6 verified: migration runner validated before mutation, single-user local-first privacy enforced."
+    },
+    "features_wave1_implemented": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/sprints/sprint-109-writer-story-lore-productivity.md"
+      ],
+      "summary": "Steps 109.9 through 109.47 implemented with full TDD and verified across the local test suite."
+    },
+    "quality_gates_complete": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/planning/v1.2/accessibility_localization_verification.md",
+        "docs/user/void_scriptor_user_guide.md",
+        "test/docs/user_guide_contract_test.dart"
+      ],
+      "summary": "Steps 109.48 and 109.49 verified: keyboard/screen-reader/scaling accessibility verified, complete user guide verified."
+    },
+    "alpha_packaging_verified": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/release/v1.2.0-alpha.1-release-notes.md",
+        "docs/release/v1.2.0-alpha.1-download-manifest.json"
+      ],
+      "summary": "Step 109.50 verified: version 1.2.0-alpha.1 aligned, deterministic build rehearsal and detached RSA signature verified."
+    },
+    "alpha_acceptance_decision_recorded": {
+      "status": "VERIFIED-LOCAL",
+      "evidence": [
+        "docs/release/v1.2.0-alpha.1-acceptance-gate.md",
+        "test/release/alpha_acceptance_gate_test.dart"
+      ],
+      "summary": "Step 109.51 verified: GO_WITH_DOCUMENTED_RISK for local/offline alpha, public/production NO-GO until external gates verified."
+    }
+  },
+  "open_boundary": [
+    "Hosted CI exact SHA verification remains deferred until hosted runner billing is available.",
+    "Platform-native production signing (Windows EV/Apple Developer) remains deferred.",
+    "Public distribution, push to remote, and Git release tagging remain deferred."
+  ],
+  "limits": [
+    "This local sprint closure does not push commits, create git tags, or publish binaries to public channels.",
+    "Downstream sprints (Sprint 110-117) inherit the local-first alpha baseline and own subsequent risk burn-down."
+  ]
+}

@@ -10,7 +10,7 @@ void main() {
   );
 
   group('117.46 General Availability Release', () {
-    test('declares the six canonical execution requirements in order', () {
+    test('declares the seven canonical execution requirements in order', () {
       expect(GaReleaseExecution.requiredOutputs, <String>[
         'approval_recorded',
         'artifact_published',

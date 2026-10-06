@@ -77,7 +77,7 @@ class GaReleaseExecution {
     return const GaReleaseEvaluation(
       state: GaReleaseExecutionState.pass,
       missing: <String>[],
-      notes: <String>['all six GA execution outputs verified'],
+      notes: <String>['all seven GA execution outputs verified'],
     );
   }
 }

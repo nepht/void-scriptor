@@ -10,6 +10,7 @@ import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/domain/account_center_information_architecture.dart';
+import '../../features/account/application/account_cloud_connect_wiring.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
 import '../../features/settings/presentation/storage_locations_screen.dart';
@@ -100,6 +101,8 @@ GoRouter createAppRouter({
                     '${AppRoutes.accountCloud}'
                     '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
                   ),
+                  onConnectProvider:
+                      AccountCloudConnectWiring().onConnectProvider,
                 ),
               ),
             ),
@@ -421,6 +424,8 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
               '${AppRoutes.accountCloud}'
               '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
             ),
+            onConnectProvider:
+                AccountCloudConnectWiring().onConnectProvider,
           ),
         ),
       ),

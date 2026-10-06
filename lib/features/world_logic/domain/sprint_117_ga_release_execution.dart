@@ -25,9 +25,11 @@
 ///   `rollback_readiness.ready`, and its `required_evidence` completeness.
 ///   Consulting only the flag lets a source that records a blocking decision
 ///   (delay/rollback) still authorize execution through a contradictory
-///   boolean, so the decision word is gated too, an unrecognised decision
-///   word is drift, and a source that records no decision word at all has
-///   not corroborated its flag, so silence fails rather than permits. The
+///   boolean, so the decision word is gated too, matched against the owner
+///   gate's own wire vocabulary (derived from its enum, not hand-copied).
+///   An unrecognised decision word is drift, and a source that records no
+///   decision word at all has not corroborated its flag, so silence fails
+///   rather than permits. The
 ///   blocker witness is read the same way: the source's own gate treats an
 ///   active blocker as a hard veto, so a consumer that never reads it can
 ///   pass a record that gate fails, and a source silent about its blocker
@@ -57,6 +59,8 @@ library;
 
 import 'dart:convert';
 import 'dart:io';
+
+import 'sprint_117_ga_approval_gate.dart';
 
 const List<String> _requiredOutputs = <String>[
   'approval_recorded',
@@ -109,37 +113,32 @@ abstract final class Sprint117GaReleaseContract {
     'RELEASED',
   };
 
-  /// Approval-source decision words, matched case-insensitively: the committed
-  /// 117.45 approval gate records its decision in lowercase (e.g. "delay").
-  /// The decision word is a second witness in the same source as the boolean
-  /// authorization flag, so it must be consulted, not just loaded.
-  static const Set<String> approvalDecisionVocabulary = <String>{
-    'BLOCKED_EXTERNAL_GATES',
-    'DELAY',
-    'DELAYED',
-    'ROLLED_BACK',
-    'AUTHORIZED',
-    'AUTHORIZED_FOR_EXECUTION',
-    'RELEASED',
+  /// Approval-source decision words, matched case-insensitively. This is the
+  /// 117.45 owner gate's OWN wire vocabulary, derived from its enum rather
+  /// than hand-copied: a hand-copied list drifts, and a consumer that speaks a
+  /// different vocabulary than the source's own gate both rejects the owner's
+  /// genuine words and accepts words the owner rejects.
+  static final Set<String> approvalDecisionVocabulary = <String>{
+    for (final decision in Sprint117GaDecision.values)
+      decision.wireName.toUpperCase(),
   };
 
-  /// Approval-source decisions that forbid a `pass`: an approval gate that
-  /// records a delay/rollback has decided *not* to authorize execution,
-  /// whatever its boolean flag happens to read.
+  /// Approval-source decisions that forbid a `pass`: the owner gate's
+  /// decisions that decide *not* to execute. `release` and `subset_reduction`
+  /// both mean "proceed" (full release or certified subset); `delay` and
+  /// `rollback` mean "do not". A source recording one of these has decided
+  /// not to authorize execution, whatever its boolean flag happens to read.
   static const Set<String> blockingApprovalDecisions = <String>{
-    'BLOCKED_EXTERNAL_GATES',
     'DELAY',
-    'DELAYED',
-    'ROLLED_BACK',
+    'ROLLBACK',
   };
 
-  /// Every approval-state word this gate understands (the 117.45 owner gate's
-  /// vocabulary). An unlisted word is unknown and fails the gate instead of
-  /// being read optimistically.
-  static const Set<String> approvalStateVocabulary = <String>{
-    'APPROVED',
-    'PENDING_CHOIRUDIN',
-    'REJECTED',
+  /// Every approval-state word this gate understands, derived from the 117.45
+  /// owner gate's own enum rather than hand-copied so the two cannot drift.
+  /// An unlisted word is unknown and fails the gate instead of being read
+  /// optimistically.
+  static final Set<String> approvalStateVocabulary = <String>{
+    for (final state in Sprint117GaApprovalState.values) state.wireName,
   };
 
   /// The only approval state that authorizes a release. The 117.45 owner gate
@@ -148,18 +147,10 @@ abstract final class Sprint117GaReleaseContract {
 
   /// The approval source's eight required evidence groups, in canonical order.
   /// This is the FIRST check the 117.45 owner gate runs: it fails when any
-  /// group is absent or lacks sources. Mirrors the owner's contract; pinned by
-  /// test so the two cannot drift apart.
-  static const List<String> approvalEvidenceKeys = <String>[
-    'beta_results',
-    'connector_registry',
-    'blocker_status',
-    'quality_gates',
-    'known_limits',
-    'signed_artifacts',
-    'rollout_plan',
-    'rollback_readiness',
-  ];
+  /// group is absent or lacks sources. Taken directly from the owner's own
+  /// contract rather than hand-copied, so the two cannot drift apart.
+  static const List<String> approvalEvidenceKeys =
+      Sprint117GaApprovalGate.requiredEvidenceKeys;
 
   /// The topical witness of each output: the word its evidence must actually
   /// mention. A verified output whose cited files exist but never speak about

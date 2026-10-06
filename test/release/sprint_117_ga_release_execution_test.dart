@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_ga_release_execution.dart';
+import 'package:void_scriptor/features/world_logic/domain/sprint_117_ga_approval_gate.dart';
 
 void main() {
   final manifestFile = File(
@@ -263,7 +264,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -285,7 +286,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -480,7 +481,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -561,7 +562,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -654,7 +655,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -682,7 +683,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
         ),
       );
       expect(report.state, Sprint117GaReleaseExecutionState.fail);
@@ -724,7 +725,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: true,
         ),
       );
@@ -751,7 +752,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
         ),
       );
       expect(silent.state, Sprint117GaReleaseExecutionState.fail);
@@ -772,7 +773,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
-          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceDecision: 'release',
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
@@ -823,7 +824,7 @@ void main() {
         recordedAuthorized: true,
         unrecognisedStatuses: const <String, String>{},
         approvalSourceAuthorized: true,
-        approvalSourceDecision: 'AUTHORIZED',
+        approvalSourceDecision: 'release',
         approvalSourceReleaseBlocked: false,
         approvalSourceApprovalState: approvalState,
         approvalSourceRollbackReady: rollbackReady,
@@ -942,7 +943,7 @@ void main() {
         recordedAuthorized: true,
         unrecognisedStatuses: const <String, String>{},
         approvalSourceAuthorized: true,
-        approvalSourceDecision: 'AUTHORIZED',
+        approvalSourceDecision: 'release',
         approvalSourceReleaseBlocked: false,
         approvalSourceApprovalState: 'APPROVED',
         approvalSourceRollbackReady: true,
@@ -987,6 +988,99 @@ void main() {
       );
       expect(complete.state, Sprint117GaReleaseExecutionState.pass);
       expect(complete.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
+    test('117.46-GATE-AUTH-VOCAB the approval-source decision vocabulary must '
+        'be the owner gate own vocabulary, not a hand-copied one', () {
+      // The consumer reads the decision word of the committed approval gate
+      // (117.45). That source's own gate speaks its OWN wire vocabulary --
+      // release / delay / subset_reduction / rollback -- so the consumer must
+      // speak exactly the same words. A hand-copied list drifts: it both
+      // rejects the owner's genuine authorizing word and accepts words the
+      // owner rejects. The pin below derives the expected set from the owner
+      // enum, so the two cannot drift apart silently.
+      expect(
+        Sprint117GaReleaseContract.approvalDecisionVocabulary,
+        unorderedEquals(<String>{
+          for (final decision in Sprint117GaDecision.values)
+            decision.wireName.toUpperCase(),
+        }),
+      );
+
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      Sprint117GaReleaseEvidence source(String decision) =>
+          Sprint117GaReleaseEvidence(
+            execution: Sprint117GaReleaseExecution(
+              approvalAuthorized: true,
+              outputs: outputs,
+            ),
+            recordedDecision: 'AUTHORIZED',
+            recordedAuthorized: true,
+            unrecognisedStatuses: const <String, String>{},
+            approvalSourceAuthorized: true,
+            approvalSourceDecision: decision,
+            approvalSourceReleaseBlocked: false,
+            approvalSourceApprovalState: 'APPROVED',
+            approvalSourceRollbackReady: true,
+            approvalSourceMissingEvidence: const <String>[],
+          );
+
+      // The owner gate's own authorizing word ("release") must be accepted by
+      // the consumer. The old hand-copied list rejected it as unknown, which
+      // would fail a source the owner's own gate passes.
+      final release = const Sprint117GaReleaseGate().evaluateWith(
+        source('release'),
+      );
+      expect(release.state, Sprint117GaReleaseExecutionState.pass);
+      expect(release.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+
+      // "subset_reduction" is the owner's other "proceed" word (release a
+      // certified subset), so it authorizes too.
+      final subset = const Sprint117GaReleaseGate().evaluateWith(
+        source('subset_reduction'),
+      );
+      expect(subset.state, Sprint117GaReleaseExecutionState.pass);
+
+      // A word the owner gate does NOT understand must not be read as
+      // permission. The old hand-copied list accepted "AUTHORIZED", a word
+      // the owner's own gate rejects as unknown.
+      final bogus = const Sprint117GaReleaseGate().evaluateWith(
+        source('AUTHORIZED'),
+      );
+      expect(bogus.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        bogus.violations,
+        contains('unknown_approval_source_decision:AUTHORIZED'),
+      );
+
+      // The owner gate's blocking words forbid pass.
+      final delayed = const Sprint117GaReleaseGate().evaluateWith(
+        source('delay'),
+      );
+      expect(delayed.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        delayed.violations,
+        contains('authorization_source_decision_blocks_execution:delay'),
+      );
+
+      final rolledBack = const Sprint117GaReleaseGate().evaluateWith(
+        source('rollback'),
+      );
+      expect(rolledBack.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        rolledBack.violations,
+        contains('authorization_source_decision_blocks_execution:rollback'),
+      );
     });
   });
 }

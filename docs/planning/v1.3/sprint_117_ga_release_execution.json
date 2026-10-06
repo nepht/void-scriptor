@@ -26,16 +26,17 @@
     "connector_subset_enforced": {
       "status": "UNVERIFIABLE",
       "evidence": [
-        "docs/release/v1.2.0-rc.1-release-notes.md"
+        "docs/planning/v1.2/sprint_116_beta_acceptance_gate.json"
       ],
-      "note": "Release notes exist locally; external publication is not proven."
+      "note": "Local visibility enforcement exists: the Sprint 116 beta acceptance gate records 30 certified, 1 limited (kofi), and 1 blocked+hidden (saweria) connector; enforcement inside a published release artifact is not verified."
     },
     "uncertified_hidden": {
       "status": "UNVERIFIABLE",
       "evidence": [
-        "docs/release/v1.2.0-rc.1-support-playbook.md"
+        "docs/planning/v1.2/sprint_116_beta_acceptance_gate.json",
+        "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json"
       ],
-      "note": "Support playbook exists locally; no external notification was sent or verified."
+      "note": "The Sprint 116 gate hides the blocked connector from the beta plan and the certification snapshot lock freezes hidden_from_beta and blocked_subset; hiding of uncertified connectors inside a published release artifact is not verified."
     },
     "monitoring_active": {
       "status": "UNVERIFIABLE",

@@ -65,6 +65,46 @@ void main() {
       },
     );
 
+    test(
+      '117.46-EVIDENCE-TOPIC evidence paths exist and are topically about their output',
+      () {
+        final manifest =
+            jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
+        const topicalKeywords = <String, String>{
+          'approval_recorded': 'approval',
+          'artifact_published': 'artifact',
+          'connector_subset_enforced': 'subset',
+          'uncertified_hidden': 'hidden',
+          'monitoring_active': 'telemetry',
+          'support_ready': 'support',
+          'rollback_available': 'rollback',
+        };
+        final outputs = manifest['outputs'] as Map<String, dynamic>;
+        for (final entry in topicalKeywords.entries) {
+          final output = outputs[entry.key] as Map<String, dynamic>;
+          final paths = (output['evidence'] as List<dynamic>).cast<String>();
+          expect(paths, isNotEmpty, reason: '${entry.key} cites no evidence');
+          final bodies = StringBuffer();
+          for (final path in paths) {
+            final file = File(path);
+            expect(
+              file.existsSync(),
+              isTrue,
+              reason: '$path cited by ${entry.key} does not exist',
+            );
+            bodies.write(file.readAsStringSync().toLowerCase());
+            bodies.write(' ');
+          }
+          expect(
+            bodies.toString(),
+            contains(entry.value),
+            reason:
+                'evidence cited by ${entry.key} never mentions "${entry.value}"',
+          );
+        }
+      },
+    );
+
     test('domain fails closed when any execution output is unverified', () {
       final complete = <String, Sprint117GaOutputRecord>{
         for (final name in Sprint117GaReleaseExecution.requiredOutputs)

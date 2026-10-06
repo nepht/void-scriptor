@@ -14,8 +14,9 @@ void main() {
       expect(GaReleaseExecution.requiredOutputs, <String>[
         'approval_recorded',
         'artifact_published',
-        'release_notes_published',
-        'support_notified',
+        'connector_subset_enforced',
+        'uncertified_hidden',
+        'support_ready',
         'monitoring_active',
         'rollback_available',
       ]);

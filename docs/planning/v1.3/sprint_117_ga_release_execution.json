@@ -23,14 +23,14 @@
       ],
       "note": "Local candidate artifact exists, but public artifact publication is not proven; hosted CI and distribution channel remain unavailable."
     },
-    "release_notes_published": {
+    "connector_subset_enforced": {
       "status": "UNVERIFIABLE",
       "evidence": [
         "docs/release/v1.2.0-rc.1-release-notes.md"
       ],
       "note": "Release notes exist locally; external publication is not proven."
     },
-    "support_notified": {
+    "uncertified_hidden": {
       "status": "UNVERIFIABLE",
       "evidence": [
         "docs/release/v1.2.0-rc.1-support-playbook.md"
@@ -43,6 +43,13 @@
         "docs/planning/v1.2/sprint_113_release_health_monitoring.json"
       ],
       "note": "Privacy-safe signal definitions exist, but public telemetry is not active or observable."
+    },
+    "support_ready": {
+      "status": "UNVERIFIABLE",
+      "evidence": [
+        "docs/release/v1.2.0-rc.1-support-playbook.md"
+      ],
+      "note": "Support playbook exists locally; support readiness is not externally verified."
     },
     "rollback_available": {
       "status": "PARTIAL",

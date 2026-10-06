@@ -23,8 +23,9 @@
 ///   witnesses: the boolean `execution_authorized` *and* the decision word.
 ///   Consulting only the flag lets a source that records a blocking decision
 ///   (delay/rollback) still authorize execution through a contradictory
-///   boolean, so the decision word is gated too and an unrecognised decision
-///   word is drift, not permission.
+///   boolean, so the decision word is gated too, an unrecognised decision
+///   word is drift, and a source that records no decision word at all has
+///   not corroborated its flag, so silence fails rather than permits.
 /// * Absent evidence is undetermined, never permission. A missing or
 ///   malformed manifest, an unknown status word, or an unknown release
 ///   decision keeps the gate closed (`blocked`/`fail`), never `pass`.
@@ -442,6 +443,13 @@ class Sprint117GaReleaseGate {
       // not permission. Consulting only the flag lets the two readers of one
       // question disagree unnoticed.
       final approvalDecision = evidence.approvalSourceDecision;
+      // The approval source authorized execution by its flag but recorded no
+      // decision word. The word is a second witness in the same source: a
+      // source that is silent about its decision has not corroborated the
+      // flag, and absent evidence is undetermined, never permission.
+      if (approvalDecision == null || approvalDecision.trim().isEmpty) {
+        violations.add('authorization_source_decision_missing');
+      }
       if (approvalDecision != null && approvalDecision.trim().isNotEmpty) {
         final normalized = approvalDecision.trim().toUpperCase();
         if (!Sprint117GaReleaseContract.approvalDecisionVocabulary.contains(

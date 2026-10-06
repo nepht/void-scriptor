@@ -263,6 +263,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
         ),
       );
       expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
@@ -280,6 +281,7 @@ void main() {
           recordedAuthorized: true,
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -460,6 +462,83 @@ void main() {
 
       // Control: a genuinely authorized approval source still passes, so the
       // gate is not simply always-fail.
+      final authorized = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+        ),
+      );
+      expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
+    });
+
+    test('117.46-GATE-AUTH-DECISION-MISSING an approval source that '
+        'authorized by its flag but recorded no decision word is '
+        'undetermined, not permission', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The approval source's boolean reads authorized, but its decision word
+      // is absent. The decision word is a second witness in the same source:
+      // a source that is silent about its decision has not corroborated the
+      // flag, and absent evidence is undetermined, never permission.
+      final absent = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: null,
+        ),
+      );
+      expect(absent.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        absent.violations,
+        contains('authorization_source_decision_missing'),
+      );
+
+      // The same holds when the word is present but blank: an empty string is
+      // absence, not a decision.
+      final blank = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: '   ',
+        ),
+      );
+      expect(blank.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        blank.violations,
+        contains('authorization_source_decision_missing'),
+      );
+
+      // Control: when the decision word is present and authorizing, the same
+      // record passes, so the gate is not simply always-fail.
       final authorized = const Sprint117GaReleaseGate().evaluateWith(
         Sprint117GaReleaseEvidence(
           execution: Sprint117GaReleaseExecution(

@@ -3679,10 +3679,29 @@
     "note": "slot allocated at operator stream transition; no work performed yet"
   },
   "sprint_117_step_11746": {
-    "status": "NOT_STARTED",
-    "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "status": "PARTIAL-LOCAL",
+    "next_step": "117.46",
+    "canonical_step": "117.46",
+    "title": "General Availability Release",
+    "step_closed": false,
+    "gate_verdict": "GA_RELEASE_EXECUTION_BLOCKED_EXTERNAL",
+    "manifest": "docs/planning/v1.3/sprint_117_ga_release_execution.json",
+    "evaluation_record": "docs/planning/v1.3/sprint_117_ga_release_execution_evaluation.json",
+    "evaluation_record_sha256": "43e3f156ef14f1fb6afd7fe2a80d88563777d2a3905eae2d752b4e87435c0ff2",
+    "domain": "lib/features/world_logic/domain/sprint_117_ga_release_execution.dart",
+    "emitter": "tool/emit_sprint_117_ga_release_execution_evaluation.dart",
+    "required_outputs": [
+      "approval_recorded",
+      "artifact_published",
+      "connector_subset_enforced",
+      "uncertified_hidden",
+      "monitoring_active",
+      "support_ready",
+      "rollback_available"
+    ],
+    "missing_outputs": 7,
+    "violations": 0,
+    "note": "Gate hardening only; the step itself stays external-blocked. evaluate() now reads the committed execution manifest and cross-checks the authorization claim against the committed 117.45 approval gate, so the gate can no longer pass on a synthetic record while the evidence says BLOCKED_EXTERNAL_GATES. A verified output is accepted only when the path it cites exists on disk (verified_without_evidence otherwise); an unknown status word or release decision is drift and fails the gate; absent/malformed evidence yields blocked, never pass; a blocking release decision forbids pass however the records read. Approval, publication, monitoring, support notification, certified-subset enforcement, and rollback against a published artifact remain unverified/DEFERRED-EXTERNAL. Go/no-go remains the operator's decision."
   },
   "sprint_117_step_11747": {
     "status": "VERIFIED-LOCAL",
@@ -3797,7 +3816,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "07145b9",
+  "last_slice_commit": "45c1f0e",
   "last_verified_on": "2026-10-07",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3914,7 +3933,7 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "07145b9",
-  "ahead": 8,
+  "ahead": 15,
   "defect_117_43_27": {
     "date": "2026-10-04",
     "hunt_ordinal": 22,

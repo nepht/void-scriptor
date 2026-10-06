@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:void_scriptor/features/world_logic/domain/ga_release_execution.dart';
+import 'package:void_scriptor/features/world_logic/domain/sprint_117_ga_release_execution.dart';
 
 void main() {
   final manifestFile = File(
@@ -10,18 +10,21 @@ void main() {
   );
 
   group('117.46 General Availability Release', () {
-    test('declares the seven canonical execution requirements in order', () {
-      expect(GaReleaseExecution.requiredOutputs, <String>[
-        'approval_recorded',
-        'artifact_published',
-        'connector_subset_enforced',
-        'uncertified_hidden',
-        'support_ready',
-        'monitoring_active',
-        'rollback_available',
-      ]);
-      expect(GaReleaseExecution.canonicalStep, '117.46');
-    });
+    test(
+      '117.46-GATE-ORDER declares the seven canonical execution requirements in canonical order',
+      () {
+        expect(Sprint117GaReleaseExecution.requiredOutputs, <String>[
+          'approval_recorded',
+          'artifact_published',
+          'connector_subset_enforced',
+          'uncertified_hidden',
+          'monitoring_active',
+          'support_ready',
+          'rollback_available',
+        ]);
+        expect(Sprint117GaReleaseExecution.canonicalStep, '117.46');
+      },
+    );
 
     test(
       'execution manifest exists and is honest about external boundaries',
@@ -45,9 +48,9 @@ void main() {
         );
         expect(
           outputs.keys.toSet(),
-          GaReleaseExecution.requiredOutputs.toSet(),
+          Sprint117GaReleaseExecution.requiredOutputs.toSet(),
         );
-        for (final name in GaReleaseExecution.requiredOutputs) {
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs) {
           final output = outputs[name] as Map<String, dynamic>;
           expect(output['status'], isA<String>());
           expect(output['evidence'], isA<List<dynamic>>());
@@ -63,53 +66,62 @@ void main() {
     );
 
     test('domain fails closed when any execution output is unverified', () {
-      final complete = <String, GaOutputRecord>{
-        for (final name in GaReleaseExecution.requiredOutputs)
-          name: const GaOutputRecord(
-            status: GaOutputStatus.verified,
+      final complete = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
             evidence: <String>['evidence.json'],
             note: 'verified',
           ),
       };
-      final pending = Map<String, GaOutputRecord>.from(complete)
-        ..['monitoring_active'] = const GaOutputRecord(
-          status: GaOutputStatus.unverifiable,
+      final pending = Map<String, Sprint117GaOutputRecord>.from(complete)
+        ..['monitoring_active'] = const Sprint117GaOutputRecord(
+          status: Sprint117GaOutputStatus.unverifiable,
           evidence: <String>[],
           note: 'public telemetry unavailable',
         );
 
-      final evaluation = GaReleaseExecution.evaluate(
-        const GaReleaseExecution(approvalAuthorized: true, outputs: {}),
+      final evaluation = Sprint117GaReleaseExecution.evaluate(
+        const Sprint117GaReleaseExecution(
+          approvalAuthorized: true,
+          outputs: {},
+        ),
       );
-      expect(evaluation.state, GaReleaseExecutionState.blocked);
+      expect(evaluation.state, Sprint117GaReleaseExecutionState.blocked);
       expect(evaluation.missing, contains('approval_recorded'));
 
-      final partial = GaReleaseExecution.evaluate(
-        GaReleaseExecution(approvalAuthorized: true, outputs: pending),
+      final partial = Sprint117GaReleaseExecution.evaluate(
+        Sprint117GaReleaseExecution(approvalAuthorized: true, outputs: pending),
       );
-      expect(partial.state, GaReleaseExecutionState.blocked);
+      expect(partial.state, Sprint117GaReleaseExecutionState.blocked);
       expect(partial.missing, contains('monitoring_active'));
 
-      final pass = GaReleaseExecution.evaluate(
-        GaReleaseExecution(approvalAuthorized: true, outputs: complete),
+      final pass = Sprint117GaReleaseExecution.evaluate(
+        Sprint117GaReleaseExecution(
+          approvalAuthorized: true,
+          outputs: complete,
+        ),
       );
-      expect(pass.state, GaReleaseExecutionState.pass);
+      expect(pass.state, Sprint117GaReleaseExecutionState.pass);
       expect(pass.missing, isEmpty);
     });
 
     test('authorization is required even when all outputs are present', () {
-      final complete = <String, GaOutputRecord>{
-        for (final name in GaReleaseExecution.requiredOutputs)
-          name: const GaOutputRecord(
-            status: GaOutputStatus.verified,
+      final complete = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
             evidence: <String>['evidence.json'],
             note: 'verified',
           ),
       };
-      final evaluation = GaReleaseExecution.evaluate(
-        GaReleaseExecution(approvalAuthorized: false, outputs: complete),
+      final evaluation = Sprint117GaReleaseExecution.evaluate(
+        Sprint117GaReleaseExecution(
+          approvalAuthorized: false,
+          outputs: complete,
+        ),
       );
-      expect(evaluation.state, GaReleaseExecutionState.fail);
+      expect(evaluation.state, Sprint117GaReleaseExecutionState.fail);
       expect(evaluation.notes.join(' '), contains('authorization'));
     });
   });

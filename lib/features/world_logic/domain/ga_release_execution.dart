@@ -1,12 +1,11 @@
-/// Execution gate for roadmap step 117.46.
+/// Execution gate for roadmap step 113.44.
 library;
 
 const List<String> _requiredOutputs = <String>[
   'approval_recorded',
   'artifact_published',
-  'connector_subset_enforced',
-  'uncertified_hidden',
-  'support_ready',
+  'release_notes_published',
+  'support_notified',
   'monitoring_active',
   'rollback_available',
 ];
@@ -39,7 +38,7 @@ class GaReleaseExecution {
     required this.outputs,
   });
 
-  static const String canonicalStep = '117.46';
+  static const String canonicalStep = '113.44';
   static const List<String> requiredOutputs = _requiredOutputs;
 
   final bool approvalAuthorized;
@@ -77,7 +76,7 @@ class GaReleaseExecution {
     return const GaReleaseEvaluation(
       state: GaReleaseExecutionState.pass,
       missing: <String>[],
-      notes: <String>['all seven GA execution outputs verified'],
+      notes: <String>['all six GA execution outputs verified'],
     );
   }
 }

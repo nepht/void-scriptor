@@ -3797,7 +3797,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "6131457",
+  "last_slice_commit": "6fcc83a",
   "last_verified_on": "2026-10-02",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3864,7 +3864,7 @@
     },
     "117.47": {
       "status": "VERIFIED-LOCAL",
-      "commit": null,
+      "commit": "6fcc83a",
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
       "evidence": "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json",
       "domain": "lib/features/world_logic/domain/sprint_117_post_release_observation_handoff.dart",
@@ -3905,7 +3905,7 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "63c6e67",
+  "commit": "6fcc83a",
   "ahead": 8,
   "defect_117_43_27": {
     "date": "2026-10-04",

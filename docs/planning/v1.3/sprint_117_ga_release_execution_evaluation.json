@@ -1,0 +1,54 @@
+{
+  "canonical_step": "117.46",
+  "title": "General Availability Release -- Evaluation Record",
+  "document_role": "gate-evaluation-record",
+  "state": "blocked",
+  "verdict": "GA_RELEASE_EXECUTION_BLOCKED_EXTERNAL",
+  "required_outputs": [
+    "approval_recorded",
+    "artifact_published",
+    "connector_subset_enforced",
+    "uncertified_hidden",
+    "monitoring_active",
+    "support_ready",
+    "rollback_available"
+  ],
+  "missing_outputs": [
+    "approval_recorded",
+    "artifact_published",
+    "connector_subset_enforced",
+    "uncertified_hidden",
+    "monitoring_active",
+    "support_ready",
+    "rollback_available"
+  ],
+  "violations": [],
+  "open_items": [
+    "unverified_output:approval_recorded",
+    "unverified_output:artifact_published",
+    "unverified_output:connector_subset_enforced",
+    "unverified_output:uncertified_hidden",
+    "unverified_output:monitoring_active",
+    "unverified_output:support_ready",
+    "unverified_output:rollback_available",
+    "release_decision:BLOCKED_EXTERNAL_GATES"
+  ],
+  "evidence_source": "docs/planning/v1.3/sprint_117_ga_release_execution.json",
+  "approval_source": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+  "execution_authorized": false,
+  "approval_source_decision": "delay",
+  "execution_manifest_decision": "BLOCKED_EXTERNAL_GATES",
+  "claim_boundary": [
+    "This record is the gate verdict over committed evidence, not a release. Nothing was published, tagged, or signed, and no connector subset was enforced.",
+    "The gate evaluates the committed execution manifest and cross-checks the authorization claim against the committed approval gate (117.45). A record that authorizes itself is not authorized.",
+    "A verified output is only accepted when the evidence path it cites exists on disk; an unknown status word or release decision is drift and fails the gate rather than passing it.",
+    "Absent or malformed evidence yields blocked, never pass. A blocking release decision forbids pass however the output records read."
+  ],
+  "external_gates": [
+    "hosted CI runner",
+    "public telemetry",
+    "public-trust code signing",
+    "store publication pipeline",
+    "certified connector subset"
+  ]
+}

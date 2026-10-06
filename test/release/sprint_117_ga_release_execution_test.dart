@@ -164,5 +164,281 @@ void main() {
       expect(evaluation.state, Sprint117GaReleaseExecutionState.fail);
       expect(evaluation.notes.join(' '), contains('authorization'));
     });
+
+    test('117.46-GATE-BOUND the gate evaluates the committed manifest, not a '
+        'caller-supplied record, and reports the honest blocked verdict', () {
+      final report = const Sprint117GaReleaseGate().evaluate();
+      expect(
+        report.state,
+        Sprint117GaReleaseExecutionState.blocked,
+        reason:
+            'committed evidence records BLOCKED_EXTERNAL_GATES with all '
+            'outputs unverified; the gate must not report pass',
+      );
+      expect(report.verdict, 'GA_RELEASE_EXECUTION_BLOCKED_EXTERNAL');
+      expect(report.missingOutputs, contains('approval_recorded'));
+      expect(report.violations, isEmpty);
+      expect(
+        report.openItems.any((item) => item.startsWith('release_decision:')),
+        isTrue,
+        reason: 'the recorded release decision must be carried, not hidden',
+      );
+    });
+
+    test('117.46-GATE-FAIL-CLOSED an unreadable manifest is undetermined, '
+        'never permission', () {
+      final report = const Sprint117GaReleaseGate().evaluateWith(null);
+      expect(report.state, Sprint117GaReleaseExecutionState.blocked);
+      expect(report.verdict, 'GA_RELEASE_EXECUTION_MANIFEST_UNREADABLE');
+      expect(
+        report.missingOutputs.toSet(),
+        Sprint117GaReleaseExecution.requiredOutputs.toSet(),
+      );
+      expect(report.violations, contains('execution_manifest_unreadable'));
+    });
+
+    test('117.46-GATE-OVERCLAIM a verified output with absent evidence fails '
+        'the gate instead of passing it', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+      final overclaim = Map<String, Sprint117GaOutputRecord>.from(outputs)
+        ..['artifact_published'] = const Sprint117GaOutputRecord(
+          status: Sprint117GaOutputStatus.verified,
+          evidence: <String>['docs/planning/v1.3/does_not_exist.json'],
+          note: 'claims verified',
+        );
+
+      final report = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: overclaim,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+        ),
+      );
+      expect(report.state, Sprint117GaReleaseExecutionState.fail);
+      expect(report.verdict, 'GA_RELEASE_EXECUTION_EVIDENCE_VIOLATION');
+      expect(
+        report.violations.any(
+          (v) => v.startsWith('verified_without_evidence:artifact_published:'),
+        ),
+        isTrue,
+      );
+    });
+
+    test('117.46-GATE-DECISION a blocking release decision forbids pass even '
+        'when every output record claims verified', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      final blocked = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'DELAY',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+        ),
+      );
+      expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
+      expect(blocked.verdict, 'GA_RELEASE_EXECUTION_DECISION_BLOCKS_RELEASE');
+
+      // Control: with a genuine authorization the same record does pass, so
+      // the gate is not simply always-fail.
+      final authorized = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+        ),
+      );
+      expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
+      expect(authorized.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
+
+    test('117.46-GATE-DRIFT an unknown status word or unknown decision is '
+        'drift, not a pass', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      final unknownStatus = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{
+            'monitoring_active': 'WONKY',
+          },
+          approvalSourceAuthorized: true,
+        ),
+      );
+      expect(unknownStatus.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        unknownStatus.violations,
+        contains('unknown_output_status:monitoring_active:WONKY'),
+      );
+
+      final unknownDecision = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'SHIP_IT',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+        ),
+      );
+      expect(unknownDecision.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        unknownDecision.violations,
+        contains('unknown_release_decision:SHIP_IT'),
+      );
+    });
+
+    test('117.46-GATE-AUTHORIZATION the execution manifest cannot be the only '
+        'witness to its own authorization', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The record claims authorization, but the committed approval gate says
+      // otherwise: that disagreement fails, it does not pass.
+      final disagrees = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: false,
+          approvalSourceDecision: 'delay',
+        ),
+      );
+      expect(disagrees.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        disagrees.violations.any(
+          (v) => v.startsWith('authorization_disagrees_with_approval_gate:'),
+        ),
+        isTrue,
+      );
+
+      // An unreadable approval source is undetermined, so it cannot be
+      // treated as a pass either.
+      final unreadable = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+        ),
+      );
+      expect(unreadable.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        unreadable.violations,
+        contains('authorization_source_unreadable'),
+      );
+    });
+
+    test('117.46-STATUS-VOCABULARY partial is a representable status and is '
+        'never silently promoted to verified', () {
+      expect(
+        Sprint117GaReleaseContract.statusFromText('PARTIAL'),
+        Sprint117GaOutputStatus.partial,
+      );
+      expect(
+        Sprint117GaReleaseContract.statusFromText('partial'),
+        Sprint117GaOutputStatus.partial,
+      );
+      expect(
+        Sprint117GaReleaseContract.statusFromText('WONKY'),
+        Sprint117GaOutputStatus.blocked,
+      );
+      expect(Sprint117GaReleaseContract.isKnownStatus('PARTIAL'), isTrue);
+      expect(Sprint117GaReleaseContract.isKnownStatus('WONKY'), isFalse);
+    });
+
+    test('117.46-EVALUATION-RECORD the emitted evaluation record agrees with '
+        'the gate it came from', () {
+      final record = File(
+        'docs/planning/v1.3/sprint_117_ga_release_execution_evaluation.json',
+      );
+      expect(
+        record.existsSync(),
+        isTrue,
+        reason: 'the evaluation record must be emitted by the gate',
+      );
+      final decoded =
+          jsonDecode(record.readAsStringSync()) as Map<String, dynamic>;
+      final report = const Sprint117GaReleaseGate().evaluate();
+
+      expect(decoded['canonical_step'], '117.46');
+      expect(decoded['state'], report.state.name);
+      expect(decoded['verdict'], report.verdict);
+      expect(decoded['missing_outputs'], report.missingOutputs);
+      expect(decoded['violations'], report.violations);
+      expect(decoded['open_items'], report.openItems);
+      expect(decoded['execution_authorized'], isFalse);
+      expect(
+        decoded['approval_source'],
+        Sprint117GaReleaseContract.approvalManifestPath,
+      );
+    });
   });
 }

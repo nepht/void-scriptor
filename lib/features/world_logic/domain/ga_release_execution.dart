@@ -1,4 +1,4 @@
-/// Execution gate for roadmap step 113.44.
+/// Execution gate for roadmap step 117.46.
 library;
 
 const List<String> _requiredOutputs = <String>[
@@ -38,7 +38,7 @@ class GaReleaseExecution {
     required this.outputs,
   });
 
-  static const String canonicalStep = '113.44';
+  static const String canonicalStep = '117.46';
   static const List<String> requiredOutputs = _requiredOutputs;
 
   final bool approvalAuthorized;

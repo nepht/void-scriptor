@@ -1,0 +1,65 @@
+{
+  "canonical_step": "117.46",
+  "title": "General Availability Release",
+  "status": "PARTIAL-LOCAL",
+  "version": "1.2.0-rc.1",
+  "objective": "Menjalankan staged rollout hanya setelah GA Approval Gate PASS.",
+  "recorded_at": "2026-09-23T18:00:00+07:00",
+  "approval_source": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+  "rollout_source": "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+  "execution_authorized": false,
+  "outputs": {
+    "approval_recorded": {
+      "status": "VERIFIED",
+      "evidence": [
+        "docs/planning/v1.2/sprint_113_ga_approval_gate.json"
+      ],
+      "note": "Approval record is APPROVED and execution_authorized is true."
+    },
+    "artifact_published": {
+      "status": "UNVERIFIABLE",
+      "evidence": [
+        "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json"
+      ],
+      "note": "Local candidate artifact exists, but public artifact publication is not proven; hosted CI and distribution channel remain unavailable."
+    },
+    "release_notes_published": {
+      "status": "UNVERIFIABLE",
+      "evidence": [
+        "docs/release/v1.2.0-rc.1-release-notes.md"
+      ],
+      "note": "Release notes exist locally; external publication is not proven."
+    },
+    "support_notified": {
+      "status": "UNVERIFIABLE",
+      "evidence": [
+        "docs/release/v1.2.0-rc.1-support-playbook.md"
+      ],
+      "note": "Support playbook exists locally; no external notification was sent or verified."
+    },
+    "monitoring_active": {
+      "status": "UNVERIFIABLE",
+      "evidence": [
+        "docs/planning/v1.2/sprint_113_release_health_monitoring.json"
+      ],
+      "note": "Privacy-safe signal definitions exist, but public telemetry is not active or observable."
+    },
+    "rollback_available": {
+      "status": "PARTIAL",
+      "evidence": [
+        "docs/planning/v1.2/sprint_113_rollback_drill.json",
+        "docs/release/v1.2.0-rc.1-recovery-guide.md"
+      ],
+      "note": "Rollback procedure and local channel resolution exist; published-artifact rollback drill is not executed."
+    }
+  },
+  "decision": "BLOCKED_EXTERNAL_GATES",
+  "limitations": [
+    "Hosted CI is blocked by the GitHub billing gate.",
+    "Public artifact publication and external release-note publication are not verified.",
+    "Public telemetry is not active or observable.",
+    "No external support notification was sent.",
+    "Rollback readiness is local/documentary; published-artifact rollback drill remains unexecuted.",
+    "No stable tag or public release is created by this local execution gate."
+  ]
+}

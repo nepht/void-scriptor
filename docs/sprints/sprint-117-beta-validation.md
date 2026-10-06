@@ -3308,3 +3308,57 @@ STATUS: step kanonik 117.44 ditutup VERIFIED-LOCAL (gate + manifest + test
 ter-commit). Sisa gerbang tetap eksternal: tidak ada flag di-flip, tidak ada
 stage dimajukan, tidak ada stop condition yang menyala, tidak ada kill switch
 yang di-drill terhadap provider live, dan tidak ada rollback yang dieksekusi.
+
+### 117.46 -- fix regresi kontrak gate GA + urutan kanonik (commit cb60570)
+
+Slice ini memperbaiki DUA defect pada langkah 117.46 yang ditemukan lewat audit
+terhadap kode dan bukti, bukan lewat fixture: (1) REGRESI pada langkah 113.44 yang
+SUDAH ditutup, dan (2) urutan output gate yang menyimpang dari langkah kanonik.
+
+**AKAR REGRESI (bukti dua arah, bukan asumsi).** Commit `23cca8b` (117.46) menulis
+ulang `lib/features/world_logic/domain/ga_release_execution.dart` -- file yang
+SUDAH melayani langkah 113.44. Dua langkah itu memakai path yang sama dengan kontrak
+BERBEDA: 113.44 mendeklarasikan 6 output (`release_notes_published`,
+`support_notified`), 117.46 mendeklarasikan 7 (`connector_subset_enforced`,
+`uncertified_hidden`), dan KEDUA test meng-import path yang sama, sehingga keduanya
+tidak mungkin hidup berdampingan. Bukti dua arah: (a) test 113.44 terhadap gate
+117.46 = `-2` exit 1 dengan `does not contain 'connector_subset_enforced'`;
+(b) file yang sama ditukar byte-eksak ke blob pra-117.46 (`28a7a65`, sha
+`7f345c290ea5e4ac`) lalu test 113.44 = `+4 All tests passed` exit 0. Tree
+dipulihkan dan sha balik dicocokkan identik sebelum lanjut, tanpa `git checkout`
+maupun `stash` (keduanya diblokir di checkout ini).
+
+**DEFECT KEDUA: URUTAN KANONIK.** Gate mendeklarasikan `support_ready` sebelum
+`monitoring_active`, sedangkan langkah kanonik 117.46 (`steps[45].requirements` pada
+external canonical JSON, sha `b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`)
+menyebutkan `monitoring_active` pada posisi 5 dan `support_ready` pada posisi 6. Himpunan
+nama sama, urutan tidak; RED mengutip `at location [4] is 'monitoring_active'
+instead of 'support_ready'`. Test lama justru mengunci urutan yang menyimpang itu
+sebagai yang diharapkan, sehingga defect lolos sebagai "hijau".
+
+**PERBAIKAN (mengikuti preseden 117.45/113.43: satu langkah punya satu file gate).**
+`ga_release_execution.dart` dipulihkan byte-identik ke `28a7a65` (sha disk == sha blob);
+117.46 pindah ke `lib/features/world_logic/domain/sprint_117_ga_release_execution.dart`
+dengan simbol ber-prefix `Sprint117Ga*` supaya tidak ada benturan top-level;
+urutan output dikembalikan ke kanonik dan dikunci test.
+
+**GERBANG (command + exit).** RED 113.44 = `-2` exit 1 dan RED urutan = `-1` exit 1;
+GREEN dua gate = `+8 All tests passed` exit 0; regresi LIMA gate GA (117.45 approval,
+117.44 rollout, 113.43 approval, 113.44 execution, 117.46 execution) dalam SATU run =
+`+42 All tests passed` exit 0 tanpa blok `Failing tests`; `dart format` write lalu
+`--output=none --set-exit-if-changed` = `0 changed` exit 0 (3 file); `dart analyze` 3 file
+= `No issues found!` exit 0; `git diff --check` rc 0; scan non-Latin (python re kelas
+CJK/kana/hangul/fullwidth) + trailing whitespace = 0 dan 0 pada 3 file; EOL ketiga file
+LF penuh, tidak ada translasi CRLF. `flutter build windows --debug` exit 0 (23,1 dtk).
+
+**CATATAN SIBLING.** `docs/evidence/sprint-117-35-manifest-20261002.json` dan
+`sprint-117-36-manifest-20261002.json` berubah NUMSTAT 11/11 dan 2/2 pada 20:42 --
+hasil regenerasi probe timing oleh sesi sibling yang menjalankan
+`flutter test --no-pub test/release/ -j 1`, BUKAN oleh slice ini. Keduanya tidak
+disentuh dan tidak ikut di-commit.
+
+**BATAS KLAIM.** 117.46 TETAP `PARTIAL-LOCAL-EXTERNAL-BLOCKED`. Slice ini hanya
+memperbaiki regresi dan urutan kontrak; `execution_authorized` tetap `false` dan
+`approval_state` tetap `PENDING_CHOIRUDIN`. Tidak ada flag di-flip, tidak ada artifact
+dipublikasikan, tidak ada monitoring eksternal, tidak ada release. Tidak ada push pada
+run ini.

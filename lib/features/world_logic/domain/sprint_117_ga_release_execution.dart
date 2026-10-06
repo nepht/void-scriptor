@@ -12,7 +12,7 @@
 /// to say `pass` by the very code it is supposed to police. That is exactly
 /// how a sprint reports a release that never happened.
 ///
-/// Three rules carry the weight:
+/// Four rules carry the weight:
 ///
 /// * The gate reads the committed execution manifest. A `verified` output is
 ///   only accepted when the evidence path it cites exists on disk, and a
@@ -26,6 +26,10 @@
 ///   boolean, so the decision word is gated too, an unrecognised decision
 ///   word is drift, and a source that records no decision word at all has
 ///   not corroborated its flag, so silence fails rather than permits.
+/// * Presence is not relevance. A `verified` output is only accepted when
+///   the evidence it cites is topically about that output; a path that exists
+///   but never speaks about the claim backs nothing, so it fails rather than
+///   passes. The committed execution manifest is topically about all seven.
 /// * Absent evidence is undetermined, never permission. A missing or
 ///   malformed manifest, an unknown status word, or an unknown release
 ///   decision keeps the gate closed (`blocked`/`fail`), never `pass`.
@@ -112,6 +116,20 @@ abstract final class Sprint117GaReleaseContract {
     'DELAY',
     'DELAYED',
     'ROLLED_BACK',
+  };
+
+  /// The topical witness of each output: the word its evidence must actually
+  /// mention. A verified output whose cited files exist but never speak about
+  /// the output is not evidence for it. Presence is not relevance, so the
+  /// gate measures the topic instead of trusting the path.
+  static const Map<String, String> outputTopics = <String, String>{
+    'approval_recorded': 'approval',
+    'artifact_published': 'artifact',
+    'connector_subset_enforced': 'subset',
+    'uncertified_hidden': 'hidden',
+    'monitoring_active': 'telemetry',
+    'support_ready': 'support',
+    'rollback_available': 'rollback',
   };
 
   /// Map a manifest status word to the enum, tolerating case.
@@ -345,6 +363,17 @@ class Sprint117GaReleaseLoader {
   }
 }
 
+/// Read an evidence file's text for topicality. A file that cannot be read
+/// yields the empty string, so an unreadable path is never topical: absent or
+/// broken evidence is undetermined, never permission.
+String _readEvidenceText(String path) {
+  try {
+    return File(path).readAsStringSync();
+  } on FileSystemException {
+    return '';
+  }
+}
+
 class Sprint117GaReleaseReport {
   const Sprint117GaReleaseReport({
     required this.state,
@@ -418,6 +447,28 @@ class Sprint117GaReleaseGate {
       ];
       if (absent.isNotEmpty) {
         violations.add('verified_without_evidence:$name:${absent.join('|')}');
+      }
+
+      // Presence is not relevance. A `verified` output whose cited files all
+      // exist but never speak about the output is not evidence for it: the
+      // path would be doing the work the claim is supposed to do. Measure the
+      // topic, not just the path.
+      final topic = Sprint117GaReleaseContract.outputTopics[name];
+      if (topic != null) {
+        final present = <String>[
+          for (final path in record.evidence)
+            if (File(path).existsSync()) path,
+        ];
+        if (present.isNotEmpty) {
+          final body = StringBuffer();
+          for (final path in present) {
+            body.write(_readEvidenceText(path).toLowerCase());
+            body.write(' ');
+          }
+          if (!body.toString().contains(topic)) {
+            violations.add('verified_without_topical_evidence:$name');
+          }
+        }
       }
     }
 

@@ -599,5 +599,81 @@ void main() {
         Sprint117GaReleaseContract.approvalManifestPath,
       );
     });
+    test('117.46-GATE-TOPIC a verified output backed by an existing but '
+        'off-topic file fails the gate instead of passing it', () {
+      // The contract's topical witness must be the same vocabulary the gate
+      // enforces, pinned here by a literal so the two cannot drift apart.
+      expect(Sprint117GaReleaseContract.outputTopics, const <String, String>{
+        'approval_recorded': 'approval',
+        'artifact_published': 'artifact',
+        'connector_subset_enforced': 'subset',
+        'uncertified_hidden': 'hidden',
+        'monitoring_active': 'telemetry',
+        'support_ready': 'support',
+        'rollback_available': 'rollback',
+      });
+
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The committed execution manifest is topically about every output, so
+      // the same record passes: the control proves the new rule is not
+      // always-fail.
+      final control = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+        ),
+      );
+      expect(control.state, Sprint117GaReleaseExecutionState.pass);
+
+      // An existing file that says nothing about telemetry is not evidence
+      // that monitoring is active. Presence is not relevance: accepting it
+      // would let the word "verified" do no work.
+      final offTopic = Map<String, Sprint117GaOutputRecord>.from(outputs)
+        ..['monitoring_active'] = const Sprint117GaOutputRecord(
+          status: Sprint117GaOutputStatus.verified,
+          evidence: <String>['pubspec.yaml'],
+          note: 'claims verified',
+        );
+      final report = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: offTopic,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+        ),
+      );
+      expect(report.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        report.violations.any(
+          (v) => v.startsWith(
+            'verified_without_topical_evidence:monitoring_active',
+          ),
+        ),
+        isTrue,
+      );
+    });
   });
 }

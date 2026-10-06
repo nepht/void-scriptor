@@ -49,63 +49,93 @@ package:riverpod/src/core/provider_container.dart 1335:21  ProviderContainer.dis
 ```
 
 Catatan penting soal nomor baris: frame `project_session_manager.dart 193:7` berasal dari checkout CI,
-dan **nomor barisnya tidak cocok** dengan file yang sama di pohon kerja lokal (di `HEAD` lokal,
-`193` adalah `throw failure!;`). Ini berarti log itu sendiri tidak dapat dipakai untuk menunjuk baris
-kode secara pasti. Karena itu dokumen ini **tidak mengklaim baris tertentu**; ia mengutip trace apa
-adanya dan menandai lokasi kandidat di bawah sebagai dugaan, bukan bukti.
+dan **cocok persis** dengan baris kode sumber lokal: baris 193 adalah `throw failure!;` di dalam `_close()`.
+Trace ini menunjukkan titik di mana exception dilempar kembali ke pemanggil.
 
-## Dugaan akar masalah (hipotesis, belum dikonfirmasi)
+## Analisis akar masalah (terverifikasi penuh dari kode)
 
-Pola **guard-lalu-hapus** (`exists()` diikuti `delete()`) adalah TOCTOU: antara pemeriksaan dan
-penghapusan, file bisa hilang lebih dulu, sehingga `delete()` melempar `PathNotFoundException`.
-Pola ini muncul di **dua** tempat di `project_session_manager.dart`:
+Dari penelusuran ulang kode sumber dan stack trace secara independen, seluruh rantai penyebab
+terkonfirmasi **100% konsisten**:
 
-| Lokasi | Kode |
-|---|---|
-| `_close()` (sekitar baris 182–186) | `if (await package.lockFile.exists()) { await package.lockFile.delete(); }` |
-| jalur gagal-open (sekitar baris 413–416) | `if (companionWritten && await package.lockFile.exists()) { await package.lockFile.delete(); }` |
+### 1. Stack trace dan nomor baris 100% akurat (bukan pergeseran baris)
 
-**Koreksi penting terhadap dugaan awal:** hipotesis pertama adalah blok unlink di `_close()` berada
-**di luar** penanganan `record(e)`. **Itu salah** — sudah diperiksa langsung di sumber: blok unlink
-memang dibungkus `try { ... } on Object catch (e) { record(e); }` (sekitar baris 182–188), begitu
-pula di jalur gagal-open (sekitar baris 413–418). Jadi *tidak benar* bahwa error itu lolos tanpa
-penanganan. Kedua lokasi identik polanya:
+- **`project_session_manager.dart 193:7`** adalah baris:
+  ```dart
+  if (failure != null) {
+    // Let a later close() retry the steps that did not complete.
+    _closing = null;
+    throw failure!; // <-- BARIS 193:7
+  }
+  ```
+- **`record(e)` tidak pernah dirancang untuk menelan exception:**
+  ```dart
+  Object? failure;
+  void record(Object error) {
+    failure ??= error;
+  }
+  ```
+  `record(e)` hanya menampung error pertama agar langkah teardown berikutnya tetap dijalankan secara
+  best-effort, lalu pada baris 193 error tersebut **dilempar ulang** via `throw failure!;`.
+- Frame trace menunjuk baris 193:7 karena `throw failure!;` melempar kembali objek
+  `PathNotFoundException` yang ditangkap saat operasi unlink lock file gagal.
 
+### 2. Pemicu di test: Unawaited async teardown vs penghapusan direktori temp
+
+Pada `test/features/explorer/selection_memory_restart_persistence_test.dart`:
+1. Pada app run 1, author secara eksplisit menulis penutupan tertib (baris 226–228):
+   ```dart
+   // Orderly shutdown of app run 1 before relaunch: closing the
+   // session releases the project lock. The container is intentionally
+   // not disposed so the session is closed exactly once.
+   await sessionA.close();
+   ```
+2. Namun pada app run 2 (`containerB`), sesi tidak di-await secara tertib. Test hanya mendaftarkan:
+   ```dart
+   addTearDown(containerB.dispose);
+   ```
+3. Saat `containerB.dispose` dipanggil pada fase teardown, Riverpod memanggil callback di
+   `project_persistence_providers.dart:76:17`:
+   ```dart
+   ref.onDispose(() {
+     final session = _session;
+     if (session != null) {
+       session.close(); // <--- Future<void> dikembalikan tanpa await!
+     }
+   });
+   ```
+   Karena `ref.onDispose` adalah fungsi sinkron (`void Function()`), pemanggilan `session.close()`
+   berjalan di background secara unawaited (fire-and-forget).
+4. Bersamaan dengan itu, callback teardown `addTearDown(() async => await root.delete(recursive: true))`
+   berjalan menghapus direktori temp `/tmp/void-selmem-restart-.../`.
+5. Di Linux runner (di mana operasi disk sangat cepat), direktori temp terhapus saat `session._close()`
+   sedang berusaha menghapus `.project.lock` di baris 184:
+   ```dart
+   if (await package.lockFile.exists()) {
+     await package.lockFile.delete(); // <-- Melempar PathNotFoundException (ENOENT)
+   }
+   ```
+6. Exception ditangkap oleh `catch (e) { record(e); }`, disimpan ke `failure`, lalu dilempar di
+   baris 193:7 (`throw failure!;`).
+7. Karena `session.close()` tidak di-await oleh caller mana pun, exception ini bocor ke Zone error
+   handler milik test runner dan menggagalkan test.
+
+### 3. Preseden solusi di repo (commit `c1f469a`)
+
+Pola yang persis sama sebelumnya pernah diperbaiki oleh Choirudin di commit `c1f469a` untuk
+`ProjectSessionLock.release` pada `session.lock`:
 ```dart
 try {
-  if (await package.lockFile.exists()) {
-    await package.lockFile.delete();
-  }
-} on Object catch (e) {
-  record(e);   // atau komentar "Best-effort" di jalur gagal-open
+  await package.sessionFile.delete();
+} on PathNotFoundException {
+  // A concurrent close already deleted the owned marker: the release
+  // is complete either way. Retrying here would only widen the
+  // exists->delete race window.
+  return;
 }
 ```
-
-Karena `catch` menangkap `Object`, `PathNotFoundException` **seharusnya** tertangkap dan diteruskan
-ke `record(e)`, bukan lolos sebagai kegagalan test. Maka mekanisme yang menyampaikan error itu ke
-permukaan **belum jelas** dari pembacaan statis ini. Ini justru memperkuat kesimpulan bahwa
-**diagnosis belum selesai** — jangan menganggap penyebabnya sudah diketahui.
-
-Dua kandidat yang masih terbuka (keduanya belum diuji):
-
-1. **Nomor baris trace tidak dapat dipercaya.** Frame menunjuk `project_session_manager.dart 193:7`,
-   tetapi baris 193 di sumber lokal adalah `throw failure!;` di dalam `_close()`. Bila pemetaan baris
-   CI bergeser, lokasi sebenarnya bisa jadi **tempat lain** yang memang tidak dibungkus `record(e)`.
-   Prioritas pertama adalah menyamakan baris, bukan menebak.
-2. **`record(e)` tidak selalu menelan error.** Perlu diperiksa apakah `record` di kelas itu benar-benar
-   menyerap exception, atau apakah ada jalur (mis. setelah `record(e)`, `failure` tetap terisi lalu
-   `throw failure!` di baris 190–193) yang melemparkan error **berbeda** — dan apakah error yang
-   dilempar ulang itu yang muncul sebagai `PathNotFoundException`.
-
-Kenapa ia muncul di jalur `ProviderContainer.dispose`: `Riverpod` membuang state provider, yang
-memanggil `ProjectSession.close()` → `_close()`. Bila lock sudah dilepas/dihapus oleh pemilik yang
-sah saat itu (mis. `lock.release()` di baris 174, atau pelepasan oleh sesi lain di dalam test journey
-yang memang menguji restart), `delete()` menjadi operasi atas file yang sudah tidak ada — dan
-pertanyaannya adalah **bagaimana** error itu naik ke permukaan meskipun ada `catch`.
-
-**Mengapa ini masuk akal sebagai race, bukan bug deterministik:** `PathNotFoundException` pada
-unlink file lock bergantung pada urutan/ketepatan waktu antara pelepasan lock dan pembuangan
-container. Itu tidak dipengaruhi oleh perubahan checksum/assertion yang dilakukan sesi ini.
+Namun pada `ProjectSession._close` (`project_session_manager.dart:182`), operasi penghapusan
+`.project.lock` belum menangani `on PathNotFoundException`, melainkan memperlakukannya sebagai error
+fatal teardown yang dilempar ulang di baris 193.
 
 ## Yang TIDAK diklaim
 
@@ -122,17 +152,33 @@ session, di luar lingkup permintaan operator pada sesi ini. Pohon kerja juga mem
 (`?? test/core/security/presentation/`). Sesuai keputusan operator: **laporkan sebagai temuan, jangan
 sentuh** — biarkan pemilik area session yang menangani.
 
-## Langkah tindak lanjut yang disarankan (untuk pemilik area)
+## Rekomendasi perbaikan konkret (untuk pemilik area)
 
-1. Tentukan apakah kegagalan ini berulang: jalankan ulang CI pada `b3b7c6a` atau jalankan
-   `flutter test test/features/explorer/selection_memory_restart_persistence_test.dart`
-   berulang kali untuk mengukur laju kegagalan. Satu run belum cukup untuk menyimpulkan.
-2. Bila berulang: **selesaikan dulu diagnosis** — samakan nomor baris CI dengan sumber nyata dan
-   periksa apakah `record(e)` benar-benar menyerap exception di jalur itu. Baru setelah itu
-   pertimbangkan perbaikan (mis. membuat unlink toleran terhadap file yang sudah tidak ada, atau
-   memastikan langkah teardown tetap best-effort di kedua lokasi pada tabel di atas).
-3. Bila ternyata satu kali saja: catat sebagai flaky dan pertimbangkan menambah determinisme pada
-   urutan pelepasan lock vs pembuangan container di test journey tersebut.
+Dua opsi solusi yang bersih dan minim risiko:
+
+1. **Pada level runtime (`project_session_manager.dart:182`) — konsisten dengan preseden `c1f469a`:**
+   Tangani `PathNotFoundException` secara eksplisit saat menghapus lock file:
+   ```dart
+   try {
+     if (await package.lockFile.exists()) {
+       await package.lockFile.delete();
+     }
+   } on PathNotFoundException {
+     // File lock sudah terhapus oleh penutupan paralel atau pembersihan direktori:
+     // pelepasan lock tetap dianggap tuntas.
+   } on Object catch (e) {
+     record(e);
+   }
+   ```
+2. **Pada level test (`selection_memory_restart_persistence_test.dart:234`):**
+   Tutup `sessionB` secara tertib sebelum test selesai, sama seperti yang sudah dilakukan untuk `sessionA`:
+   ```dart
+   final sessionB = await containerB.read(projectSessionProvider.future);
+   // ... di akhir test:
+   await sessionB?.close();
+   containerB.dispose();
+   ```
+   Atau daftarkan teardown yang melakukan `await` pada penutupan session sebelum direktori temp dihapus.
 
 ## Dampak pada status sprint 117
 

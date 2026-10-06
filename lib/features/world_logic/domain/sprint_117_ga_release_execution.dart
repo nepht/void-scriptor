@@ -19,13 +19,18 @@
 ///   blocking release decision forbids `pass` however the output records
 ///   read. A record that claims `verified` while the committed manifest
 ///   records `UNVERIFIABLE` is an overclaim and fails the gate, not passes it.
-/// * The committed approval gate (117.45) is read through both of its
-///   witnesses: the boolean `execution_authorized` *and* the decision word.
+/// * The committed approval gate (117.45) is read through all three of its
+///   witnesses: the boolean `execution_authorized`, the decision word, *and*
+///   `blocker_status.release_blocked`.
 ///   Consulting only the flag lets a source that records a blocking decision
 ///   (delay/rollback) still authorize execution through a contradictory
 ///   boolean, so the decision word is gated too, an unrecognised decision
 ///   word is drift, and a source that records no decision word at all has
-///   not corroborated its flag, so silence fails rather than permits.
+///   not corroborated its flag, so silence fails rather than permits. The
+///   blocker witness is read the same way: the source's own gate treats an
+///   active blocker as a hard veto, so a consumer that never reads it can
+///   pass a record that gate fails, and a source silent about its blocker
+///   status has not corroborated that none is active.
 /// * Presence is not relevance. A `verified` output is only accepted when
 ///   the evidence it cites is topically about that output; a path that exists
 ///   but never speaks about the claim backs nothing, so it fails rather than
@@ -249,6 +254,7 @@ class Sprint117GaReleaseEvidence {
     required this.unrecognisedStatuses,
     this.approvalSourceAuthorized,
     this.approvalSourceDecision,
+    this.approvalSourceReleaseBlocked,
   });
 
   final Sprint117GaReleaseExecution execution;
@@ -264,6 +270,13 @@ class Sprint117GaReleaseEvidence {
   /// gate must not treat the execution manifest's own claim as sufficient.
   final bool? approvalSourceAuthorized;
   final String? approvalSourceDecision;
+
+  /// The approval source's own blocker witness (`blocker_status.release_blocked`).
+  /// `null` when the source does not record one: undetermined, so the gate must
+  /// not read silence as "no blocker". The 117.45 gate treats `true` as a hard
+  /// veto, so a consumer that never reads this witness can pass a record the
+  /// source's own gate fails.
+  final bool? approvalSourceReleaseBlocked;
 }
 
 /// Reads the committed manifest. Never invents: an unreadable manifest yields
@@ -304,6 +317,7 @@ class Sprint117GaReleaseLoader {
       unrecognisedStatuses: unrecognised,
       approvalSourceAuthorized: _approvalAuthorized(),
       approvalSourceDecision: _approvalDecision(),
+      approvalSourceReleaseBlocked: _approvalReleaseBlocked(),
     );
   }
 
@@ -320,6 +334,21 @@ class Sprint117GaReleaseLoader {
     }
     if (approval['execution_authorized'] is bool) {
       return approval['execution_authorized'] as bool;
+    }
+    return null;
+  }
+
+  /// Read the approval source's own blocker witness
+  /// (`blocker_status.release_blocked`). `null` when the source records none:
+  /// undetermined, so the gate must not read silence as "no blocker".
+  static bool? _approvalReleaseBlocked() {
+    final approval = _readJsonObject(
+      Sprint117GaReleaseContract.approvalManifestPath,
+    );
+    if (approval == null) return null;
+    final blockers = approval['blocker_status'];
+    if (blockers is Map && blockers['release_blocked'] is bool) {
+      return blockers['release_blocked'] as bool;
     }
     return null;
   }
@@ -514,6 +543,17 @@ class Sprint117GaReleaseGate {
             '$approvalDecision',
           );
         }
+      }
+      // The approval source carries a third witness beside the flag and the
+      // decision word: `blocker_status.release_blocked`, which its own gate
+      // (117.45) treats as a hard veto. Consulting only two of the three
+      // witnesses lets a source that records an active release blocker still
+      // authorize execution through the two it happens to agree with.
+      final releaseBlocked = evidence.approvalSourceReleaseBlocked;
+      if (releaseBlocked == null) {
+        violations.add('authorization_source_blocker_status_missing');
+      } else if (releaseBlocked) {
+        violations.add('authorization_source_release_blocked');
       }
     }
 

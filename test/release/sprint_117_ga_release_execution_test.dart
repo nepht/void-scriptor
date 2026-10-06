@@ -264,6 +264,7 @@ void main() {
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
         ),
       );
       expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
@@ -282,6 +283,7 @@ void main() {
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -473,6 +475,7 @@ void main() {
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -550,6 +553,7 @@ void main() {
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -639,6 +643,7 @@ void main() {
           unrecognisedStatuses: const <String, String>{},
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
         ),
       );
       expect(control.state, Sprint117GaReleaseExecutionState.pass);
@@ -674,6 +679,90 @@ void main() {
         ),
         isTrue,
       );
+    });
+    test('117.46-GATE-AUTH-BLOCKER an active release blocker in the approval '
+        'source forbids pass even when its flag and decision word both read '
+        'authorized', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The approval source carries a THIRD witness beside the boolean flag and
+      // the decision word: `blocker_status.release_blocked`. Its own gate
+      // (117.45) treats `true` as a hard veto, so a consumer that never reads
+      // this witness can pass a record the source's own gate fails.
+      final blocked = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: true,
+        ),
+      );
+      expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        blocked.violations.any(
+          (v) => v.startsWith('authorization_source_release_blocked'),
+        ),
+        isTrue,
+        reason:
+            'an active release blocker in the approval source must fail '
+            'the gate, not be ignored',
+      );
+
+      // Silence is not permission either: a source that records no blocker
+      // witness has not corroborated that no blocker is active.
+      final silent = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+        ),
+      );
+      expect(silent.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        silent.violations,
+        contains('authorization_source_blocker_status_missing'),
+      );
+
+      // Control: a source that records no active blocker still passes, so the
+      // new rule is not simply always-fail.
+      final clear = const Sprint117GaReleaseGate().evaluateWith(
+        Sprint117GaReleaseEvidence(
+          execution: Sprint117GaReleaseExecution(
+            approvalAuthorized: true,
+            outputs: outputs,
+          ),
+          recordedDecision: 'AUTHORIZED',
+          recordedAuthorized: true,
+          unrecognisedStatuses: const <String, String>{},
+          approvalSourceAuthorized: true,
+          approvalSourceDecision: 'AUTHORIZED',
+          approvalSourceReleaseBlocked: false,
+        ),
+      );
+      expect(clear.state, Sprint117GaReleaseExecutionState.pass);
+      expect(clear.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
     });
   });
 }

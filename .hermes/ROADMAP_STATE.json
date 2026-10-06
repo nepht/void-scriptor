@@ -21,8 +21,8 @@
     "user_data": "No user project or marker modified during this safety correction."
   },
   "product": "Void Scriptor",
-  "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
-  "flutter_sdk": "D:\\DevTools\\Flutter SDK\\flutter\\bin\\flutter.bat",
+  "repository": "C:\\Users\\nepht\\void-scriptor-github-check",
+  "flutter_sdk": "D:\\DevTools\\Flutter-SDK-3.47.6\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
   "active_sprint": 117,
@@ -46,8 +46,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-05T20:28+07:00",
-  "updated_by": "core_worker_cron_slice_117_43_48",
+  "updated_at": "2026-10-06T14:02+07:00",
+  "updated_by": "operator_session_environment_reconciliation",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -629,7 +629,7 @@
   "current_step": "117.43",
   "current_step_status": "VERIFIED-LOCAL",
   "last_run_summary": "2026-10-05 slice 117.43-47/48 ledger + keputusan operator: operator memilih opsi (a) untuk 117.43-02 (re-sign kandidat 1.2.0-rc.1 lalu refresh checksum), bukan menyatakan drift sebagai limitasi GA. Rebuild kanonik dari pohon bersih (clean -> pub get -> build windows --release -> sign 6 artefak -> generate_release_metadata) menutup drift: 6 signed MATCH=6/DRIFT=0 (dari 0/6) dan index 493 entri MATCH=493/DRIFT=0/MISSING=0 (dari 485/7/1). Dua suite 113.38/113.39 pulih 32/32 exit 0 (dari 17 pass/3 FAIL). Satu assertion gate 117.43 yang mengunci KEBERADAAN defect dipensiunkan menjadi klaim lebih kuat (setiap path checksum + sign manifest harus ADA), bukan di-skip; gate 224/224 exit 0. Ledger 117.43 PARTIAL-LOCAL -> VERIFIED-LOCAL; 117.43-02 ditutup atas keputusan operator. Sisa antrean dependabot dibersihkan: setup-java 6.0.0 -> 6.0.1 (commit 7621033) dan 5 PR stale ditutup karena sudah terlampaui di pubspec.lock (flutter_lints 6.0.0, drift 2.35.1, drift_dev 2.35.1, build_runner 2.16.1, archive 4.3.0). BATAS KLAIM: sertifikat self-signed lokal, bukan CA publik; penandatanganan CA publik, builder kedua, kohort beta, dan publikasi GA tetap DEFERRED-EXTERNAL.",
-  "last_commit": "a5d07e5",
+  "last_commit": "067f62d7",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_112_determinism_data_integrity_verification.json",
@@ -3896,8 +3896,8 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "83c7d64",
-  "ahead": 57,
+  "commit": "067f62d7",
+  "ahead": 0,
   "defect_117_43_27": {
     "date": "2026-10-04",
     "hunt_ordinal": 22,
@@ -4537,5 +4537,6 @@
       "(d) re-audit every other observed interpolation that inserts an object/record instead of a value/name",
       "(e) NEW: missingEvidence (build_reproducibility_provenance.dart:768) labels an object that IS present but lacks method/limits 'missing artifact_comparison', the same text it uses for a null object - two conditions, one label"
     ]
-  }
+  },
+  "environment_reconciliation_20261006": "Divergensi git diselesaikan 2026-10-06: local master rebased onto origin/master, sinkron penuh (ahead 0 behind 0) setelah push b3b7c6a6..067f62d7. Field environment lama (repository/flutter_sdk/ahead/commit) adalah sisa sesi pra-rebase dan tidak lagi benar; diperbarui ke nilai terverifikasi. Tidak ada langkah sprint 117 yang diubah oleh rekonsiliasi ini."
 }

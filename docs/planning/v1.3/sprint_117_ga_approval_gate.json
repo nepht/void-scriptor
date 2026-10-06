@@ -58,7 +58,7 @@
         "lib/features/world_logic/domain/sprint_117_ga_artifact_reproducibility.dart",
         "docs/release/v1.2.0-rc.1-checksums.txt"
       ],
-      "summary": "117.43 GA artifact & reproducibility measured 8 required outputs with 6 signed artifacts, but the manifest verdict is GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE (pass=false): connector_manifest, icon_manifest, and provenance are absent from packaging and the checksums group fails artifact_checksum_agreement. Signed artifacts are not reproducible at HEAD."
+      "summary": "117.43 GA artifact & reproducibility measured 8 required outputs with 6 signed artifacts; the manifest verdict is GA_ARTIFACT_REPRODUCIBILITY_INCOMPLETE (pass=false, measured 2026-10-02, not re-measured since). The sole failing group is checksums (artifact_checksum_agreement). Commit 02279bc (2026-10-05) regenerated the committed checksum index from a freshly rebuilt and re-signed rc.1 tree — the repair is attested on the release machine but is not independently re-verifiable in a clean checkout, where all 493 index paths resolve under gitignored build/. connector_manifest, icon_manifest, and provenance are absent from the 113.38 packaging manifest as a recorded boundary (failures name only checksums, not the trio). Signed artifact agreement therefore remains unmeasured, not disproven."
     },
     "rollout_plan": {
       "present": true,
@@ -90,7 +90,7 @@
       "117.41: zero CERTIFIED connectors (32 UNVERIFIED, 32 WITHHELD) — no certified connector to release",
       "117.1: canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED and live_beta_executed false",
       "117.4: cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED — no verified participant cohort",
-      "117.43: artifact reproducibility incomplete (pass=false) — connector_manifest, icon_manifest, provenance absent from packaging; checksum agreement failed",
+      "117.43: artifact reproducibility measured 2026-10-02 (pass=false); the sole failing group is checksums — commit 02279bc (2026-10-05) regenerated the committed index on the release machine, which is not independently re-verifiable in a clean checkout (all 493 index paths live under gitignored build/), so signed-artifact agreement remains unmeasured, not disproven",
       "117.39: 7 of 9 GA blocker domains unresolved (accessibility, auth, billing, data, privacy, quota, sync)",
       "117.42: permission_scope_undocumented for developer connectors (github, gitlab, bitbucket, azure_devops)",
       "117.8: rollback drill defined but not executed (all 6 controls executed=false)"

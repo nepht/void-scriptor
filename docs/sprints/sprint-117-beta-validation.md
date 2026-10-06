@@ -61,7 +61,7 @@
 | 117.44 | Staged GA Rollout Plan | VERIFIED-LOCAL | Step kanonik 117.44 menutup delapan field kanonik (`stages`, `connector_subset`, `exposure`, `health_criteria`, `stop_conditions`, `kill_switches`, `rollback`, `support`) sebagai kondisi TERUKUR, bukan prosa. Gate baru `lib/features/world_logic/domain/sprint_117_staged_ga_rollout_plan.dart` menurunkan tiap field dari bukti ter-commit: 116.50 (`sprint_116_staged_beta_rollout_monitoring.json`) memasok flags, stages, health metrics, stop conditions, kill switches, rollback, dan default; 117.4 memasok certified subset; 117.5 memasok determined exposure; 117.6 memasok support path; 117.8 memasok rollback drill + status drill kill switch. **DUA ATURAN PEMIKUL BEBAN:** (1) rollout hanya boleh mengekspos certified subset - stage yang mengekspos provider di luar irisan 117.4 x 116.50 adalah `uncertified_connector` (violation), bukan beta yang lebih luas; (2) plan DITENTUKAN, tidak pernah diaktifkan - 117.5 sudah menentukan local exposure dan mengaktifkan NOL karena 117.3 tidak mencatat kohort peserta terverifikasi, jadi `enabled_subset` kosong, `live_rollout_executed` false, dan seluruh gerbang eksternal tetap `DEFERRED-EXTERNAL`. **HASIL atas bukti ter-commit:** state `pass`, verdict `STAGED_GA_ROLLOUT_PLAN_DEFINED_LOCAL`, 3 stage (`stage_internal` 5% -> `stage_alpha` 25% -> `stage_waitlist` 100%), connector subset `[openai, gemini]` (certified subset 31 provider, hanya dua yang juga di-stage 116.50), master flag `beta.connectors.enabled`, recorded default `OFF`, field coverage 3/3 untuk kedelapan field. Exposure percent naik monoton dengan urutan stage; setiap stage menyebut rollback yang menargetkannya; setiap provider terekspos punya kill switch; setiap stop condition memakai action di kosakata (`halt_rollout`/`rollback_stage`/`page_oncall`) dan metric yang direkam 116.50. Open items jujur tetap dibawa: `live_rollout_not_executed`, `cohort_not_verified`, `rollback_drill_not_executed`, `kill_switch_not_drilled:kill_openai`/`:kill_gemini`, dan item warisan 117.5. **NEGATIF FAIL-CLOSED DIUJI SATU PER SATU:** connector tak tersertifikasi = violation; stage tanpa exposure = undetermined; exposure percent turun = violation; stop action di luar kosakata = violation; provider terekspos tanpa kill switch = undetermined; rollback yang menarget stage lain = violation; anchor absen = blocked (BUKAN fail); verdict certified subset yang drift = violation. **1 DEFECT PADA DRAFT GATE SENDIRI TERTANGKAP RED PERTAMA:** saat `anchor == null` loop stage tetap berjalan dan memfabrikasi violation sehingga kasus bukti-hilang dilaporkan `fail` padahal seharusnya `blocked` - diperbaiki dengan menghentikan loop saat anchor null (plan tanpa bukti bukan plan yang salah, melainkan plan yang belum ditentukan), lalu flow-promotion membuat sembilan `?.` jadi tak perlu dan dibersihkan. **GERBANG:** `dart format` write lalu `--output=none --set-exit-if-changed` = 0 changed exit 0 (2 file); `dart analyze` 2 file `No issues found!` exit 0; `git diff --check` rc 0; scan non-Latin (python re kelas CJK/kana/hangul/fullwidth) + trailing whitespace pada 3 file = 0 dan 0; test slice **20/20 `All tests passed`**; regresi LIMA file gate 117 sibling (117.44 + 117.5 + 117.4 + 117.6 + 117.8) dalam SATU run = **`+193` All tests passed exit 0** tanpa blok `Failing tests`; manifest deterministik (dua generate = sha sama); `roadmap_guard.dart` PASS (recommended_step 117.44, canonical_sha256 `b7ef2d35...`). Scratch probe + generator dihapus setelah asersi resmi dipindahkan (gitignored). **MANIFEST:** `docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json`, sha256 `d73601a0f8bbe437dd0f32111240827bf70644feca6fdec85abdad36fe7481da` (7189 byte), **dihash dari artefak TER-COMMIT** (`git show 4d7074b:<path>`) sesuai klausul 1; verifikasi 3-sisi disk == `git show` == nilai ledger, `json.loads` VALID. **BATAS KLAIM:** tidak ada flag di-flip, tidak ada stage dimajukan, tidak ada stop condition menyala, tidak ada kill switch di-drill terhadap provider live, tidak ada rollback dieksekusi - seluruh pengukuran atas bukti ter-commit. Gerbang eksternal DEFERRED-EXTERNAL: kohort beta nyata, provider live, hosted CI, publikasi. Commit slice `4d7074b` (3 path eksplisit) + ledger `20ac89d`; ahead 0 -> 2; tidak ada push pada run ini. TODO-OPERATOR: tidak ada. |
 | 117.45 | GA Approval Gate | VERIFIED-LOCAL | Step kanonik 117.45 merekam keputusan GA sebagai `DELAY` berdasarkan bukti ter-commit seluruh step 117.1–117.44. Manifest `docs/planning/v1.3/sprint_117_ga_approval_gate.json` (sha256 `2f50981b36d6c043aaed0aa02b66150decde5e90cb5a0fcd172495f59405c705`, commit `c22b0f2`) mencatat 8 required_evidence (beta_results, connector_registry, blocker_status, quality_gates, known_limits, signed_artifacts, rollout_plan, rollback_readiness) semuanya present=true. **Keputusan:** `DELAY` — release diblokir karena: (1) 117.41: nol connector CERTIFIED dari 32 (semua UNVERIFIED/WITHHELD); (2) 117.1: beta entry BLOCKED, live_beta_executed=false; (3) 117.4: COHORT_CONSENT_VERIFICATION_FAILED; (4) 117.43: artifact reproducibility incomplete (pass=false); (5) 117.39: 7/9 GA blocker domain belum resolved; (6) 117.42: permission_scope_undocumented untuk developer connectors; (7) 117.8: rollback drill defined tapi belum dieksekusi. **approval_state=PENDING_CHOIRUDIN**, execution_authorized=false. Rollback_readiness=true (dokumenter). Domain `lib/features/world_logic/domain/sprint_117_ga_approval_gate.dart`, test `test/release/sprint_117_ga_approval_gate_test.dart` **7/7 PASS**. `roadmap_guard.dart` PASS (recommended_step=117.45, last_resolved=117.44). **BATAS KLAIM:** keputusan ini adalah governance record, bukan approval machine — menulis manifest TIDAK mengotorisasi release. Keputusan go/no-go final tetap milik Choirudin. Gerbang eksternal DEFERRED-EXTERNAL: hosted CI, live telemetry, public-trust signing, kohort beta, publikasi. **Bug fix CI multiplatform `.project.lock` race condition** juga diterapkan di commit `75e1a3a` (3 file: project_session_manager.dart toleran PathNotFoundException/FileSystemException, selection_memory_restart_persistence_test.dart graceful teardown, session_lock_release_race_test.dart regression test 2/2 PASS, stress 10× loop 100%). Commit slice `c22b0f2` + `658c938` (ledger) + `75e1a3a` (bug fix). |
 | 117.46 | General Availability Release | PARTIAL-LOCAL-EXTERNAL-BLOCKED | `docs/planning/v1.3/sprint_117_ga_release_execution.json`; local execution record is prepared and fail-closed, but approval, publication, monitoring, support notification, certified-subset enforcement, and rollback against a published artifact remain unverified. |
-| 117.47 | Post-Release Observation Handoff | NOT_STARTED | - |
+| 117.47 | Post-Release Observation Handoff | VERIFIED-LOCAL | Gate fail-closed `lib/features/world_logic/domain/sprint_117_post_release_observation_handoff.dart` mengukur 8 output kanonik (`health_baseline`, `connector_health`, `incident_queue`, `billing_health`, `quota_health`, `risk_register`, `owners`, `recertification_schedule`) sebagai kondisi terukur dari 11 manifest ter-commit, bukan klaim observation. Manifest `docs/planning/v1.3/sprint_117_post_release_observation_handoff.json` **di-emit oleh `tool/emit_sprint_117_handoff_manifest.dart` dari report gate itu sendiri**, sehingga record keputusan tidak bisa berbeda dari yang memutuskan. `state=pass`, `resolved_outputs=8/8`, `violations=0`. **BATAS KLAIM (ini handoff, bukan klaim kesehatan):** `live_release_executed=false`, `live_release_observed=false` — tidak ada provider di-query, tidak ada metrik di-scrape, tidak ada insiden ditriase, tidak ada endpoint billing/quota dihubungi. Connector health dilaporkan apa adanya dari 117.41: `CERTIFIED=0`, `UNVERIFIED=32`, `WITHHELD=32`, `enabled_subset=[]`; certified subset diturunkan dari status registry, BUKAN dari `exposed_subset` (yang berisi 32 provider hasil snapshot, bukan sertifikasi). Recertification dilaporkan sebagai **prasyarat, bukan jadwal**: `calendar_date=null` karena 117.3 mencatat `COHORT_CONSENT_VERIFICATION_FAILED` dengan `verified_participant_count=0` dan `live_beta_executed=false`. Semua external gate tetap `DEFERRED-EXTERNAL`. |
 | 117.48 | Sprint Closure | NOT_STARTED | - |
 
 ## Sprint berikutnya
@@ -3374,3 +3374,74 @@ Slice ini menemukan defect keluarga "evidence fail-open" pada langkah 117.46: te
 **GERBANG (command + exit).** RED = `+4 -1` exit 1 dengan pesan `evidence cited by connector_subset_enforced never mentions "subset"`; GREEN = `+5 All tests passed` exit 0. `dart format` = 0 changed lalu `--output=none --set-exit-if-changed` exit 0; `dart analyze` = `No issues found!` exit 0; `git diff --check` rc 0. Regresi DUA gate 117.46+113.44 dalam satu run = `+9 All tests passed` exit 0 tanpa blok Failing tests. Numstat: test 40/0, manifest 5/4 (4 baris '-' = persis 2 path evidence lama + 2 note lama yang diganti; diff -U0 tanpa hunk lain). Manifest tetap `status=PARTIAL-LOCAL`, `decision=BLOCKED_EXTERNAL_GATES`, `execution_authorized=false`.
 
 **BATAS KLAIM.** 117.46 TETAP `PARTIAL-LOCAL-EXTERNAL-BLOCKED`. Tidak ada flag di-flip, tidak ada publication, tidak ada release, tidak ada push.
+
+### 117.47 -- Post-Release Observation Handoff (VERIFIED-LOCAL)
+
+Step kanonik 117.47 mendeklarasikan **delapan output kanonik** yang tidak pernah
+diimplementasikan: `health_baseline`, `connector_health`, `incident_queue`,
+`billing_health`, `quota_health`, `risk_register`, `owners`,
+`recertification_schedule`. Audit awal: nol domain, nol test, nol manifest.
+
+**MASALAH KONSEP (yang harus dijawab gate, bukan prosa).** Nama langkahnya
+"post-release observation". Yang tidak pernah terjadi adalah rilisnya sendiri.
+117.1 mencatat `live_beta_executed=false`; 117.3 mencatat
+`COHORT_CONSENT_VERIFICATION_FAILED` dengan `verified_participant_count=0`;
+117.41 mencatat 0/32 connector CERTIFIED. Maka sebuah handoff yang melaporkan
+kesehatan connector terverifikasi akan **mendeskripsikan rilis yang tidak pernah
+terjadi**. Gate ini karena itu tidak punya klaim "health is good"; ia punya
+klaim "ini yang tercatat, dan ini yang tidak terukur" -- `liveReleaseObserved`
+dipatok `false` secara struktural, bukan lewat catatan.
+
+**FAIL-CLOSED, BUKAN FAIL-OPEN (dua axis terpisah, sengaja tidak digabung).**
+`anchor == null` (salah satu manifest sumber hilang/tidak bisa di-parse) ->
+`blocked`, bukan `fail`: bukti yang hilang berarti belum ditentukan, bukan salah.
+Anchor ada tapi isinya kontradiktif -> `fail` + violation bernama. Setiap output
+harus punya minimal satu path evidence yang **terkutip**, kalau tidak ia
+`undetermined`; sumber manifest yang tak dicite di mana pun = violation
+`source_uncited`.
+
+**DUA DEFECT YANG TERTANGKAP OLEH GATE DIRI SENDIRI.**
+(1) Tiga sumber ter-declare tapi tak ter-cite di output mana pun -- `source_uncited`
+menangkapnya, symptomatic dari design "satu sumber per output" yang terlalu
+sempit: `health_baseline` butuh resilience probes **dan** privacy-safe signals
+(cara provider gagal vs apa yang boleh dipantau on-call), `connector_health`
+butuh registry **dan** exposure matrix, `recertification_schedule` butuh cohort
+consent **dan** certification lock. Dipetakan ulang ke output yang tepat.
+(2) `certifiedSubset` sempat diisi dari `sprint_117_certification_snapshot_lock.json`
+`exposed_subset` -- yaitu **32 provider hasil snapshot, bukan 32 provider
+tersertifikasi**. Itu kebalikan dari kenyataan (117.41: CERTIFIED=0). Registry
+117.41 ternyata punya `status_counts` agregat + `withheld_provider_ids`, tanpa
+baris status per provider, jadi atribusi per-provider **tidak dapat dibuktikan**;
+loader sekarang menurunkan subset dari status agregat dan membiarkannya kosong
+ketika agregat tidak mencakup seluruh registry. Klaim 32 connector tersertifikasi
+adalah klaim yang tidak ada buktinya.
+
+**SKEMA SUMBER YANG BERAGAM (dua bentuk, bukan satu).** 117.29/117.30/117.32/
+117.36/117.41 mencatat `verdict`; **117.33 mencatat `scope_status`**, bukan
+`verdict`. Pembaca naive meninggalkan `privacy_verdict` kosong di risk register --
+dan risk register kosong terbaca sebagai "tidak ada risiko". Dibuat
+`_verdictOf(manifest, step:)` yang jatuh ke `scope_status` dan menamai langkahnya
+(`VERIFIED-LOCAL:117.33`), plus `_areasOf()` untuk `required_areas` /
+`canonical_evidence_areas` sehingga 8 sumbu privacy 117.33 ikut masuk risk register.
+
+**MANIFEST DI-EMIT, BUKAN DIKETIK.** `tool/emit_sprint_117_handoff_manifest.dart`
+menjalankan gate itu sendiri lalu menulis JSON dari `report`. Manifest yang
+diketik tangan bebas berbeda dari gate yangemblage memutuskan -- justru drift
+yang dikontrak untuk dilarang. Jalur kodenya sama, jadi tidak bisa berbeda.
+
+**GERBANG (command + exit).** `dart analyze` 3 file = `No issues found!` exit 0;
+slice test **21/21 `All tests passed`** exit 0, termasuk 21 assertion nyata
+(tidak ada `skip:`, tidak ada assertion dihapus): 8 output kanonik terurut,
+verdict cohort dibaca dari 117.3, `CERTIFIED=0`/`UNVERIFIED=32` cocok byte-dengan
+registry 117.41, `live_release_not_observed` selalu ada walau gate `pass`,
+serta 7 negatif fail-closed (anchor hilang -> blocked; output tanpa evidence ->
+undetermined; note blank -> undetermined; sumber tak ter-cite -> fail; enabled
+tanpa CERTIFIED -> fail; klaim rilis tanpa beta -> fail; drift verdict
+support/monitoring -> fail).
+
+**BATAS KLAIM.** 117.47 `VERIFIED-LOCAL` **dalam arti handoff kontrak terdefinisi**,
+bukan observation yang terjadi. Tidak ada provider di-query, tidak ada metrik
+di-scrape, tidak ada insiden ditriase, tidak ada operator yang menerima handoff,
+tidak ada calendar recertification. Semua gerbang eksternal tetap
+`DEFERRED-EXTERNAL`; keputusan go/no-go tetap milik Choirudin (117.45 masih
+`DELAY`, `approval_state=PENDING_CHOIRUDIN`). Tidak ada push pada run ini.

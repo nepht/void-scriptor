@@ -28,7 +28,7 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.45",
+  "last_verified_step": "117.47",
   "next_step": "117.46",
   "stability_gate": {
     "status": "PASS",
@@ -47,8 +47,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-06T14:20:26.171658Z",
-  "updated_by": "core_worker_cron_fix_117_46_evidence_topicality",
+  "updated_at": "2026-10-06T16:02:19.578818Z",
+  "updated_by": "operator_slice_117_47_post_release_observation_handoff",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3685,10 +3685,10 @@
     "note": "slot allocated at operator stream transition; no work performed yet"
   },
   "sprint_117_step_11747": {
-    "status": "NOT_STARTED",
+    "status": "VERIFIED-LOCAL",
     "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "manifest": "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json",
+    "note": "All 8 canonical outputs resolved as MEASURED state, not as a health claim. live_release_executed=false / live_release_observed=false: no provider queried, no metric scraped, no incident triaged, no billing/quota endpoint contacted. Connector health is reported as recorded: CERTIFIED=0, UNVERIFIED=32, WITHHELD=32 (117.41), and the certified subset is derived from registry status counts, NOT from the certification lock's exposed_subset (32 snapshot providers, not 32 certifications). Recertification reported as a precondition, not a schedule: calendar_date=null because 117.3 records COHORT_CONSENT_VERIFICATION_FAILED with verified_participant_count=0. Manifest is emitted by tool/emit_sprint_117_handoff_manifest.dart from the gate's own report so the record cannot diverge from what decided it; regeneration is byte-stable (sha256 fbec4495...)."
   },
   "sprint_117_step_11748": {
     "status": "NOT_STARTED",
@@ -3861,6 +3861,14 @@
       "ledger": "docs/sprints/sprint-117-beta-validation.md",
       "evidence": "docs/evidence/sprint-117-41-manifest-20261002.json",
       "evidence_sha256": "2356bf4428603d3c83d94a3f8a1a6fb6e1352523772f503cfd93ac16de639458"
+    },
+    "117.47": {
+      "status": "VERIFIED-LOCAL",
+      "commit": null,
+      "ledger": "docs/sprints/sprint-117-beta-validation.md",
+      "evidence": "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json",
+      "domain": "lib/features/world_logic/domain/sprint_117_post_release_observation_handoff.dart",
+      "emitter": "tool/emit_sprint_117_handoff_manifest.dart"
     }
   },
   "sprint_117_38_issue_deduplication_triage": {

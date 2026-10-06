@@ -1,0 +1,165 @@
+{
+  "canonical_step": "117.47",
+  "title": "Post-Release Observation Handoff",
+  "document_role": "handoff-contract-manifest",
+  "state": "pass",
+  "verdict": "POST_RELEASE_OBSERVATION_HANDOFF_DEFINED_LOCAL",
+  "live_release_executed": false,
+  "live_release_observed": false,
+  "required_outputs": [
+    "health_baseline",
+    "connector_health",
+    "incident_queue",
+    "billing_health",
+    "quota_health",
+    "risk_register",
+    "owners",
+    "recertification_schedule"
+  ],
+  "resolved_outputs": 8,
+  "output_coverage": {
+    "health_baseline": 1,
+    "connector_health": 1,
+    "incident_queue": 1,
+    "billing_health": 1,
+    "quota_health": 1,
+    "risk_register": 1,
+    "owners": 1,
+    "recertification_schedule": 1
+  },
+  "missing_outputs": [],
+  "undetermined_outputs": [],
+  "violations": [],
+  "source_manifests": [
+    "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
+    "docs/planning/v1.3/sprint_117_beta_cohort_consent_verification.json",
+    "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json",
+    "docs/planning/v1.3/sprint_117_support_incident_readiness.json",
+    "docs/planning/v1.3/sprint_117_privacy_safe_monitoring.json",
+    "docs/evidence/sprint-117-29-manifest-20261001.json",
+    "docs/evidence/sprint-117-30-manifest-20261001.json",
+    "docs/evidence/sprint-117-32-manifest-20261001.json",
+    "docs/evidence/sprint-117-33-manifest-20261001.json",
+    "docs/evidence/sprint-117-36-manifest-20261002.json",
+    "docs/evidence/sprint-117-41-manifest-20261002.json"
+  ],
+  "connector_health": {
+    "status_counts": {
+      "CERTIFIED": 0,
+      "LIMITED": 0,
+      "UNVERIFIED": 32,
+      "PLANNED": 0,
+      "DEGRADED": 0,
+      "BLOCKED": 0
+    },
+    "registry_verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
+    "certified_subset": [],
+    "unverified_count": 32,
+    "enabled_subset": []
+  },
+  "incident_queue": {
+    "owners": [
+      "Choirudin",
+      "nephthys"
+    ],
+    "escalation_providers": [
+      "openai",
+      "gemini"
+    ],
+    "support_verdict": "SUPPORT_INCIDENT_READINESS_DEFINED_LOCAL",
+    "live_incident_executed": false
+  },
+  "health_baseline": {
+    "monitoring_verdict": "PRIVACY_SAFE_MONITORING_DEFINED_LOCAL",
+    "resilience_verdict": "pass=true checks=9 failures=0 open=1",
+    "privacy_signals": [
+      "connection_outcome",
+      "quota_refresh",
+      "sync_outcome",
+      "provider_error",
+      "usage_metadata",
+      "billing_state",
+      "workflow_completion"
+    ],
+    "telemetry_executed": false
+  },
+  "billing_health": {
+    "usage_verdict": "VERIFIED-LOCAL",
+    "usage_areas": [
+      "source_match",
+      "app_credit_separation",
+      "provider_usage",
+      "estimated_label",
+      "currency",
+      "period",
+      "unavailable_balance"
+    ],
+    "live_billing_provider_contacted": false
+  },
+  "quota_health": {
+    "quota_verdict": "QUOTA_ACCURACY_RECONCILED_LOCAL",
+    "storage_quota_areas": [
+      "api_match",
+      "local_scan_match",
+      "timestamp",
+      "unit_conversion",
+      "rounding",
+      "no_mock",
+      "unavailable_state"
+    ],
+    "live_quota_queried": false
+  },
+  "risk_register": {
+    "security_verdict": "SECURITY_ASSESSMENT_LOCAL",
+    "privacy_verdict": "VERIFIED-LOCAL:117.33",
+    "surfaces": [
+      "docs/release/v1.2.0-rc.1-support-playbook.md",
+      "docs/release/v1.2.0-rc.1-recovery-guide.md",
+      "docs/release/hotfix-runbook-v1.0.1.md",
+      "consent",
+      "minimization",
+      "destinations",
+      "content_exclusion",
+      "retention",
+      "deletion",
+      "disconnect",
+      "telemetry_controls"
+    ],
+    "external_audit_performed": false
+  },
+  "recertification_schedule": {
+    "cohort_verdict": "COHORT_CONSENT_VERIFICATION_FAILED",
+    "verified_participant_count": 0,
+    "calendar_date": null,
+    "note": "A schedule is not produced: no cohort exists to recertify and no calendar was consulted."
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "release_cut_pending: pubspec 1.2.0-rc.1 != v1.3.0-beta.1",
+    "upstream_cohort_not_verified:COHORT_CONSENT_VERIFICATION_FAILED",
+    "kill_switch_not_drilled:kill_openai",
+    "kill_switch_not_drilled:kill_gemini",
+    "cohort_not_verified",
+    "consent_without_participant:openai",
+    "consent_without_participant:gemini",
+    "exposure_undetermined:29",
+    "beta_connector_flags_not_in_shipped_registry",
+    "no_certified_connector",
+    "cohort_not_verified",
+    "connector_health_unproven",
+    "verified_cohort_size_zero",
+    "live_release_not_observed"
+  ],
+  "limitations": [
+    "This handoff transfers recorded local ownership only. It reports no live connector health, no billing, no quota, and no incident telemetry because no release has been executed.",
+    "Connector health is reported as unverified because 117.41 records zero CERTIFIED connectors; a handoff that reported verified health would describe a release that never happened.",
+    "Recertification is reported as a precondition, not a schedule: 117.3 records COHORT_CONSENT_VERIFICATION_FAILED with 0 verified participants and live_beta_executed is false.",
+    "No provider was queried, no metric was scraped, and no operator has accepted this handoff; all external gates remain DEFERRED-EXTERNAL."
+  ],
+  "claim_boundary": [
+    "This manifest defines the handoff contract locally. It observes no live release: no provider was queried, no metric was scraped, no incident was triaged, and no billing or quota endpoint was contacted.",
+    "Connector health is reported from 117.41 as 0 CERTIFIED / 32 UNVERIFIED. A handoff reporting verified connector health would describe a release that never happened.",
+    "Recertification is a precondition, not a schedule: 117.3 records a failed cohort consent verification with 0 verified participants.",
+    "The eight canonical outputs are resolved against committed manifests only. An absent or malformed source yields blocked, never pass."
+  ]
+}

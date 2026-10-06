@@ -265,6 +265,8 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
@@ -284,6 +286,8 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -476,6 +480,8 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -554,6 +560,8 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -644,6 +652,8 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(control.state, Sprint117GaReleaseExecutionState.pass);
@@ -759,10 +769,132 @@ void main() {
           approvalSourceAuthorized: true,
           approvalSourceDecision: 'AUTHORIZED',
           approvalSourceReleaseBlocked: false,
+          approvalSourceApprovalState: 'APPROVED',
+          approvalSourceRollbackReady: true,
         ),
       );
       expect(clear.state, Sprint117GaReleaseExecutionState.pass);
       expect(clear.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
+    test('117.46-GATE-AUTH-STATE an approval source whose approval_state or '
+        'rollback readiness is non-authorizing forbids pass even when its flag '
+        'and decision word read authorized', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The approval source carries TWO further witnesses that its own gate
+      // (117.45) consults: `approval.approval_state` (a release requires the
+      // approver to be APPROVED) and `rollback_readiness.ready` (a release
+      // requires confirmed readiness). A consumer that never reads them can
+      // pass a record the source's own gate fails. The vocabulary the gate
+      // enforces must match the owner's wire vocabulary, pinned here by a
+      // literal so the two cannot drift apart.
+      expect(Sprint117GaReleaseContract.approvalStateVocabulary, const <String>{
+        'APPROVED',
+        'PENDING_CHOIRUDIN',
+        'REJECTED',
+      });
+      expect(Sprint117GaReleaseContract.authorizingApprovalState, 'APPROVED');
+
+      Sprint117GaReleaseEvidence source({
+        required String? approvalState,
+        required bool? rollbackReady,
+      }) => Sprint117GaReleaseEvidence(
+        execution: Sprint117GaReleaseExecution(
+          approvalAuthorized: true,
+          outputs: outputs,
+        ),
+        recordedDecision: 'AUTHORIZED',
+        recordedAuthorized: true,
+        unrecognisedStatuses: const <String, String>{},
+        approvalSourceAuthorized: true,
+        approvalSourceDecision: 'AUTHORIZED',
+        approvalSourceReleaseBlocked: false,
+        approvalSourceApprovalState: approvalState,
+        approvalSourceRollbackReady: rollbackReady,
+      );
+
+      // approval_state says the approver is still deciding: the source's own
+      // gate fails a release here, so the consumer must not pass it.
+      final pending = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'PENDING_CHOIRUDIN', rollbackReady: true),
+      );
+      expect(pending.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        pending.violations.any(
+          (v) => v.startsWith('authorization_source_approval_state_'),
+        ),
+        isTrue,
+      );
+
+      // approval_state explicitly rejected: undetermined-to-permission is not
+      // an option; a rejected approver forbids pass.
+      final rejected = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'REJECTED', rollbackReady: true),
+      );
+      expect(rejected.state, Sprint117GaReleaseExecutionState.fail);
+
+      // Rollback readiness is false: the owner gate requires confirmed
+      // readiness for a release, so the consumer cannot ignore it.
+      final notReady = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'APPROVED', rollbackReady: false),
+      );
+      expect(notReady.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        notReady.violations.any(
+          (v) => v.startsWith('authorization_source_rollback_'),
+        ),
+        isTrue,
+      );
+
+      // Silence is not permission: a source that records no approval state or
+      // no readiness has not corroborated its flag.
+      final missingState = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: null, rollbackReady: true),
+      );
+      expect(missingState.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        missingState.violations,
+        contains('authorization_source_approval_state_missing'),
+      );
+
+      final missingReady = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'APPROVED', rollbackReady: null),
+      );
+      expect(missingReady.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        missingReady.violations,
+        contains('authorization_source_rollback_readiness_missing'),
+      );
+
+      // An unrecognised approval-state word is drift, not permission.
+      final unknownState = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'MAYBE_LATER', rollbackReady: true),
+      );
+      expect(unknownState.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        unknownState.violations.any(
+          (v) => v.startsWith('unknown_approval_source_state:'),
+        ),
+        isTrue,
+      );
+
+      // Control: when both ignored witnesses are authorizing, the same record
+      // passes, so the new rule is not simply always-fail.
+      final authorized = const Sprint117GaReleaseGate().evaluateWith(
+        source(approvalState: 'APPROVED', rollbackReady: true),
+      );
+      expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
+      expect(authorized.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
     });
   });
 }

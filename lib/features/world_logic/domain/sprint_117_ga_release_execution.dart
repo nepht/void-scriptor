@@ -19,9 +19,10 @@
 ///   blocking release decision forbids `pass` however the output records
 ///   read. A record that claims `verified` while the committed manifest
 ///   records `UNVERIFIABLE` is an overclaim and fails the gate, not passes it.
-/// * The committed approval gate (117.45) is read through all three of its
-///   witnesses: the boolean `execution_authorized`, the decision word, *and*
-///   `blocker_status.release_blocked`.
+/// * The committed approval gate (117.45) is read through all five of its
+///   witnesses: the boolean `execution_authorized`, the decision word,
+///   `blocker_status.release_blocked`, `approval.approval_state`, and
+///   `rollback_readiness.ready`.
 ///   Consulting only the flag lets a source that records a blocking decision
 ///   (delay/rollback) still authorize execution through a contradictory
 ///   boolean, so the decision word is gated too, an unrecognised decision
@@ -30,7 +31,11 @@
 ///   blocker witness is read the same way: the source's own gate treats an
 ///   active blocker as a hard veto, so a consumer that never reads it can
 ///   pass a record that gate fails, and a source silent about its blocker
-///   status has not corroborated that none is active.
+///   status has not corroborated that none is active. The last two witnesses
+///   are the ones the source's own gate fails a `release` on: an approver
+///   state other than APPROVED, and rollback readiness that is not confirmed.
+///   A consumer that never reads them can pass a record the source's own gate
+///   fails, so both are gated here too.
 /// * Presence is not relevance. A `verified` output is only accepted when
 ///   the evidence it cites is topically about that output; a path that exists
 ///   but never speaks about the claim backs nothing, so it fails rather than
@@ -122,6 +127,19 @@ abstract final class Sprint117GaReleaseContract {
     'DELAYED',
     'ROLLED_BACK',
   };
+
+  /// Every approval-state word this gate understands (the 117.45 owner gate's
+  /// vocabulary). An unlisted word is unknown and fails the gate instead of
+  /// being read optimistically.
+  static const Set<String> approvalStateVocabulary = <String>{
+    'APPROVED',
+    'PENDING_CHOIRUDIN',
+    'REJECTED',
+  };
+
+  /// The only approval state that authorizes a release. The 117.45 owner gate
+  /// fails a `release` unless the approver's state is exactly this.
+  static const String authorizingApprovalState = 'APPROVED';
 
   /// The topical witness of each output: the word its evidence must actually
   /// mention. A verified output whose cited files exist but never speak about
@@ -255,6 +273,8 @@ class Sprint117GaReleaseEvidence {
     this.approvalSourceAuthorized,
     this.approvalSourceDecision,
     this.approvalSourceReleaseBlocked,
+    this.approvalSourceApprovalState,
+    this.approvalSourceRollbackReady,
   });
 
   final Sprint117GaReleaseExecution execution;
@@ -277,6 +297,20 @@ class Sprint117GaReleaseEvidence {
   /// veto, so a consumer that never reads this witness can pass a record the
   /// source's own gate fails.
   final bool? approvalSourceReleaseBlocked;
+
+  /// The approval source's own approval-state witness (`approval.approval_state`).
+  /// `null` when the source does not record one: undetermined, so the gate must
+  /// not read silence as "approved". The 117.45 owner gate fails a `release`
+  /// unless the state is `APPROVED`, so a consumer that never reads it can pass
+  /// a record the owner fails.
+  final String? approvalSourceApprovalState;
+
+  /// The approval source's own rollback-readiness witness
+  /// (`rollback_readiness.ready`). `null` when the source does not record one:
+  /// undetermined. The 117.45 owner gate fails a `release` unless readiness is
+  /// `true`, so a consumer that never reads it can pass a record the owner
+  /// fails.
+  final bool? approvalSourceRollbackReady;
 }
 
 /// Reads the committed manifest. Never invents: an unreadable manifest yields
@@ -318,6 +352,8 @@ class Sprint117GaReleaseLoader {
       approvalSourceAuthorized: _approvalAuthorized(),
       approvalSourceDecision: _approvalDecision(),
       approvalSourceReleaseBlocked: _approvalReleaseBlocked(),
+      approvalSourceApprovalState: _approvalState(),
+      approvalSourceRollbackReady: _approvalRollbackReady(),
     );
   }
 
@@ -364,6 +400,37 @@ class Sprint117GaReleaseLoader {
     }
     final top = approval['decision'];
     return top is String ? _text(top) : null;
+  }
+
+  /// Read the approval source's own approval-state witness
+  /// (`approval.approval_state`). `null` when the source records none:
+  /// undetermined, so the gate must not read silence as "approved".
+  static String? _approvalState() {
+    final approval = _readJsonObject(
+      Sprint117GaReleaseContract.approvalManifestPath,
+    );
+    if (approval == null) return null;
+    final block = approval['approval'];
+    if (block is Map && block['approval_state'] is String) {
+      return _text(block['approval_state']);
+    }
+    final top = approval['approval_state'];
+    return top is String ? _text(top) : null;
+  }
+
+  /// Read the approval source's own rollback-readiness witness
+  /// (`rollback_readiness.ready`). `null` when the source records none:
+  /// undetermined, so the gate must not read silence as "ready".
+  static bool? _approvalRollbackReady() {
+    final approval = _readJsonObject(
+      Sprint117GaReleaseContract.approvalManifestPath,
+    );
+    if (approval == null) return null;
+    final rollback = approval['rollback_readiness'];
+    if (rollback is Map && rollback['ready'] is bool) {
+      return rollback['ready'] as bool;
+    }
+    return null;
   }
 
   static Map<String, dynamic>? _readJsonObject(String path) {
@@ -554,6 +621,36 @@ class Sprint117GaReleaseGate {
         violations.add('authorization_source_blocker_status_missing');
       } else if (releaseBlocked) {
         violations.add('authorization_source_release_blocked');
+      }
+      // The approval source carries two more witnesses its own gate (117.45)
+      // consults: the approver state and the rollback readiness. A `release`
+      // requires an APPROVED approver and confirmed readiness there, so a
+      // consumer that never reads them can pass a record the source's own gate
+      // fails. Silence is undetermined, never permission: an absent state or
+      // readiness has not corroborated the flag, and an unknown state word is
+      // drift, not an approval.
+      final approvalState = evidence.approvalSourceApprovalState;
+      if (approvalState == null || approvalState.trim().isEmpty) {
+        violations.add('authorization_source_approval_state_missing');
+      } else {
+        final normalizedState = approvalState.trim().toUpperCase();
+        if (!Sprint117GaReleaseContract.approvalStateVocabulary.contains(
+          normalizedState,
+        )) {
+          violations.add('unknown_approval_source_state:$approvalState');
+        } else if (normalizedState !=
+            Sprint117GaReleaseContract.authorizingApprovalState) {
+          violations.add(
+            'authorization_source_approval_state_not_approved:'
+            '$approvalState',
+          );
+        }
+      }
+      final rollbackReady = evidence.approvalSourceRollbackReady;
+      if (rollbackReady == null) {
+        violations.add('authorization_source_rollback_readiness_missing');
+      } else if (!rollbackReady) {
+        violations.add('authorization_source_rollback_readiness_not_confirmed');
       }
     }
 

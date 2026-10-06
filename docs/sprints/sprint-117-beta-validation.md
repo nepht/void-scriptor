@@ -3362,3 +3362,15 @@ memperbaiki regresi dan urutan kontrak; `execution_authorized` tetap `false` dan
 `approval_state` tetap `PENDING_CHOIRUDIN`. Tidak ada flag di-flip, tidak ada artifact
 dipublikasikan, tidak ada monitoring eksternal, tidak ada release. Tidak ada push pada
 run ini.
+
+### 117.46 -- remap evidence klaim GA tanpa pembaca topik (commit 63c6e67)
+
+Slice ini menemukan defect keluarga "evidence fail-open" pada langkah 117.46: test lama hanya mengunci STRUKTUR evidence (List non-empty, file tracked) tanpa mengunci bahwa file yang dikutip benar-benar topikal terhadap outputnya.
+
+**AKAR.** Manifest 117.46 mewarisi assignment evidence dari manifest 113.44 saat kontrak tumbuh dari 6 ke 7 output: `connector_subset_enforced` mengutip `docs/release/v1.2.0-rc.1-release-notes.md` (grep kata `subset` = 0) dan `uncertified_hidden` mengutip `docs/release/v1.2.0-rc.1-support-playbook.md` (grep kata `hidden` = 0). Kedua path ada dan tracked, jadi gate struktur lolos sementara klaim tidak pernah terukur. 5 output lain sudah topikal (approval 9, artifact 7, telemetry 2, support 4, rollback 13).
+
+**PERBAIKAN.** Gate baru `117.46-EVIDENCE-TOPIC` mengunci: setiap path evidence harus ada, dan gabungan isinya harus memuat kata topik outputnya (approval/artifact/subset/hidden/telemetry/support/rollback). Dua output diremap: `connector_subset_enforced` -> `docs/planning/v1.2/sprint_116_beta_acceptance_gate.json` (certified_subset 30, limited kofi, blocked+hidden saweria) dan `uncertified_hidden` -> gate yang sama + `docs/planning/v1.3/sprint_117_certification_snapshot_lock.json` (hidden_from_beta, blocked_subset). Status tetap UNVERIFIABLE; note baru jujur memisahkan bukti lokal dari gerbang publikasi yang belum terverifikasi.
+
+**GERBANG (command + exit).** RED = `+4 -1` exit 1 dengan pesan `evidence cited by connector_subset_enforced never mentions "subset"`; GREEN = `+5 All tests passed` exit 0. `dart format` = 0 changed lalu `--output=none --set-exit-if-changed` exit 0; `dart analyze` = `No issues found!` exit 0; `git diff --check` rc 0. Regresi DUA gate 117.46+113.44 dalam satu run = `+9 All tests passed` exit 0 tanpa blok Failing tests. Numstat: test 40/0, manifest 5/4 (4 baris '-' = persis 2 path evidence lama + 2 note lama yang diganti; diff -U0 tanpa hunk lain). Manifest tetap `status=PARTIAL-LOCAL`, `decision=BLOCKED_EXTERNAL_GATES`, `execution_authorized=false`.
+
+**BATAS KLAIM.** 117.46 TETAP `PARTIAL-LOCAL-EXTERNAL-BLOCKED`. Tidak ada flag di-flip, tidak ada publication, tidak ada release, tidak ada push.

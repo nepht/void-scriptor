@@ -19,10 +19,10 @@
 ///   blocking release decision forbids `pass` however the output records
 ///   read. A record that claims `verified` while the committed manifest
 ///   records `UNVERIFIABLE` is an overclaim and fails the gate, not passes it.
-/// * The committed approval gate (117.45) is read through all five of its
+/// * The committed approval gate (117.45) is read through all six of its
 ///   witnesses: the boolean `execution_authorized`, the decision word,
-///   `blocker_status.release_blocked`, `approval.approval_state`, and
-///   `rollback_readiness.ready`.
+///   `blocker_status.release_blocked`, `approval.approval_state`,
+///   `rollback_readiness.ready`, and its `required_evidence` completeness.
 ///   Consulting only the flag lets a source that records a blocking decision
 ///   (delay/rollback) still authorize execution through a contradictory
 ///   boolean, so the decision word is gated too, an unrecognised decision
@@ -35,7 +35,12 @@
 ///   are the ones the source's own gate fails a `release` on: an approver
 ///   state other than APPROVED, and rollback readiness that is not confirmed.
 ///   A consumer that never reads them can pass a record the source's own gate
-///   fails, so both are gated here too.
+///   fails, so both are gated here too. The sixth witness is the source's own
+///   FIRST check: the completeness of its eight `required_evidence` groups. A
+///   source whose evidence is incomplete fails its own gate before it ever
+///   reads the decision, so a consumer that reads the five authorization
+///   witnesses but not the evidence groups can pass a record the source
+///   fails; silence about the groups is undetermined, never complete.
 /// * Presence is not relevance. A `verified` output is only accepted when
 ///   the evidence it cites is topically about that output; a path that exists
 ///   but never speaks about the claim backs nothing, so it fails rather than
@@ -140,6 +145,21 @@ abstract final class Sprint117GaReleaseContract {
   /// The only approval state that authorizes a release. The 117.45 owner gate
   /// fails a `release` unless the approver's state is exactly this.
   static const String authorizingApprovalState = 'APPROVED';
+
+  /// The approval source's eight required evidence groups, in canonical order.
+  /// This is the FIRST check the 117.45 owner gate runs: it fails when any
+  /// group is absent or lacks sources. Mirrors the owner's contract; pinned by
+  /// test so the two cannot drift apart.
+  static const List<String> approvalEvidenceKeys = <String>[
+    'beta_results',
+    'connector_registry',
+    'blocker_status',
+    'quality_gates',
+    'known_limits',
+    'signed_artifacts',
+    'rollout_plan',
+    'rollback_readiness',
+  ];
 
   /// The topical witness of each output: the word its evidence must actually
   /// mention. A verified output whose cited files exist but never speak about
@@ -275,6 +295,7 @@ class Sprint117GaReleaseEvidence {
     this.approvalSourceReleaseBlocked,
     this.approvalSourceApprovalState,
     this.approvalSourceRollbackReady,
+    this.approvalSourceMissingEvidence,
   });
 
   final Sprint117GaReleaseExecution execution;
@@ -311,6 +332,14 @@ class Sprint117GaReleaseEvidence {
   /// `true`, so a consumer that never reads it can pass a record the owner
   /// fails.
   final bool? approvalSourceRollbackReady;
+
+  /// The approval source's own evidence-completeness witness: the eight
+  /// `required_evidence` groups its own gate (117.45) fails on when any is
+  /// absent or lacks sources. `null` when the source records no
+  /// `required_evidence` block at all: undetermined, so the gate must not read
+  /// silence as "all groups present". An empty list means all eight groups are
+  /// recorded complete.
+  final List<String>? approvalSourceMissingEvidence;
 }
 
 /// Reads the committed manifest. Never invents: an unreadable manifest yields
@@ -354,6 +383,7 @@ class Sprint117GaReleaseLoader {
       approvalSourceReleaseBlocked: _approvalReleaseBlocked(),
       approvalSourceApprovalState: _approvalState(),
       approvalSourceRollbackReady: _approvalRollbackReady(),
+      approvalSourceMissingEvidence: _approvalMissingEvidence(),
     );
   }
 
@@ -431,6 +461,37 @@ class Sprint117GaReleaseLoader {
       return rollback['ready'] as bool;
     }
     return null;
+  }
+
+  /// Read the approval source's own evidence-completeness witness: the eight
+  /// `required_evidence` groups its gate (117.45) requires. Returns the names
+  /// of groups that are absent or lack non-empty sources; an empty list means
+  /// all eight are recorded complete. `null` when the source records no
+  /// `required_evidence` block at all: undetermined, so silence is not
+  /// "complete".
+  static List<String>? _approvalMissingEvidence() {
+    final approval = _readJsonObject(
+      Sprint117GaReleaseContract.approvalManifestPath,
+    );
+    if (approval == null) return null;
+    final raw = approval['required_evidence'];
+    if (raw is! Map) return null;
+    final missing = <String>[];
+    for (final name in Sprint117GaReleaseContract.approvalEvidenceKeys) {
+      final entry = raw[name];
+      if (entry is! Map) {
+        missing.add(name);
+        continue;
+      }
+      final sources = entry['sources'];
+      final complete =
+          entry['present'] == true &&
+          sources is List &&
+          sources.isNotEmpty &&
+          sources.every((s) => s is String && s.trim().isNotEmpty);
+      if (!complete) missing.add(name);
+    }
+    return missing;
   }
 
   static Map<String, dynamic>? _readJsonObject(String path) {
@@ -651,6 +712,23 @@ class Sprint117GaReleaseGate {
         violations.add('authorization_source_rollback_readiness_missing');
       } else if (!rollbackReady) {
         violations.add('authorization_source_rollback_readiness_not_confirmed');
+      }
+      // The approval source's own FIRST gate is evidence completeness: 117.45
+      // fails when any of its eight `required_evidence` groups is absent or
+      // lacks sources, before it ever looks at the decision. A consumer that
+      // reads the five authorization witnesses but never the evidence groups
+      // can pass a record the source's own gate fails. Silence is
+      // undetermined, never permission: a source that records no
+      // `required_evidence` block has not corroborated that its evidence is
+      // complete.
+      final missingEvidence = evidence.approvalSourceMissingEvidence;
+      if (missingEvidence == null) {
+        violations.add('authorization_source_evidence_missing');
+      } else if (missingEvidence.isNotEmpty) {
+        violations.add(
+          'authorization_source_evidence_incomplete:'
+          '${missingEvidence.join('|')}',
+        );
       }
     }
 

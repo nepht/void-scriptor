@@ -267,6 +267,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(blocked.state, Sprint117GaReleaseExecutionState.fail);
@@ -288,6 +289,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -482,6 +484,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -562,6 +565,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
@@ -654,6 +658,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(control.state, Sprint117GaReleaseExecutionState.pass);
@@ -771,6 +776,7 @@ void main() {
           approvalSourceReleaseBlocked: false,
           approvalSourceApprovalState: 'APPROVED',
           approvalSourceRollbackReady: true,
+          approvalSourceMissingEvidence: const <String>[],
         ),
       );
       expect(clear.state, Sprint117GaReleaseExecutionState.pass);
@@ -821,6 +827,7 @@ void main() {
         approvalSourceReleaseBlocked: false,
         approvalSourceApprovalState: approvalState,
         approvalSourceRollbackReady: rollbackReady,
+        approvalSourceMissingEvidence: const <String>[],
       );
 
       // approval_state says the approver is still deciding: the source's own
@@ -895,6 +902,91 @@ void main() {
       );
       expect(authorized.state, Sprint117GaReleaseExecutionState.pass);
       expect(authorized.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
+    test('117.46-GATE-AUTH-EVIDENCE an approval source whose own required '
+        'evidence groups are incomplete forbids pass even when its flag and '
+        'all other witnesses read authorized', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The vocabulary the gate enforces must match the owner's contract,
+      // pinned here by a literal so the two cannot drift apart.
+      expect(Sprint117GaReleaseContract.approvalEvidenceKeys, const <String>[
+        'beta_results',
+        'connector_registry',
+        'blocker_status',
+        'quality_gates',
+        'known_limits',
+        'signed_artifacts',
+        'rollout_plan',
+        'rollback_readiness',
+      ]);
+
+      Sprint117GaReleaseEvidence source({
+        required List<String>? missingEvidence,
+      }) => Sprint117GaReleaseEvidence(
+        execution: Sprint117GaReleaseExecution(
+          approvalAuthorized: true,
+          outputs: outputs,
+        ),
+        recordedDecision: 'AUTHORIZED',
+        recordedAuthorized: true,
+        unrecognisedStatuses: const <String, String>{},
+        approvalSourceAuthorized: true,
+        approvalSourceDecision: 'AUTHORIZED',
+        approvalSourceReleaseBlocked: false,
+        approvalSourceApprovalState: 'APPROVED',
+        approvalSourceRollbackReady: true,
+        approvalSourceMissingEvidence: missingEvidence,
+      );
+
+      // The approval source's FIRST gate is evidence completeness: 117.45
+      // fails when any of its eight required_evidence groups is absent or
+      // lacks sources. A consumer that reads the five authorization witnesses
+      // but never the evidence groups can pass a record the owner's gate
+      // fails, so the incompleteness must fail here too.
+      final incomplete = const Sprint117GaReleaseGate().evaluateWith(
+        source(missingEvidence: const <String>['known_limits']),
+      );
+      expect(incomplete.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        incomplete.violations.any(
+          (v) => v.startsWith('authorization_source_evidence_incomplete:'),
+        ),
+        isTrue,
+        reason:
+            'an incomplete required_evidence group in the approval source '
+            'must fail the gate, not be ignored',
+      );
+
+      // Silence is not permission either: a source that records no
+      // required_evidence block has not corroborated that its evidence is
+      // complete.
+      final silent = const Sprint117GaReleaseGate().evaluateWith(
+        source(missingEvidence: null),
+      );
+      expect(silent.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        silent.violations,
+        contains('authorization_source_evidence_missing'),
+      );
+
+      // Control: a source whose eight groups are all complete still passes,
+      // so the new rule is not simply always-fail.
+      final complete = const Sprint117GaReleaseGate().evaluateWith(
+        source(missingEvidence: const <String>[]),
+      );
+      expect(complete.state, Sprint117GaReleaseExecutionState.pass);
+      expect(complete.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
     });
   });
 }

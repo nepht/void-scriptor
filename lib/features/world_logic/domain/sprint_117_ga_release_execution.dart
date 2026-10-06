@@ -338,8 +338,20 @@ class Sprint117GaReleaseEvidence {
 class Sprint117GaReleaseLoader {
   const Sprint117GaReleaseLoader();
 
-  Sprint117GaReleaseEvidence? load() {
-    final manifest = _readJsonObject(Sprint117GaReleaseContract.manifestPath);
+  Sprint117GaReleaseEvidence? load() => loadFrom(
+    manifestPath: Sprint117GaReleaseContract.manifestPath,
+    approvalPath: Sprint117GaReleaseContract.approvalManifestPath,
+  );
+
+  /// Like [load], but reads the execution and approval manifests from the
+  /// given paths. The authorization witnesses are read from exactly the
+  /// locations the 117.45 owner gate reads, so the consumer cannot be shown
+  /// authorization the owner gate never saw.
+  Sprint117GaReleaseEvidence? loadFrom({
+    required String manifestPath,
+    required String approvalPath,
+  }) {
+    final manifest = _readJsonObject(manifestPath);
     if (manifest == null) return null;
 
     final rawOutputs = manifest['outputs'];
@@ -369,28 +381,28 @@ class Sprint117GaReleaseLoader {
       recordedDecision: _text(manifest['decision']),
       recordedAuthorized: manifest['execution_authorized'] == true,
       unrecognisedStatuses: unrecognised,
-      approvalSourceAuthorized: _approvalAuthorized(),
-      approvalSourceDecision: _approvalDecision(),
-      approvalSourceReleaseBlocked: _approvalReleaseBlocked(),
-      approvalSourceApprovalState: _approvalState(),
-      approvalSourceRollbackReady: _approvalRollbackReady(),
-      approvalSourceMissingEvidence: _approvalMissingEvidence(),
+      approvalSourceAuthorized: _approvalAuthorized(approvalPath),
+      approvalSourceDecision: _approvalDecision(approvalPath),
+      approvalSourceReleaseBlocked: _approvalReleaseBlocked(approvalPath),
+      approvalSourceApprovalState: _approvalState(approvalPath),
+      approvalSourceRollbackReady: _approvalRollbackReady(approvalPath),
+      approvalSourceMissingEvidence: _approvalMissingEvidence(approvalPath),
     );
   }
 
   /// Read the committed approval gate (117.45). A missing or malformed file
   /// yields `null`, which the gate treats as undetermined.
-  static bool? _approvalAuthorized() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  ///
+  /// The witness is read from exactly the location the 117.45 owner gate reads
+  /// it: the nested `approval` block. A top-level fallback would let a source
+  /// carry its authorization claims where the owner gate never looks, so the
+  /// consumer would pass a record the owner fails.
+  static bool? _approvalAuthorized(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final block = approval['approval'];
     if (block is Map && block['execution_authorized'] is bool) {
       return block['execution_authorized'] as bool;
-    }
-    if (approval['execution_authorized'] is bool) {
-      return approval['execution_authorized'] as bool;
     }
     return null;
   }
@@ -398,10 +410,8 @@ class Sprint117GaReleaseLoader {
   /// Read the approval source's own blocker witness
   /// (`blocker_status.release_blocked`). `null` when the source records none:
   /// undetermined, so the gate must not read silence as "no blocker".
-  static bool? _approvalReleaseBlocked() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  static bool? _approvalReleaseBlocked(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final blockers = approval['blocker_status'];
     if (blockers is Map && blockers['release_blocked'] is bool) {
@@ -410,42 +420,42 @@ class Sprint117GaReleaseLoader {
     return null;
   }
 
-  static String? _approvalDecision() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  /// Read the decision word from exactly the location the 117.45 owner gate
+  /// reads it: the nested `approval` block. A top-level fallback would read a
+  /// word the owner never sees, so the consumer could pass a source the owner
+  /// fails.
+  static String? _approvalDecision(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final block = approval['approval'];
     if (block is Map && block['decision'] is String) {
       return _text(block['decision']);
     }
-    final top = approval['decision'];
-    return top is String ? _text(top) : null;
+    return null;
   }
 
   /// Read the approval source's own approval-state witness
   /// (`approval.approval_state`). `null` when the source records none:
   /// undetermined, so the gate must not read silence as "approved".
-  static String? _approvalState() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  /// Read the approver state from exactly the location the 117.45 owner gate
+  /// reads it: the nested `approval` block. A top-level fallback would read a
+  /// state the owner never sees, so the consumer could pass a source the owner
+  /// fails.
+  static String? _approvalState(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final block = approval['approval'];
     if (block is Map && block['approval_state'] is String) {
       return _text(block['approval_state']);
     }
-    final top = approval['approval_state'];
-    return top is String ? _text(top) : null;
+    return null;
   }
 
   /// Read the approval source's own rollback-readiness witness
   /// (`rollback_readiness.ready`). `null` when the source records none:
   /// undetermined, so the gate must not read silence as "ready".
-  static bool? _approvalRollbackReady() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  static bool? _approvalRollbackReady(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final rollback = approval['rollback_readiness'];
     if (rollback is Map && rollback['ready'] is bool) {
@@ -460,10 +470,8 @@ class Sprint117GaReleaseLoader {
   /// all eight are recorded complete. `null` when the source records no
   /// `required_evidence` block at all: undetermined, so silence is not
   /// "complete".
-  static List<String>? _approvalMissingEvidence() {
-    final approval = _readJsonObject(
-      Sprint117GaReleaseContract.approvalManifestPath,
-    );
+  static List<String>? _approvalMissingEvidence(String path) {
+    final approval = _readJsonObject(path);
     if (approval == null) return null;
     final raw = approval['required_evidence'];
     if (raw is! Map) return null;

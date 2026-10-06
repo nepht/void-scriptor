@@ -1082,5 +1082,96 @@ void main() {
         contains('authorization_source_decision_blocks_execution:rollback'),
       );
     });
+    test('117.46-GATE-AUTH-LOCATION the authorization witnesses are read from '
+        'the location the owner gate reads them, not a top-level fallback', () {
+      // The 117.45 owner gate reads its authorization witnesses from the
+      // nested `approval` block only: a manifest that carries
+      // `execution_authorized`, `decision`, and `approval_state` at the TOP
+      // level, with no `approval` block, fails the owner gate as incomplete.
+      // A consumer that falls back to those top-level keys reads authorization
+      // the owner never saw, so it can pass a record the owner fails. The
+      // witnesses must be read from exactly the owner's location.
+      final dir = Directory.systemTemp.createTempSync('11746-auth-location');
+      addTearDown(() => dir.deleteSync(recursive: true));
+
+      // Every output claims verified and cites a file that exists and is
+      // topically about it, so the only thing under test is the authorization
+      // location.
+      final execFile = File('${dir.path}/execution.json');
+      final approvalFile = File('${dir.path}/approval.json');
+      final outputs = <String, Object?>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: <String, Object?>{
+            'status': 'VERIFIED',
+            'evidence': <String>[execFile.path],
+            'note': 'verified',
+          },
+      };
+      // The evidence body must mention every output's topic word; the gate
+      // measures topicality, not just presence.
+      execFile.writeAsStringSync(
+        jsonEncode(<String, Object?>{
+          'canonical_step': '117.46',
+          'topics':
+              'approval artifact subset hidden telemetry support rollback',
+          'execution_authorized': true,
+          'decision': 'AUTHORIZED',
+          'outputs': outputs,
+        }),
+      );
+
+      Map<String, Object?> source({required bool nested}) => <String, Object?>{
+        'required_evidence': <String, Object?>{
+          for (final name in Sprint117GaApprovalGate.requiredEvidenceKeys)
+            name: <String, Object?>{
+              'present': true,
+              'sources': <String>[execFile.path],
+            },
+        },
+        'blocker_status': <String, Object?>{'release_blocked': false},
+        'rollback_readiness': <String, Object?>{'ready': true},
+        if (nested)
+          'approval': <String, Object?>{
+            'execution_authorized': true,
+            'decision': 'release',
+            'approval_state': 'APPROVED',
+          }
+        else ...<String, Object?>{
+          'execution_authorized': true,
+          'decision': 'release',
+          'approval_state': 'APPROVED',
+        },
+      };
+
+      // Top-level-only: the owner gate fails this shape, so the consumer must
+      // not read the top-level keys as authorization.
+      approvalFile.writeAsStringSync(jsonEncode(source(nested: false)));
+      final topLevel = const Sprint117GaReleaseGate().evaluateWith(
+        const Sprint117GaReleaseLoader().loadFrom(
+          manifestPath: execFile.path,
+          approvalPath: approvalFile.path,
+        ),
+      );
+      expect(topLevel.state, Sprint117GaReleaseExecutionState.fail);
+      expect(
+        topLevel.violations,
+        contains('authorization_source_unreadable'),
+        reason:
+            'a source whose authorization sits where the owner gate never '
+            'looks must not authorize execution',
+      );
+
+      // Control: the same record with the nested `approval` block (the owner's
+      // location) still passes, so the rule is not simply always-fail.
+      approvalFile.writeAsStringSync(jsonEncode(source(nested: true)));
+      final nested = const Sprint117GaReleaseGate().evaluateWith(
+        const Sprint117GaReleaseLoader().loadFrom(
+          manifestPath: execFile.path,
+          approvalPath: approvalFile.path,
+        ),
+      );
+      expect(nested.state, Sprint117GaReleaseExecutionState.pass);
+      expect(nested.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
   });
 }

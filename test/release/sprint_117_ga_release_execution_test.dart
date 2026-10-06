@@ -35,6 +35,14 @@ void main() {
 
         final outputs = manifest['outputs'] as Map<String, dynamic>;
         expect(
+          manifest['approval_source'],
+          'docs/planning/v1.3/sprint_117_ga_approval_gate.json',
+        );
+        expect(
+          (outputs['approval_recorded'] as Map<String, dynamic>)['status'],
+          isNot('VERIFIED'),
+        );
+        expect(
           outputs.keys.toSet(),
           GaReleaseExecution.requiredOutputs.toSet(),
         );

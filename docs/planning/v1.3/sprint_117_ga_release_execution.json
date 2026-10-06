@@ -10,11 +10,11 @@
   "execution_authorized": false,
   "outputs": {
     "approval_recorded": {
-      "status": "VERIFIED",
+      "status": "UNVERIFIABLE",
       "evidence": [
-        "docs/planning/v1.2/sprint_113_ga_approval_gate.json"
+        "docs/planning/v1.3/sprint_117_ga_approval_gate.json"
       ],
-      "note": "Approval record is APPROVED and execution_authorized is true."
+      "note": "The local GA decision record is DELAY with approval_state PENDING_CHOIRUDIN; execution is not authorized."
     },
     "artifact_published": {
       "status": "UNVERIFIABLE",

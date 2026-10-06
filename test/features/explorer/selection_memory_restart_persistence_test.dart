@@ -251,6 +251,12 @@ void main() {
           availableAssetIds: [story1, story2],
         );
         expect(containerB.read(selectionProvider)?.assetId, story2);
+
+        // Orderly shutdown of app run 2 before root teardown: closing the
+        // session awaits lock release cleanly so unawaited background
+        // teardown does not race with temp directory deletion.
+        final sessionB = await containerB.read(projectSessionProvider.future);
+        await sessionB?.close();
       },
     );
   });

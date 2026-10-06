@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:uuid/uuid.dart';
 
@@ -182,6 +183,16 @@ class ProjectSession {
       try {
         if (await package.lockFile.exists()) {
           await package.lockFile.delete();
+        }
+      } on PathNotFoundException {
+        // A concurrent close, external cleanup, or parent directory deletion
+        // already removed the lock file. The lock is released either way;
+        // retrying would only widen the exists->delete race window.
+      } on FileSystemException catch (e) {
+        if (e.osError?.errorCode == 2) {
+          // File was already removed by a concurrent operation.
+        } else {
+          record(e);
         }
       } on Object catch (e) {
         record(e);

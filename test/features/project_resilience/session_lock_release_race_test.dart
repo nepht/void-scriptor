@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/core/project_package/project_package.dart';
+import 'package:void_scriptor/core/project_package/project_package_service.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_recovery_services.dart';
+import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 
 void main() {
   test(
@@ -32,6 +34,33 @@ void main() {
       expect(await package.sessionFile.exists(), isFalse);
       // A trailing release is still a safe no-op.
       await lock.release();
+    },
+  );
+
+  test(
+    'ProjectSession.close handles concurrent directory cleanup without zone error',
+    () async {
+      final root = await Directory.systemTemp.createTemp(
+        'void-session-lock-race-',
+      );
+      addTearDown(() async {
+        try {
+          await root.delete(recursive: true);
+        } catch (_) {}
+      });
+      final package = await ProjectPackageService(
+        rootDirectory: root,
+      ).create(name: 'Session Lock Race');
+      final session = await ProjectSessionManager().open(package);
+
+      // Concurrently run session.close() and directory deletion, simulating
+      // test teardown where root.delete races with lock file deletion.
+      final outcome = await Future.wait([
+        session.close(),
+        root.delete(recursive: true),
+      ]).then((_) => 'both-ok', onError: (Object error) => 'threw:$error');
+
+      expect(outcome, 'both-ok');
     },
   );
 }

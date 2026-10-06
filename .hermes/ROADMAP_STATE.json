@@ -28,8 +28,8 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.44",
-  "next_step": "117.45",
+  "last_verified_step": "117.45",
+  "next_step": "117.46",
   "stability_gate": {
     "status": "PASS",
     "note": "117.43 GA Artifact & Reproducibility: defect 117.43-19 fixed - the document-level `version` field sits on the same level the header (117.43-17) and the limits group (117.43-18) opened, and NO reader in lib/ had ever opened it; the gate even ships deriveApplicationVersion() yet nothing ever called it. Proven before the fix by dumping all 36 distinct manifest keys and matching each against gate literals, not by assumption: five present-but-unreadable shapes (integer, list, object, blank string, whitespace-only) all reported provenance_evaluation: pass. Fixed in the same fail-closed shape as 117.43-16/-17/-18: a present version that is not a non-blank string is unevaluable, an absent key and an explicit null stay non-claims (117.43-07), and nothing is required about WHICH version the document states. title and signed_snapshot_restore also have no reader but stay deliberately unmeasured - both were already bound as prose outside acceptance. Gates: focused file 133/133 exit 0 (was 130, +3), analyzer clean, format idempotent, diff --check clean, windows --debug build exit 0 in 25s, guard PASS pre+post (canonical_sha256 b7ef2d35... unchanged). Directed regression +138 -2 (slice 117 at 135/135; the 2 failures are the pre-existing 113.39 pair, signatures reproduced solo and unchanged, root 117.43-02). Step stays PARTIAL-LOCAL: 117.43-02 is still open awaiting an operator decision, so the guard pointer remains on 117.43. | 2026-10-04 run15 slice 117.43-24: defect 117.43-24 fixed - ArtifactComparison.method states BOTH the digest algorithm (read since 117.43-22) and the SCOPE of the comparison (read by nothing). Six recorded digests under a method claiming four, or naming an artifact no rebuild hashed, returned missingEvidence [] and provenance_evaluation: pass while the gate printed '(6 artifact)'. Fixed fail-closed on the affirmative claim only; an illustrative enumeration claims no completeness and is not refused. The shipped manifest's enumeration matches its recorded inventory exactly, so it still passes.",
@@ -38,7 +38,7 @@
     "regression": "sprint_113 provenance + sprint_117 gate: +138 -2 (slice 117 = 135/135 pass); 2 FAIL pre-existing 113.39, signatures unchanged (c9a365e6 vs 32e31fd3; 73101e78 vs c7a33055), root 117.43-02. No full-suite claim.",
     "analyzer": "No issues found!",
     "build": "flutter build windows --debug exit 0 in 31.1s",
-    "resume_step": "117.45"
+    "resume_step": "117.46"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -47,7 +47,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-06T04:14:15.309790Z",
+  "updated_at": "2026-10-06T11:29:38.713781Z",
   "updated_by": "roadmap_guard sync-pointer",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -434,7 +434,7 @@
   },
   "active_stream_details": {
     "status": "SPRINT_COMPLETE_PENDING_OPERATOR_DECISION",
-    "next_step": "117.45",
+    "next_step": "117.46",
     "note": "Sprint 116 seluruh 52 langkah VERIFIED-LOCAL. next_step sengaja dibiarkan null: stream transition /inityasi sprint berikutnya adalah keputusan operator, cron tidak boleh mengaktifkannya sendiri."
   },
   "activation_rules_11122_run362": {

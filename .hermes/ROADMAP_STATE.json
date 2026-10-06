@@ -28,7 +28,7 @@
   "active_sprint": 117,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_117.json",
   "active_ledger": "docs/sprints/sprint-117-beta-validation.md",
-  "last_verified_step": "117.47",
+  "last_verified_step": "117.48",
   "next_step": "117.46",
   "stability_gate": {
     "status": "PASS",
@@ -3691,10 +3691,10 @@
     "note": "All 8 canonical outputs resolved as MEASURED state, not as a health claim. live_release_executed=false / live_release_observed=false: no provider queried, no metric scraped, no incident triaged, no billing/quota endpoint contacted. Connector health is reported as recorded: CERTIFIED=0, UNVERIFIED=32, WITHHELD=32 (117.41), and the certified subset is derived from registry status counts, NOT from the certification lock's exposed_subset (32 snapshot providers, not 32 certifications). Recertification reported as a precondition, not a schedule: calendar_date=null because 117.3 records COHORT_CONSENT_VERIFICATION_FAILED with verified_participant_count=0. Manifest is emitted by tool/emit_sprint_117_handoff_manifest.dart from the gate's own report so the record cannot diverge from what decided it; regeneration is byte-stable (sha256 fbec4495...)."
   },
   "sprint_117_step_11748": {
-    "status": "NOT_STARTED",
+    "status": "VERIFIED-LOCAL",
     "next_step": null,
-    "manifest": null,
-    "note": "slot allocated at operator stream transition; no work performed yet"
+    "manifest": "docs/planning/v1.3/sprint_117_sprint_closure.json",
+    "note": "Sprint Closure. The seven canonical definition-of-done items are MEASURED against committed manifests, not ticked: state=pass, decision=CLOSED_LOCAL_DEFERRED_EXTERNAL, satisfied=5/7, deferred=2, unmet=0, violations=0. This is a DELAY record, not a release claim: live_release_executed is structurally false (117.45 execution_authorized=false, 117.41 zero CERTIFIED, 117.3 zero verified participants). Two certification sources are recorded side by side and never averaged (117.4 froze 30 CERTIFIED locally; 117.41 reconciled 0 CERTIFIED of 32 shipped). Contradictions are surfaced by name as open items for the operator, never silently resolved: certification_source_disagreement:117.4=30:117.41=0 and entry_gate_readiness_contradiction. Manifest is emitted by tool/emit_sprint_117_closure_manifest.dart from the gate's own report, so the record cannot diverge from what decided it; two emits are byte-identical (sha256 494f64c3...). Deferred to external: live beta window, live connector visibility, kill-switch drills, rollback verification against public artifacts, hosted CI, public CA signing, publication. Go/no-go stays Choirudin's (117.45 still DELAY, approval_state=PENDING_CHOIRUDIN). No release, no publication, no tag, no push."
   },
   "core_worker_run_2026_09_29_1171": {
     "head_before": "b8b60c4",
@@ -3797,8 +3797,8 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "6fcc83a",
-  "last_verified_on": "2026-10-02",
+  "last_slice_commit": "07145b9",
+  "last_verified_on": "2026-10-07",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
     "verdict": "TEAM_COLLABORATION_WORKFLOW_VALIDATED_LOCAL",
@@ -3869,6 +3869,14 @@
       "evidence": "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json",
       "domain": "lib/features/world_logic/domain/sprint_117_post_release_observation_handoff.dart",
       "emitter": "tool/emit_sprint_117_handoff_manifest.dart"
+    },
+    "117.48": {
+      "status": "VERIFIED-LOCAL",
+      "commit": "07145b9",
+      "ledger": "docs/sprints/sprint-117-beta-validation.md",
+      "evidence": "docs/planning/v1.3/sprint_117_sprint_closure.json",
+      "domain": "lib/features/world_logic/domain/sprint_117_sprint_closure.dart",
+      "emitter": "tool/emit_sprint_117_closure_manifest.dart"
     }
   },
   "sprint_117_38_issue_deduplication_triage": {
@@ -3890,7 +3898,7 @@
     "not_claimed": "Tidak mengklaim rilis live: kohort beta belum mulai, kedua aksi berjalan atas state milik test. STOP_SHIP ada di log 113.30 tapi di luar 6 keputusan kanonik step ini.",
     "external_gate": "DEFERRED-EXTERNAL"
   },
-  "last_verified_commit": "a9091f8",
+  "last_verified_commit": "07145b9",
   "suites_measured": [
     "connector",
     "workflow",
@@ -3905,7 +3913,7 @@
   ],
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
-  "commit": "6fcc83a",
+  "commit": "07145b9",
   "ahead": 8,
   "defect_117_43_27": {
     "date": "2026-10-04",

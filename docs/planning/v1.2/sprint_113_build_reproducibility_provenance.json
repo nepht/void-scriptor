@@ -6,7 +6,7 @@
   "required_evidence": {
     "build_inputs": [
       "pubspec.yaml sha256 ec52515637dbff922810a4fa054ca46cad6b404919e51d92d34397d9d6d14f0e",
-      "pubspec.lock sha256 d500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a",
+      "pubspec.lock sha256 93dc73f551e4ce1e76ff534d20ff50342c1d4387f9989135e1e893fff56e9c1b",
       "windows/CMakeLists.txt sha256 fb0d8a3dc59fe5486121e301b79eb902d082a8403dfe978d376b5ab58bb3938c",
       "windows/runner/main.cpp sha256 dd5aaf17028e5ecee8dae6a8e4b7356e45f2d07f67c59d36602280082dc7b485",
       "windows/runner/flutter_window.cpp sha256 50c91250bdf65b6c38a09cc336270579af7d443f4417839a6cd237d83c8dadcb"
@@ -21,7 +21,7 @@
       "Host Windows 11 x64 (MSYS bash runner)"
     ],
     "dependency_lock": [
-      "pubspec.lock sha256 d500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a",
+      "pubspec.lock sha256 93dc73f551e4ce1e76ff534d20ff50342c1d4387f9989135e1e893fff56e9c1b",
       "hosted dependencies hash-pinned sha256; 0 git/path source; 0 dependency_overrides (113.26 dependency_scan)"
     ],
     "rebuild_results": [

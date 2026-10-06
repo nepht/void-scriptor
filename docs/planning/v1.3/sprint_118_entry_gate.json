@@ -1,0 +1,62 @@
+{
+  "canonical_step": "118.1",
+  "title": "Sprint Entry & Release-State Gate",
+  "document_role": "gate-evaluation-record",
+  "state": "blocked",
+  "verdict": "SPRINT_118_ENTRY_BLOCKED_UPSTREAM",
+  "release_state": "GA_DELAYED",
+  "execution_allowed": false,
+  "required_evidence": [
+    "sprint_117_decision",
+    "release_state",
+    "artifact_version",
+    "visible_connector_subset",
+    "known_issues",
+    "rollback_state"
+  ],
+  "missing_evidence": [],
+  "violations": [],
+  "blockers": [
+    "no_certified_or_limited_connector",
+    "execution_authorization_pending:PENDING_CHOIRUDIN",
+    "corrective_scope_not_approved"
+  ],
+  "open_items": [
+    "no_certified_or_limited_connector",
+    "execution_authorization_pending:PENDING_CHOIRUDIN",
+    "corrective_scope_not_approved"
+  ],
+  "evidence_sources": {
+    "sprint_117_decision": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "release_state": "docs/planning/v1.3/sprint_117_sprint_closure.json",
+    "artifact_version": "pubspec.yaml",
+    "visible_connector_subset": "docs/evidence/sprint-117-41-manifest-20261002.json",
+    "known_issues": "docs/planning/v1.3/sprint_117_sprint_closure.json",
+    "rollback_state": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json"
+  },
+  "approval_decision": "delay",
+  "closure_decision": "DELAY",
+  "approval_state": "PENDING_CHOIRUDIN",
+  "execution_authorized": false,
+  "release_decision_owner": "PENDING_CHOIRUDIN",
+  "certified_count": 0,
+  "limited_count": 0,
+  "provider_count": 32,
+  "corrective_scope_approved": null,
+  "observation_window_active": false,
+  "artifact_version": "1.2.0-rc.1",
+  "rollback_executed": false,
+  "claim_boundary": [
+    "This record is the gate verdict over committed Sprint 117 evidence, not an activation. Sprint 118 was not started, no connector was certified, and no release state was changed.",
+    "The gate reads the committed 117 witnesses directly rather than trusting any self-declared readiness flag, and it fails if the approval gate and the closure manifest disagree about the decision.",
+    "A delayed 117 does not open the sprint without an approved corrective scope; an absent approval is undetermined, never permission.",
+    "An unreadable witness, an unknown decision word, or an empty certified connector subset keeps the gate closed. Nothing here publishes, signs, certifies, or activates anything."
+  ],
+  "external_gates": [
+    "hosted CI runner",
+    "certified connector subset",
+    "corrective scope approval",
+    "live beta execution",
+    "public release publication"
+  ]
+}

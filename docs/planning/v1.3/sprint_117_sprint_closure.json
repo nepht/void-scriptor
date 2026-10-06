@@ -1,0 +1,217 @@
+{
+  "canonical_step": "117.48",
+  "title": "Sprint Closure",
+  "document_role": "sprint-closure-manifest",
+  "state": "pass",
+  "decision": "closedLocalDeferredExternal",
+  "verdict": "SPRINT_117_CLOSED_LOCAL_DEFERRED_EXTERNAL",
+  "release_decision": "DELAY",
+  "release_decision_owner": "PENDING_CHOIRUDIN",
+  "live_release_executed": false,
+  "criteria": [
+    {
+      "name": "entry_gate_passed",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_beta_entry_gate.json"
+      ],
+      "detail": "state=pass verdict=BETA_ENTRY_LOCAL_READY canonical_entry_readiness=BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED canonical_entry_block_resolved=true live_beta_executed=false"
+    },
+    {
+      "name": "beta_window_complete",
+      "status": "deferredExternal",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_beta_validation_charter.json",
+        "docs/planning/v1.3/sprint_117_beta_entry_gate.json",
+        "docs/planning/v1.3/sprint_117_beta_cohort_consent_verification.json"
+      ],
+      "detail": "window=1791158400000..1794787200000 days=42 phases=3 live_beta_executed=false verified_participants=0 cohort=COHORT_CONSENT_VERIFICATION_FAILED"
+    },
+    {
+      "name": "visible_connectors_certified_or_limited",
+      "status": "deferredExternal",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
+        "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json",
+        "docs/evidence/sprint-117-41-manifest-20261002.json"
+      ],
+      "detail": "visible=0 determined_exposed=2 consent_gate_verified=false 117.4[scope=local_certification_freeze_only certified=30 limited=1 blocked=1] 117.41[certified=0 unverified=32 withheld=32]"
+    },
+    {
+      "name": "quality_gates_passed",
+      "status": "satisfied",
+      "evidence": [
+        "docs/sprints/sprint-117-beta-validation.md",
+        "docs/evidence/sprint-117-35-manifest-20261002.json",
+        "docs/evidence/sprint-117-36-manifest-20261002.json"
+      ],
+      "detail": "quality_gate_evidence_present=true sources=3; the local gate suite is green, which is necessary but not sufficient for GA"
+    },
+    {
+      "name": "ga_decision_recorded",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_ga_approval_gate.json"
+      ],
+      "detail": "decision=DELAY approval_state=PENDING_CHOIRUDIN execution_authorized=false release_blocked=true"
+    },
+    {
+      "name": "staged_rollout_controlled",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+        "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json"
+      ],
+      "detail": "stages=3 default=OFF enabled=0 kill_switches=2 drilled=0 rollback=3 verified=0"
+    },
+    {
+      "name": "observation_handoff_complete",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json"
+      ],
+      "detail": "state=pass verdict=POST_RELEASE_OBSERVATION_HANDOFF_DEFINED_LOCAL resolved=8/8 violations=0 live_release_observed=false"
+    }
+  ],
+  "satisfied_count": 5,
+  "deferred_count": 2,
+  "unmet_criteria": [],
+  "deferred_criteria": [
+    "beta_window_complete",
+    "visible_connectors_certified_or_limited"
+  ],
+  "missing_evidence": [],
+  "violations": [],
+  "source_manifests": [
+    "docs/planning/v1.3/sprint_117_beta_entry_gate.json",
+    "docs/planning/v1.3/sprint_117_beta_validation_charter.json",
+    "docs/planning/v1.3/sprint_117_beta_cohort_consent_verification.json",
+    "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
+    "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json",
+    "docs/evidence/sprint-117-41-manifest-20261002.json",
+    "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+    "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "docs/planning/v1.3/sprint_117_post_release_observation_handoff.json"
+  ],
+  "ledger": "docs/sprints/sprint-117-beta-validation.md",
+  "evidence_anchor": {
+    "entry_gate": {
+      "state": "pass",
+      "verdict": "BETA_ENTRY_LOCAL_READY",
+      "canonical_entry_readiness": "BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED",
+      "canonical_entry_block_resolved": true,
+      "live_beta_executed": false,
+      "registry_provider_count": 32
+    },
+    "beta_charter": {
+      "state": "pass",
+      "verdict": "CHARTER_COMPLETE_LOCAL",
+      "window_start_epoch_ms": 1791158400000,
+      "window_end_epoch_ms": 1794787200000,
+      "window_days": 42,
+      "window_phases": 3,
+      "window_executed": false
+    },
+    "cohort": {
+      "state": "fail",
+      "verdict": "COHORT_CONSENT_VERIFICATION_FAILED",
+      "verified_participant_count": 0,
+      "live_beta_executed": false
+    },
+    "certification": {
+      "verdict": "CERTIFICATION_SNAPSHOT_LOCKED_LOCAL",
+      "status_scope": "local_certification_freeze_only",
+      "locked_provider_count": 32,
+      "certified_count": 30,
+      "limited_count": 1,
+      "blocked_count": 1
+    },
+    "exposure_matrix": {
+      "verdict": "BETA_EXPOSURE_MATRIX_DETERMINED_LOCAL",
+      "master_flag": "beta.connectors.enabled",
+      "recorded_default": "OFF",
+      "row_count": 31,
+      "consent_gate_verified": false,
+      "enabled_subset": [],
+      "determined_exposed": [
+        "openai",
+        "gemini"
+      ]
+    },
+    "registry": {
+      "verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
+      "provider_count": 32,
+      "certified_count": 0,
+      "unverified_count": 32,
+      "withheld_count": 32,
+      "exposed_count": 0
+    },
+    "rollout": {
+      "state": "pass",
+      "verdict": "STAGED_GA_ROLLOUT_PLAN_DEFINED_LOCAL",
+      "stage_count": 3,
+      "recorded_default": "OFF",
+      "enabled_subset": [],
+      "kill_switches": 2,
+      "kill_switches_drilled": 0,
+      "rollback_controls": 3,
+      "rollback_verified": 0
+    },
+    "ga_approval": {
+      "status": "VERIFIED-LOCAL",
+      "decision": "DELAY",
+      "approval_state": "PENDING_CHOIRUDIN",
+      "execution_authorized": false,
+      "release_blocked": true,
+      "quality_gates_present": true,
+      "quality_gate_sources": [
+        "docs/sprints/sprint-117-beta-validation.md",
+        "docs/evidence/sprint-117-35-manifest-20261002.json",
+        "docs/evidence/sprint-117-36-manifest-20261002.json"
+      ]
+    },
+    "observation_handoff": {
+      "state": "pass",
+      "verdict": "POST_RELEASE_OBSERVATION_HANDOFF_DEFINED_LOCAL",
+      "resolved_outputs": 8,
+      "required_outputs": 8,
+      "violations": 0,
+      "live_release_observed": false
+    },
+    "visible_providers": [],
+    "live_claim_recorded": false,
+    "certification_sources_disagree": true
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [
+    "117.41: zero CERTIFIED connectors (32 UNVERIFIED, 32 WITHHELD) — no certified connector to release",
+    "117.1: canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED and live_beta_executed false",
+    "117.4: cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED — no verified participant cohort",
+    "117.43: artifact reproducibility measured 2026-10-02 (pass=false); the sole failing group is checksums — commit 02279bc (2026-10-05) regenerated the committed index on the release machine, which is not independently re-verifiable in a clean checkout (all 493 index paths live under gitignored build/), so signed-artifact agreement remains unmeasured, not disproven",
+    "117.39: 7 of 9 GA blocker domains unresolved (accessibility, auth, billing, data, privacy, quota, sync)",
+    "117.42: permission_scope_undocumented for developer connectors (github, gitlab, bitbucket, azure_devops)",
+    "117.8: rollback drill defined but not executed (all 6 controls executed=false)",
+    "entry_gate_readiness_contradiction:canonical_entry_block_resolved=true:canonical_entry_readiness=BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED",
+    "cohort_verification_failed:COHORT_CONSENT_VERIFICATION_FAILED",
+    "certification_source_disagreement:117.4=30:117.41=0",
+    "kill_switch_not_drilled:2",
+    "rollback_not_verified:3",
+    "no_connector_exposed",
+    "verified_cohort_size_zero",
+    "live_release_not_executed"
+  ],
+  "limitations": [
+    "This closes Sprint 117 locally. It records a DELAY decision whose owner is PENDING_CHOIRUDIN; it releases nothing, publishes nothing, tags nothing, and pushes nothing.",
+    "No live beta ran and no release was executed: 117.1 and 117.3 record live_beta_executed false, and 117.45 records execution_authorized false. The beta window is carried as an external gate, never as a completed window.",
+    "Certification is reported from two committed sources side by side: 117.4 froze the local certification chain while 117.41 reconciled the shipped registry. The gate records their disagreement and never averages it.",
+    "Connector visibility, kill-switch drills, and rollback verification remain unexecuted; they stay DEFERRED-EXTERNAL with hosted CI, public-trust signing, and publication."
+  ],
+  "summary": "Sprint 117 local closure decision=closedLocalDeferredExternal; satisfied=5/7; deferred=2; release=DELAY",
+  "claim_boundary": [
+    "This closes Sprint 117 locally. It records a delay decision: it releases nothing, publishes nothing, tags nothing, and pushes nothing.",
+    "No live beta ran and no release was executed. 117.1 and 117.3 record live_beta_executed false and 117.45 records execution_authorized false, so the beta window is carried as an external gate, never as a completed window.",
+    "Certification is reported from two committed sources side by side: 117.4 froze the local certification chain (30 CERTIFIED of 32) while 117.41 reconciled the shipped registry (0 CERTIFIED of 32). The disagreement is recorded by name and never averaged.",
+    "The seven canonical definition-of-done items are read from committed manifests only. A criterion with no evidence or a source that cannot be read yields blocked, never pass.",
+    "A closure that reported verified connector health or a completed beta window would describe a release that never happened."
+  ]
+}

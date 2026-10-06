@@ -62,7 +62,7 @@
 | 117.45 | GA Approval Gate | VERIFIED-LOCAL | Step kanonik 117.45 merekam keputusan GA sebagai `DELAY` berdasarkan bukti ter-commit seluruh step 117.1–117.44. Manifest `docs/planning/v1.3/sprint_117_ga_approval_gate.json` (sha256 `2f50981b36d6c043aaed0aa02b66150decde5e90cb5a0fcd172495f59405c705`, commit `c22b0f2`) mencatat 8 required_evidence (beta_results, connector_registry, blocker_status, quality_gates, known_limits, signed_artifacts, rollout_plan, rollback_readiness) semuanya present=true. **Keputusan:** `DELAY` — release diblokir karena: (1) 117.41: nol connector CERTIFIED dari 32 (semua UNVERIFIED/WITHHELD); (2) 117.1: beta entry BLOCKED, live_beta_executed=false; (3) 117.4: COHORT_CONSENT_VERIFICATION_FAILED; (4) 117.43: artifact reproducibility incomplete (pass=false); (5) 117.39: 7/9 GA blocker domain belum resolved; (6) 117.42: permission_scope_undocumented untuk developer connectors; (7) 117.8: rollback drill defined tapi belum dieksekusi. **approval_state=PENDING_CHOIRUDIN**, execution_authorized=false. Rollback_readiness=true (dokumenter). Domain `lib/features/world_logic/domain/sprint_117_ga_approval_gate.dart`, test `test/release/sprint_117_ga_approval_gate_test.dart` **7/7 PASS**. `roadmap_guard.dart` PASS (recommended_step=117.45, last_resolved=117.44). **BATAS KLAIM:** keputusan ini adalah governance record, bukan approval machine — menulis manifest TIDAK mengotorisasi release. Keputusan go/no-go final tetap milik Choirudin. Gerbang eksternal DEFERRED-EXTERNAL: hosted CI, live telemetry, public-trust signing, kohort beta, publikasi. **Bug fix CI multiplatform `.project.lock` race condition** juga diterapkan di commit `75e1a3a` (3 file: project_session_manager.dart toleran PathNotFoundException/FileSystemException, selection_memory_restart_persistence_test.dart graceful teardown, session_lock_release_race_test.dart regression test 2/2 PASS, stress 10× loop 100%). Commit slice `c22b0f2` + `658c938` (ledger) + `75e1a3a` (bug fix). |
 | 117.46 | General Availability Release | PARTIAL-LOCAL-EXTERNAL-BLOCKED | `docs/planning/v1.3/sprint_117_ga_release_execution.json`; local execution record is prepared and fail-closed, but approval, publication, monitoring, support notification, certified-subset enforcement, and rollback against a published artifact remain unverified. |
 | 117.47 | Post-Release Observation Handoff | VERIFIED-LOCAL | Gate fail-closed `lib/features/world_logic/domain/sprint_117_post_release_observation_handoff.dart` mengukur 8 output kanonik (`health_baseline`, `connector_health`, `incident_queue`, `billing_health`, `quota_health`, `risk_register`, `owners`, `recertification_schedule`) sebagai kondisi terukur dari 11 manifest ter-commit, bukan klaim observation. Manifest `docs/planning/v1.3/sprint_117_post_release_observation_handoff.json` **di-emit oleh `tool/emit_sprint_117_handoff_manifest.dart` dari report gate itu sendiri**, sehingga record keputusan tidak bisa berbeda dari yang memutuskan. `state=pass`, `resolved_outputs=8/8`, `violations=0`. **BATAS KLAIM (ini handoff, bukan klaim kesehatan):** `live_release_executed=false`, `live_release_observed=false` — tidak ada provider di-query, tidak ada metrik di-scrape, tidak ada insiden ditriase, tidak ada endpoint billing/quota dihubungi. Connector health dilaporkan apa adanya dari 117.41: `CERTIFIED=0`, `UNVERIFIED=32`, `WITHHELD=32`, `enabled_subset=[]`; certified subset diturunkan dari status registry, BUKAN dari `exposed_subset` (yang berisi 32 provider hasil snapshot, bukan sertifikasi). Recertification dilaporkan sebagai **prasyarat, bukan jadwal**: `calendar_date=null` karena 117.3 mencatat `COHORT_CONSENT_VERIFICATION_FAILED` dengan `verified_participant_count=0` dan `live_beta_executed=false`. Semua external gate tetap `DEFERRED-EXTERNAL`. |
-| 117.48 | Sprint Closure | NOT_STARTED | - |
+| 117.48 | Sprint Closure | VERIFIED-LOCAL | Gate fail-closed `lib/features/world_logic/domain/sprint_117_sprint_closure.dart` memetakan **tujuh definition-of-done kanonik** (`entry_gate_passed`, `beta_window_complete`, `visible_connectors_certified_or_limited`, `quality_gates_passed`, `ga_decision_recorded`, `staged_rollout_controlled`, `observation_handoff_complete`) sebagai kondisi TERUKUR dari 9 manifest ter-commit, bukan checklist yang dicentang. Manifest `docs/planning/v1.3/sprint_117_sprint_closure.json` **di-emit oleh `tool/emit_sprint_117_closure_manifest.dart` dari report gate itu sendiri**, sehingga record keputusan tidak bisa berbeda dari yang memutuskan. `state=pass`, `decision=CLOSED_LOCAL_DEFERRED_EXTERNAL`, `verdict=SPRINT_117_CLOSED_LOCAL_DEFERRED_EXTERNAL`, `satisfied=5/7`, `deferred=2`, `unmet=0`, `violations=0`, `live_release_executed=false`. **TIGA ATURAN PEMIKUL BEBAN:** (1) kriteria hanya `satisfied` bila manifest ter-commit mengatakannya; `deferredExternal` bila kriteria itu menamai hal yang repo ini tidak bisa tetapkan lokal (jendela beta nyata, visibilitas connector nyata); `unmet` bila bukti berkontradiksi - dan tidak ada yang pernah naik dari deferred ke satisfied oleh waktu; (2) closure adalah **record keputusan DELAY, bukan klaim rilis** - 117.45 mencatat `execution_authorized=false`, 117.41 mencatat nol CERTIFIED, 117.3 mencatat nol peserta terverifikasi, jadi `liveReleaseExecuted` dipatok false secara struktural; (3) dua manifest sertifikasi yang sama-sama sah **direkam berdampingan, tidak dirata-rata**: 117.4 membekukan rantai sertifikasi lokal (`status_scope=local_certification_freeze_only`, 30 CERTIFIED/1 LIMITED/1 BLOCKED dari snapshot 32 baris) sementara 117.41 merekonsiliasi registry yang di-ship (0 CERTIFIED, 32 UNVERIFIED, 32 WITHHELD). **KONTRADIKSI DI-SURFACE, TIDAK DIPUTUSKAN:** gate menamai `certification_source_disagreement:117.4=30:117.41=0` dan `entry_gate_readiness_contradiction:canonical_entry_block_resolved=true:canonical_entry_readiness=BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED` sebagai open item bernama - keputusan semantik mana yang dibawa closure tetap milik operator. **DEFAULTS FAIL-CLOSED DIUJI SATU PER SATU:** kriteria bukan tujuh kanonik -> `ArgumentError`; release decision di luar kosakata (`DELAY`/`RELEASE`/`SUBSET_REDUCTION`/`ROLLBACK`) -> `ArgumentError`; kriteria tanpa path evidence -> `ArgumentError`; anchor tak terbaca -> `blocked` (BUKAN `pass`, BUKAN `fail`); klaim rilis/beta hidup -> `fail` (`live_release_claimed_without_beta`); connector terlihat tanpa sertifikasi di mana pun -> `fail` (`visible_connector_uncertified`); `RELEASE` tanpa otorisasi -> `fail` (`release_decision_without_authorization`). **GERBANG:** `dart analyze` 3 file `No issues found!` exit 0; slice test **36/36 `All tests passed`** exit 0; manifest deterministik (dua emit = sha256 identik). **BATAS KLAIM:** closure ini menutup Sprint 117 **secara lokal**; ia tidak merilis, tidak mempublikasi, tidak menandai tag, tidak push. Jendela beta, visibilitas connector, drill kill-switch, verifikasi rollback, hosted CI, penandatanganan CA publik, dan publikasi tetap `DEFERRED-EXTERNAL`. Keputusan go/no-go tetap milik Choirudin. |
 
 ## Sprint berikutnya
 
@@ -3426,7 +3426,7 @@ dan risk register kosong terbaca sebagai "tidak ada risiko". Dibuat
 
 **MANIFEST DI-EMIT, BUKAN DIKETIK.** `tool/emit_sprint_117_handoff_manifest.dart`
 menjalankan gate itu sendiri lalu menulis JSON dari `report`. Manifest yang
-diketik tangan bebas berbeda dari gate yangemblage memutuskan -- justru drift
+diketik tangan bebas berbeda dari gate yang memutuskan -- justru drift
 yang dikontrak untuk dilarang. Jalur kodenya sama, jadi tidak bisa berbeda.
 
 **GERBANG (command + exit).** `dart analyze` 3 file = `No issues found!` exit 0;
@@ -3445,3 +3445,81 @@ di-scrape, tidak ada insiden ditriase, tidak ada operator yang menerima handoff,
 tidak ada calendar recertification. Semua gerbang eksternal tetap
 `DEFERRED-EXTERNAL`; keputusan go/no-go tetap milik Choirudin (117.45 masih
 `DELAY`, `approval_state=PENDING_CHOIRUDIN`). Tidak ada push pada run ini.
+
+### 117.48 -- Sprint Closure (VERIFIED-LOCAL, CLOSED_LOCAL_DEFERRED_EXTERNAL)
+
+Step kanonik `117.48` mendeklarasikan **tujuh definition-of-done** dan satu
+objective: menutup Sprint 117 setelah GA/delay decision dan handoff tercatat.
+Deklarasi kanonik itu sendiri masih membawa `execution_status:
+NOT_STARTED_ENTRY_CONDITION_UNMET`, dan itulah sebabnya closure ini **tidak
+boleh** ditutup dengan mencentang tujuh kotak.
+
+**ATURAN YANG MEMIKUL BEBAN.** Setiap kriteria adalah klaim tentang apa yang
+benar-benar ditetapkan sprint, jadi tiap kriteria harus **dibaca dari bukti
+ter-commit**, bukan diketik ke record closure. Closure yang melaporkan jendela
+beta selesai yang tidak pernah dijalankan, atau connector terlihat yang tidak
+pernah disertifikasi, adalah persis cara sprint menutup di atas kertas sementara
+tidak ada yang dirilis. Tiga aturan:
+
+1. Kriteria `satisfied` **hanya** bila manifest ter-commit mengatakannya;
+   `deferredExternal` bila kriteria menamai hal yang repo ini tidak bisa
+   tetapkan lokal; `unmet` bila bukti berkontradiksi. Tidak ada promosi dari
+   deferred ke satisfied oleh perjalanan waktu.
+2. Closure adalah **record keputusan DELAY, bukan klaim rilis**. 117.45 mencatat
+   `DELAY` dengan `execution_authorized: false`, 117.41 mencatat nol connector
+   CERTIFIED, 117.3 mencatat nol peserta terverifikasi. Karena itu
+   `liveReleaseExecuted` dipatok `false` secara struktural.
+3. Dua manifest ter-commit yang menggambarkan registry yang sama **direkam
+   berdampingan, tidak pernah dirata-rata**. 117.4 membekukan rantai sertifikasi
+   lokal (`status_scope: local_certification_freeze_only`) sementara 117.41
+   merekonsiliasi registry yang di-ship; di mana keduanya berbeda, perbedaan itu
+   menjadi open item bernama untuk operator, bukan angka yang boleh dipilih gate.
+
+**DUA KONTRADIKSI DI-SURFACE, BUKAN DIPUTUSKAN.** (a) 117.4 (beku
+`2026-09-30`) mencatat 30 CERTIFIED dari snapshot 32 baris, sedangkan 117.41
+(`2026-10-02`) mencatat 0 CERTIFIED / 32 UNVERIFIED / 32 WITHHELD untuk 32
+provider yang sama; gate menamai `certification_source_disagreement:117.4=30:
+117.41=0`. (b) 117.1 membawa `state: pass` + `canonical_entry_block_resolved:
+true` sekaligus `canonical_entry_readiness:
+BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED`; gate menamai
+`entry_gate_readiness_contradiction:...` tanpa mengedit dokumennya. Keduanya
+butuh keputusan operator, dan aturan sesi ini adalah: bukti ambigu/berkontradiksi
+di-surface, bukan diputuskan sendiri.
+
+**HASIL ATAS BUKTI TER-COMMIT.** `state=pass`,
+`decision=CLOSED_LOCAL_DEFERRED_EXTERNAL`,
+`verdict=SPRINT_117_CLOSED_LOCAL_DEFERRED_EXTERNAL`, `satisfied=5/7`,
+`deferred=2`, `unmet=0`, `violations=0`, `live_release_executed=false`,
+`release_decision=DELAY`, `release_decision_owner=PENDING_CHOIRUDIN`. Lima
+kriteria satisfied: `entry_gate_passed`, `quality_gates_passed`,
+`ga_decision_recorded`, `staged_rollout_controlled`,
+`observation_handoff_complete`. Dua deferred, **tidak** satisfied:
+`beta_window_complete` (tidak ada beta hidup dijalankan, `verified_participants=0`,
+`cohort=COHORT_CONSENT_VERIFICATION_FAILED`) dan
+`visible_connectors_certified_or_limited` (`visible=0`; master flag default `OFF`
+dan tidak ada stage yang maju, jadi klaim itu tidak punya saksi).
+
+**DEFAULTS FAIL-CLOSED DIUJI SATU PER SATU.** Kriteria yang bukan tepat tujuh
+kanonik -> `ArgumentError`; release decision di luar kosakata -> `ArgumentError`;
+kriteria tanpa path evidence -> `ArgumentError`; anchor tak terbaca -> `blocked`
+(BUKAN `pass`, BUKAN `fail`); klaim rilis/beta hidup -> `fail`
+(`live_release_claimed_without_beta`); connector terlihat tanpa sertifikasi di
+mana pun -> `fail` (`visible_connector_uncertified`); `RELEASE` tanpa otorisasi
+-> `fail` (`release_decision_without_authorization`).
+
+**MANIFEST DI-EMIT, BUKAN DIKETIK.** `tool/emit_sprint_117_closure_manifest.dart`
+menjalankan gate itu sendiri lalu menulis JSON dari `report`. Manifest yang
+diketik tangan bebas berbeda dari gate yang memutuskan -- justru drift yang
+dikontrak untuk dilarang. Jalur kodenya sama, jadi tidak bisa berbeda.
+
+**GERBANG (command + exit).** `dart analyze` 3 file = `No issues found!` exit 0;
+slice test **36/36 `All tests passed`** exit 0 (tidak ada `skip:`, tidak ada
+assertion dihapus); manifest deterministik (dua emit = sha256 identik
+`494f64c3...`).
+
+**BATAS KLAIM.** 117.48 `VERIFIED-LOCAL` **dalam arti closure lokal tercatat**,
+bukan rilis. Tidak ada rilis, tidak ada publikasi, tidak ada tag, tidak ada push.
+Jendela beta nyata, visibilitas connector nyata, drill kill-switch, verifikasi
+rollback terhadap artifact publik, hosted CI, penandatanganan CA publik, dan
+publikasi tetap `DEFERRED-EXTERNAL`. Keputusan go/no-go tetap milik Choirudin
+(117.45 masih `DELAY`, `approval_state=PENDING_CHOIRUDIN`).

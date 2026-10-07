@@ -323,10 +323,27 @@ void _configureOAuthClientId(
     ).then((clientId) async {
       controller.dispose();
       if (clientId == null || clientId.isEmpty) return;
-      await wiring.setClientId(
-        providerId: entry.providerId,
-        clientId: clientId,
-      );
+      try {
+        await wiring.setClientId(
+          providerId: entry.providerId,
+          clientId: clientId,
+        );
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${entry.displayName} client ID saved.')),
+          );
+        }
+      } on Object {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Could not save ${entry.displayName} configuration.',
+              ),
+            ),
+          );
+        }
+      }
     }),
   );
 }

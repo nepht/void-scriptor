@@ -148,4 +148,27 @@ void main() {
     expect(configured, isNotNull);
     expect(configured!.authType, ProviderAuthType.oauth2Pkce);
   });
+
+  testWidgets('developer tools exposes GitHub configuration', (tester) async {
+    ProviderConnectorEntry? configured;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AccountCloudCenterScreen(
+          snapshot: AccountCloudSnapshot.localOnly(session: null),
+          onConfigureProvider: (entry) => configured = entry,
+        ),
+      ),
+    );
+
+    final github = find.byKey(const ValueKey('quick-connect-provider-github'));
+    expect(github, findsOneWidget);
+    final configure = find.descendant(
+      of: github,
+      matching: find.widgetWithText(TextButton, 'Configure'),
+    );
+    await tester.ensureVisible(configure);
+    await tester.tap(configure);
+
+    expect(configured?.providerId, 'github');
+  });
 }

@@ -2720,12 +2720,16 @@ class _FocusedAccountArea extends StatelessWidget {
             onPressed:
                 onOpenAiProviders ?? () => context.push(AppRoutes.aiProviders),
           ),
-          const _AccountSectionCard.capability(
+          _AccountSectionCard.dashboard(
             key: ValueKey('account-overview-card-developer-tools'),
             title: 'DEVELOPER TOOLS',
             subtitle: 'Source control and development services',
             icon: Icons.code_outlined,
-            message: 'No developer service is connected.',
+            child: _DeveloperToolsPanel(
+              manifest: providerManifest,
+              onConnectProvider: onConnectProvider,
+              onConfigureProvider: onConfigureProvider,
+            ),
           ),
           const _AccountSectionCard.capability(
             key: ValueKey('account-overview-card-creative-tools'),
@@ -3481,6 +3485,42 @@ class _QuickConnectPanel extends StatelessWidget {
         }
         return SingleChildScrollView(child: Column(children: tiles));
       },
+    );
+  }
+}
+
+class _DeveloperToolsPanel extends StatelessWidget {
+  const _DeveloperToolsPanel({
+    required this.manifest,
+    this.onConnectProvider,
+    this.onConfigureProvider,
+  });
+
+  final ProviderConnectorManifest manifest;
+  final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+  final ValueChanged<ProviderConnectorEntry>? onConfigureProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    final entries = manifest.all
+        .where((entry) => entry.category == ProviderConnectorCategory.developer)
+        .toList(growable: false);
+    if (entries.isEmpty) {
+      return Text('No developer service is registered.', style: _caption);
+    }
+    return Column(
+      children: [
+        for (final entry in entries)
+          _ProviderTile(
+            entry: entry,
+            onConnect: onConnectProvider == null
+                ? null
+                : () => onConnectProvider!(entry),
+            onConfigure: onConfigureProvider == null
+                ? null
+                : () => onConfigureProvider!(entry),
+          ),
+      ],
     );
   }
 }

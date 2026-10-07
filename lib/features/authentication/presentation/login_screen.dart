@@ -10,9 +10,17 @@ class LoginScreen extends ConsumerStatefulWidget {
     super.key,
     required this.onRegister,
     required this.onForgotPassword,
+    this.onGoogleSignIn,
+    this.onGithubSignIn,
   });
   final VoidCallback onRegister;
   final VoidCallback onForgotPassword;
+
+  /// Optional until the provider callback is wired to the auth session.
+  final VoidCallback? onGoogleSignIn;
+
+  /// Optional until the provider callback is wired to the auth session.
+  final VoidCallback? onGithubSignIn;
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
@@ -208,8 +216,39 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ],
             const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    key: const ValueKey('login-google-button'),
+                    onPressed: auth.isLoading ? null : widget.onGoogleSignIn,
+                    icon: const Text(
+                      'G',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                      ),
+                    ),
+                    label: const Text('Google'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    key: const ValueKey('login-github-button'),
+                    onPressed: auth.isLoading ? null : widget.onGithubSignIn,
+                    icon: const Icon(Icons.code, size: 20),
+                    label: const Text('GitHub'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
             Text(
-              'Google and GitHub sign-in are not available yet.',
+              widget.onGoogleSignIn == null && widget.onGithubSignIn == null
+                  ? 'Social sign-in will be enabled after OAuth callback setup.'
+                  : 'Use a connected provider to continue.',
+              textAlign: TextAlign.center,
               style: TextStyle(color: muted, fontSize: 13, height: 1.5),
             ),
             const SizedBox(height: 24),

@@ -77,6 +77,26 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('social sign-in buttons are visible and honest when unwired', (
+    tester,
+  ) async {
+    await show(tester, const Size(1440, 1000));
+    expect(find.byKey(const ValueKey('login-google-button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('login-github-button')), findsOneWidget);
+    expect(
+      find.text('Social sign-in will be enabled after OAuth callback setup.'),
+      findsOneWidget,
+    );
+    expect(
+      tester
+          .widget<OutlinedButton>(
+            find.byKey(const ValueKey('login-google-button')),
+          )
+          .onPressed,
+      isNull,
+    );
+  });
+
   // Baseline login_desktop.png dirender di Windows; pixel hinting berbeda
   // antar-OS sehingga run Linux selalu meleset (CI fail 24.14% diff,
   // ledger run290). Golden dijaga hanya di platform tempat baseline-nya

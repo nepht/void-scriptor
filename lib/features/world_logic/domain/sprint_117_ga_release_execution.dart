@@ -113,14 +113,17 @@ abstract final class Sprint117GaReleaseContract {
     'RELEASED',
   };
 
-  /// Approval-source decision words, matched case-insensitively. This is the
-  /// 117.45 owner gate's OWN wire vocabulary, derived from its enum rather
-  /// than hand-copied: a hand-copied list drifts, and a consumer that speaks a
-  /// different vocabulary than the source's own gate both rejects the owner's
-  /// genuine words and accepts words the owner rejects.
+  /// Approval-source decision words. This is the 117.45 owner gate's OWN wire
+  /// vocabulary, derived from its enum rather than hand-copied: a hand-copied
+  /// list drifts, and a consumer that speaks a different vocabulary than the
+  /// source's own gate both rejects the owner's genuine words and accepts words
+  /// the owner rejects. The words are the owner's wire names verbatim, and the
+  /// consumer matches them exactly: the owner gate switches on the literal wire
+  /// name, so a word that differs only by case or surrounding whitespace is one
+  /// the owner never accepted. A case-folded or trimmed copy would read such a
+  /// word as authorization the owner never granted.
   static final Set<String> approvalDecisionVocabulary = <String>{
-    for (final decision in Sprint117GaDecision.values)
-      decision.wireName.toUpperCase(),
+    for (final decision in Sprint117GaDecision.values) decision.wireName,
   };
 
   /// Approval-source decisions that forbid a `pass`: the owner gate's
@@ -128,9 +131,10 @@ abstract final class Sprint117GaReleaseContract {
   /// both mean "proceed" (full release or certified subset); `delay` and
   /// `rollback` mean "do not". A source recording one of these has decided
   /// not to authorize execution, whatever its boolean flag happens to read.
+  /// Written as the owner's exact wire names, so the match is case-sensitive.
   static const Set<String> blockingApprovalDecisions = <String>{
-    'DELAY',
-    'ROLLBACK',
+    'delay',
+    'rollback',
   };
 
   /// Every approval-state word this gate understands, derived from the 117.45
@@ -429,7 +433,10 @@ class Sprint117GaReleaseLoader {
     if (approval == null) return null;
     final block = approval['approval'];
     if (block is Map && block['decision'] is String) {
-      return _text(block['decision']);
+      // Returned raw: the owner gate matches the literal wire name, so
+      // trimming here would launder ` release` into `release` and hand the
+      // gate a word the owner never saw.
+      return block['decision'] as String;
     }
     return null;
   }
@@ -446,7 +453,10 @@ class Sprint117GaReleaseLoader {
     if (approval == null) return null;
     final block = approval['approval'];
     if (block is Map && block['approval_state'] is String) {
-      return _text(block['approval_state']);
+      // Raw for the same reason as the decision word: the owner gate matches
+      // the literal wire name, so trimming would launder `APPROVED ` into a
+      // word the owner never accepted.
+      return block['approval_state'] as String;
     }
     return null;
   }
@@ -658,13 +668,16 @@ class Sprint117GaReleaseGate {
         violations.add('authorization_source_decision_missing');
       }
       if (approvalDecision != null && approvalDecision.trim().isNotEmpty) {
-        final normalized = approvalDecision.trim().toUpperCase();
+        // Matched by exact wire grammar, not case-folded or trimmed: the owner
+        // gate switches on the literal wire name, so `Release` or ` release`
+        // is a word it never accepted. A looser consumer grammar would read
+        // such a word as authorization the owner never granted.
         if (!Sprint117GaReleaseContract.approvalDecisionVocabulary.contains(
-          normalized,
+          approvalDecision,
         )) {
           violations.add('unknown_approval_source_decision:$approvalDecision');
         } else if (Sprint117GaReleaseContract.blockingApprovalDecisions
-            .contains(normalized)) {
+            .contains(approvalDecision)) {
           violations.add(
             'authorization_source_decision_blocks_execution:'
             '$approvalDecision',
@@ -693,12 +706,13 @@ class Sprint117GaReleaseGate {
       if (approvalState == null || approvalState.trim().isEmpty) {
         violations.add('authorization_source_approval_state_missing');
       } else {
-        final normalizedState = approvalState.trim().toUpperCase();
+        // Exact wire grammar again: the owner gate maps `approval_state` by
+        // literal wire name, so `approved` or `APPROVED ` leaves it null.
         if (!Sprint117GaReleaseContract.approvalStateVocabulary.contains(
-          normalizedState,
+          approvalState,
         )) {
           violations.add('unknown_approval_source_state:$approvalState');
-        } else if (normalizedState !=
+        } else if (approvalState !=
             Sprint117GaReleaseContract.authorizingApprovalState) {
           violations.add(
             'authorization_source_approval_state_not_approved:'

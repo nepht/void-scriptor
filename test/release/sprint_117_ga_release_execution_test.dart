@@ -1001,8 +1001,7 @@ void main() {
       expect(
         Sprint117GaReleaseContract.approvalDecisionVocabulary,
         unorderedEquals(<String>{
-          for (final decision in Sprint117GaDecision.values)
-            decision.wireName.toUpperCase(),
+          for (final decision in Sprint117GaDecision.values) decision.wireName,
         }),
       );
 
@@ -1172,6 +1171,174 @@ void main() {
       );
       expect(nested.state, Sprint117GaReleaseExecutionState.pass);
       expect(nested.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
+    });
+
+    test('117.46-GATE-AUTH-GRAMMAR the approval-source witnesses are read with '
+        'the owner gate exact wire grammar, not a looser case-folded one', () {
+      const realEvidence = <String>[
+        'docs/planning/v1.3/sprint_117_ga_release_execution.json',
+      ];
+      final outputs = <String, Sprint117GaOutputRecord>{
+        for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+          name: const Sprint117GaOutputRecord(
+            status: Sprint117GaOutputStatus.verified,
+            evidence: realEvidence,
+            note: 'verified',
+          ),
+      };
+
+      // The 117.45 owner gate reads its decision and approval-state words by
+      // exact wire match: its `fromManifest` switches on the literal wire name
+      // and leaves the field null for anything else. So `Release`, `RELEASE`,
+      // ` release`, or `release ` all make the owner gate fail. A consumer that
+      // case-folds or trims the word accepts authorization the owner never
+      // granted -- exactly the fail-open this witness set exists to close. The
+      // consumer must speak the owner's exact grammar, so the vocabulary is the
+      // owner's wire names verbatim, not a case-folded copy.
+      expect(
+        Sprint117GaReleaseContract.approvalDecisionVocabulary.containsAll(
+          Sprint117GaReleaseContract.blockingApprovalDecisions,
+        ),
+        isTrue,
+        reason: 'every blocking decision must be one of the owner words',
+      );
+
+      Sprint117GaReleaseEvidence source({
+        required String? decision,
+        required String? state,
+      }) => Sprint117GaReleaseEvidence(
+        execution: Sprint117GaReleaseExecution(
+          approvalAuthorized: true,
+          outputs: outputs,
+        ),
+        recordedDecision: 'AUTHORIZED',
+        recordedAuthorized: true,
+        unrecognisedStatuses: const <String, String>{},
+        approvalSourceAuthorized: true,
+        approvalSourceDecision: decision,
+        approvalSourceReleaseBlocked: false,
+        approvalSourceApprovalState: state,
+        approvalSourceRollbackReady: true,
+        approvalSourceMissingEvidence: const <String>[],
+      );
+
+      // A decision word that differs from the owner's wire name only by case or
+      // surrounding whitespace fails the owner gate, so it must fail here too.
+      for (final drifted in <String>[
+        'Release',
+        'RELEASE',
+        ' release',
+        'release ',
+      ]) {
+        final report = const Sprint117GaReleaseGate().evaluateWith(
+          source(decision: drifted, state: 'APPROVED'),
+        );
+        expect(
+          report.state,
+          Sprint117GaReleaseExecutionState.fail,
+          reason:
+              'decision "$drifted" fails the owner gate, so the consumer must '
+              'not read it as authorization',
+        );
+      }
+
+      // Same for the approval-state word: `approved`, `Approved`, ` APPROVED`,
+      // and `APPROVED ` all leave the owner gate's approval field null.
+      for (final drifted in <String>[
+        'approved',
+        'Approved',
+        ' APPROVED',
+        'APPROVED ',
+      ]) {
+        final report = const Sprint117GaReleaseGate().evaluateWith(
+          source(decision: 'release', state: drifted),
+        );
+        expect(
+          report.state,
+          Sprint117GaReleaseExecutionState.fail,
+          reason:
+              'approval state "$drifted" fails the owner gate, so the consumer '
+              'must not read it as approval',
+        );
+      }
+
+      // The divergence is not only in the gate's comparison: the loader trims
+      // the word before the gate ever sees it. Read from a real file so the
+      // loader's grammar is exercised: a decision word with surrounding
+      // whitespace must not be laundered into the owner's word.
+      final dir = Directory.systemTemp.createTempSync('11746-auth-grammar');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      final execFile = File('${dir.path}/execution.json');
+      final approvalFile = File('${dir.path}/approval.json');
+      execFile.writeAsStringSync(
+        jsonEncode(<String, Object?>{
+          'canonical_step': '117.46',
+          'topics':
+              'approval artifact subset hidden telemetry support rollback',
+          'execution_authorized': true,
+          'decision': 'AUTHORIZED',
+          'outputs': <String, Object?>{
+            for (final name in Sprint117GaReleaseExecution.requiredOutputs)
+              name: <String, Object?>{
+                'status': 'VERIFIED',
+                'evidence': <String>[execFile.path],
+                'note': 'verified',
+              },
+          },
+        }),
+      );
+
+      Map<String, Object?> approvalSource(String decision, String state) =>
+          <String, Object?>{
+            'required_evidence': <String, Object?>{
+              for (final name in Sprint117GaApprovalGate.requiredEvidenceKeys)
+                name: <String, Object?>{
+                  'present': true,
+                  'sources': <String>[execFile.path],
+                },
+            },
+            'blocker_status': <String, Object?>{'release_blocked': false},
+            'rollback_readiness': <String, Object?>{'ready': true},
+            'approval': <String, Object?>{
+              'execution_authorized': true,
+              'decision': decision,
+              'approval_state': state,
+            },
+          };
+
+      // The owner gate genuinely fails a word that only differs by whitespace.
+      final owner = Sprint117GaApprovalGate.evaluate(
+        Sprint117GaApprovalGate.fromManifest(
+          jsonDecode(jsonEncode(approvalSource(' release', 'APPROVED')))
+              as Map<String, dynamic>,
+        ),
+      );
+      expect(owner.state, Sprint117GaGateState.fail);
+
+      approvalFile.writeAsStringSync(
+        jsonEncode(approvalSource(' release', 'APPROVED')),
+      );
+      final laundered = const Sprint117GaReleaseGate().evaluateWith(
+        const Sprint117GaReleaseLoader().loadFrom(
+          manifestPath: execFile.path,
+          approvalPath: approvalFile.path,
+        ),
+      );
+      expect(laundered.state, Sprint117GaReleaseExecutionState.fail);
+
+      // Control: the owner's exact wire words still authorize, so the rule is
+      // not simply always-fail.
+      approvalFile.writeAsStringSync(
+        jsonEncode(approvalSource('release', 'APPROVED')),
+      );
+      final exact = const Sprint117GaReleaseGate().evaluateWith(
+        const Sprint117GaReleaseLoader().loadFrom(
+          manifestPath: execFile.path,
+          approvalPath: approvalFile.path,
+        ),
+      );
+      expect(exact.state, Sprint117GaReleaseExecutionState.pass);
+      expect(exact.verdict, 'GA_RELEASE_EXECUTION_VERIFIED');
     });
   });
 }

@@ -33,7 +33,7 @@
   "stability_gate": {
     "status": "RECHECK_REQUIRED",
     "resume_step": "118.3",
-    "previous_result": "Sprint 118.1 focused verification PASS; full suite remains a separate gate and is not claimed here.",
+    "previous_result": "Core/OAuth corrective gate rerun PASS; full suite remains a separate gate and is not claimed here.",
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
       "flutter analyze",
@@ -41,11 +41,10 @@
       "full flutter test",
       "Windows debug build"
     ],
-    "analyzer": "REPAIRED 2026-10-07 (operator, scheduler paused): working-tree flutter analyze 138 -> 1 issue; the 1 residual is untracked sibling WIP lib/features/account/application/oauth_client_configuration.dart:12 (outside 118.3 scope, not touched). In an isolated worktree at HEAD (committed files only) flutter analyze = 'No issues found!' exit 0. 25 single-use gitignored probe-residue files removed under adoption condition 5; 0 tracked files changed; HEAD 7405b2b unchanged.",
-    "recheck_findings": "Full gate still RED (full flutter test +9949 -33; focused test/core +711 -1). Attribution proven in an isolated worktree at HEAD: 26 = sibling OAuth WIP (sprint_117_identity_workflow_validation 23 + http_oauth_token_broker_test 3) PASS at HEAD; 5 = sprint_113/sprint_117 signed-artifact/reproducibility environmental drift PASS at HEAD; 1 = explorer_selection_hunt_run307 flaky (PASS in isolated rerun); 1 = core_dependency_direction FAILS at HEAD = committed architecture regression.",
+    "analyzer": "PASS 2026-10-07: flutter analyze --no-pub -> No issues found! exit 0 on the canonical worktree.",
+    "recheck_findings": "Architecture blocker fixed in commit 1eaa6df: HttpOAuthTokenBroker moved from core/network into features/account/application, core dependency direction now passes. Focused gate rerun: test/core + account OAuth/wiring = 725 PASS / 0 FAIL, analyzer PASS, Windows debug build PASS, roadmap guard PASS. Full flutter test was intentionally stopped after 3,630 tests with one previously observed baseline failure; it is not claimed as PASS and remains the only stability-gate recheck item.",
     "blockers": [
-      "core_dependency_direction: committed violation at HEAD (introduced 28a7a65) - lib/core/network/http_oauth_token_broker.dart imports lib/features/account/domain/account_center_oauth_linked_identity_flow.dart. That file is also sibling-dirty (M) and 118.3 'Certified Connector Snapshot' does not cover OAuth callback, so adoption condition 1 fails; NOT repaired here - handed to operator/sibling.",
-      "flutter analyze working tree still exit 1 on 1 untracked sibling info (oauth_client_configuration.dart:12); committed HEAD worktree is clean."
+      "full_flutter_test: global suite was stopped after 3,630 tests with one baseline failure already present before the corrective slice; split deterministic gates are green, but policy still requires a separately recorded full-suite result before changing stability_gate to PASS."
     ],
     "windows_debug_build": "PASS exit 0",
     "roadmap_guard": "PASS"
@@ -57,8 +56,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-07T08:02:32.955780Z",
-  "updated_by": "operator-repair-analyzer-gate (scheduler paused)",
+  "updated_at": "2026-10-07T20:04:01.7959192+07:00",
+  "updated_by": "operator-repair-oauth-boundary (scheduler paused)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

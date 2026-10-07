@@ -231,6 +231,30 @@ void main() {
     expect(find.text('Google Drive'), findsWidgets);
   });
 
+  testWidgets('API providers card opens the AI provider workspace', (
+    tester,
+  ) async {
+    var opened = false;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: AccountCloudCenterScreen(
+              onOpenAiProviders: () => opened = true,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final cardTitle = find.text('API PROVIDERS').first;
+    await tester.ensureVisible(cardTitle);
+    await tester.tap(cardTitle);
+    await tester.pump();
+
+    expect(opened, isTrue);
+  });
+
   testWidgets('canonical tabs reveal their area inside the single panel', (
     tester,
   ) async {

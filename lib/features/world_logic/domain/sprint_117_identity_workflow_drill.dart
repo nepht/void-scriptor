@@ -974,6 +974,10 @@ OAuthProviderConfiguration _fixtureConfiguration() =>
       ),
       redirectUri: Uri.parse('https://app.example.test/oauth/callback'),
       scopes: _drillScopes,
+      // A connectable connector must carry a registered OAuth client ID:
+      // the shipped flow refuses `authorizationUri` without one and never
+      // falls back to providerId, so the working fixture supplies its own.
+      clientId: 'drill-identity-client',
     );
 
 /// The provider configuration for an entry that already ships in the manifest,

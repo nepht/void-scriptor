@@ -40,7 +40,15 @@
       "focused Core MVP regression",
       "full flutter test",
       "Windows debug build"
-    ]
+    ],
+    "analyzer": "REPAIRED 2026-10-07 (operator, scheduler paused): working-tree flutter analyze 138 -> 1 issue; the 1 residual is untracked sibling WIP lib/features/account/application/oauth_client_configuration.dart:12 (outside 118.3 scope, not touched). In an isolated worktree at HEAD (committed files only) flutter analyze = 'No issues found!' exit 0. 25 single-use gitignored probe-residue files removed under adoption condition 5; 0 tracked files changed; HEAD 7405b2b unchanged.",
+    "recheck_findings": "Full gate still RED (full flutter test +9949 -33; focused test/core +711 -1). Attribution proven in an isolated worktree at HEAD: 26 = sibling OAuth WIP (sprint_117_identity_workflow_validation 23 + http_oauth_token_broker_test 3) PASS at HEAD; 5 = sprint_113/sprint_117 signed-artifact/reproducibility environmental drift PASS at HEAD; 1 = explorer_selection_hunt_run307 flaky (PASS in isolated rerun); 1 = core_dependency_direction FAILS at HEAD = committed architecture regression.",
+    "blockers": [
+      "core_dependency_direction: committed violation at HEAD (introduced 28a7a65) - lib/core/network/http_oauth_token_broker.dart imports lib/features/account/domain/account_center_oauth_linked_identity_flow.dart. That file is also sibling-dirty (M) and 118.3 'Certified Connector Snapshot' does not cover OAuth callback, so adoption condition 1 fails; NOT repaired here - handed to operator/sibling.",
+      "flutter analyze working tree still exit 1 on 1 untracked sibling info (oauth_client_configuration.dart:12); committed HEAD worktree is clean."
+    ],
+    "windows_debug_build": "PASS exit 0",
+    "roadmap_guard": "PASS"
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -49,8 +57,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-07T03:42:27.229616Z",
-  "updated_by": "roadmap_guard repair",
+  "updated_at": "2026-10-07T08:02:32.955780Z",
+  "updated_by": "operator-repair-analyzer-gate (scheduler paused)",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -4657,5 +4665,16 @@
     "commit": "278362b",
     "status": "117.46 stays PARTIAL-LOCAL-EXTERNAL-BLOCKED; execution_authorized=false; approval_state=PENDING_CHOIRUDIN; decision=BLOCKED_EXTERNAL_GATES.",
     "hunt_next": "other rules that live only in tests (output order vs canonicalOrder, blockingApprovalDecisions vocabulary) and manifest 113.44 evidence topicality."
+  },
+  "core_worker_run_2026_10_07_analyzer_repair": {
+    "head_before": "7405b2b",
+    "head_after": "7405b2b",
+    "action": "analyzer quality-gate repair only (adoption condition 5); no roadmap feature mutation",
+    "analyzer_before": "exit 1, 138 issues (41 error / 82 info / 15 warning across 22 files)",
+    "analyzer_after": "working tree exit 1, 1 issue (untracked sibling WIP); isolated HEAD worktree exit 0 'No issues found!'",
+    "tracked_files_changed": 0,
+    "dirty_preserved": "30 paths (sibling OAuth WIP + operator governance + regenerated 117 evidence) - preserved, none committed",
+    "evidence": "~/AppData/Local/hermes/backups/probe_residue_20261007_132453/ (analyze_BEFORE/AFTER, test_after, build_after, REMOVAL_RECORD.json, final_verify.txt) + byte-verified recoverable snapshot",
+    "gate_result": "RECHECK_REQUIRED remains: 33 failures; 32 attributable to sibling/environmental/flaky, 1 committed architecture regression (28a7a65)"
   }
 }

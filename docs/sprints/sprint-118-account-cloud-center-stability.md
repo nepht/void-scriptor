@@ -72,3 +72,14 @@ Sprint 118 is active only for the approved delayed corrective scope. Provider ce
 - Anchored to committed 118.1: entry `SPRINT_118_ENTRY_READY` / `GA_DELAYED` with corrective scope approved.
 - Window is declared and NOT executed (no release ran); expansion budget is zero new certified connectors because 0 of 32 providers are certified.
 - Live observation, connector certification, provider exposure, external telemetry, and publication remain `DEFERRED-EXTERNAL`; nothing was certified, exposed, released, or pushed.
+### 2026-10-07 - Analyzer quality-gate repair (operator "Perbaiki"; scheduler paused)
+
+- Scope: quality gate only (governance rule 4 / line 22). `stability_gate` was `RECHECK_REQUIRED`. No roadmap feature work; no step advanced.
+- Repair under adoption condition 5 (scheduler paused, single writer verified idle): removed 25 single-use gitignored probe-residue files (10 fatal + 15 info-only). A recoverable snapshot was taken and byte-verified before deletion; the removal is recorded.
+- Evidence: `~/AppData/Local/hermes/backups/probe_residue_20261007_132453/` (`analyze_BEFORE.txt` exit 1 / 138 issues; `analyze_AFTER.txt` exit 1 / 1 issue; `REMOVAL_RECORD.json`; `test_after.txt` +9949 -33; `build_after.txt` PASS; `final_verify.txt`) plus a byte-verified recoverable snapshot (179 files / 10 MB, sha256 manifest).
+- Analyzer: working-tree `flutter analyze` 138 -> 1 issue. The 1 residual is the untracked sibling WIP `lib/features/account/application/oauth_client_configuration.dart:12`, outside the 118.3 scope, so it was not touched. In an isolated worktree at HEAD (committed files only) `flutter analyze` = `No issues found!` exit 0.
+- The full gate stays RED, so `stability_gate` stays `RECHECK_REQUIRED`. Attribution proven in the HEAD worktree: 26 = sibling OAuth WIP (`sprint_117_identity_workflow_validation` 23 + `http_oauth_token_broker_test` 3) -> PASS at HEAD; 5 = `sprint_113`/`sprint_117` signed-artifact/reproducibility environmental drift -> PASS at HEAD; 1 = `explorer_selection_hunt_run307` flaky (PASS in isolated rerun); 1 = `core_dependency_direction` FAILS at HEAD = committed architecture regression introduced by `28a7a65` (`lib/core/network/http_oauth_token_broker.dart` imports `lib/features/...`).
+- That broker file is also sibling-dirty (`M`) and 118.3 `Certified Connector Snapshot` does not cover OAuth callback, so adoption condition 1 fails: the architecture regression is NOT repaired here and is handed to the operator/sibling as a named blocker.
+- `dart run tool/roadmap_guard.dart`: PASS. Windows debug build: PASS exit 0.
+- 0 tracked files changed by the repair; HEAD `7405b2b` unchanged. All 30 dirty paths (sibling OAuth WIP + operator governance + regenerated 117 evidence) preserved, none committed.
+- Next step unchanged: `118.3`. Cron `b0c2c7d744d9` resumed after the paused repair window.

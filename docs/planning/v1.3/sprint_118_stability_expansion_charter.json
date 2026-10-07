@@ -1,0 +1,286 @@
+{
+  "canonical_step": "118.2",
+  "title": "Stability & Expansion Charter",
+  "document_role": "charter-evaluation-record",
+  "state": "pass",
+  "verdict": "CHARTER_COMPLETE_LOCAL",
+  "release_state": "GA_DELAYED",
+  "charter_executable": true,
+  "required_fields": [
+    "window",
+    "stability_questions",
+    "expansion_budget",
+    "owners",
+    "stop_conditions",
+    "exit_criteria"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "entry_gate": "docs/planning/v1.3/sprint_118_entry_gate.json",
+    "corrective_scope": "docs/planning/v1.3/sprint_118_corrective_scope_approval.json"
+  },
+  "entry_state": "pass",
+  "entry_verdict": "SPRINT_118_ENTRY_READY",
+  "entry_release_state": "GA_DELAYED",
+  "corrective_scope_approved": true,
+  "provider_count": 32,
+  "window": {
+    "window_id": "stability_observation_window",
+    "start_epoch_ms": 1794787200000,
+    "end_epoch_ms": 1798416000000,
+    "duration_days": 42,
+    "derived_duration_days": 42,
+    "executed": false,
+    "phases": [
+      {
+        "phase_id": "phase_internal",
+        "start_epoch_ms": 1794787200000,
+        "end_epoch_ms": 1795996800000,
+        "duration_days": 14,
+        "exit_criterion": "no_sev1_for_72h"
+      },
+      {
+        "phase_id": "phase_alpha",
+        "start_epoch_ms": 1795996800000,
+        "end_epoch_ms": 1797206400000,
+        "duration_days": 14,
+        "exit_criterion": "no_sev1_for_72h"
+      },
+      {
+        "phase_id": "phase_waitlist",
+        "start_epoch_ms": 1797206400000,
+        "end_epoch_ms": 1798416000000,
+        "duration_days": 14,
+        "exit_criterion": "no_sev1_for_72h"
+      }
+    ]
+  },
+  "stability_questions": [
+    {
+      "question_id": "q_connection_health",
+      "area": "connection_health",
+      "step": "118.7",
+      "question": "Apakah connect, expiry, revoke, degraded, outage, latency, dan disconnect cleanup per connector version tetap sehat?",
+      "measurable": true,
+      "signal": "connect_success"
+    },
+    {
+      "question_id": "q_oauth_reauth",
+      "area": "oauth_reauth",
+      "step": "118.8",
+      "question": "Apakah callback, state, rotation, reauth, scope change, dan provider revoke selesai tanpa kehilangan sesi pengguna?",
+      "measurable": true,
+      "signal": "reauth_completion"
+    },
+    {
+      "question_id": "q_quota_storage",
+      "area": "quota_storage",
+      "step": "118.9",
+      "question": "Apakah kuota yang ditampilkan cocok dengan pemakaian yang dilaporkan, tanpa angka basi atau presisi palsu?",
+      "measurable": true,
+      "signal": "quota_match"
+    },
+    {
+      "question_id": "q_sync_backup_recovery",
+      "area": "sync_backup_recovery",
+      "step": "118.10",
+      "question": "Apakah queue, transfer, retry, conflict, backup terenkripsi, dan restore mempertahankan integritas data pengguna?",
+      "measurable": true,
+      "signal": "restore_success"
+    },
+    {
+      "question_id": "q_ai_provider",
+      "area": "ai_provider",
+      "step": "118.11",
+      "question": "Apakah discovery, job, cancellation, usage, cost, fallback, dan privacy destination AI provider konsisten?",
+      "measurable": true,
+      "signal": "job_success"
+    },
+    {
+      "question_id": "q_billing_entitlement",
+      "area": "billing_entitlement",
+      "step": "118.12",
+      "question": "Apakah checkout, webhook, idempotency, invoice, entitlement, dan refund tetap benar tanpa pembayaran ganda?",
+      "measurable": true,
+      "signal": "entitlement"
+    },
+    {
+      "question_id": "q_security",
+      "area": "security",
+      "step": "118.18",
+      "question": "Apakah OAuth, vault, session, permission, redirect, webhook, dan redaction log tetap aman tanpa kebocoran rahasia?",
+      "measurable": true,
+      "signal": "redaction_failure"
+    },
+    {
+      "question_id": "q_privacy",
+      "area": "privacy",
+      "step": "118.19",
+      "question": "Apakah consent, destination, retention, deletion, disconnect, dan telemetry control tidak melewatkan data pengguna?",
+      "measurable": true,
+      "signal": "destination_issue"
+    },
+    {
+      "question_id": "q_novel_character_boundary",
+      "area": "novel_character_boundary",
+      "step": "118.20",
+      "question": "Apakah connector global tidak pernah mendapat akses otomatis ke data Novel atau Character dan transfer selalu eksplisit?",
+      "measurable": true,
+      "signal": "transfer_consent"
+    },
+    {
+      "question_id": "q_accessibility",
+      "area": "accessibility",
+      "step": "118.15",
+      "question": "Apakah seluruh alur dapat diselesaikan dengan keyboard dan reader layar pada kontras yang memenuhi ambang?",
+      "measurable": true,
+      "signal": "keyboard_blocker"
+    },
+    {
+      "question_id": "q_performance",
+      "area": "performance",
+      "step": "118.16",
+      "question": "Apakah render, refresh, scan lokal, chart, memori, dan cache tetap dalam anggaran resource?",
+      "measurable": true,
+      "signal": "memory"
+    },
+    {
+      "question_id": "q_provider_outage_recovery",
+      "area": "provider_outage_recovery",
+      "step": "118.17",
+      "question": "Apakah timeout, circuit breaker, retry-after, queue recovery, dan kill switch memulihkan layanan tanpa kehilangan data?",
+      "measurable": true,
+      "signal": "provider_recovery"
+    }
+  ],
+  "expansion_budget": {
+    "max_new_certified_connectors": 0,
+    "requires_certification": true,
+    "currently_certified": 0,
+    "currently_limited": 0,
+    "registered_providers": 32,
+    "blocked_reason": "no_certified_connector:0_of_32; expansion requires versioned certification evidence (118.39/118.42) before any connector may be added"
+  },
+  "owners": [
+    {
+      "owner_id": "stability-owner",
+      "role": "stability_owner",
+      "scopes": [
+        "stability_question",
+        "stop_condition",
+        "exit_criterion"
+      ]
+    },
+    {
+      "owner_id": "expansion-owner",
+      "role": "expansion_owner",
+      "scopes": [
+        "expansion_budget"
+      ]
+    },
+    {
+      "owner_id": "release-owner",
+      "role": "release_owner",
+      "scopes": [
+        "charter",
+        "exit_criterion"
+      ]
+    }
+  ],
+  "stop_conditions": [
+    {
+      "stop_id": "stability_stop_crash",
+      "metric_id": "crash_rate",
+      "operator": "gt",
+      "threshold": 0.01,
+      "window_minutes": 1440,
+      "action": "disable_connector"
+    },
+    {
+      "stop_id": "stability_stop_auth",
+      "metric_id": "auth_success",
+      "operator": "lt",
+      "threshold": 0.95,
+      "window_minutes": 60,
+      "action": "halt_rollout"
+    },
+    {
+      "stop_id": "stability_stop_sync_integrity",
+      "metric_id": "sync_integrity_issue",
+      "operator": "gt",
+      "threshold": 0.0,
+      "window_minutes": 60,
+      "action": "rollback_stage"
+    },
+    {
+      "stop_id": "stability_stop_privacy",
+      "metric_id": "privacy_leak",
+      "operator": "gt",
+      "threshold": 0.0,
+      "window_minutes": 60,
+      "action": "quarantine_connector"
+    },
+    {
+      "stop_id": "stability_stop_error_rate",
+      "metric_id": "error_rate",
+      "operator": "gt",
+      "threshold": 0.02,
+      "window_minutes": 60,
+      "action": "halt_rollout"
+    }
+  ],
+  "exit_criteria": [
+    {
+      "criterion_id": "exit_release_state",
+      "gate": "release_state_confirmed",
+      "description": "Release state is re-confirmed from the committed 117/118 evidence and never inferred from a local test.",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_questions",
+      "gate": "stability_questions_answered",
+      "description": "Every declared stability question has a recorded answer or an explicit DEFERRED-EXTERNAL with evidence.",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_expansion_budget",
+      "gate": "expansion_budget_respected",
+      "description": "No connector was certified or exposed beyond the recorded expansion budget.",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_incidents",
+      "gate": "incidents_resolved_or_contained",
+      "description": "Every critical incident is resolved or its connector is disabled with a recorded recovery path.",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_maintenance",
+      "gate": "maintenance_decision_recorded",
+      "description": "The maintenance release decision (BUILD_1_3_1 / NO_PATCH) is recorded with artifact, upgrade, and rollback evidence.",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_regression",
+      "gate": "regression_evidence_present",
+      "description": "The maintenance regression matrix ran green over the critical Account Center workflows.",
+      "requires_evidence": true
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.1 evidence. A pass means the charter is complete and internally consistent; it does not observe anything, certify any connector, or activate any release.",
+    "The charter is written against the delayed release state (GA_DELAYED) with the approved corrective scope, so the observation window is declared and not executed and the expansion budget is zero new certified connectors out of 32 registered and 0 certified.",
+    "The gate reads the committed 118.1 entry gate and corrective scope approval directly; an unreadable witness or an unapproved corrective scope keeps the charter blocked rather than assumed.",
+    "Stability questions, stop conditions, and exit criteria are contracts to be executed by later steps (118.3 onward); no live telemetry, connector certification, provider exposure, or publication is performed or authorized here."
+  ],
+  "external_gates": [
+    "live observation execution",
+    "connector certification evidence",
+    "provider exposure authorization",
+    "external telemetry",
+    "public release publication"
+  ]
+}

@@ -31,9 +31,9 @@
   "last_verified_step": "118.2",
   "next_step": "118.3",
   "stability_gate": {
-    "status": "RECHECK_REQUIRED",
+    "status": "PASS",
     "resume_step": "118.3",
-    "previous_result": "Core/OAuth corrective gate rerun PASS; full suite remains a separate gate and is not claimed here.",
+    "previous_result": "Core/OAuth corrective gate rerun PASS; full suite was the only outstanding recheck item.",
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
       "flutter analyze",
@@ -41,13 +41,19 @@
       "full flutter test",
       "Windows debug build"
     ],
-    "analyzer": "PASS 2026-10-07: flutter analyze --no-pub -> No issues found! exit 0 on the canonical worktree.",
-    "recheck_findings": "Architecture blocker fixed in commit 1eaa6df: HttpOAuthTokenBroker moved from core/network into features/account/application, core dependency direction now passes. Focused gate rerun: test/core + account OAuth/wiring = 725 PASS / 0 FAIL, analyzer PASS, Windows debug build PASS, roadmap guard PASS. Full flutter test was intentionally stopped after 3,630 tests with one previously observed baseline failure; it is not claimed as PASS and remains the only stability-gate recheck item.",
-    "blockers": [
-      "full_flutter_test: global suite was stopped after 3,630 tests with one baseline failure already present before the corrective slice; split deterministic gates are green, but policy still requires a separately recorded full-suite result before changing stability_gate to PASS."
-    ],
+    "analyzer": "PASS exit 0, No issues found! (flutter analyze --no-pub) on the canonical worktree.",
+    "recheck_findings": "Architecture blocker fixed in commit 1eaa6df: HttpOAuthTokenBroker moved from core/network into features/account/application, core dependency direction now passes. Focused gate rerun: test/core + account OAuth/wiring = 725 PASS / 0 FAIL, analyzer PASS, Windows debug build PASS, roadmap guard PASS. Full flutter test was intentionally stopped after 3,630 tests with one previously observed baseline failure; it is not claimed as PASS and remains the only stability-gate recheck item. RESOLVED 2026-10-08: the full suite was re-run as a deterministic 6-shard split on this tree -> +9987 ~1 -0, every shard exit 0; the blocker is cleared and stability_gate is now PASS.",
+    "blockers": [],
     "windows_debug_build": "PASS exit 0",
-    "roadmap_guard": "PASS"
+    "roadmap_guard": "PASS exit 0 (recommended_step 118.3, last_resolved_step 118.2, canonical_sha256 8053d2a3)",
+    "evaluated_on": "2026-10-08",
+    "focused_tests": "712/712 PASS exit 0 (flutter test test/core).",
+    "full_test_result": "+9987 ~1 -0 across 6 deterministic shards, every shard exit 0, 0 [E], 1554/1554 test files covered (0 uncovered, 0 double).",
+    "full_test_evidence": "cache/_full_suite_shards_20261008b.log / .results / _shard_full_suite_20261008b.sh",
+    "flaky_retest": "session_lock_release_race_test.dart PASSED in S2_featA.",
+    "release_checksum_family": "sprint_113 packaging/provenance/update-channel + sprint_117 reproducibility PASSED in S5_release after release-tree restore (exe sha256 3b8b68a3).",
+    "precedent": "2a24f7d (Core Worker cron flipped stability_gate to PASS after repairing the only failing required gate).",
+    "note": "All five required checks green on HEAD 67397b3; the gate's own blocker (a separately recorded full-suite result) is now satisfied. Feature step 118.3 is deferred to the next run, as in 2a24f7d."
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -56,8 +62,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-08T00:53:51.0000000+07:00",
-  "updated_by": "cron b0c2c7d744d9 quality-gate repair 117.12",
+  "updated_at": "2026-10-08T04:29:22.0000000+07:00",
+  "updated_by": "core-worker-cron-stability-gate",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

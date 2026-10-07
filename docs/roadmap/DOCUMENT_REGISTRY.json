@@ -32,7 +32,7 @@
    "authority": "BINDING",
    "status": "ACTIVE",
    "integrity": "IMMUTABLE",
-   "sha256": "3e16a3342fd9d5ab0ea50e3159cf607e2e1881e4dde52de79b8cbfd036a628cd",
+   "sha256": "e3923acb1aa4f3e2b39250e3afe60faee49ddf740753bf070b8fec28bca1d02a",
    "owner": "product-governance",
    "effective_date": "2026-09-01",
    "linked_sprints": [
@@ -43,14 +43,15 @@
     115,
     116,
     117,
+    118,
     145
    ],
    "may_create_scope": false,
    "may_mark_implementation_complete": false,
    "may_change_runtime_pointer": true,
-   "re_pinned_on": "2026-09-29",
-   "re_pin_reason": "Sprint 116 CLOSED-LOCAL 52/52 VERIFIED-LOCAL; operator instruction to advance to Sprint 117",
-   "previous_pin_sha256": "519ba3fac0771144ffe40facff4f4a4fa37ebcce609953c4b543fed9b63b872c"
+   "re_pinned_on": "2026-10-07",
+   "re_pin_reason": "Sprint 117 CLOSED-LOCAL_DEFERRED_EXTERNAL on GA_DELAYED; operator approved Sprint 118 corrective scope",
+   "previous_pin_sha256": "3e16a3342fd9d5ab0ea50e3159cf607e2e1881e4dde52de79b8cbfd036a628cd"
   },
   {
    "path": "docs/roadmap/README.md",
@@ -75,7 +76,7 @@
    "authority": "BINDING",
    "status": "ACTIVE",
    "integrity": "IMMUTABLE",
-   "sha256": "da213a9b947ed9940dc0273564e603f04d16d810caf76f387e00b0ed574da208",
+   "sha256": "555be2b054bbba9d8d73df742f1ff1ac2697fd9bcdd4563e00932aec430854c7",
    "owner": "automation-governance",
    "effective_date": "2026-09-01",
    "linked_sprints": [

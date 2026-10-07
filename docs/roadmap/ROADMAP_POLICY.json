@@ -23,24 +23,34 @@
     "remaining": "acceptance hardware-bound; JANGAN fabrikasi slice"
    }
   },
-  "sequential_expansion": {
-   "status": "ACTIVE",
-   "priority": 2,
-   "sprint": 117,
-   "resume_step": "117.1",
-   "contract": "sprint_117.json",
-   "ledger": "docs/sprints/sprint-117-beta-validation.md",
-   "resume_condition": "Sprint 116 CLOSED-LOCAL 52/52 VERIFIED-LOCAL and operator instruction to advance to Sprint 117.",
-   "resumed_on": "2026-09-29",
-   "resume_authority": "OPERATOR INSTRUCTION 29 Sep: lanjutkan ke sprint berikutnya.",
-   "previous_sprint": {
-    "sprint": 116,
-    "final_step": "116.52",
-    "status": "CLOSED-LOCAL_VERIFIED_52_OF_52",
-    "commit": "b7bd0d1"
-   },
-   "exit_gate": "All 117.1-117.48 steps resolved or explicitly blocked/deferred with evidence; beta validation charter, consent, rollback drill and GA decision recorded."
-  }
+    "sequential_expansion": {
+      "status": "ACTIVE",
+      "priority": 2,
+      "sprint": 118,
+      "resume_step": "118.1",
+      "contract": "sprint_118.json",
+      "ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
+      "resume_condition": "Sprint 117 CLOSED-LOCAL on GA_DELAYED and operator-approved corrective scope for Sprint 118.",
+      "resumed_on": "2026-10-07",
+      "resume_authority": "OPERATOR APPROVAL 7 Oct: GA_DELAYED and Sprint 118 corrective scope approved.",
+      "continuity_until_sprint": 151,
+      "continuity_rule": {
+        "release_state_default": "GA_DELAYED",
+        "scope": "corrective_local_only",
+        "requires_canonical_contract": true,
+        "external_release_requires_separate_evidence": true,
+        "deduplicate_historical_evidence": true
+      },
+      "previous_sprint": {
+        "sprint": 117,
+        "final_step": "117.48",
+        "status": "CLOSED-LOCAL_DEFERRED_EXTERNAL",
+        "release_state": "GA_DELAYED",
+        "corrective_scope": "APPROVED",
+        "entry_gate": "docs/planning/v1.3/sprint_118_entry_gate.json"
+      },
+      "exit_gate": "All 118.1-118.46 steps resolved or explicitly blocked/deferred with evidence; delayed corrective scope remains local-only and provider expansion stays certification-gated."
+    }
  },
  "precedence": [
   "A corrective sprint overrides feature expansion until its exit gate passes.",

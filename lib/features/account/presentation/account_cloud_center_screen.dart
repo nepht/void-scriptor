@@ -2563,6 +2563,7 @@ class _OverviewCapabilityCard extends StatelessWidget {
     required this.subtitle,
     required this.icon,
     required this.message,
+    this.onPressed,
     this.fillHeight = false,
   });
 
@@ -2570,6 +2571,7 @@ class _OverviewCapabilityCard extends StatelessWidget {
   final String subtitle;
   final IconData icon;
   final String message;
+  final VoidCallback? onPressed;
 
   /// 115.36: kartu capability hidup di dalam baris mockup yang tingginya
   /// terkunci. Tanpa flag ini kartu shrink-wrap di dalam `Row` ber-`stretch`
@@ -2581,6 +2583,7 @@ class _OverviewCapabilityCard extends StatelessWidget {
     title: title,
     subtitle: subtitle,
     fillHeight: fillHeight,
+    onPressed: onPressed,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2702,12 +2705,14 @@ class _FocusedAccountArea extends StatelessWidget {
             icon: Icons.hub_outlined,
             child: _ServiceSummaryList(services: snapshot.services),
           ),
-          const _AccountSectionCard.capability(
+          _AccountSectionCard.capability(
             key: ValueKey('account-overview-card-api-providers'),
             title: 'API PROVIDERS',
             subtitle: 'AI model gateways',
             icon: Icons.api_outlined,
             message: 'Configure and test OpenAI or Gemini from AI Providers.',
+            onPressed:
+                onOpenAiProviders ?? () => context.push(AppRoutes.aiProviders),
           ),
           const _AccountSectionCard.capability(
             key: ValueKey('account-overview-card-developer-tools'),
@@ -3118,10 +3123,10 @@ class _AccountSectionCard {
     required this.subtitle,
     required this.icon,
     required this.message,
+    this.onPressed,
     this.key,
   }) : _kind = _AccountSectionCardKind.capability,
-       child = null,
-       onPressed = null;
+       child = null;
 
   /// Key stabil untuk kartu baris pertama mockup; dipakai tes layout untuk
   /// mengukur baris overview, bukan kemunculan pertama sebuah judul.
@@ -3151,6 +3156,7 @@ class _AccountSectionCard {
           subtitle: subtitle,
           icon: icon!,
           message: message!,
+          onPressed: onPressed,
           fillHeight: fillHeight,
         ),
       };
@@ -3321,6 +3327,7 @@ class _DashboardCard extends StatelessWidget {
     required this.subtitle,
     required this.child,
     this.icon,
+    this.onPressed,
     this.fillHeight = false,
   });
 
@@ -3331,6 +3338,7 @@ class _DashboardCard extends StatelessWidget {
   /// Ikon kategori opsional pada baris judul (ikon token scale, bukan ukuran
   /// hardcode). Kartu mockup baris pertama tetap tanpa ikon.
   final IconData? icon;
+  final VoidCallback? onPressed;
 
   /// 115.36: apakah body kartu menyerap tinggi baris mockup.
   ///
@@ -3341,26 +3349,33 @@ class _DashboardCard extends StatelessWidget {
   final bool fillHeight;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
-    decoration: BoxDecoration(
-      color: context.palette.surface,
-      borderRadius: BorderRadius.circular(
-        AccountCenterDesignTokens.radius.card,
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AccountCenterDesignTokens.radius.card);
+    final card = Container(
+      padding: EdgeInsets.all(AccountCenterDesignTokens.card.padding),
+      decoration: BoxDecoration(
+        color: context.palette.surface,
+        borderRadius: radius,
+        border: Border.all(color: context.palette.border),
       ),
-      border: Border.all(color: context.palette.border),
-    ),
-    // 115.36: pada baris mockup body kartu menyerap tinggi sisa baris,
-    // sehingga daftar panjang (metode sign-in) menggulir di dalam kartu —
-    // bukan memanjangkan panel luar.
-    child: _DashboardCardContent(
-      fillHeight: fillHeight,
-      icon: icon,
-      title: title,
-      subtitle: subtitle,
-      child: child,
-    ),
-  );
+      // 115.36: pada baris mockup body kartu menyerap tinggi sisa baris,
+      // sehingga daftar panjang (metode sign-in) menggulir di dalam kartu —
+      // bukan memanjangkan panel luar.
+      child: _DashboardCardContent(
+        fillHeight: fillHeight,
+        icon: icon,
+        title: title,
+        subtitle: subtitle,
+        child: child,
+      ),
+    );
+    if (onPressed == null) return card;
+    return Semantics(
+      button: true,
+      label: title,
+      child: InkWell(onTap: onPressed, borderRadius: radius, child: card),
+    );
+  }
 }
 
 /// Isi [_DashboardCard]: seluruh kartu bergulir, header termasuk.

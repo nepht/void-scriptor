@@ -56,8 +56,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-07T20:04:01.7959192+07:00",
-  "updated_by": "operator-repair-oauth-boundary (scheduler paused)",
+  "updated_at": "2026-10-08T00:53:51.0000000+07:00",
+  "updated_by": "cron b0c2c7d744d9 quality-gate repair 117.12",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3841,7 +3841,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "278362b",
+  "last_slice_commit": "f5594d2",
   "last_verified_on": "2026-10-07",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3958,7 +3958,7 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "07145b9",
-  "ahead": 35,
+  "ahead": 62,
   "defect_117_43_27": {
     "date": "2026-10-04",
     "hunt_ordinal": 22,
@@ -4675,5 +4675,17 @@
     "dirty_preserved": "30 paths (sibling OAuth WIP + operator governance + regenerated 117 evidence) - preserved, none committed",
     "evidence": "~/AppData/Local/hermes/backups/probe_residue_20261007_132453/ (analyze_BEFORE/AFTER, test_after, build_after, REMOVAL_RECORD.json, final_verify.txt) + byte-verified recoverable snapshot",
     "gate_result": "RECHECK_REQUIRED remains: 33 failures; 32 attributable to sibling/environmental/flaky, 1 committed architecture regression (28a7a65)"
+  },
+  "defect_117_12_drill_client_id": {
+    "slice": "117.12",
+    "kind": "reproducible-regression",
+    "family": "consumer contract grew a required field the drill fixture never supplied",
+    "defect": "Operator commit 1eaa6df made OAuthAuthorizationRequest.authorizationUri throw connectorUnavailable when clientId is absent, but the 117.12 drill fixture _fixtureConfiguration() never supplied a clientId, so all 23 cases of test/release/sprint_117_identity_workflow_validation_test.dart that call run() failed with connectorUnavailable at drill line 159. Reproduced deterministically on HEAD 145b5f7 (23 FAIL / exit 1).",
+    "fix": "Added clientId: 'drill-identity-client', to _fixtureConfiguration() in lib/features/world_logic/domain/sprint_117_identity_workflow_drill.dart (+4/-0, insertion-only). Refusal path _configurationFor() throws earlier at isConnectable and was left untouched; committed manifest pins unchanged.",
+    "necessity": "Pre-fix HEAD blob -> 23 FAIL / exit 1 (sha256[:16] 1f7e41e479a108ec); fix -> 37/37 PASS / exit 0.",
+    "verification": "identity suite 37/37 exit 0; regression family 6 files 122 PASS exit 0; broader account+identity 1112 PASS exit 0; format 0 changed; git diff --check rc 0; analyze clean; disk sha256 == committed blob sha256.",
+    "commit": "f5594d2",
+    "remaining_gate": "5 release tests still fail with the documented checksum-drift signature (889b9d2c / 3b8b68a3): sprint_113_ga_artifact_packaging x2, sprint_113_build_reproducibility_provenance x1, sprint_113_update_channel_delivery_validation x1, sprint_117_ga_artifact_reproducibility x1. Pre-existing environmental drift, unrelated to 117.12.",
+    "claim_boundary": "Local evidence only; no release/tag/publication/push; execution_authorized=false; approval_state=PENDING_OPERATOR; stability_gate stays RECHECK_REQUIRED."
   }
 }

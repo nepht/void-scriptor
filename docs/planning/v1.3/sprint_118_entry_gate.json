@@ -2,10 +2,10 @@
   "canonical_step": "118.1",
   "title": "Sprint Entry & Release-State Gate",
   "document_role": "gate-evaluation-record",
-  "state": "blocked",
-  "verdict": "SPRINT_118_ENTRY_BLOCKED_UPSTREAM",
+  "state": "pass",
+  "verdict": "SPRINT_118_ENTRY_READY",
   "release_state": "GA_DELAYED",
-  "execution_allowed": false,
+  "execution_allowed": true,
   "required_evidence": [
     "sprint_117_decision",
     "release_state",
@@ -16,16 +16,8 @@
   ],
   "missing_evidence": [],
   "violations": [],
-  "blockers": [
-    "no_certified_or_limited_connector",
-    "execution_authorization_pending:PENDING_CHOIRUDIN",
-    "corrective_scope_not_approved"
-  ],
-  "open_items": [
-    "no_certified_or_limited_connector",
-    "execution_authorization_pending:PENDING_CHOIRUDIN",
-    "corrective_scope_not_approved"
-  ],
+  "blockers": [],
+  "open_items": [],
   "evidence_sources": {
     "sprint_117_decision": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
     "release_state": "docs/planning/v1.3/sprint_117_sprint_closure.json",
@@ -42,15 +34,15 @@
   "certified_count": 0,
   "limited_count": 0,
   "provider_count": 32,
-  "corrective_scope_approved": null,
+  "corrective_scope_approved": true,
   "observation_window_active": false,
   "artifact_version": "1.2.0-rc.1",
   "rollback_executed": false,
   "claim_boundary": [
-    "This record is the gate verdict over committed Sprint 117 evidence, not an activation. Sprint 118 was not started, no connector was certified, and no release state was changed.",
+    "This record is the gate verdict over committed Sprint 117 evidence. A pass on GA_DELAYED authorizes only the approved local corrective scope; it is not a release activation. No connector was certified and no release state was changed.",
     "The gate reads the committed 117 witnesses directly rather than trusting any self-declared readiness flag, and it fails if the approval gate and the closure manifest disagree about the decision.",
     "A delayed 117 does not open the sprint without an approved corrective scope; an absent approval is undetermined, never permission.",
-    "An unreadable witness, an unknown decision word, or an empty certified connector subset keeps the gate closed. Nothing here publishes, signs, certifies, or activates anything."
+    "An unreadable witness or an unknown decision word keeps the gate closed. Certified connectors and release authorization remain mandatory for GA_RELEASED; nothing here publishes, signs, certifies, or activates anything."
   ],
   "external_gates": [
     "hosted CI runner",

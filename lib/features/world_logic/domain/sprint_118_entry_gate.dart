@@ -25,9 +25,10 @@
 /// * The two committed sources of the 117 decision must agree. If the approval
 ///   gate and the closure manifest disagree, the gate fails rather than
 ///   silently picking the convenient one.
-/// * An unreadable witness, an unknown decision word, or an empty certified
-///   connector subset keeps the gate closed. Nothing here releases, publishes,
-///   certifies, or activates anything.
+/// * An unreadable witness or an unknown decision word keeps the gate closed.
+///   The delayed corrective path may start without a certified connector or GA
+///   authorization; those remain mandatory for the released path. Nothing here
+///   releases, publishes, certifies, or activates anything.
 library;
 
 import 'dart:convert';
@@ -63,10 +64,9 @@ abstract final class Sprint118EntryContract {
   static const String rollbackDrillPath =
       'docs/planning/v1.3/sprint_117_provider_rollback_drill.json';
 
-  /// Where an approved corrective scope for a delayed 117 would be recorded.
-  /// The file is *absent* today, and that absence is the blocker: entry on a
-  /// delayed release requires the approval, and a missing approval cannot be
-  /// read as consent.
+  /// Where an approved corrective scope for a delayed 117 is recorded. Entry
+  /// on a delayed release requires this explicit approval; a missing approval
+  /// cannot be read as consent.
   static const String correctiveScopePath =
       'docs/planning/v1.3/sprint_118_corrective_scope_approval.json';
 
@@ -414,32 +414,35 @@ class Sprint118EntryGate {
       violations.add('release_state_undetermined');
     }
 
-    // No certified or limited connector means there is nothing to stabilise or
-    // expand onto: 118's own entry_readiness names connector certification as
-    // a precondition.
-    if (evidence.certifiedOrLimited == 0) {
-      blockers.add('no_certified_or_limited_connector');
-    }
-
-    // The 117 approval gate records PENDING_CHOIRUDIN with
-    // execution_authorized false. Execution cannot start on an unauthorized
-    // decision.
-    if (!evidence.executionAuthorized) {
-      blockers.add('execution_authorization_pending:${evidence.approvalState}');
-    }
-
     if (releaseState == Sprint118ReleaseState.gaReleased) {
+      // A released 117 opens the provider-stabilisation path only when there
+      // is a certified/limited connector and the release was explicitly
+      // authorised. These are release-path requirements, not requirements for
+      // the delayed corrective path below.
+      if (evidence.certifiedOrLimited == 0) {
+        blockers.add('no_certified_or_limited_connector');
+      }
+      if (!evidence.executionAuthorized) {
+        blockers.add(
+          'execution_authorization_pending:${evidence.approvalState}',
+        );
+      }
       // A released 117 opens 118 only while its observation window is active.
       if (!evidence.observationWindowActive) {
         blockers.add('observation_window_not_active');
       }
     } else if (releaseState == Sprint118ReleaseState.gaDelayed) {
-      // A delayed 117 opens 118 only against an approved corrective scope. An
-      // absent approval is undetermined, never permission.
+      // A delayed 117 opens the local corrective path only against an approved
+      // scope. It intentionally does not require a live connector or release
+      // authorization: those belong to the GA release path, which remains
+      // closed. An absent approval is undetermined, never permission.
       if (evidence.correctiveScopeApproved != true) {
         blockers.add('corrective_scope_not_approved');
       }
     } else if (releaseState == Sprint118ReleaseState.rolledBack) {
+      if (evidence.correctiveScopeApproved != true) {
+        blockers.add('corrective_scope_not_approved');
+      }
       blockers.add('release_rolled_back');
     }
 

@@ -56,10 +56,10 @@ void main() {
     'artifact_version': evidence?.artifactVersion,
     'rollback_executed': evidence?.rollbackExecuted,
     'claim_boundary': <String>[
-      'This record is the gate verdict over committed Sprint 117 evidence, not an activation. Sprint 118 was not started, no connector was certified, and no release state was changed.',
+      'This record is the gate verdict over committed Sprint 117 evidence. A pass on GA_DELAYED authorizes only the approved local corrective scope; it is not a release activation. No connector was certified and no release state was changed.',
       'The gate reads the committed 117 witnesses directly rather than trusting any self-declared readiness flag, and it fails if the approval gate and the closure manifest disagree about the decision.',
       'A delayed 117 does not open the sprint without an approved corrective scope; an absent approval is undetermined, never permission.',
-      'An unreadable witness, an unknown decision word, or an empty certified connector subset keeps the gate closed. Nothing here publishes, signs, certifies, or activates anything.',
+      'An unreadable witness or an unknown decision word keeps the gate closed. Certified connectors and release authorization remain mandatory for GA_RELEASED; nothing here publishes, signs, certifies, or activates anything.',
     ],
     'external_gates': <String>[
       'hosted CI runner',

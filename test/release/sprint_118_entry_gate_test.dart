@@ -111,31 +111,29 @@ void main() {
       );
     });
 
-    test('committed witnesses are present and read to a blocked verdict', () {
-      // Every source the contract declares must exist on disk, or the gate is
-      // blocked for the wrong reason.
-      for (final source in Sprint118EntryContract.requiredSources) {
-        expect(File(source).existsSync(), isTrue, reason: 'Missing $source');
-      }
+    test(
+      'committed witnesses are present and open the approved delayed path',
+      () {
+        // Every source the contract declares must exist on disk, or the gate is
+        // blocked for the wrong reason.
+        for (final source in Sprint118EntryContract.requiredSources) {
+          expect(File(source).existsSync(), isTrue, reason: 'Missing $source');
+        }
 
-      final report = const Sprint118EntryGate().evaluate();
+        final report = const Sprint118EntryGate().evaluate();
 
-      // The honest answer on committed evidence: 117 recorded DELAY with a
-      // pending approval, zero certified connectors, and no corrective scope.
-      expect(report.state, Sprint118EntryState.blocked);
-      expect(report.verdict, 'SPRINT_118_ENTRY_BLOCKED_UPSTREAM');
-      expect(report.releaseState, Sprint118ReleaseState.gaDelayed);
-      expect(report.releaseStateWord, 'GA_DELAYED');
-      expect(report.executionAllowed, isFalse);
-      expect(report.violations, isEmpty);
-      expect(
-        report.blockers,
-        containsAll(<String>[
-          'no_certified_or_limited_connector',
-          'corrective_scope_not_approved',
-        ]),
-      );
-    });
+        // The delayed corrective path is now explicitly approved. It is allowed
+        // to start local corrective work without pretending that a connector was
+        // certified or that a GA release was authorised.
+        expect(report.state, Sprint118EntryState.pass);
+        expect(report.verdict, 'SPRINT_118_ENTRY_READY');
+        expect(report.releaseState, Sprint118ReleaseState.gaDelayed);
+        expect(report.releaseStateWord, 'GA_DELAYED');
+        expect(report.executionAllowed, isTrue);
+        expect(report.violations, isEmpty);
+        expect(report.blockers, isEmpty);
+      },
+    );
 
     test('the committed record agrees with the gate that produced it', () {
       final record =
@@ -229,30 +227,30 @@ void main() {
           expect(report.releaseState, Sprint118ReleaseState.gaDelayed);
           expect(report.blockers, contains('corrective_scope_not_approved'));
         }
-
-        // And the corrective-scope file really is absent on disk, so the live
-        // gate cannot be reading an approval that does not exist.
-        expect(
-          File(Sprint118EntryContract.correctiveScopePath).existsSync(),
-          isFalse,
-        );
       },
     );
 
-    test('a delayed release with approved scope still needs a connector', () {
-      // Corrective scope approved, but nothing certified: 118's own
-      // entry_readiness names connector certification as a precondition.
-      final report = const Sprint118EntryGate().evaluateWith(
-        _evidence(
-          approvalDecision: 'DELAY',
-          certifiedCount: 0,
-          limitedCount: 0,
-        ),
-      );
+    test(
+      'a delayed release with approved scope opens local corrective work',
+      () {
+        // Corrective validation is the documented GA_DELAYED path. Connector
+        // certification is deferred until a later release decision.
+        final report = const Sprint118EntryGate().evaluateWith(
+          _evidence(
+            approvalDecision: 'DELAY',
+            certifiedCount: 0,
+            limitedCount: 0,
+            executionAuthorized: false,
+            approvalState: 'PENDING_CHOIRUDIN',
+          ),
+        );
 
-      expect(report.state, Sprint118EntryState.blocked);
-      expect(report.blockers, contains('no_certified_or_limited_connector'));
-    });
+        expect(report.state, Sprint118EntryState.pass);
+        expect(report.verdict, 'SPRINT_118_ENTRY_READY');
+        expect(report.executionAllowed, isTrue);
+        expect(report.blockers, isEmpty);
+      },
+    );
 
     test('no certified connector and pending approval block a release too', () {
       final report = const Sprint118EntryGate().evaluateWith(

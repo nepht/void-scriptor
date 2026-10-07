@@ -1,0 +1,28 @@
+{
+  "canonical_step": "118.1",
+  "document_role": "corrective-scope-approval",
+  "status": "CORRECTIVE_SCOPE_APPROVED",
+  "corrective_scope_approved": true,
+  "release_state": "GA_DELAYED",
+  "approved_by": "Choirudin",
+  "approved_at": "2026-10-07T00:00:00Z",
+  "scope": "Sprint 118 local stability and corrective validation only.",
+  "allowed_work": [
+    "stability and regression validation",
+    "privacy-safe local observation contracts",
+    "failure-state, recovery, rollback, and integrity validation",
+    "provider certification preparation without certifying or exposing providers"
+  ],
+  "not_authorized": [
+    "public release or publication",
+    "connector certification or provider exposure",
+    "live production telemetry or raw creative-content collection",
+    "billing activation, signing, push, or hosted CI release execution"
+  ],
+  "evidence": [
+    "docs/planning/v1.3/sprint_117_sprint_closure.json",
+    "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "docs/planning/v1.3/sprint_118.json"
+  ],
+  "claim_boundary": "This approval opens only the delayed local corrective scope. It does not authorize GA release, connector certification, provider exposure, publication, or external observation."
+}

@@ -38,3 +38,11 @@ Semua eksekutor (cron v4, sesi interaktif, worker kanban) patuh ini; detail prot
 3. Worker kanban: hanya worktree temp sendiri (pub get wajib), DILARANG commit/push/menyentuh worktree utama; artefak = `git diff > patch` non-empty + handoff (status, tests_run per tahap, file, mekanisme). Klaim worker bukan fakta sampai integrator memverifikasi independen (apply di worktree integrasi, gate fokus, full-suite sekali, standalone untuk fail loader/flaky).
 4. Blocked-jujur (pelaku di luar scope kartu) = hasil baik; integrator ambil alih slice-nya. Kartu selesai atau blocked-alias-selesai WAJIB ditutup (`kanban_complete`) — kartu menggantung = radar antrean palsu.
 5. Push hasil patch worker hanya dengan izin eksplisit pengguna; tanpa itu commit lokal scoped + ledger, tunggu integrator.
+
+## Protected Account & Cloud Center visual baseline
+
+Read `.hermes/ACCOUNT_CLOUD_CENTER_VISUAL_LOCK.md` before touching the account
+center frame, route wiring, or reference visual test. The 1536x1024 composition
+is operator-approved and protected; agents and cron workers must stop with
+`BLOCKED` unless the user explicitly authorizes a visual change. Never update
+the baseline test merely to accommodate an unapproved layout change.

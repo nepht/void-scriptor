@@ -70,6 +70,8 @@ final class AccountCenterFrameLayout {
     required this.pagePaddingVertical,
     required this.gridHeight,
     required this.rowHeights,
+    this.columnGap = 0,
+    this.referenceVisual = false,
   });
 
   final double viewportWidth;
@@ -100,6 +102,16 @@ final class AccountCenterFrameLayout {
 
   /// Tinggi tiap baris grid mockup; jumlahnya persis [gridHeight].
   final List<double> rowHeights;
+
+  /// Gap between the main grid and the summary rail. The original contract
+  /// has no gap because its bands are contiguous; the locked reference visual
+  /// uses a deliberate seam so the rail reads as a separate surface.
+  final double columnGap;
+
+  /// True for the user-approved Account & Cloud Center visual baseline. This
+  /// keeps the legacy frame contract available to existing tests and routes
+  /// while making the new reference composition explicit.
+  final bool referenceVisual;
 
   /// Jumlah kolom per baris pada frame ini.
   ///
@@ -166,7 +178,7 @@ final class AccountCenterFrameLayout {
   /// melaporkan geometries yang muncul, bukan hanya exception.
   bool bandsAreDisjoint() {
     final horizontalFits =
-        leftNavigationWidth + rightRailWidth + mainWidth <=
+        leftNavigationWidth + rightRailWidth + mainWidth + columnGap <=
         viewportWidth - 2 * pagePaddingHorizontal + 0.0001;
     final railIsRightAligned = rightRailWidth > 0;
     // Band main + celah + status bar + padding TEPAT memuat viewport; tidak
@@ -403,6 +415,50 @@ abstract final class AccountCenterWideDesktopFrame {
       pagePaddingVertical: paddingV,
       gridHeight: gridHeight,
       rowHeights: rowHeights,
+    );
+  }
+
+  /// Geometry for the user-approved 1536x1024 Account Center reference.
+  ///
+  /// Unlike the legacy product-spec frame, this composition is a full-width
+  /// account surface: the global app shell already owns navigation, so the
+  /// Account Center does not render a second left rail. The summary rail is
+  /// pinned on the right and the main grid keeps the 3/5/5 card rhythm from
+  /// the supplied visual reference.
+  static AccountCenterFrameLayout? resolveReferenceVisual({
+    required double width,
+    required double height,
+  }) {
+    if (!width.isFinite || !height.isFinite || width < 0 || height < 0) {
+      throw ArgumentError(
+        'viewport must be finite and non-negative (got $width x $height)',
+      );
+    }
+    if (width < wideDesktopMinWidth) {
+      return null;
+    }
+    const pagePadding = 17.0;
+    const rail = 342.0;
+    const columnGap = 19.0;
+    const statusBar = 40.0;
+    const paddingV = 12.0;
+    final inner = width - 2 * pagePadding;
+    final main = (inner - rail - columnGap).clamp(0.0, inner);
+    final contentHeight = (height - statusBar - rowGap).clamp(0.0, height);
+    final gridHeight = (contentHeight - 2 * paddingV).clamp(0.0, contentHeight);
+    return AccountCenterFrameLayout(
+      viewportWidth: width,
+      viewportHeight: height,
+      leftNavigationWidth: 0,
+      mainWidth: main,
+      rightRailWidth: rail,
+      statusBarHeight: statusBar,
+      pagePaddingHorizontal: pagePadding,
+      pagePaddingVertical: paddingV,
+      gridHeight: gridHeight,
+      rowHeights: rowHeightsFor(gridHeight),
+      columnGap: columnGap,
+      referenceVisual: true,
     );
   }
 

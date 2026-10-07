@@ -96,7 +96,9 @@ GoRouter createAppRouter({
               const CollaborationCommentsScreen(),
             AppRoutes.accountCloud => ProviderScope(
               child: VoidDesktopShell(
+                topBarHeight: 52,
                 content: AccountCloudCenterScreen(
+                  referenceVisual: true,
                   initialTab:
                       state
                           .uri
@@ -494,7 +496,9 @@ List<RouteBase> _routes({
       path: AppRoutes.accountCloud,
       builder: (context, state) => ProviderScope(
         child: VoidDesktopShell(
+          topBarHeight: 52,
           content: AccountCloudCenterScreen(
+            referenceVisual: true,
             initialTab:
                 state.uri.queryParameters[AccountCenterInformationArchitecture
                     .tabQueryParameter],

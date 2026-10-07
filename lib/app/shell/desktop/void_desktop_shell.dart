@@ -39,11 +39,16 @@ class VoidDesktopShell extends ConsumerWidget {
     this.content,
     this.onLogout,
     this.projectId,
+    this.topBarHeight = 32,
   });
 
   final Widget? content;
   final VoidCallback? onLogout;
   final String? projectId;
+
+  /// Route-level chrome override. The account reference visual uses 52px;
+  /// all other desktop routes retain the compact 32px default.
+  final double topBarHeight;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -117,6 +122,7 @@ class VoidDesktopShell extends ConsumerWidget {
       body: Column(
         children: [
           VoidTopBar(
+            height: topBarHeight,
             saveState: state,
             projectContext: session == null
                 ? null

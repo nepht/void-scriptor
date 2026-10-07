@@ -59,6 +59,7 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
     this.providerManifest,
     this.onConnectProvider,
     this.onConfigureProvider,
+    this.referenceVisual = false,
   });
 
   final AccountCloudSnapshot? snapshot;
@@ -75,6 +76,11 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
   final ProviderConnectorManifest? providerManifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
   final ValueChanged<ProviderConnectorEntry>? onConfigureProvider;
+
+  /// Uses the user-approved full-width Account & Cloud Center composition.
+  /// The default remains the legacy contract so embedded/test callers do not
+  /// silently change layout; the production account route opts in explicitly.
+  final bool referenceVisual;
 
   /// Dipanggil saat tab berubah; router memakainya untuk mencatat history entry.
   final ValueChanged<String>? onTabChanged;
@@ -225,9 +231,17 @@ class _AccountCloudCenterScreenState
                   : MediaQuery.sizeOf(context).height,
             );
             if (frame != null) {
+              final visualFrame = widget.referenceVisual
+                  ? AccountCenterWideDesktopFrame.resolveReferenceVisual(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight.isFinite
+                          ? constraints.maxHeight
+                          : MediaQuery.sizeOf(context).height,
+                    )
+                  : frame;
               return _buildWideDesktopFrame(
                 context: context,
-                frame: frame,
+                frame: visualFrame!,
                 data: data,
                 operationalMetrics: operationalMetrics,
               );
@@ -710,11 +724,12 @@ class _AccountCloudCenterScreenState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _AccountLeftNavigation(
-                    key: const ValueKey('account-center-left-navigation'),
-                    width: frame.leftNavigationWidth,
-                    activeSection: _activeOverviewSection(),
-                  ),
+                  if (frame.leftNavigationWidth > 0)
+                    _AccountLeftNavigation(
+                      key: const ValueKey('account-center-left-navigation'),
+                      width: frame.leftNavigationWidth,
+                      activeSection: _activeOverviewSection(),
+                    ),
                   SizedBox(
                     key: const ValueKey('account-center-main-grid'),
                     width: frame.mainWidth,
@@ -726,8 +741,10 @@ class _AccountCloudCenterScreenState
                       ),
                       scrollable: false,
                       frame: frame,
+                      referenceVisual: frame.referenceVisual,
                     ),
                   ),
+                  SizedBox(width: frame.columnGap),
                   _AccountSummaryRailFrame(
                     key: const ValueKey('account-center-right-rail'),
                     width: frame.rightRailWidth,
@@ -781,6 +798,7 @@ class _AccountCloudCenterScreenState
     required AccountCenterGridPlan gridPlan,
     required bool scrollable,
     AccountCenterFrameLayout? frame,
+    bool referenceVisual = false,
 
     /// 115.47: hanya diisi dari jalur tier mobile; tile provider membuka
     /// sheet layar penuh. Tier lain membiarkan null.
@@ -882,14 +900,16 @@ class _AccountCloudCenterScreenState
             ],
           ),
           SizedBox(height: AccountCenterDesignTokens.spacing.sm),
-          Text(
-            AccountCenterInformationArchitecture.breadcrumbsFor(
-              _tab,
-            ).join(' / '),
-            key: const ValueKey('account-center-breadcrumb'),
-            style: _caption.copyWith(color: context.palette.textSecondary),
-          ),
-          SizedBox(height: AccountCenterDesignTokens.spacing.md),
+          if (!referenceVisual) ...[
+            Text(
+              AccountCenterInformationArchitecture.breadcrumbsFor(
+                _tab,
+              ).join(' / '),
+              key: const ValueKey('account-center-breadcrumb'),
+              style: _caption.copyWith(color: context.palette.textSecondary),
+            ),
+            SizedBox(height: AccountCenterDesignTokens.spacing.md),
+          ],
           // 115.46: `scrollable_tabs` — strip digulir mendatar pada semua
           // tier; key stabil dipakai test adaptif untuk membuktikan tab aktif
           // bertahan saat viewport berpindah tier.
@@ -907,7 +927,11 @@ class _AccountCloudCenterScreenState
               ],
             ),
           ),
-          SizedBox(height: AccountCenterDesignTokens.spacing.xl),
+          SizedBox(
+            height: referenceVisual
+                ? AccountCenterDesignTokens.spacing.md
+                : AccountCenterDesignTokens.spacing.xl,
+          ),
           // 115.36: grid mengisi sisa tinggi viewport sehingga seluruh panel
           // muat tanpa scroll luar di tier `wide_desktop` — `Expanded` memberi
           // batas keras dan kartu di dalamnya yang menyusut atau menggulir.

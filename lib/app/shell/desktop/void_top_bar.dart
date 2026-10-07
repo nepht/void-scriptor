@@ -20,6 +20,7 @@ class VoidTopBar extends StatelessWidget {
     this.saveState,
     this.onOpenSearch,
     this.projectContext,
+    this.height = 32,
   });
 
   final ValueChanged<String> onMenuSelected;
@@ -37,16 +38,20 @@ class VoidTopBar extends StatelessWidget {
 
   /// Null when no project session is open (no project-context button).
   final ProjectContextSummary? projectContext;
+
+  /// Global default stays compact; Account & Cloud Center opts into the
+  /// taller reference chrome at its route boundary.
+  final double height;
   @override
   Widget build(BuildContext context) {
     final saveState = this.saveState;
     final projectContext = this.projectContext;
     return Container(
-      // 115.38 (Choi, 2026-09-27): top bar 39px -> 32px. Isi di dalamnya ikut
+      // 115.38 (Choi, 2026-09-27): default top bar 39px -> 32px. Isi di dalamnya ikut
       // dikecilkan supaya muat: avatar 32px, _TopMenuButton 30px
       // (padding 6 + ikon 16 + teks 12 + padding 6), dan project-context
       // button 28px. Border bawah 1px brings the total to 32.
-      height: 32,
+      height: height,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: context.palette.panel,

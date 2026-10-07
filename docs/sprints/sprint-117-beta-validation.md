@@ -3674,3 +3674,64 @@ Slice ini menemukan defect keluarga "dua pembaca satu pertanyaan, hanya satu yan
 **GATE.** Roadmap guard PASS sebelum dan sesudah commit, canonical `b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`. Commit slice `bba9fb2` (2 path eksplisit). Tidak ada push pada run ini.
 
 **BATAS KLAIM.** 117.46 TETAP `PARTIAL-LOCAL-EXTERNAL-BLOCKED`: `execution_authorized` tetap `false`, `approval_state` tetap `PENDING_CHOIRUDIN`, `decision` tetap `BLOCKED_EXTERNAL_GATES`. Slice ini HANYA memperketat gerbang lokal; tidak ada release, tag, publikasi, atau otorisasi eksekusi.
+
+### 117.46 -- saksi approval-source dibaca dengan grammar owner gate yang LEBIH LONGGAR (commit 278362b)
+
+Slice ini menutup **defect keluarga ke-51**: bukan lagi "saksi mana yang dibaca"
+atau "dari lokasi mana", tapi **dengan tata bahasa apa** saksi itu dibaca. Setelah
+keluarga "saksi dari satu sumber tidak dikonsultasi" CLOSED dan vocabulary
+konsumen diturunkan dari enum pemilik, lapisan berikutnya: gerbang konsumen 117.46
+membaca kata keputusan `approval.decision` dan state `approval.approval_state`
+sumber 117.45 dengan **trim + case-fold** (`decision.trim().toUpperCase()`),
+sementara **pemilik 117.45** mencocokkan nama wire secara **literal** (`switch`
+pada `release`/`delay`/`subset_reduction`/`rollback`; `as String?` tanpa trim).
+Akibatnya **fail-open dua arah**: kata yang HANYA berbeda huruf besar/kecil atau
+spasi sekitar — `Release`, `RELEASE`, ` release`, `release `, `approved`,
+`Approved`, ` APPROVED`, `APPROVED ` — **GAGAL** di gerbang pemilik 117.45 tapi
+**LOLOS** di konsumen 117.46 sebagai `GA_RELEASE_EXECUTION_VERIFIED`.
+
+**PROBE dulu (data, bukan tebakan).** Tabel owner-vs-consumer untuk 9 kata
+keputusan dan 6 kata state membuktikan divergensi: `Release`/`RELEASE` →
+owner=fail, consumer=pass; ` approved`/`APPROVED ` → owner=fail, consumer=pass.
+Loader juga mencuci kata (`_text` = trim) sebelum gerbang melihatnya, jadi
+` release` di file menjadi `release` di gerbang.
+
+**RED.** Test `117.46-GATE-AUTH-GRAMMAR` +0 -1 exit 1 (`Expected fail / Actual
+pass` = perilaku, bukan compile error), digerakkan lewat DUA jalur: `evaluateWith`
+(in-memory) dan `loadFrom` (file nyata), dengan kontrol `release`/`APPROVED`
+tetap pass supaya aturan bukan always-fail.
+
+**FIX (minimal).** (1) `approvalDecisionVocabulary` diturunkan dari enum pemilik
+sebagai **nama wire mentah** (`decision.wireName`), bukan `.toUpperCase()`.
+(2) `blockingApprovalDecisions` memakai kata pemilik persis: `'delay'`,
+`'rollback'` (bukan `'DELAY'`/`'ROLLBACK'`). (3) Perbandingan keputusan dan state
+di gerbang memakai **exact grammar**: tanpa trim/case-fold. (4) Loader
+`_approvalDecision`/`_approvalState` mengembalikan kata **mentah** (`as String`),
+bukan lewat `_text` yang men-trim. Pin test `117.46-GATE-AUTH-VOCAB` ikut
+diperbarui ke turunan nama wire mentah.
+
+**NECESSITY.** Mengembalikan HANYA perbandingan keputusan ke grammar longgar
+(vocabulary exact tetap) → `--plain-name` exit 1; restore → 22/22; sha disk ==
+snapshot fix `756477f8`.
+
+**VERIFIKASI.** RED +0 -1 exit 1 → GREEN **22/22** slice; regresi keluarga GA
+(117.46+117.45+117.44 rollout+113.43+113.44) **60/60** exit 0; `dart analyze`
+`No issues found!`; format 1 changed lalu 0 changed (idempoten); `git diff
+--check` rc 0; numstat lib 31/17, test 169/2 (2 '-' = pin VOCAB lama, disengaja).
+**Emitter byte-identical `43e3f156`** — manifest eksekusi ter-commit mencatat
+`execution_authorized=false`, jadi jalur otorisasi tak dievaluasi; dua sisi
+(disk == `git show`) sama.
+
+**SHA ter-commit (dari `git show 278362b:<path>`, bukan working tree):** lib
+`756477f806cf7951096eb091a827e9317a28ba76cf50cb50887195abf6c4c091`, test
+`4a0115b15aec0be6b354e7e447da55bbbff052035793e5e5ee883b0f10a00b3c`, evaluation
+`43e3f156ef14f1fb6afd7fe2a80d88563777d2a3905eae2d752b4e87435c0ff2`.
+
+**GATE.** Roadmap guard PASS sebelum dan sesudah commit, canonical
+`b7ef2d350916951c52c5b444a01c51d4d1fd254e2569399b4b8b1f21820894d6`. Commit slice
+`278362b` (2 path eksplisit). Tidak ada push pada run ini.
+
+**BATAS KLAIM.** 117.46 TETAP `PARTIAL-LOCAL-EXTERNAL-BLOCKED`:
+`execution_authorized` tetap `false`, `approval_state` tetap `PENDING_CHOIRUDIN`,
+`decision` tetap `BLOCKED_EXTERNAL_GATES`. Slice ini HANYA memperketat gerbang
+lokal; tidak ada release, tag, publikasi, atau otorisasi eksekusi.

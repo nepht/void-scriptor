@@ -58,6 +58,7 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
     this.onTabChanged,
     this.providerManifest,
     this.onConnectProvider,
+    this.onConfigureProvider,
   });
 
   final AccountCloudSnapshot? snapshot;
@@ -73,6 +74,7 @@ class AccountCloudCenterScreen extends ConsumerStatefulWidget {
   final VoidCallback? onOpenAiProviders;
   final ProviderConnectorManifest? providerManifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+  final ValueChanged<ProviderConnectorEntry>? onConfigureProvider;
 
   /// Dipanggil saat tab berubah; router memakainya untuk mencatat history entry.
   final ValueChanged<String>? onTabChanged;
@@ -793,6 +795,7 @@ class _AccountCloudCenterScreenState
       providerManifest:
           widget.providerManifest ?? ProviderConnectorManifest.standard,
       onConnectProvider: widget.onConnectProvider,
+      onConfigureProvider: widget.onConfigureProvider,
       onSyncNow: widget.onSyncNow,
       onSignIn:
           // 115.52: `connectionStateOf` menggantikan `service(...)`: snapshot
@@ -2611,6 +2614,7 @@ class _FocusedAccountArea extends StatelessWidget {
     required this.gridPlan,
     required this.providerManifest,
     required this.onConnectProvider,
+    this.onConfigureProvider,
     required this.onSyncNow,
     this.onOpenProviderDetails,
     this.frame,
@@ -2631,6 +2635,7 @@ class _FocusedAccountArea extends StatelessWidget {
 
   final ProviderConnectorManifest providerManifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+  final ValueChanged<ProviderConnectorEntry>? onConfigureProvider;
 
   /// 115.47: tier mobile membuka detail provider sebagai sheet layar penuh.
   /// Null pada tier lain sehingga tile tidak punya gesture mati di sana.
@@ -2681,6 +2686,7 @@ class _FocusedAccountArea extends StatelessWidget {
             child: _QuickConnectPanel(
               manifest: providerManifest,
               onConnectProvider: onConnectProvider,
+              onConfigureProvider: onConfigureProvider,
               onOpenProviderDetails: onOpenProviderDetails,
             ),
           ),
@@ -3432,11 +3438,13 @@ class _QuickConnectPanel extends StatelessWidget {
   const _QuickConnectPanel({
     required this.manifest,
     this.onConnectProvider,
+    this.onConfigureProvider,
     this.onOpenProviderDetails,
   });
 
   final ProviderConnectorManifest manifest;
   final ValueChanged<ProviderConnectorEntry>? onConnectProvider;
+  final ValueChanged<ProviderConnectorEntry>? onConfigureProvider;
 
   /// 115.47: tier mobile membuka detail provider sebagai sheet layar penuh.
   final ValueChanged<ProviderConnectorEntry>? onOpenProviderDetails;
@@ -3460,6 +3468,9 @@ class _QuickConnectPanel extends StatelessWidget {
               onConnect: onConnectProvider == null
                   ? null
                   : () => onConnectProvider!(entry),
+              onConfigure: onConfigureProvider == null
+                  ? null
+                  : () => onConfigureProvider!(entry),
               onOpenDetails: onOpenProviderDetails == null
                   ? null
                   : () => onOpenProviderDetails!(entry),
@@ -3478,11 +3489,13 @@ class _ProviderTile extends StatelessWidget {
   const _ProviderTile({
     required this.entry,
     this.onConnect,
+    this.onConfigure,
     this.onOpenDetails,
   });
 
   final ProviderConnectorEntry entry;
   final VoidCallback? onConnect;
+  final VoidCallback? onConfigure;
 
   /// 115.47: pada tier `mobile` spec meminta detail provider terbuka sebagai
   /// sheet layar penuh, jadi tile jadi target ketuk. Null pada tier lain
@@ -3493,6 +3506,10 @@ class _ProviderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canConnect = entry.isConnectable && onConnect != null;
+    final canConfigure =
+        !entry.isConnectable &&
+        entry.authType == ProviderAuthType.oauth2Pkce &&
+        onConfigure != null;
     return Padding(
       key: ValueKey('quick-connect-provider-${entry.providerId}'),
       padding: EdgeInsets.only(
@@ -3551,9 +3568,17 @@ class _ProviderTile extends StatelessWidget {
                   ? const BoxConstraints(maxWidth: double.infinity)
                   : const BoxConstraints(),
               child: TextButton(
-                onPressed: canConnect ? onConnect : null,
+                onPressed: canConnect
+                    ? onConnect
+                    : canConfigure
+                    ? onConfigure
+                    : null,
                 child: Text(
-                  entry.isConnectable ? 'Connect' : 'Not available',
+                  entry.isConnectable
+                      ? 'Connect'
+                      : canConfigure
+                      ? 'Configure'
+                      : 'Not available',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

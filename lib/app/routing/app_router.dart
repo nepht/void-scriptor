@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,6 +12,7 @@ import '../../features/authentication/presentation/forgot_password_screen.dart';
 import '../../features/authentication/presentation/login_screen.dart';
 import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/domain/account_center_information_architecture.dart';
+import '../../features/account/domain/account_center_provider_connector_manifest.dart';
 import '../../features/account/application/account_cloud_connect_wiring.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
@@ -67,8 +70,10 @@ import 'foundation_route_screen.dart';
 GoRouter createAppRouter({
   String initialLocation = AppRoutes.splash,
   Set<String> allowedCapabilities = const <String>{},
+  AccountCloudConnectWiring? oauthWiring,
 }) {
   final guard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
+  final resolvedOAuthWiring = oauthWiring ?? AccountCloudConnectWiring();
   for (final capability in allowedCapabilities) {
     guard.allowCapability(capability);
   }
@@ -101,8 +106,12 @@ GoRouter createAppRouter({
                     '${AppRoutes.accountCloud}'
                     '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
                   ),
-                  onConnectProvider:
-                      AccountCloudConnectWiring().onConnectProvider,
+                  onConnectProvider: resolvedOAuthWiring.onConnectProvider,
+                  onConfigureProvider: (entry) => _configureOAuthClientId(
+                    context,
+                    resolvedOAuthWiring,
+                    entry,
+                  ),
                 ),
               ),
             ),
@@ -274,7 +283,59 @@ GoRouter createAppRouter({
   );
 }
 
-List<RouteBase> _routes({VoidCallback? onLogout}) {
+void _configureOAuthClientId(
+  BuildContext context,
+  AccountCloudConnectWiring wiring,
+  ProviderConnectorEntry entry,
+) {
+  final controller = TextEditingController();
+  unawaited(
+    showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Configure ${entry.displayName}'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.done,
+          decoration: const InputDecoration(
+            labelText: 'OAuth client ID',
+            helperText: 'Stored in the operating-system secure vault.',
+          ),
+          onSubmitted: (value) => Navigator.of(dialogContext).pop(value.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final value = controller.text.trim();
+              if (value.isEmpty) return;
+              Navigator.of(dialogContext).pop(value);
+            },
+            child: const Text('Save client ID'),
+          ),
+        ],
+      ),
+    ).then((clientId) async {
+      controller.dispose();
+      if (clientId == null || clientId.isEmpty) return;
+      await wiring.setClientId(
+        providerId: entry.providerId,
+        clientId: clientId,
+      );
+    }),
+  );
+}
+
+List<RouteBase> _routes({
+  VoidCallback? onLogout,
+  AccountCloudConnectWiring? oauthWiring,
+}) {
+  final resolvedOAuthWiring = oauthWiring ?? AccountCloudConnectWiring();
   return [
     GoRoute(
       path: AppRoutes.splash,
@@ -424,8 +485,9 @@ List<RouteBase> _routes({VoidCallback? onLogout}) {
               '${AppRoutes.accountCloud}'
               '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
             ),
-            onConnectProvider:
-                AccountCloudConnectWiring().onConnectProvider,
+            onConnectProvider: resolvedOAuthWiring.onConnectProvider,
+            onConfigureProvider: (entry) =>
+                _configureOAuthClientId(context, resolvedOAuthWiring, entry),
           ),
         ),
       ),
@@ -644,6 +706,10 @@ class _FoundationScreen extends StatelessWidget {
   }
 }
 
+final oauthWiringProvider = Provider<AccountCloudConnectWiring>((ref) {
+  return AccountCloudConnectWiring();
+});
+
 final appRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
   final routeGuard = RouteCapabilityGuard(flags: FeatureFlagRegistry());
@@ -692,6 +758,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       onLogout: () {
         ref.read(authControllerProvider.notifier).logout();
       },
+      oauthWiring: ref.read(oauthWiringProvider),
     ),
   );
 });

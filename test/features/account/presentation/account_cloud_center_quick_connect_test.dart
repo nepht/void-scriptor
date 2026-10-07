@@ -126,4 +126,26 @@ void main() {
     await tester.tap(connectFinder);
     expect(requested?.providerId, 'available_provider');
   });
+
+  testWidgets('unverified OAuth providers expose Configure when requested', (
+    tester,
+  ) async {
+    ProviderConnectorEntry? configured;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AccountCloudCenterScreen(
+          snapshot: AccountCloudSnapshot.localOnly(session: null),
+          onConfigureProvider: (entry) => configured = entry,
+        ),
+      ),
+    );
+
+    final configure = find.widgetWithText(TextButton, 'Configure').first;
+    expect(configure, findsOneWidget);
+    await tester.ensureVisible(configure);
+    await tester.tap(configure);
+
+    expect(configured, isNotNull);
+    expect(configured!.authType, ProviderAuthType.oauth2Pkce);
+  });
 }

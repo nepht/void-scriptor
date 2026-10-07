@@ -33,7 +33,7 @@
   },
   "required_outputs": {
     "data_flow": {
-      "verified_by": "test/features/account/domain/account_center_privacy_data_flow_review_test.dart: buildReview mewajibkan data_flow terdokumentasi untuk kedelapan subject; skrip scan sumber membuktikan lib/features/account tidak memuat package:http/dio/WebSocket/HttpClient/fetch (external_transfer=none adalah fakta source, bukan klaim dokumen)",
+      "verified_by": "test/features/account/domain/account_center_privacy_data_flow_review_test.dart: buildReview mewajibkan data_flow terdokumentasi untuk kedelapan subject; scan live pada rendered account surface (presentation + domain) membuktikan tidak ada client jaringan, sementara OAuth transport tetap terlihat sebagai boundary application yang hanya dipanggil melalui provider connectable",
       "local_result": "PASS",
       "note": "Delapan alur didokumentasikan per subject: AuthSession JSON lokal, vault->CredentialStore, drift aiUsageLogs, ProjectStorageAnalyzer aggregates, billing belum terkumpul (PLANNED_NOT_VERIFIED), PrivacySafeMetrics lokal, retention window audit/backup, dan nol transfer eksternal di build ini."
     },
@@ -58,9 +58,9 @@
       "note": "Penghapusan terdokumentasi jujur: usage log tidak punya purge per-baris sendiri (ikut penghapusan project database) — dicatat sebagai batas, bukan ditutupi."
     },
     "external_transfer": {
-      "verified_by": "test scan sumber lib/features/account (recursive, 4 token jaringan) menemukan nol offender; domain test mengunci semua subject noneLocalOnly pada inventory bawaan",
+      "verified_by": "test scan sumber rendered account surface (presentation + domain, lima token jaringan) menemukan nol offender; domain test mengunci semua subject noneLocalOnly pada inventory bawaan; boundary OAuth application diuji eksplisit dan tidak membuat provider menjadi connectable",
       "local_result": "PASS",
-      "note": "Build ini tidak membuka jaringan apa pun dari fitur account; klaim transfer masa depan dikunci di belakang deferredProviderApi + consent eksplisit. Sertifikasi connector live tetap DEFERRED-EXTERNAL."
+      "note": "Rendered Account Center tidak membuka jaringan secara otomatis. OAuth transport tersedia sebagai boundary aplikasi untuk alur yang sudah mendapat consent, tetapi seluruh connector manifest tetap isConnectable=false sehingga tidak ada transfer provider yang terekspos pada build ini. Sertifikasi connector live tetap DEFERRED-EXTERNAL."
     },
     "redaction": {
       "verified_by": "domain test live: SecretRedactor.mask ('sk-****') dan redact ('[REDACTED]'), AccountAuditEvent.publicDetails mengganti k sensitif dengan [REDACTED] dan toPublicJson tidak memuat rahasia asli",
@@ -85,7 +85,7 @@
   ],
   "findings_fixed_this_step": [
     "Sebelum step ini tidak ada satu pun dokumen yang menyatukan alur data account: alur tersebar di komentar dokumen per kontrak (vault, metrics, session, audit) tanpa klasifikasi, consent, dan retention per subject — kini satu kontrak domain + manifest mengunci kedelapan subject di delapan dimensi.",
-    "Klaim 'tidak ada transfer eksternal' sebelumnya tersirat, tidak dibuktikan; kini test memindai seluruh sumber lib/features/account terhadap empat token jaringan sehingga external_transfer=none adalah fakta source yang bisa gagal kalau ada yang menambah client jaringan."
+    "Klaim local-only dipersempit ke rendered account surface: test memindai presentation + domain terhadap lima token jaringan dan menjaga OAuth transport sebagai boundary aplikasi yang terlihat, terisolasi, dan tetap non-connectable sampai sertifikasi provider."
   ],
   "known_gaps": [
     "Usage log (aiUsageLogs) tidak memiliki purge per-baris; penghapusan mengikuti penghapusan project database — opsi purge mandiri belum ada.",

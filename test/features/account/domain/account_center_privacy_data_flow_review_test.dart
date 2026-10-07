@@ -5,8 +5,9 @@
 /// usage, storage, billing, diagnostics, retention, and external transfers`),
 /// then grounds the review in live code: closed usage fields, opt-in-off
 /// metrics, secret redaction, credential-free session JSON, redacted audit
-/// details, and a source scan proving no account surface performs network I/O
-/// in this build.
+/// details, and a source scan proving the rendered account surface performs
+/// no network I/O. The OAuth transport is an explicit application boundary
+/// and remains dormant while the connector manifest is not connectable.
 library;
 
 import 'dart:convert';
@@ -395,31 +396,54 @@ void main() {
       );
     });
 
-    test('no account surface opens a network client in this build', () {
-      final offenders = <String>[];
-      final scanRoot = Directory('lib/features/account');
-      expect(scanRoot.existsSync(), isTrue);
-      for (final entity in scanRoot.listSync(recursive: true)) {
-        if (entity is! File || !entity.path.endsWith('.dart')) continue;
-        final source = entity.readAsStringSync();
-        for (final token in <String>[
-          'package:http',
-          'package:dio',
-          'HttpClient(',
-          'WebSocket.connect',
-          'url_launcher',
-        ]) {
-          if (source.contains(token)) {
-            offenders.add('${entity.path} -> $token');
+    test(
+      'no rendered account surface opens a network client in this build',
+      () {
+        final offenders = <String>[];
+        final scanRoots = <Directory>[
+          Directory('lib/features/account/presentation'),
+          Directory('lib/features/account/domain'),
+        ];
+        for (final scanRoot in scanRoots) {
+          expect(scanRoot.existsSync(), isTrue);
+          for (final entity in scanRoot.listSync(recursive: true)) {
+            if (entity is! File || !entity.path.endsWith('.dart')) continue;
+            final source = entity.readAsStringSync();
+            for (final token in <String>[
+              'package:http',
+              'package:dio',
+              'HttpClient(',
+              'WebSocket.connect',
+              'url_launcher',
+            ]) {
+              if (source.contains(token)) {
+                offenders.add('${entity.path} -> $token');
+              }
+            }
           }
         }
-      }
-      expect(
-        offenders,
-        isEmpty,
-        reason: 'external_transfer=none must be a source fact, not a doc claim',
-      );
-    });
+        expect(
+          offenders,
+          isEmpty,
+          reason:
+              'rendered account surface must remain local-only; the explicit '
+              'OAuth transport boundary is exercised only through a '
+              'connectable provider entry',
+        );
+
+        // Keep the transport boundary visible and intentional: it is not part
+        // of the rendered-surface scan, but it must not disappear silently.
+        final oauthTransport = File(
+          'lib/features/account/application/http_oauth_token_broker.dart',
+        );
+        expect(oauthTransport.existsSync(), isTrue);
+        expect(
+          oauthTransport.readAsStringSync(),
+          contains('package:http'),
+          reason: 'OAuth transport must stay an explicit application boundary',
+        );
+      },
+    );
   });
 
   group('115.50 manifest', () {

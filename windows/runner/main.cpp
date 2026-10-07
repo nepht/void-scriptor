@@ -4,6 +4,7 @@
 
 #include "flutter_window.h"
 #include "native_brand_window.h"
+#include "oauth_callback.h"
 #include "utils.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
@@ -18,15 +19,33 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
+  // Register the custom scheme per-user so OAuth providers can launch this
+  // executable without elevation. Failure stays fail-closed at the Dart layer.
+  RegisterOAuthProtocolHandler();
+
+  const std::string oauth_callback = GetOAuthCallbackArgument();
+  bool callback_forwarded = false;
+  if (!AcquireOAuthSingleInstance(instance, oauth_callback, &callback_forwarded)) {
+    // A second activation is delivered to the running instance. If delivery
+    // fails, do not start a second Flutter process with an unhandled callback.
+    return callback_forwarded ? EXIT_SUCCESS : EXIT_FAILURE;
+  }
+
   flutter::DartProject project(L"data");
 
   std::vector<std::string> command_line_arguments =
       GetCommandLineArguments();
+  if (!oauth_callback.empty()) {
+    command_line_arguments.push_back("--oauth-callback=" + oauth_callback);
+  }
 
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
   HWND brand_window = CreateNativeBrandWindow(instance);
   FlutterWindow window(project, brand_window);
+  SetOAuthCallbackReceiver([&window](const std::string& callback) {
+    window.DeliverOAuthCallback(callback);
+  });
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
   if (!window.Create(L"Void Scriptor", origin, size)) {

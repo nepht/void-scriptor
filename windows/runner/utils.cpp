@@ -67,3 +67,22 @@ std::string Utf8FromUtf16(const wchar_t* utf16_string) {
   }
   return utf8_string;
 }
+
+std::string GetOAuthCallbackArgument() {
+  int argc = 0;
+  wchar_t** argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
+  if (argv == nullptr) {
+    return std::string();
+  }
+
+  std::string callback;
+  for (int i = 1; i < argc; ++i) {
+    const std::string argument = Utf8FromUtf16(argv[i]);
+    if (argument.rfind("vscriptor://oauth/callback", 0) == 0) {
+      callback = argument;
+      break;
+    }
+  }
+  ::LocalFree(argv);
+  return callback;
+}

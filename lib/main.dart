@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/bootstrap/app_diagnostics.dart';
 import 'app/bootstrap/bootstrap_gate.dart';
 import 'app/void_app.dart';
+import 'features/account/application/oauth_callback_bootstrap_gate.dart';
 import 'core/auth/auth_controller.dart';
 import 'core/auth/auth_session.dart';
 import 'core/auth/auth_session_platform.dart'
@@ -79,7 +80,7 @@ Future<void> main() async {
             handle.store.reset();
             exit(0);
           },
-          child: const VoidScriptorApp(),
+          child: const OAuthCallbackBootstrapGate(child: VoidScriptorApp()),
         ),
       ),
     ),

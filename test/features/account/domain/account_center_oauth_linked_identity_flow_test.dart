@@ -46,6 +46,7 @@ void main() {
       'https://identity.example.test/oauth/authorize',
     ),
     redirectUri: Uri.parse('voidscriptor://oauth/callback'),
+    clientId: 'fixture-client-id',
     scopes: const {'openid', 'profile', 'offline_access'},
     nonceRequired: nonceRequired,
     supportsRefresh: supportsRefresh,
@@ -164,7 +165,7 @@ void main() {
         expect(uri.scheme, 'https');
         expect(uri.host, 'identity.example.test');
         expect(uri.queryParameters['response_type'], 'code');
-        expect(uri.queryParameters['client_id'], 'fixture-identity');
+        expect(uri.queryParameters['client_id'], 'fixture-client-id');
         expect(
           uri.queryParameters['redirect_uri'],
           'voidscriptor://oauth/callback',

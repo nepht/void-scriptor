@@ -48,6 +48,7 @@ final class OAuthProviderConfiguration {
     required this.authorizationEndpoint,
     required this.redirectUri,
     required Iterable<String> scopes,
+    this.clientId,
     this.tokenEndpoint,
     this.revocationEndpoint,
     this.nonceRequired = true,
@@ -93,6 +94,10 @@ final class OAuthProviderConfiguration {
   final ProviderConnectorEntry connector;
   final Uri authorizationEndpoint;
   final Uri redirectUri;
+
+  /// Registered OAuth client identifier supplied by app configuration.
+  /// Never falls back to providerId: that value is only an internal key.
+  final String? clientId;
   final Set<String> scopes;
   final Uri? tokenEndpoint;
   final Uri? revocationEndpoint;
@@ -189,18 +194,27 @@ final class OAuthAuthorizationRequest {
   String get providerId => configuration.connector.providerId;
   Uri get redirectUri => configuration.redirectUri;
   String get redirectUriText => redirectUri.toString();
-  Uri get authorizationUri => configuration.authorizationEndpoint.replace(
-    queryParameters: <String, String>{
-      'response_type': 'code',
-      'client_id': providerId,
-      'redirect_uri': redirectUriText,
-      'scope': (consent.grantedScopes.toList()..sort()).join(' '),
-      'state': state,
-      'nonce': ?nonce,
-      'code_challenge': codeChallenge,
-      'code_challenge_method': 'S256',
-    },
-  );
+  Uri get authorizationUri {
+    final clientId = configuration.clientId;
+    if (clientId == null || clientId.trim().isEmpty) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.connectorUnavailable,
+        'OAuth client ID is not configured for this provider.',
+      );
+    }
+    return configuration.authorizationEndpoint.replace(
+      queryParameters: <String, String>{
+        'response_type': 'code',
+        'client_id': clientId,
+        'redirect_uri': redirectUriText,
+        'scope': (consent.grantedScopes.toList()..sort()).join(' '),
+        'state': state,
+        'nonce': ?nonce,
+        'code_challenge': codeChallenge,
+        'code_challenge_method': 'S256',
+      },
+    );
+  }
 
   Map<String, Object?> toJson() => <String, Object?>{
     'provider_id': providerId,

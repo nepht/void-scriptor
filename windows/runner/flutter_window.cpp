@@ -10,7 +10,33 @@ FlutterWindow::FlutterWindow(const flutter::DartProject& project,
     : project_(project), brand_window_(brand_window) {}
 
 FlutterWindow::~FlutterWindow() {
+  oauth_channel_.reset();
   DestroyNativeBrandWindow(brand_window_);
+}
+
+void FlutterWindow::DeliverOAuthCallback(const std::string& callback) {
+  if (callback.empty()) return;
+
+  std::lock_guard<std::mutex> lock(oauth_callback_mutex_);
+  if (!oauth_channel_) {
+    pending_oauth_callbacks_.push_back(callback);
+    return;
+  }
+
+  oauth_channel_->InvokeMethod(
+      "callback", std::make_unique<flutter::EncodableValue>(callback));
+}
+
+void FlutterWindow::FlushPendingOAuthCallbacks() {
+  std::vector<std::string> callbacks;
+  {
+    std::lock_guard<std::mutex> lock(oauth_callback_mutex_);
+    callbacks.swap(pending_oauth_callbacks_);
+  }
+  for (const auto& callback : callbacks) {
+    oauth_channel_->InvokeMethod(
+        "callback", std::make_unique<flutter::EncodableValue>(callback));
+  }
 }
 
 bool FlutterWindow::OnCreate() {
@@ -30,6 +56,14 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+  oauth_channel_ = std::make_unique<
+      flutter::MethodChannel<flutter::EncodableValue>>(
+      flutter_controller_->engine()->messenger(), "void_scriptor/oauth",
+      &flutter::StandardMethodCodec::GetInstance());
+  oauth_channel_->SetMethodCallHandler(
+      [](const auto& call, auto result) { result->NotImplemented(); });
+  FlushPendingOAuthCallbacks();
 
   flutter_controller_->engine()->SetNextFrameCallback([this]() {
     DestroyNativeBrandWindow(brand_window_);

@@ -13,11 +13,23 @@
 library;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/core/security/credential_store.dart';
 import 'package:void_scriptor/features/account/application/account_cloud_connect_wiring.dart';
+import 'package:void_scriptor/features/account/application/oauth_client_configuration.dart';
 import 'package:void_scriptor/features/account/domain/account_center_oauth_linked_identity_flow.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
 
 /// A broker that records calls but never touches the network.
+class _RecordingLauncher implements OAuthBrowserLauncher {
+  int calls = 0;
+
+  @override
+  Future<bool> launch(Uri authorizationUri) async {
+    calls++;
+    return true;
+  }
+}
+
 class _RecordingBroker implements OAuthTokenBroker {
   int exchangeCalls = 0;
   int refreshCalls = 0;
@@ -63,23 +75,20 @@ ProviderConnectorEntry _entry(
   String providerId, {
   ProviderConnectorAvailability availability =
       ProviderConnectorAvailability.unverified,
-}) =>
-    ProviderConnectorEntry(
-      providerId: providerId,
-      displayName: providerId,
-      category: ProviderConnectorCategory.identity,
-      capabilities: const <ProviderConnectorCapability>{
-        ProviderConnectorCapability.identity,
-        ProviderConnectorCapability.health,
-      },
-      availability: availability,
-      regions: const <ProviderRegion>{ProviderRegion.global},
-      connectorVersion: 'test-v1',
-      authType: ProviderAuthType.oauth2Pkce,
-      permissions: const <ProviderPermission>{
-        ProviderPermission.accountMetadata,
-      },
-    );
+}) => ProviderConnectorEntry(
+  providerId: providerId,
+  displayName: providerId,
+  category: ProviderConnectorCategory.identity,
+  capabilities: const <ProviderConnectorCapability>{
+    ProviderConnectorCapability.identity,
+    ProviderConnectorCapability.health,
+  },
+  availability: availability,
+  regions: const <ProviderRegion>{ProviderRegion.global},
+  connectorVersion: 'test-v1',
+  authType: ProviderAuthType.oauth2Pkce,
+  permissions: const <ProviderPermission>{ProviderPermission.accountMetadata},
+);
 
 void main() {
   group('OAuthProviderEndpoints', () {
@@ -138,47 +147,70 @@ void main() {
       expect(wiring.flow.liveAuthorizationCount, 0);
     });
 
-    test('onConnectProvider is no-op for unknown providers even if available',
-        () {
-      final broker = _RecordingBroker();
-      final wiring = AccountCloudConnectWiring(broker: broker);
-      final entry = _entry(
-        'fictional_cloud',
-        availability: ProviderConnectorAvailability.available,
-      );
-
-      wiring.onConnectProvider(entry);
-      expect(wiring.flow.liveAuthorizationCount, 0);
-    });
-
     test(
-        'onConnectProvider begins authorization for certified and known connector',
-        () {
-      final broker = _RecordingBroker();
-      final wiring = AccountCloudConnectWiring(broker: broker);
-      final entry = _entry(
-        'google_drive',
-        availability: ProviderConnectorAvailability.available,
-      );
-      expect(entry.isConnectable, isTrue);
-
-      wiring.onConnectProvider(entry);
-      expect(wiring.flow.liveAuthorizationCount, 1);
-    });
-
-    test('multiple connect calls accumulate independent authorizations', () {
-      final broker = _RecordingBroker();
-      final wiring = AccountCloudConnectWiring(broker: broker);
-
-      for (final id in <String>['google_drive', 'onedrive', 'dropbox']) {
+      'onConnectProvider is no-op for unknown providers even if available',
+      () {
+        final broker = _RecordingBroker();
+        final wiring = AccountCloudConnectWiring(broker: broker);
         final entry = _entry(
-          id,
+          'fictional_cloud',
           availability: ProviderConnectorAvailability.available,
         );
+
         wiring.onConnectProvider(entry);
-      }
-      expect(wiring.flow.liveAuthorizationCount, 3);
-    });
+        expect(wiring.flow.liveAuthorizationCount, 0);
+      },
+    );
+
+    test(
+      'onConnectProvider begins authorization for certified and known connector',
+      () async {
+        final broker = _RecordingBroker();
+        final launcher = _RecordingLauncher();
+        final wiring = AccountCloudConnectWiring(
+          broker: broker,
+          credentialStore: MemoryCredentialStore(),
+          browserLauncher: launcher,
+        );
+        await wiring.setClientId(
+          providerId: 'google_drive',
+          clientId: 'test-client',
+        );
+        final entry = _entry(
+          'google_drive',
+          availability: ProviderConnectorAvailability.available,
+        );
+        expect(entry.isConnectable, isTrue);
+
+        wiring.onConnectProvider(entry);
+        await Future<void>.delayed(Duration.zero);
+        expect(wiring.flow.liveAuthorizationCount, 1);
+        expect(launcher.calls, 1);
+      },
+    );
+
+    test(
+      'multiple connect calls accumulate independent authorizations',
+      () async {
+        final broker = _RecordingBroker();
+        final wiring = AccountCloudConnectWiring(
+          broker: broker,
+          credentialStore: MemoryCredentialStore(),
+          browserLauncher: _RecordingLauncher(),
+        );
+
+        for (final id in <String>['google_drive', 'onedrive', 'dropbox']) {
+          await wiring.setClientId(providerId: id, clientId: 'test-client-$id');
+          final entry = _entry(
+            id,
+            availability: ProviderConnectorAvailability.available,
+          );
+          wiring.onConnectProvider(entry);
+        }
+        await Future<void>.delayed(Duration.zero);
+        expect(wiring.flow.liveAuthorizationCount, 3);
+      },
+    );
 
     test('default wiring uses HttpOAuthTokenBroker', () {
       // This only verifies construction does not throw — it does NOT hit the

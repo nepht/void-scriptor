@@ -15,7 +15,14 @@
 /// screen's `onConnectProvider` parameter stays optional and null-safe.
 library;
 
-import '../../../core/network/http_oauth_token_broker.dart';
+import 'dart:async';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'http_oauth_token_broker.dart';
+import 'oauth_client_configuration.dart';
+import 'oauth_token_grant_store.dart';
+import '../../../core/security/credential_store.dart';
 import '../domain/account_center_oauth_linked_identity_flow.dart';
 import '../domain/account_center_provider_connector_manifest.dart';
 
@@ -30,22 +37,29 @@ final class OAuthProviderEndpoints {
 
   /// Well-known OAuth2 endpoints indexed by `providerId` (lowercase).
   ///
-  /// Each value is a factory that takes the connector entry and returns a
-  /// complete `OAuthProviderConfiguration`.  The redirect URI is standard
-  /// across all providers (custom scheme desktop redirect).
-  static final Map<String, OAuthProviderConfiguration Function(ProviderConnectorEntry)>
-      _registry = <String, OAuthProviderConfiguration Function(ProviderConnectorEntry)>{
-    'google_drive': (entry) => OAuthProviderConfiguration(
+  /// Client IDs are injected separately and are never inferred from providerId.
+  static final Map<
+    String,
+    OAuthProviderConfiguration Function(ProviderConnectorEntry, String?)
+  >
+  _registry =
+      <
+        String,
+        OAuthProviderConfiguration Function(ProviderConnectorEntry, String?)
+      >{
+        'google_drive': (entry, clientId) => OAuthProviderConfiguration(
+          clientId: clientId,
           connector: entry,
-          authorizationEndpoint:
-              Uri.parse('https://accounts.google.com/o/oauth2/v2/auth'),
+          authorizationEndpoint: Uri.parse(
+            'https://accounts.google.com/o/oauth2/v2/auth',
+          ),
           redirectUri: _desktopRedirectUri,
           scopes: const <String>{'https://www.googleapis.com/auth/drive.file'},
           tokenEndpoint: Uri.parse('https://oauth2.googleapis.com/token'),
-          revocationEndpoint:
-              Uri.parse('https://oauth2.googleapis.com/revoke'),
+          revocationEndpoint: Uri.parse('https://oauth2.googleapis.com/revoke'),
         ),
-    'onedrive': (entry) => OAuthProviderConfiguration(
+        'onedrive': (entry, clientId) => OAuthProviderConfiguration(
+          clientId: clientId,
           connector: entry,
           authorizationEndpoint: Uri.parse(
             'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
@@ -58,40 +72,49 @@ final class OAuthProviderEndpoints {
           revocationEndpoint: null,
           supportsRefresh: true,
         ),
-    'dropbox': (entry) => OAuthProviderConfiguration(
+        'dropbox': (entry, clientId) => OAuthProviderConfiguration(
+          clientId: clientId,
           connector: entry,
-          authorizationEndpoint:
-              Uri.parse('https://www.dropbox.com/oauth2/authorize'),
+          authorizationEndpoint: Uri.parse(
+            'https://www.dropbox.com/oauth2/authorize',
+          ),
           redirectUri: _desktopRedirectUri,
           scopes: const <String>{'files.content.write', 'files.content.read'},
-          tokenEndpoint:
-              Uri.parse('https://api.dropboxapi.com/oauth2/token'),
-          revocationEndpoint:
-              Uri.parse('https://api.dropboxapi.com/2/auth/token/revoke'),
+          tokenEndpoint: Uri.parse('https://api.dropboxapi.com/oauth2/token'),
+          revocationEndpoint: Uri.parse(
+            'https://api.dropboxapi.com/2/auth/token/revoke',
+          ),
         ),
-    'github': (entry) => OAuthProviderConfiguration(
+        'github': (entry, clientId) => OAuthProviderConfiguration(
+          clientId: clientId,
           connector: entry,
-          authorizationEndpoint:
-              Uri.parse('https://github.com/login/oauth/authorize'),
+          authorizationEndpoint: Uri.parse(
+            'https://github.com/login/oauth/authorize',
+          ),
           redirectUri: _desktopRedirectUri,
           scopes: const <String>{'repo', 'read:user'},
-          tokenEndpoint:
-              Uri.parse('https://github.com/login/oauth/access_token'),
+          tokenEndpoint: Uri.parse(
+            'https://github.com/login/oauth/access_token',
+          ),
           revocationEndpoint: null,
           nonceRequired: false,
           supportsRefresh: false,
         ),
-  };
+      };
 
   /// Custom-scheme redirect URI for desktop OAuth PKCE flow.
-  static final Uri _desktopRedirectUri =
-      Uri.parse('vscriptor://oauth/callback');
+  static final Uri _desktopRedirectUri = Uri.parse(
+    'vscriptor://oauth/callback',
+  );
 
   /// Returns the `OAuthProviderConfiguration` for [entry], or `null` if the
   /// provider is unknown to this registry (fail-closed: unknown = no connect).
-  static OAuthProviderConfiguration? resolve(ProviderConnectorEntry entry) {
+  static OAuthProviderConfiguration? resolve(
+    ProviderConnectorEntry entry, {
+    String? clientId,
+  }) {
     final factory = _registry[entry.providerId];
-    return factory?.call(entry);
+    return factory?.call(entry, clientId);
   }
 
   /// Whether the registry contains wiring for [providerId].
@@ -111,11 +134,65 @@ final class OAuthProviderEndpoints {
 final class AccountCloudConnectWiring {
   AccountCloudConnectWiring({
     OAuthTokenBroker? broker,
-  }) : _flow = AccountOAuthFlow(
-          broker: broker ?? HttpOAuthTokenBroker(),
-        );
+    CredentialStore? credentialStore,
+    OAuthBrowserLauncher? browserLauncher,
+    OAuthTokenGrantStore? grantStore,
+  }) : _flow = AccountOAuthFlow(broker: broker ?? HttpOAuthTokenBroker()),
+       _clientConfiguration = OAuthClientConfigurationStore(
+         store:
+             credentialStore ??
+             const SecureCredentialStore(FlutterSecureStorage()),
+       ),
+       _grantStore =
+           grantStore ??
+           OAuthTokenGrantStore(
+             store:
+                 credentialStore ??
+                 const SecureCredentialStore(FlutterSecureStorage()),
+           ),
+       _browserLauncher =
+           browserLauncher ?? const WindowsOAuthBrowserLauncher();
 
   final AccountOAuthFlow _flow;
+  final OAuthClientConfigurationStore _clientConfiguration;
+  final OAuthTokenGrantStore _grantStore;
+  final OAuthBrowserLauncher _browserLauncher;
+
+  /// Registers a public OAuth client ID through the secure configuration path.
+  /// The value is never logged or included in application source.
+  Future<void> setClientId({
+    required String providerId,
+    required String clientId,
+  }) => _clientConfiguration.writeClientId(
+    providerId: providerId,
+    clientId: clientId,
+  );
+
+  Future<OAuthAuthorizationRequest?> _startAuthorization(
+    ProviderConnectorEntry entry,
+  ) async {
+    if (!entry.isConnectable ||
+        !OAuthProviderEndpoints.isKnown(entry.providerId)) {
+      return null;
+    }
+    final clientId = await _clientConfiguration.readClientId(entry.providerId);
+    final configuration = OAuthProviderEndpoints.resolve(
+      entry,
+      clientId: clientId,
+    );
+    if (configuration == null || configuration.clientId == null) return null;
+    final consent = OAuthScopeConsent(
+      requestedScopes: configuration.scopes,
+      grantedScopes: configuration.scopes,
+      explicitlyApproved: true,
+    );
+    final request = _flow.beginAuthorization(
+      configuration: configuration,
+      consent: consent,
+    );
+    if (!await _browserLauncher.launch(request.authorizationUri)) return null;
+    return request;
+  }
 
   /// The callback that bridges presentation → domain.
   ///
@@ -131,31 +208,25 @@ final class AccountCloudConnectWiring {
   /// The returned `OAuthAuthorizationRequest` carries the authorization URL
   /// the presentation layer can open in a browser / webview.
   void onConnectProvider(ProviderConnectorEntry entry) {
-    if (!entry.isConnectable) {
-      // Fail-closed: unverified connectors MUST NOT initiate an OAuth flow.
-      return;
-    }
+    // Presentation callbacks are intentionally fire-and-forget. The async
+    // boundary protects the UI from blocking while the secure store is read.
+    unawaited(_startAuthorization(entry));
+  }
 
-    final configuration = OAuthProviderEndpoints.resolve(entry);
-    if (configuration == null) {
-      // No endpoint wiring for this provider — the UI button should already
-      // be disabled via `isConnectable`, but defense in depth.
-      return;
-    }
+  /// Completes the currently pending OAuth request and persists the resulting
+  /// grant through the injected secure store.
+  Future<LinkedIdentityResult> completeAuthorization({
+    required Uri callback,
+  }) async {
+    final result = await _flow.completeAuthorization(callback: callback);
+    await _grantStore.write(result.tokenGrant);
+    return result;
+  }
 
-    // Begin the PKCE authorization.  In a shipping product the returned
-    // request's `authorizationUri` would be opened in a browser; the app
-    // registers a deep link handler for `vscriptor://oauth/callback` that
-    // calls `_flow.completeAuthorization(callback: ...)`.
-    final consent = OAuthScopeConsent(
-      requestedScopes: configuration.scopes,
-      grantedScopes: configuration.scopes,
-      explicitlyApproved: true,
-    );
-    _flow.beginAuthorization(
-      configuration: configuration,
-      consent: consent,
-    );
+  /// Revokes the active grant remotely before deleting its local secret record.
+  Future<void> disconnect(OAuthTokenGrant grant) async {
+    await _flow.unlink(grant: grant, decision: OAuthUnlinkDecision.unlink);
+    await _grantStore.delete(grant.connectionId);
   }
 
   /// Expose the underlying flow for deep-link callback resolution and

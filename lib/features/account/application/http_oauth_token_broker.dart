@@ -1,21 +1,20 @@
-/// HTTP implementation of `OAuthTokenBroker` for desktop PKCE and token
-/// exchange.
+/// HTTP implementation of the Account feature's OAuth token broker.
 ///
-/// Kept under `lib/core/network/` to satisfy the privacy & data-flow
-/// architectural boundary (Sprint 115.50) which requires `lib/features/account`
-/// to remain free of direct external network client imports.
+/// This implementation belongs to the Account application layer because it
+/// consumes Account domain request/response types. Keeping it here preserves
+/// the dependency direction: `core` must not import a feature.
 library;
 
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import '../../features/account/domain/account_center_oauth_linked_identity_flow.dart';
+
+import '../domain/account_center_oauth_linked_identity_flow.dart';
 
 final class HttpOAuthTokenBroker implements OAuthTokenBroker {
-  HttpOAuthTokenBroker({
-    http.Client? client,
-    DateTime Function()? clock,
-  })  : _client = client ?? http.Client(),
-        _clock = clock ?? (() => DateTime.now().toUtc());
+  HttpOAuthTokenBroker({http.Client? client, DateTime Function()? clock})
+    : _client = client ?? http.Client(),
+      _clock = clock ?? (() => DateTime.now().toUtc());
 
   final http.Client _client;
   final DateTime Function() _clock;
@@ -30,6 +29,14 @@ final class HttpOAuthTokenBroker implements OAuthTokenBroker {
       );
     }
 
+    final clientId = request.configuration.clientId;
+    if (clientId == null || clientId.trim().isEmpty) {
+      throw const OAuthFlowException(
+        OAuthFlowErrorCode.connectorUnavailable,
+        'OAuth client ID is not configured for this provider.',
+      );
+    }
+
     final response = await _client.post(
       endpoint,
       headers: const <String, String>{
@@ -38,7 +45,7 @@ final class HttpOAuthTokenBroker implements OAuthTokenBroker {
       },
       body: <String, String>{
         'grant_type': 'authorization_code',
-        'client_id': request.configuration.connector.providerId,
+        'client_id': clientId,
         'code': request.code,
         'redirect_uri': request.redirectUri.toString(),
         'code_verifier': request.codeVerifier,
@@ -101,11 +108,11 @@ final class HttpOAuthTokenBroker implements OAuthTokenBroker {
       );
     }
 
-    // In a full production implementation, this issues POST to tokenEndpoint
-    // with grant_type=refresh_token. For now, fail closed if unconfigured.
+    // Provider client configuration is not yet persisted alongside the grant.
+    // Keep refresh fail-closed until the secure configuration registry is wired.
     throw const OAuthFlowException(
       OAuthFlowErrorCode.tokenExchangeFailed,
-      'Token refresh endpoint requires live provider configuration.',
+      'Token refresh requires live provider configuration.',
     );
   }
 

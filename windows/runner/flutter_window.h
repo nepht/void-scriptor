@@ -5,6 +5,12 @@
 #include <flutter/flutter_view_controller.h>
 
 #include <memory>
+#include <mutex>
+#include <string>
+#include <vector>
+
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
 
 #include "win32_window.h"
 
@@ -14,6 +20,11 @@ class FlutterWindow : public Win32Window {
   // Creates a new FlutterWindow hosting a Flutter view running |project|.
   FlutterWindow(const flutter::DartProject& project, HWND brand_window);
   virtual ~FlutterWindow();
+
+  void DeliverOAuthCallback(const std::string& callback);
+
+ private:
+  void FlushPendingOAuthCallbacks();
 
  protected:
   // Win32Window:
@@ -31,6 +42,11 @@ class FlutterWindow : public Win32Window {
 
   // Native brand window shown only while Flutter produces its first frame.
   HWND brand_window_ = nullptr;
+
+  std::unique_ptr<flutter::MethodChannel<flutter::EncodableValue>>
+      oauth_channel_;
+  std::mutex oauth_callback_mutex_;
+  std::vector<std::string> pending_oauth_callbacks_;
 };
 
 #endif  // RUNNER_FLUTTER_WINDOW_H_

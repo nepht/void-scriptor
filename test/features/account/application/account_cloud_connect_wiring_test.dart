@@ -94,6 +94,7 @@ void main() {
   group('OAuthProviderEndpoints', () {
     test('resolves known providers', () {
       for (final id in <String>[
+        'google',
         'google_drive',
         'onedrive',
         'dropbox',
@@ -123,6 +124,7 @@ void main() {
     });
 
     test('isKnown correctly differentiates', () {
+      expect(OAuthProviderEndpoints.isKnown('google'), isTrue);
       expect(OAuthProviderEndpoints.isKnown('google_drive'), isTrue);
       expect(OAuthProviderEndpoints.isKnown('onedrive'), isTrue);
       expect(OAuthProviderEndpoints.isKnown('fictional_cloud'), isFalse);

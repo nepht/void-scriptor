@@ -47,6 +47,20 @@ final class OAuthProviderEndpoints {
         String,
         OAuthProviderConfiguration Function(ProviderConnectorEntry, String?)
       >{
+        // Google Identity (Account & Cloud Center / sign-in identity).
+        // This is intentionally separate from `google_drive`: identity
+        // scopes must never inherit cloud-transfer permissions.
+        'google': (entry, clientId) => OAuthProviderConfiguration(
+          clientId: clientId,
+          connector: entry,
+          authorizationEndpoint: Uri.parse(
+            'https://accounts.google.com/o/oauth2/v2/auth',
+          ),
+          redirectUri: _desktopRedirectUri,
+          scopes: const <String>{'openid', 'email', 'profile'},
+          tokenEndpoint: Uri.parse('https://oauth2.googleapis.com/token'),
+          revocationEndpoint: Uri.parse('https://oauth2.googleapis.com/revoke'),
+        ),
         'google_drive': (entry, clientId) => OAuthProviderConfiguration(
           clientId: clientId,
           connector: entry,

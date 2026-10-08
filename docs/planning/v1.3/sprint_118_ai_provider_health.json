@@ -1,0 +1,225 @@
+{
+  "canonical_step": "118.11",
+  "title": "AI Provider Health",
+  "document_role": "ai-provider-health-review-record",
+  "state": "pass",
+  "verdict": "AI_PROVIDER_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_state_vocabulary_gap:job_success"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "local_ai": "docs/planning/v1.2/sprint_116_local_ai_certification.json",
+    "openai": "docs/planning/v1.2/sprint_116_openai_connector_certification.json",
+    "openrouter": "docs/planning/v1.2/sprint_116_openrouter_connector_certification.json",
+    "external_dependency": "docs/planning/v1.2/sprint_114_provider_external_dependency_health.json",
+    "model_settings": "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_local_ai_fields": [
+    "provider_id",
+    "model_discovery",
+    "hardware_limits",
+    "storage",
+    "lifecycle",
+    "privacy",
+    "offline_use",
+    "failure_isolation"
+  ],
+  "witness_openai_fields": [
+    "provider_id",
+    "supported_modalities",
+    "models",
+    "auth",
+    "cancellation",
+    "usage_metadata",
+    "cost_labels",
+    "privacy",
+    "errors",
+    "limitations"
+  ],
+  "witness_openrouter_fields": [
+    "provider_id",
+    "routing_metadata",
+    "models",
+    "provider_fallback",
+    "usage",
+    "cost",
+    "privacy_destination",
+    "errors",
+    "limitations"
+  ],
+  "witness_external_dependency_signals": [
+    "provider_availability",
+    "timeout",
+    "throttling",
+    "auth_expiry",
+    "cost_visibility",
+    "fallback_success",
+    "consent_failure"
+  ],
+  "witness_model_settings_acceptance": [
+    "connect",
+    "model_select",
+    "fallback",
+    "timeout",
+    "budget",
+    "prefer_local",
+    "health_test"
+  ],
+  "readable_source_count": 8,
+  "declared_signal_count": 8,
+  "declared_signals": [
+    "model_discovery",
+    "job_success",
+    "cancellation",
+    "usage_match",
+    "cost_label",
+    "fallback",
+    "throttling",
+    "destination"
+  ],
+  "canonical_signals": [
+    "model_discovery",
+    "job_success",
+    "cancellation",
+    "usage_match",
+    "cost_label",
+    "fallback",
+    "throttling",
+    "destination"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_116_local_ai_certification.json",
+    "docs/planning/v1.2/sprint_116_flux_connector_certification.json",
+    "docs/planning/v1.2/sprint_116_openai_connector_certification.json",
+    "docs/planning/v1.2/sprint_116_gemini_connector_certification.json",
+    "docs/planning/v1.2/sprint_116_anthropic_connector_certification.json",
+    "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+    "docs/planning/v1.2/sprint_114_provider_external_dependency_health.json",
+    "docs/planning/v1.2/sprint_116_openrouter_connector_certification.json"
+  ],
+  "no_reference_state_marker": "no_reference_state",
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "model_discovery",
+      "reference_state": "model_discovery",
+      "source": "docs/planning/v1.2/sprint_116_local_ai_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "job_success",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_116_flux_connector_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "cancellation",
+      "reference_state": "cancellation",
+      "source": "docs/planning/v1.2/sprint_116_openai_connector_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "usage_match",
+      "reference_state": "usage_metadata",
+      "source": "docs/planning/v1.2/sprint_116_gemini_connector_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "cost_label",
+      "reference_state": "cost_labels",
+      "source": "docs/planning/v1.2/sprint_116_anthropic_connector_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "fallback",
+      "reference_state": "provider_fallback",
+      "source": "docs/planning/v1.2/sprint_115_ai_connection_model_settings.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "throttling",
+      "reference_state": "throttling",
+      "source": "docs/planning/v1.2/sprint_114_provider_external_dependency_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "destination",
+      "reference_state": "privacy_destination",
+      "source": "docs/planning/v1.2/sprint_116_openrouter_connector_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 116.26 local AI certification, 116.21 OpenAI connector certification, 116.25 OpenRouter connector certification, 114.25 provider & external dependency health, and 115.25 AI connection & model settings evidence. A pass means the declared review carries all five required fields for every one of the eight canonical AI provider signals; it does not run any model discovery, job submission, cancellation, usage fetch, cost read, fallback, throttling probe, or credential access, and it does not authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes an AI provider reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 116.26 local AI required fields, the 116.21 OpenAI required fields, the 116.25 OpenRouter required fields, the 114.25 external dependency signals, and the 115.25 model settings acceptance items, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the local AI, OpenAI, OpenRouter, external dependency, and model settings witness vocabularies, read from the committed witnesses, so the review and the AI provider contracts cannot drift apart silently.",
+    "The objective names job_success, but the committed AI provider witnesses declare no success state for an AI generation job. The review carries the declared no_reference_state marker and the gate records the upstream omission as an open item (upstream_state_vocabulary_gap:job_success) rather than widening the gate or dropping the requirement.",
+    "Live model discovery, job submission, cancellation, usage fetch, cost read, provider fallback, throttling probe, credential access, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live model discovery",
+    "AI generation job submission",
+    "job cancellation",
+    "usage metadata fetch",
+    "provider cost read",
+    "provider fallback execution",
+    "throttling probe",
+    "credential and token access",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

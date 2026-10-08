@@ -28,8 +28,8 @@
   "active_sprint": 118,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_118.json",
   "active_ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
-  "last_verified_step": "118.41",
-  "next_step": "118.42",
+  "last_verified_step": "118.42",
+  "next_step": "118.43",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "118.13",
@@ -62,8 +62,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-09T06:36:27.250427+07:00",
-  "updated_by": "core-worker-cron-slice-118.41",
+  "updated_at": "2026-10-09T06:57:14.502830+07:00",
+  "updated_by": "core-worker-cron-slice-118.42",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",

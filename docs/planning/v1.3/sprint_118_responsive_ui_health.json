@@ -1,0 +1,194 @@
+{
+  "canonical_step": "118.14",
+  "title": "Responsive UI Health",
+  "document_role": "responsive-ui-health-review-record",
+  "state": "pass",
+  "verdict": "RESPONSIVE_UI_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "grid_system": "docs/planning/v1.2/sprint_115_responsive_grid_system.json",
+    "wide_desktop": "docs/planning/v1.2/sprint_115_wide_desktop_visual_implementation.json",
+    "desktop_tablet": "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+    "mobile": "docs/planning/v1.2/sprint_115_mobile_adaptation.json",
+    "brand_visual": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_grid_system_viewports": [
+    "1536x1024_reference",
+    "1440_plus",
+    "1180_to_1439",
+    "900_to_1179",
+    "600_to_899",
+    "under_600"
+  ],
+  "witness_wide_desktop_acceptance": [
+    "layout_dimensions",
+    "no_overlap",
+    "scroll_containment",
+    "consistent_cards",
+    "right_rail",
+    "status_bar"
+  ],
+  "witness_desktop_tablet_acceptance": [
+    "right_drawer",
+    "collapsed_nav",
+    "two_column",
+    "scrollable_tabs",
+    "no_horizontal_overflow",
+    "state_preserved"
+  ],
+  "witness_mobile_acceptance": [
+    "single_column",
+    "provider_sheet",
+    "safe_actions",
+    "44px_targets",
+    "text_alternatives",
+    "no_clipped_content"
+  ],
+  "witness_brand_visual_acceptance": [
+    "icon_review",
+    "visual_regression",
+    "breakpoints",
+    "fallbacks",
+    "keyboard",
+    "screen_reader",
+    "chart_alternatives"
+  ],
+  "readable_source_count": 7,
+  "declared_signal_count": 7,
+  "declared_signals": [
+    "overflow",
+    "layout_shift",
+    "clipping",
+    "drawer_failure",
+    "tab_failure",
+    "chart_issue",
+    "scaling_issue"
+  ],
+  "canonical_signals": [
+    "overflow",
+    "layout_shift",
+    "clipping",
+    "drawer_failure",
+    "tab_failure",
+    "chart_issue",
+    "scaling_issue"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+    "docs/planning/v1.2/sprint_115_wide_desktop_visual_implementation.json",
+    "docs/planning/v1.2/sprint_115_mobile_adaptation.json",
+    "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+    "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+    "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+    "docs/planning/v1.2/sprint_115_responsive_grid_system.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "overflow",
+      "reference_state": "no_horizontal_overflow",
+      "source": "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "layout_shift",
+      "reference_state": "no_overlap",
+      "source": "docs/planning/v1.2/sprint_115_wide_desktop_visual_implementation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "clipping",
+      "reference_state": "no_clipped_content",
+      "source": "docs/planning/v1.2/sprint_115_mobile_adaptation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "drawer_failure",
+      "reference_state": "right_drawer",
+      "source": "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "tab_failure",
+      "reference_state": "scrollable_tabs",
+      "source": "docs/planning/v1.2/sprint_115_desktop_tablet_adaptation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "chart_issue",
+      "reference_state": "chart_alternatives",
+      "source": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "scaling_issue",
+      "reference_state": "breakpoints",
+      "source": "docs/planning/v1.2/sprint_115_responsive_grid_system.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 115.6 responsive grid system, 115.45 wide desktop visual implementation, 115.46 desktop & tablet adaptation, 115.47 mobile adaptation, and 116.47 brand, visual & accessibility gate evidence. A pass means the declared review carries all five required fields for every one of the seven canonical responsive UI signals; it does not render any layout, compare any screenshot baseline, resize any device, render any chart, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a rendered layout or a live device capture and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.6 responsive grid system acceptance viewports, the 115.45 wide desktop acceptance items, the 115.46 desktop & tablet acceptance items, the 115.47 mobile acceptance items, and the 116.47 brand, visual & accessibility gate acceptance areas, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the responsive grid system, wide desktop, desktop & tablet, mobile, and brand/visual/accessibility witness vocabularies, read from the committed witnesses, so the review and the responsive contracts cannot drift apart silently.",
+    "Live rendering, screenshot baseline comparison, device-farm capture, breakpoint resizing, chart rendering, release authorization, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live layout rendering",
+    "screenshot baseline comparison",
+    "device-farm capture",
+    "breakpoint resizing",
+    "chart rendering",
+    "release authorization",
+    "public release publication"
+  ]
+}

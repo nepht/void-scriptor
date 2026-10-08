@@ -1,0 +1,264 @@
+{
+  "canonical_step": "118.26",
+  "title": "Maintenance Regression Matrix",
+  "document_role": "maintenance-regression-matrix-record",
+  "state": "pass",
+  "verdict": "MAINTENANCE_REGRESSION_MATRIX_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "matrix_verified": true,
+  "required_suites": [
+    "unit",
+    "connector_contract",
+    "auth",
+    "sync",
+    "billing",
+    "security",
+    "privacy",
+    "accessibility",
+    "ui",
+    "end_to_end"
+  ],
+  "required_fields": [
+    "suite",
+    "reference_state",
+    "source",
+    "detail",
+    "limitations"
+  ],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_state_vocabulary_gap:connector_contract"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "stability_fixes": "docs/planning/v1.3/sprint_118_stability_fixes.json",
+    "intake": "docs/planning/v1.3/sprint_118_incident_support_intake.json",
+    "test_matrix": "docs/planning/v1.2/sprint_115_automated_test_matrix.json",
+    "full_matrix": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json",
+    "patch_matrix": "docs/planning/v1.2/sprint_114_patch_regression_matrix.json",
+    "connector_contract": "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json",
+    "auth": "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+    "sync": "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+    "billing": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+    "security": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "privacy": "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+    "accessibility": "docs/planning/v1.3/sprint_118_accessibility_health.json",
+    "ui": "docs/planning/v1.3/sprint_118_responsive_ui_health.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "stability_fixes_state": "pass",
+  "stability_fixes_verdict": "STABILITY_FIXES_VERIFIED_LOCAL",
+  "intake_state": "pass",
+  "intake_verdict": "INCIDENT_SUPPORT_INTAKE_VERIFIED_LOCAL",
+  "live_connector_execution": false,
+  "readable_source_count": 15,
+  "reference_state_vocabulary": [
+    "unit",
+    "state_machine",
+    "contract",
+    "connector",
+    "security",
+    "billing",
+    "ui",
+    "accessibility",
+    "end_to_end",
+    "regression",
+    "property",
+    "integration",
+    "migration",
+    "recovery",
+    "privacy",
+    "manifest",
+    "auth",
+    "capability",
+    "usage",
+    "error",
+    "reauth",
+    "disconnect",
+    "cleanup",
+    "support",
+    "crash",
+    "quota",
+    "sync",
+    "ai",
+    "no_reference_state"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_automated_test_matrix.json",
+    "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json",
+    "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+    "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+    "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+    "docs/planning/v1.3/sprint_118_accessibility_health.json",
+    "docs/planning/v1.3/sprint_118_responsive_ui_health.json",
+    "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json"
+  ],
+  "declared_suites": [
+    "unit",
+    "connector_contract",
+    "auth",
+    "sync",
+    "billing",
+    "security",
+    "privacy",
+    "accessibility",
+    "ui",
+    "end_to_end"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "suite": "unit",
+      "reference_state": "unit",
+      "source": "docs/planning/v1.2/sprint_115_automated_test_matrix.json",
+      "detail": "The unit suite regresses the committed stability fixes at the domain layer without a live maintenance run",
+      "limitations": [
+        "live_maintenance_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "connector_contract",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json",
+      "detail": "The connector contract suite regresses the committed connector contract e2e acceptance suites without a live connector",
+      "limitations": [
+        "live_connector_execution_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "auth",
+      "reference_state": "auth",
+      "source": "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+      "detail": "The auth suite regresses the committed identity workflow validation without a live credential",
+      "limitations": [
+        "live_auth_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "sync",
+      "reference_state": "sync",
+      "source": "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+      "detail": "The sync suite regresses the committed cross-storage sync and backup certification without a live transfer",
+      "limitations": [
+        "live_sync_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "billing",
+      "reference_state": "billing",
+      "source": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+      "detail": "The billing suite regresses the committed billing entitlement webhook reconciliation without a live payment processor",
+      "limitations": [
+        "live_billing_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "security",
+      "reference_state": "security",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "detail": "The security suite regresses the committed security certification gate without a live security scan",
+      "limitations": [
+        "live_security_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "privacy",
+      "reference_state": "privacy",
+      "source": "docs/planning/v1.2/sprint_116_privacy_compliance_gate.json",
+      "detail": "The privacy suite regresses the committed privacy compliance gate without a live data-flow inspection",
+      "limitations": [
+        "live_privacy_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "accessibility",
+      "reference_state": "accessibility",
+      "source": "docs/planning/v1.3/sprint_118_accessibility_health.json",
+      "detail": "The accessibility suite regresses the committed accessibility health review without a live screen reader",
+      "limitations": [
+        "live_accessibility_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "ui",
+      "reference_state": "ui",
+      "source": "docs/planning/v1.3/sprint_118_responsive_ui_health.json",
+      "detail": "The ui suite regresses the committed responsive UI health review without a live render",
+      "limitations": [
+        "live_ui_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    },
+    {
+      "suite": "end_to_end",
+      "reference_state": "end_to_end",
+      "source": "docs/planning/v1.2/sprint_112_full_automated_test_matrix.json",
+      "detail": "The end-to-end suite regresses the committed full automated test matrix without a live workflow execution",
+      "limitations": [
+        "live_end_to_end_run_deferred",
+        "synthetic_local"
+      ],
+      "maintenance_executed": false,
+      "connector_certified": false,
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Maintenance Regression Matrix over the committed 118.4 post-release health baseline, the committed 118.2 stability expansion charter, the committed 118.24 stability fixes register, the committed 118.6 incident support intake, and the committed 115/112/114/116 test-matrix witnesses. A pass does not execute a maintenance run, certify a connector, run a live connector, observe anything live, authorize a release, or publish.",
+    "The matrix is written against GA_DELAYED. Every entry registers a reference for one of the ten canonical required suites (unit, connector_contract, auth, sync, billing, security, privacy, accessibility, ui, end_to_end), claims no live maintenance run, certifies no connector, and observes nothing live.",
+    "A regression suite is never claimed executed without a release: the gate refuses any entry that claims a live maintenance run.",
+    "A maintenance regression never certifies a connector: the gate refuses any entry that claims a certification.",
+    "Live maintenance execution, connector certification, connector execution, live observation, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "live maintenance execution",
+    "connector certification",
+    "live connector execution",
+    "live observation",
+    "public release publication"
+  ]
+}

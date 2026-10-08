@@ -1,0 +1,208 @@
+{
+  "canonical_step": "118.15",
+  "title": "Accessibility Health",
+  "document_role": "accessibility-health-review-record",
+  "state": "pass",
+  "verdict": "ACCESSIBILITY_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "interaction_baseline": "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+    "keyboard_screen_reader": "docs/planning/v1.2/sprint_115_keyboard_screen_reader_verification.json",
+    "accessibility_health": "docs/planning/v1.2/sprint_114_accessibility_health.json",
+    "brand_visual": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+    "storage_usage_cards": "docs/planning/v1.2/sprint_115_storage_usage_cards.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_interaction_baseline": [
+    "keyboard_complete",
+    "visible_focus",
+    "screen_reader_labels",
+    "chart_text_alternative",
+    "44px_touch_target",
+    "200_percent_scale"
+  ],
+  "witness_keyboard_screen_reader": [
+    "focus_order",
+    "keyboard_results",
+    "screen_reader_results",
+    "status_announcements",
+    "dialog_results",
+    "chart_alternatives"
+  ],
+  "witness_accessibility_health": [
+    "keyboard_blocker",
+    "screen_reader_blocker",
+    "focus_loss",
+    "scaling_break",
+    "contrast_issue",
+    "motion_issue",
+    "nonvisual_gap"
+  ],
+  "witness_brand_visual": [
+    "icon_review",
+    "visual_regression",
+    "breakpoints",
+    "fallbacks",
+    "keyboard",
+    "screen_reader",
+    "chart_alternatives"
+  ],
+  "witness_storage_usage_cards": [
+    "icon",
+    "accessible_progress",
+    "quota_unknown_state",
+    "freshness",
+    "error_state",
+    "manage_action"
+  ],
+  "readable_source_count": 8,
+  "declared_signal_count": 8,
+  "declared_signals": [
+    "keyboard_blocker",
+    "focus_issue",
+    "screen_reader_issue",
+    "status_issue",
+    "progress_issue",
+    "chart_gap",
+    "target_issue",
+    "contrast_issue"
+  ],
+  "canonical_signals": [
+    "keyboard_blocker",
+    "focus_issue",
+    "screen_reader_issue",
+    "status_issue",
+    "progress_issue",
+    "chart_gap",
+    "target_issue",
+    "contrast_issue"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+    "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+    "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+    "docs/planning/v1.2/sprint_115_keyboard_screen_reader_verification.json",
+    "docs/planning/v1.2/sprint_115_storage_usage_cards.json",
+    "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+    "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+    "docs/planning/v1.2/sprint_114_accessibility_health.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "keyboard_blocker",
+      "reference_state": "keyboard_complete",
+      "source": "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "focus_issue",
+      "reference_state": "visible_focus",
+      "source": "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "screen_reader_issue",
+      "reference_state": "screen_reader_labels",
+      "source": "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "status_issue",
+      "reference_state": "status_announcements",
+      "source": "docs/planning/v1.2/sprint_115_keyboard_screen_reader_verification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "progress_issue",
+      "reference_state": "accessible_progress",
+      "source": "docs/planning/v1.2/sprint_115_storage_usage_cards.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "chart_gap",
+      "reference_state": "chart_text_alternative",
+      "source": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "target_issue",
+      "reference_state": "44px_touch_target",
+      "source": "docs/planning/v1.2/sprint_115_accessibility_interaction_baseline.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "contrast_issue",
+      "reference_state": "contrast_issue",
+      "source": "docs/planning/v1.2/sprint_114_accessibility_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 115.7 accessibility interaction baseline, 115.48 keyboard & screen reader verification, 114.20 accessibility health, 116.47 brand, visual & accessibility gate, and 115.19 storage usage cards evidence. A pass means the declared review carries all five required fields for every one of the eight canonical accessibility signals; it does not run any assistive technology, measure any contrast ratio, measure any touch target, render any scaled layout, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a live assistive-technology run or a real user interaction and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.7 accessibility interaction baseline acceptance items, the 115.48 keyboard & screen reader verification required evidence, the 114.20 accessibility health required evidence, the 116.47 brand, visual & accessibility gate acceptance areas, and the 115.19 storage usage cards acceptance items, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the accessibility interaction baseline, keyboard & screen reader verification, accessibility health, brand/visual/accessibility, and storage usage cards witness vocabularies, read from the committed witnesses, so the review and the accessibility contracts cannot drift apart silently.",
+    "Live assistive-technology runs, screen reader verification, contrast measurement, touch-target measurement, scale rendering, release authorization, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live assistive-technology runs",
+    "screen reader verification",
+    "contrast measurement",
+    "touch-target measurement",
+    "scale rendering",
+    "release authorization",
+    "public release publication"
+  ]
+}

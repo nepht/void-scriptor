@@ -1,0 +1,206 @@
+{
+  "canonical_step": "118.28",
+  "title": "Maintenance Release Gate",
+  "document_role": "maintenance-release-gate-record",
+  "state": "pass",
+  "verdict": "MAINTENANCE_RELEASE_GATE_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "selected_decision": "NO_PATCH",
+  "release_verified": true,
+  "required_decisions": [
+    "BUILD_1_3_1",
+    "NO_PATCH",
+    "EMERGENCY_RELEASE_ALREADY_ISSUED"
+  ],
+  "required_validations": [
+    "artifact",
+    "upgrade",
+    "rollback",
+    "checksums",
+    "notes"
+  ],
+  "required_fields": [
+    "item",
+    "reference_state",
+    "source",
+    "detail",
+    "limitations"
+  ],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "rollout_decision": "docs/planning/v1.3/sprint_118_rollout_progression_decision.json",
+    "approval_gate": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "maintenance_scope": "docs/planning/v1.2/sprint_114_maintenance_release_scope.json",
+    "maintenance_artifact": "docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json",
+    "artifact_reproducibility": "docs/evidence/sprint-117-43-manifest-20261002.json",
+    "packaging": "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+    "rollback_drill": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "release_state_anchor": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "rollout_state": "pass",
+  "rollout_verdict": "ROLLOUT_PROGRESSION_DECISION_VERIFIED_LOCAL",
+  "rollout_decision": "HOLD",
+  "approval_decision": "delay",
+  "approval_state": "PENDING_CHOIRUDIN",
+  "execution_authorized": false,
+  "release_blocked": true,
+  "approved_fix_count": 0,
+  "emergency_release_recorded": false,
+  "readable_source_count": 9,
+  "reference_state_vocabulary": [
+    "approved_scope_or_no_patch",
+    "test_results",
+    "signed_artifact_if_needed",
+    "upgrade_results",
+    "rollback_results",
+    "checksums",
+    "release_notes",
+    "signed_artifacts",
+    "connector_manifest",
+    "icon_manifest",
+    "dependency_manifest",
+    "schema_manifest",
+    "flag_manifest",
+    "provenance",
+    "version_manifest",
+    "licenses",
+    "public_release_signing",
+    "hosted_ci_validation",
+    "live_production_telemetry",
+    "published_artifact_validation",
+    "upgrade_validation",
+    "rollback_validation",
+    "release_notes_publication",
+    "publication",
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication",
+    "no_reference_state"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+    "docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json",
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+    "docs/evidence/sprint-117-43-manifest-20261002.json",
+    "docs/planning/v1.2/sprint_114_maintenance_release_scope.json"
+  ],
+  "declared_validations": [
+    "artifact",
+    "upgrade",
+    "rollback",
+    "checksums",
+    "notes"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "item": "artifact",
+      "reference_state": "signed_artifacts",
+      "source": "docs/planning/v1.2/sprint_113_ga_artifact_packaging.json",
+      "detail": "The 113.38 packaging manifest declares the signed artifact set; no v1.3.1 artifact is built or signed while the release is blocked",
+      "limitations": [
+        "artifact_build_deferred",
+        "synthetic_local"
+      ],
+      "artifact_built": false,
+      "upgrade_executed": false,
+      "rollback_executed": false,
+      "notes_published": false,
+      "emergency_claimed": false,
+      "observed": false
+    },
+    {
+      "item": "upgrade",
+      "reference_state": "upgrade_results",
+      "source": "docs/planning/v1.2/sprint_114_maintenance_artifact_release_gate.json",
+      "detail": "The 114.40 maintenance artifact gate declares the upgrade result evidence; no upgrade is executed against a release that never ran",
+      "limitations": [
+        "upgrade_execution_deferred",
+        "synthetic_local"
+      ],
+      "artifact_built": false,
+      "upgrade_executed": false,
+      "rollback_executed": false,
+      "notes_published": false,
+      "emergency_claimed": false,
+      "observed": false
+    },
+    {
+      "item": "rollback",
+      "reference_state": "artifact_rollback",
+      "source": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+      "detail": "The 117.8 rollback drill declares the artifact rollback control; no rollback is executed because no artifact was released",
+      "limitations": [
+        "rollback_execution_deferred",
+        "synthetic_local"
+      ],
+      "artifact_built": false,
+      "upgrade_executed": false,
+      "rollback_executed": false,
+      "notes_published": false,
+      "emergency_claimed": false,
+      "observed": false
+    },
+    {
+      "item": "checksums",
+      "reference_state": "checksums",
+      "source": "docs/evidence/sprint-117-43-manifest-20261002.json",
+      "detail": "The 117.43 GA artifact evidence declares the checksum output and records it as the sole failing group; no v1.3.1 checksum is published",
+      "limitations": [
+        "checksum_publication_deferred",
+        "synthetic_local"
+      ],
+      "artifact_built": false,
+      "upgrade_executed": false,
+      "rollback_executed": false,
+      "notes_published": false,
+      "emergency_claimed": false,
+      "observed": false
+    },
+    {
+      "item": "notes",
+      "reference_state": "release_notes",
+      "source": "docs/planning/v1.2/sprint_114_maintenance_release_scope.json",
+      "detail": "The 114.39 maintenance scope declares the release-note evidence and defers release-note publication; no v1.3.1 note is written",
+      "limitations": [
+        "release_note_publication_deferred",
+        "synthetic_local"
+      ],
+      "artifact_built": false,
+      "upgrade_executed": false,
+      "rollback_executed": false,
+      "notes_published": false,
+      "emergency_claimed": false,
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Maintenance Release Gate over the committed 118.4 post-release health baseline, the committed 118.2 stability expansion charter, the committed 118.27 rollout progression decision, the committed 117.45 approval gate, and the committed 114.39 maintenance scope, 114.40 maintenance artifact gate, 117.43 GA artifact reproducibility evidence, 113.38 packaging manifest, and 117.8 rollback drill. A pass does not build an artifact, execute an upgrade, execute a rollback, publish checksums, publish release notes, authorize a release, or publish.",
+    "The gate is written against GA_DELAYED. It enumerates all five canonical validation domains (artifact, upgrade, rollback, checksums, notes), claims no built artifact, no executed upgrade, no executed rollback, no published release note, no emergency release, and observes nothing live, and selects NO_PATCH as the only decision the evidence supports.",
+    "A maintenance release is never built without an approved fix scope and an authorized release: when no approved fix requires a patch and no release is authorized, the gate refuses any selected decision other than NO_PATCH, and refuses BUILD_1_3_1 without an approved fix and an authorized release and EMERGENCY_RELEASE_ALREADY_ISSUED without a recorded emergency.",
+    "An artifact is never built, an upgrade is never executed, a rollback is never executed, a release note is never published, and an emergency release is never claimed on the delayed path: the gate refuses each claim by name.",
+    "Artifact build, signing, upgrade execution, rollback execution, checksum publication, release-note publication, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "maintenance artifact build",
+    "artifact signing",
+    "upgrade execution",
+    "rollback execution",
+    "checksum publication",
+    "release-note publication",
+    "release authorization",
+    "public release publication"
+  ]
+}

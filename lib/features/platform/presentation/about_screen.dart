@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:void_scriptor/features/platform/application/platform_controller.dart';
 
+import '../../../core/build_identity.dart';
 import '../../../design_system/spacing/void_spacing.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
@@ -50,13 +51,19 @@ class AboutScreen extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      'Version 1.0.0',
+                      'Version ${BuildIdentity.version}',
                       style: VoidTypography.caption.copyWith(
                         color: context.palette.textSecondary,
                       ),
                     ),
                     Text(
-                      'Build 20260817',
+                      'Build ${BuildIdentity.commit}',
+                      style: VoidTypography.caption.copyWith(
+                        color: context.palette.textSecondary,
+                      ),
+                    ),
+                    Text(
+                      'Channel ${BuildIdentity.channel}',
                       style: VoidTypography.caption.copyWith(
                         color: context.palette.textSecondary,
                       ),

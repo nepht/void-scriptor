@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_flutter/lucide_flutter.dart';
 
 import '../../../core/commands/project_mutation_state.dart';
+import '../../../core/build_identity.dart';
 import '../../navigation/app_navigation_registry.dart';
 import '../../../design_system/widgets/branding/brand_assets.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
@@ -119,6 +120,7 @@ class VoidTopBar extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (BuildIdentity.hasCommit) const _BuildIdentityChip(),
                   if (saveState != null)
                     _SaveStateChip(dirty: saveState.isDirty),
                   _TopIconButton(
@@ -151,6 +153,24 @@ class VoidTopBar extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BuildIdentityChip extends StatelessWidget {
+  const _BuildIdentityChip();
+
+  @override
+  Widget build(BuildContext context) => Tooltip(
+    message: BuildIdentity.diagnosticLabel,
+    child: Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Text(
+        BuildIdentity.shortLabel,
+        style: VoidTypography.caption.copyWith(
+          color: context.palette.textMuted,
+        ),
+      ),
+    ),
+  );
 }
 
 /// Summary of the active project session rendered as the project-context

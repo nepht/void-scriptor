@@ -12,6 +12,11 @@ Pola `GA_DELAYED` yang disetujui untuk Sprint 118 berlaku sebagai pola eksekusi 
 2. Entry/transition wajib memakai canonical JSON, ledger aktif, runtime state, dan roadmap guard. Jangan melompati step atau menghidupkan deferred scope; bila kontrak sprint berikutnya belum tersedia, satu blocker konkret dicatat dan worker berhenti.
 3. Bukti yang sudah `VERIFIED`/`COMPLETED` dilaporkan sebagai delta saja. Jangan menyalin ulang narasi historis pada setiap Telegram update; heartbeat hanya ringkasan singkat status aktif, next step, gate, dan blocker baru.
 4. SDK/toolchain harus ditemukan secara versioned dari `D:\DevTools\Flutter-SDK-*`; jangan kembali ke path spasi lama kecuali sebagai fallback yang benar-benar ada.
+5. Setiap build Windows yang akan diuji wajib menyuntikkan identitas commit dari
+   `git rev-parse --short HEAD` melalui `--dart-define=VOID_BUILD_SHA=...`,
+   bersama `--dart-define=VOID_BUILD_VERSION=...` dan
+   `--dart-define=VOID_BUILD_CHANNEL=debug|release`. Jangan mengklaim build
+   terbaru bila SHA tidak cocok dengan HEAD yang diuji.
 
 Aturan ini mengatur cara kerja dan batas klaim, bukan menciptakan acceptance atau mengubah kontrak sprint. Setiap sprint tetap harus lulus gate lokalnya sebelum transisi.
 

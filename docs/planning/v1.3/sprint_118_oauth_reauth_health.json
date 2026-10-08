@@ -1,0 +1,155 @@
+{
+  "canonical_step": "118.8",
+  "title": "OAuth & Reauthentication Health",
+  "document_role": "oauth-reauth-health-review-record",
+  "state": "pass",
+  "verdict": "OAUTH_REAUTH_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "oauth_flow": "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+    "reauth": "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_oauth_surfaces": [
+    "flow_type",
+    "pkce_method",
+    "state",
+    "nonce",
+    "scoped_consent",
+    "callback",
+    "token_rotation",
+    "unlink",
+    "secret_surface"
+  ],
+  "witness_reauth_acceptance": [
+    "expiry_notice",
+    "affected_scope",
+    "reauth",
+    "retry",
+    "revoke",
+    "local_data_preserved"
+  ],
+  "readable_source_count": 6,
+  "declared_signal_count": 6,
+  "declared_signals": [
+    "callback_error",
+    "state_failure",
+    "rotation_failure",
+    "reauth_completion",
+    "scope_change",
+    "provider_revoke"
+  ],
+  "canonical_signals": [
+    "callback_error",
+    "state_failure",
+    "rotation_failure",
+    "reauth_completion",
+    "scope_change",
+    "provider_revoke"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+    "docs/planning/v1.2/sprint_116_provider_error_state_certification.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "docs/planning/v1.2/sprint_115_connected_accounts_management.json",
+    "docs/planning/v1.3/sprint_117_identity_workflow_validation.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "callback_error",
+      "reference_state": "callback",
+      "source": "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "state_failure",
+      "reference_state": "state",
+      "source": "docs/planning/v1.2/sprint_116_provider_error_state_certification.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "rotation_failure",
+      "reference_state": "token_rotation",
+      "source": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "reauth_completion",
+      "reference_state": "reauth",
+      "source": "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "scope_change",
+      "reference_state": "scoped_consent",
+      "source": "docs/planning/v1.2/sprint_115_connected_accounts_management.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "provider_revoke",
+      "reference_state": "revoke",
+      "source": "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 115.11 OAuth flow, and 115.43 reauthentication evidence. A pass means the declared review carries all five required fields for every one of the six canonical OAuth signals; it does not perform a live OAuth exchange, probe any provider, access any credential, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes an authentication and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.11 OAuth flow surfaces and the 115.43 reauthentication acceptance items, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the OAuth flow protocol surfaces and the reauthentication acceptance items, read from the committed witnesses, so the review and the OAuth/reauthentication contracts cannot drift apart silently.",
+    "Live OAuth exchange, provider probing, credential access, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live OAuth authorization-code exchange",
+    "provider probing",
+    "credential and token access",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

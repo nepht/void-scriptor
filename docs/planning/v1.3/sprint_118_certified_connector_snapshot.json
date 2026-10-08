@@ -1,0 +1,53 @@
+{
+  "canonical_step": "118.3",
+  "title": "Certified Connector Snapshot",
+  "document_role": "connector-snapshot-evaluation-record",
+  "state": "pass",
+  "verdict": "CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL",
+  "release_state": "GA_DELAYED",
+  "snapshot_frozen": true,
+  "required_fields": [
+    "provider_id",
+    "connector_version",
+    "status",
+    "limitations",
+    "regions",
+    "plans",
+    "icon_version",
+    "recheck_date"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "registry_evidence": "docs/evidence/sprint-117-41-manifest-20261002.json"
+  },
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_certified": 0,
+  "charter_registered": 32,
+  "evidence_certified": 0,
+  "evidence_limited": 0,
+  "evidence_unverified": 32,
+  "evidence_provider_count": 32,
+  "evidence_exposed": 0,
+  "registered_provider_count": 32,
+  "frozen_provider_count": 0,
+  "released_subset": [],
+  "released_entries": [],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.2 charter and 117.41 connector-registry evidence. A pass means the snapshot faithfully freezes the released connector subset and its status counts match the registry; it does not certify any connector, expose any provider, or authorize any release.",
+    "The snapshot is written against the delayed release state (GA_DELAYED). The committed registry evidence records CERTIFIED: 0 and LIMITED: 0 of 32 registered providers, so the released subset is empty and this record freezes exactly that.",
+    "The gate reads the committed charter and registry evidence directly; an unreadable witness or an incomplete charter keeps the snapshot blocked rather than assumed.",
+    "Connector certification, provider exposure, live availability, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "connector certification evidence",
+    "provider exposure authorization",
+    "live provider availability",
+    "quota, cost, and credential state",
+    "public release publication"
+  ]
+}

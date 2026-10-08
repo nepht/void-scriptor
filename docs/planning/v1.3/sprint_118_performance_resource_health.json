@@ -1,0 +1,194 @@
+{
+  "canonical_step": "118.16",
+  "title": "Performance & Resource Health",
+  "document_role": "performance-resource-health-review-record",
+  "state": "pass",
+  "verdict": "PERFORMANCE_RESOURCE_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_state_vocabulary_gap:chart_latency",
+    "upstream_state_vocabulary_gap:network"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "performance_responsiveness": "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+    "memory_storage_cache": "docs/planning/v1.2/sprint_114_memory_storage_cache_health.json",
+    "performance_resilience": "docs/planning/v1.2/sprint_115_performance_resilience.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_performance_responsiveness": [
+    "startup",
+    "editor_latency",
+    "search_latency",
+    "graph_latency",
+    "simulation_latency",
+    "export_duration",
+    "background_contention"
+  ],
+  "witness_memory_storage_cache": [
+    "memory_pressure",
+    "storage_growth",
+    "snapshot_growth",
+    "cache_pressure",
+    "temp_growth",
+    "index_growth"
+  ],
+  "witness_performance_resilience": [
+    "render_budget",
+    "refresh_budget",
+    "slow_api_results",
+    "rate_limit_results",
+    "outage_results",
+    "many_accounts_results",
+    "scan_results"
+  ],
+  "readable_source_count": 8,
+  "declared_signal_count": 8,
+  "declared_signals": [
+    "render_latency",
+    "refresh_latency",
+    "scan_duration",
+    "chart_latency",
+    "memory",
+    "contention",
+    "network",
+    "cache_growth"
+  ],
+  "canonical_signals": [
+    "render_latency",
+    "refresh_latency",
+    "scan_duration",
+    "chart_latency",
+    "memory",
+    "contention",
+    "network",
+    "cache_growth"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_114_memory_storage_cache_health.json",
+    "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_114_memory_storage_cache_health.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "render_latency",
+      "reference_state": "render_budget",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "refresh_latency",
+      "reference_state": "refresh_budget",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "scan_duration",
+      "reference_state": "scan_results",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "chart_latency",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "memory",
+      "reference_state": "memory_pressure",
+      "source": "docs/planning/v1.2/sprint_114_memory_storage_cache_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "contention",
+      "reference_state": "background_contention",
+      "source": "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "network",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "cache_growth",
+      "reference_state": "cache_pressure",
+      "source": "docs/planning/v1.2/sprint_114_memory_storage_cache_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 114.16 performance & responsiveness health, 114.17 memory, storage & cache health, and 115.53 performance & provider resilience evidence. A pass means the declared review carries all five required fields for every one of the eight canonical performance signals; it does not run any profile-mode FrameTiming capture, measure any cold-start wall clock, read any live process heap/RSS, measure any native disk growth, observe any live network egress, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a live profile-mode run, a real frame timing, or a real resource reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 114.16 performance & responsiveness health required evidence, the 114.17 memory, storage & cache health required evidence, and the 115.53 performance & provider resilience required outputs, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the performance & responsiveness, memory/storage/cache, and performance & provider resilience witness vocabularies, read from the committed witnesses, so the review and the performance contracts cannot drift apart silently.",
+    "The 118.16 objective names charts and network use explicitly, but the committed performance witnesses declare no chart-specific latency state or network-use state; rather than widen the gate silently or drop the requirement, the review carries the declared no_reference_state marker for chart_latency and network and the gate records the upstream omission as an open item (upstream_state_vocabulary_gap:chart_latency, upstream_state_vocabulary_gap:network).",
+    "Live profile-mode FrameTiming, cold-start native GUI timing, real process heap/RSS, native disk growth, real network egress, release authorization, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "profile-mode FrameTiming capture",
+    "cold-start native GUI timing",
+    "real process heap/RSS measurement",
+    "native disk growth measurement",
+    "live network egress observation",
+    "release authorization",
+    "public release publication"
+  ]
+}

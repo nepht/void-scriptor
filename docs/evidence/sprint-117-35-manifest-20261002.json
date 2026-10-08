@@ -5,22 +5,22 @@
   "harness": "flutter test (no raster pipeline, no real GPU)",
   "external_gate": "DEFERRED-EXTERNAL",
   "probes": {
-    "render_frame_pump_ms": "24.936",
-    "render_chrome_cold_pump_ms": "1032.319",
-    "render_chrome_warm_frame_ms": "213.563",
-    "render_chrome_warm_samples_ms": "340.335,281.605,248.578,266.270,235.311,213.563",
+    "render_frame_pump_ms": "28.631",
+    "render_chrome_cold_pump_ms": "1118.102",
+    "render_chrome_warm_frame_ms": "193.514",
+    "render_chrome_warm_samples_ms": "387.766,300.193,281.191,241.310,255.955,193.514",
     "render_chrome_providers": "7",
     "render_chrome_viewport": "1536x1024",
     "many_accounts_count": "48",
-    "many_accounts_availability_sweep_ms": "0.252",
+    "many_accounts_availability_sweep_ms": "0.250",
     "many_accounts_refresh_budget_ms": "250.0",
     "refresh_iterations": "1000",
-    "refresh_path_batch_ms": "8.144",
+    "refresh_path_batch_ms": "4.163",
     "refresh_budget_ms": "250.0",
     "charts_track_color_changes_output": "true",
     "local_scan_files": "3",
     "local_scan_bytes": "154",
-    "local_scan_ms": "14.258",
+    "local_scan_ms": "14.801",
     "local_scan_budget_ms": "2000.0",
     "memory_search_calls_after_dispose": "0",
     "contention_peak_concurrency": "2",
@@ -68,21 +68,21 @@
         "check": "chrome_first_frame_inside_budget",
         "status": "pass",
         "declared": "The account & cloud center chrome paints its first frame within initialFrameBudgetMs at the reference viewport.",
-        "observed": "warm frame 213.563ms against a 400.0ms budget at 1536x1024 with 7 provider rows; the cold pump (1032.319ms) also pays JIT and Skia warm-up and is recorded, not asserted."
+        "observed": "warm frame 193.514ms against a 400.0ms budget at 1536x1024 with 7 provider rows; the cold pump (1118.102ms) also pays JIT and Skia warm-up and is recorded, not asserted."
       },
       {
         "area": "many_accounts",
         "check": "sweep_of_contract_row_count",
         "status": "pass",
         "declared": "The account sweep named by the contract keeps its budget and never blurs a non-connected provider into a connected claim.",
-        "observed": "48 accounts x 7 availabilities in 0.252ms against the 250.0ms refresh budget; outage still reads as not connected."
+        "observed": "48 accounts x 7 availabilities in 0.250ms against the 250.0ms refresh budget; outage still reads as not connected."
       },
       {
         "area": "refresh",
         "check": "cpu_path_bounded_and_observation_required",
         "status": "pass",
         "declared": "One refresh stays inside its CPU budget, and a refresh without a health observation is refused instead of counted as success.",
-        "observed": "1000 iterations in 8.144ms; NOT_CONFIGURED refuses refreshHealth and a CONNECTED machine without healthState throws ArgumentError."
+        "observed": "1000 iterations in 4.163ms; NOT_CONFIGURED refuses refreshHealth and a CONNECTED machine without healthState throws ArgumentError."
       },
       {
         "area": "charts",
@@ -96,7 +96,7 @@
         "check": "real_tree_indexed_and_totalled",
         "status": "pass",
         "declared": "A real storage scan stays inside scanBudgetMs, totals every category, and reports an absent root as empty rather than fake.",
-        "observed": "3 files / 154 bytes indexed in 14.258ms against the 2000.0ms budget; category totals sum to the report total and a missing root yields 0 files / 0 bytes."
+        "observed": "3 files / 154 bytes indexed in 14.801ms against the 2000.0ms budget; category totals sum to the report total and a missing root yields 0 files / 0 bytes."
       },
       {
         "area": "slow_api",

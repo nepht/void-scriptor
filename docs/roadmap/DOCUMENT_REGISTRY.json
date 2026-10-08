@@ -71,6 +71,27 @@
    "may_change_runtime_pointer": false
   },
   {
+   "path": "docs/roadmap/SPRINT_EXECUTION_COVERAGE.md",
+   "role": "GOVERNANCE_GUIDE",
+   "authority": "ADVISORY",
+   "status": "ACTIVE",
+   "integrity": "IMMUTABLE",
+   "sha256": "1f39929e5627954fa4460a27e50475f459c56de1a2e1124183d0b7b1e84b1e6b",
+   "owner": "roadmap-audit",
+   "effective_date": "2026-10-07",
+   "linked_sprints": [
+    1,
+    100,
+    101,
+    118,
+    119,
+    145
+   ],
+   "may_create_scope": false,
+   "may_mark_implementation_complete": false,
+   "may_change_runtime_pointer": false
+  },
+  {
    "path": ".hermes/AUTONOMOUS_ROADMAP_PROMPT.md",
    "role": "EXECUTOR_POLICY",
    "authority": "BINDING",

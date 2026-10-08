@@ -1,8 +1,19 @@
-Jalankan remediasi otonom Void Scriptor hanya pada repository canonical Windows `D:\VoidScriptor\void_scriptor_multiplatform`. Gunakan toolchain `D:\DevTools\Flutter SDK\flutter\bin\flutter.bat`. Jangan gunakan checkout WSL atau mirror `D:\VoidScriptor_Windows`.
+Jalankan remediasi otonom Void Scriptor hanya pada repository canonical Windows `D:\VoidScriptor\void_scriptor_multiplatform`. Gunakan toolchain versioned yang ditemukan di `D:\DevTools\Flutter-SDK-*\flutter\bin\flutter.bat` (saat ini `D:\DevTools\Flutter-SDK-3.47.6\flutter\bin\flutter.bat`). Jangan gunakan checkout WSL atau mirror `D:\VoidScriptor_Windows`.
 
 Roadmap tidak memiliki satu pointer tunggal. Konsensus wajib berasal dari `docs/roadmap/ROADMAP_POLICY.json`, `docs/roadmap/DOCUMENT_REGISTRY.json`, external canonical JSON, ledger sprint aktif, dan `.hermes/ROADMAP_STATE.json`. Pada awal SETIAP run, jalankan `dart run tool/roadmap_guard.dart`. Jika exit bukan 0, lakukan NO-OP/BLOCKED dan jangan mengedit source. Dilarang menjalankan `--repair` dari cron; repair hanya boleh dilakukan secara sadar ketika scheduler paused.
 
 File tanpa nomor sprint tidak memiliki otoritas secara otomatis. Baca role dan authority hanya dari `DOCUMENT_REGISTRY.json`. File yang tidak terdaftar adalah `NON_BINDING`; `REFERENCE`, `BACKLOG`, `GENERATED`, `EXECUTION_SUMMARY`, dan `HISTORICAL_LEDGER` tidak boleh membuat langkah atau acceptance baru. `EVIDENCE` hanya mendukung klasifikasi status. `POLICY` dan `EXECUTOR_POLICY` boleh membatasi cara kerja tetapi tidak boleh memperluas scope kontrak sprint. Jika dokumen dalam strict authority root tidak terdaftar, checksum immutable berubah, atau authority bertentangan, lakukan NO-OP/BLOCKED.
+
+## Kontinuitas corrective sampai Sprint 151 (otorisasi operator, 2026-10-07)
+
+Pola `GA_DELAYED` yang disetujui untuk Sprint 118 berlaku sebagai pola eksekusi sampai dan termasuk Sprint 151 selama kontrak sprint kanoniknya tersedia. Untuk setiap sprint dalam rentang ini:
+
+1. Jika bukti eksternal/provider/release belum lengkap, pertahankan `GA_DELAYED` dan kerjakan hanya corrective scope lokal yang tercatat serta dapat diverifikasi. Jangan mengklaim `GA_RELEASED`, sertifikasi, publikasi, billing, signing release, atau exposure provider.
+2. Entry/transition wajib memakai canonical JSON, ledger aktif, runtime state, dan roadmap guard. Jangan melompati step atau menghidupkan deferred scope; bila kontrak sprint berikutnya belum tersedia, satu blocker konkret dicatat dan worker berhenti.
+3. Bukti yang sudah `VERIFIED`/`COMPLETED` dilaporkan sebagai delta saja. Jangan menyalin ulang narasi historis pada setiap Telegram update; heartbeat hanya ringkasan singkat status aktif, next step, gate, dan blocker baru.
+4. SDK/toolchain harus ditemukan secara versioned dari `D:\DevTools\Flutter-SDK-*`; jangan kembali ke path spasi lama kecuali sebagai fallback yang benar-benar ada.
+
+Aturan ini mengatur cara kerja dan batas klaim, bukan menciptakan acceptance atau mengubah kontrak sprint. Setiap sprint tetap harus lulus gate lokalnya sebelum transisi.
 
 Urutan wajib setiap run:
 1. Rekam `git status --short --branch`, `git rev-parse HEAD`, pastikan tidak ada conflict markers, dan pastikan tidak ada Flutter process lain. Preserve seluruh perubahan pengguna/agen lain.

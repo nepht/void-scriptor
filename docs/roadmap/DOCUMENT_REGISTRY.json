@@ -97,7 +97,7 @@
    "authority": "BINDING",
    "status": "ACTIVE",
    "integrity": "IMMUTABLE",
-   "sha256": "555be2b054bbba9d8d73df742f1ff1ac2697fd9bcdd4563e00932aec430854c7",
+   "sha256": "db212c8b58b9adac4b3e41e6252b8880eac8942dbab5993424b8d6efb92a0571",
    "owner": "automation-governance",
    "effective_date": "2026-09-01",
    "linked_sprints": [

@@ -1,0 +1,163 @@
+{
+  "canonical_step": "118.5",
+  "title": "Privacy-Safe Observation Verification",
+  "document_role": "privacy-observation-evaluation-record",
+  "state": "pass",
+  "verdict": "PRIVACY_SAFE_OBSERVATION_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "observation_verified": true,
+  "acceptance_fields": [
+    "creative_content_excluded",
+    "secrets_excluded",
+    "raw_payment_excluded",
+    "consent",
+    "minimization",
+    "retention",
+    "disable_control"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_exclusion_vocabulary_gap:media",
+    "upstream_exclusion_vocabulary_gap:payment"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "privacy_safe_monitoring": "docs/planning/v1.3/sprint_117_privacy_safe_monitoring.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "consent_gate": "opt-in default OFF",
+  "default_collection": false,
+  "telemetry_executed": false,
+  "upstream_excluded_category_count": 19,
+  "readable_source_count": 5,
+  "signal_count": 7,
+  "declared_signals": [
+    "connection_outcome",
+    "quota_refresh",
+    "sync_outcome",
+    "provider_error",
+    "usage_metadata",
+    "billing_state",
+    "workflow_completion"
+  ],
+  "collected_field_count": 35,
+  "max_retention_days": 30,
+  "signals": [
+    {
+      "signal": "connection_outcome",
+      "collected_fields": [
+        "connection_state",
+        "health_state",
+        "transition",
+        "http_status_class",
+        "retry_after_seconds"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "quota_refresh",
+      "collected_fields": [
+        "provider_id",
+        "unit_kind",
+        "raw_units",
+        "observed_at_epoch_ms",
+        "freshness_ttl_seconds"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "sync_outcome",
+      "collected_fields": [
+        "queue_depth",
+        "retry_resume",
+        "conflict_resolution",
+        "restore_result",
+        "workspace_boundary"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "provider_error",
+      "collected_fields": [
+        "provider_id",
+        "error_state",
+        "http_status",
+        "retryable",
+        "retry_after_seconds"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "usage_metadata",
+      "collected_fields": [
+        "provider_id",
+        "usage_units",
+        "provider_cost",
+        "currency",
+        "is_estimate",
+        "measured_at"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "billing_state",
+      "collected_fields": [
+        "event_type",
+        "signature_status",
+        "sequence",
+        "retry_count",
+        "entitlement_status"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    },
+    {
+      "signal": "workflow_completion",
+      "collected_fields": [
+        "workflow_outcome",
+        "feature_area",
+        "duration_bucket",
+        "error_class"
+      ],
+      "requires_explicit_consent": true,
+      "minimized": true,
+      "retention_days": 30,
+      "disable_control": true
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline and 117.7 privacy-safe monitoring evidence. A pass means the declared observation is privacy-safe; it does not execute any observation, collect any live signal, certify any connector, or authorize any release.",
+    "The observation is written against the delayed release state (GA_DELAYED). No release ran, so no signal observes a live reading and the consent gate remains opt-in default OFF.",
+    "The gate reads the committed witnesses directly, classifies every collected field against the full creative/secret/payment/media exclusion vocabulary, and verifies each committed privacy-evidence source is readable; an unreadable witness or an unfrozen baseline keeps the verification blocked rather than assumed.",
+    "The 118.5 objective names media and raw payment data explicitly while the committed 117.7 witness omits both from its excluded_categories; the gate owns the full vocabulary and records the upstream omission as an open item.",
+    "Live observation execution, external telemetry, connector certification, provider exposure, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live observation execution",
+    "external telemetry",
+    "connector certification evidence",
+    "provider exposure authorization",
+    "public release publication"
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "canonical_step": "118.4",
+  "title": "Post-Release Health Baseline",
+  "document_role": "health-baseline-evaluation-record",
+  "state": "pass",
+  "verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "release_state": "GA_DELAYED",
+  "baseline_frozen": true,
+  "required_fields": [
+    "signal",
+    "baseline",
+    "threshold",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "snapshot": "docs/planning/v1.3/sprint_118_certified_connector_snapshot.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json"
+  },
+  "snapshot_state": "pass",
+  "snapshot_verdict": "CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL",
+  "snapshot_release_state": "GA_DELAYED",
+  "charter_window_minutes": 60480,
+  "readable_source_count": 10,
+  "canonical_areas": [
+    "connection",
+    "reauth",
+    "quota",
+    "sync",
+    "backup",
+    "ai",
+    "billing",
+    "crash",
+    "performance",
+    "support"
+  ],
+  "baseline_signal_count": 10,
+  "baseline_signals": [
+    "connection",
+    "reauth",
+    "quota",
+    "sync",
+    "backup",
+    "ai",
+    "billing",
+    "crash",
+    "performance",
+    "support"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "connection",
+      "baseline": "no_live_observation",
+      "threshold": "gte:0.95",
+      "source": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "reauth",
+      "baseline": "no_live_observation",
+      "threshold": "gte:0.95",
+      "source": "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "quota",
+      "baseline": "no_live_observation",
+      "threshold": "eq:1.0",
+      "source": "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "sync",
+      "baseline": "no_live_observation",
+      "threshold": "eq:0.0",
+      "source": "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "backup",
+      "baseline": "no_live_observation",
+      "threshold": "gte:1.0",
+      "source": "docs/planning/v1.2/sprint_115_cloud_transfer_sync_controls.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "ai",
+      "baseline": "no_live_observation",
+      "threshold": "gte:0.95",
+      "source": "docs/planning/v1.2/sprint_116_ai_usage_cost_reconciliation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "billing",
+      "baseline": "no_live_observation",
+      "threshold": "gte:1.0",
+      "source": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "crash",
+      "baseline": "no_live_observation",
+      "threshold": "lte:0.01",
+      "source": "docs/planning/v1.2/sprint_114_crash_startup_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "performance",
+      "baseline": "no_live_observation",
+      "threshold": "lte:1.0",
+      "source": "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "support",
+      "baseline": "no_live_observation",
+      "threshold": "lte:48",
+      "source": "docs/planning/v1.3/sprint_117_support_incident_readiness.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.3 snapshot and 118.2 charter evidence. A pass means the baseline faithfully freezes the declared reference for each canonical health area; it does not observe any live signal, certify any connector, or authorize any release.",
+    "The baseline is written against the delayed release state (GA_DELAYED). No release ran, so no entry claims an observed value and the observation window remains declared and unexecuted.",
+    "The gate reads the committed snapshot and charter directly and verifies each entry source is a committed, readable file; an unreadable witness or an unfrozen snapshot keeps the baseline blocked rather than assumed.",
+    "Live observation, telemetry scraping, connector certification, provider exposure, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live observation execution",
+    "external telemetry scraping",
+    "connector certification evidence",
+    "provider exposure authorization",
+    "public release publication"
+  ]
+}

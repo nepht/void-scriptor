@@ -1,0 +1,261 @@
+{
+  "canonical_step": "118.12",
+  "title": "Billing & Entitlement Health",
+  "document_role": "billing-entitlement-health-review-record",
+  "state": "pass",
+  "verdict": "BILLING_ENTITLEMENT_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "subscription_entitlement": "docs/planning/v1.2/sprint_115_subscription_entitlement_model.json",
+    "billing_account": "docs/planning/v1.2/sprint_115_billing_account_cost_summary.json",
+    "payment_method": "docs/planning/v1.2/sprint_115_payment_method_abstraction.json",
+    "invoices": "docs/planning/v1.2/sprint_115_invoices_receipts_billing_history.json",
+    "webhook_reconciliation": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+    "stripe": "docs/planning/v1.2/sprint_116_stripe_billing_certification.json",
+    "paypal": "docs/planning/v1.2/sprint_116_paypal_billing_certification.json",
+    "midtrans": "docs/planning/v1.2/sprint_116_midtrans_billing_certification.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_subscription_entitlement_acceptance": [
+    "plan",
+    "entitlements",
+    "limits",
+    "renewal",
+    "cancellation",
+    "trial",
+    "grace_period",
+    "license_state"
+  ],
+  "witness_billing_account_acceptance": [
+    "billing_identity",
+    "currency",
+    "tax",
+    "billing_cycle",
+    "charges",
+    "credits",
+    "estimated_label",
+    "status"
+  ],
+  "witness_payment_method_acceptance": [
+    "provider_token_only",
+    "masked_details",
+    "default_method",
+    "replace_remove",
+    "region_availability",
+    "reauth"
+  ],
+  "witness_invoices_acceptance": [
+    "invoice_list",
+    "receipt",
+    "payment_status",
+    "tax_info",
+    "download",
+    "refund_path",
+    "dispute_path"
+  ],
+  "witness_webhook_reconciliation_acceptance": [
+    "idempotency",
+    "signature",
+    "event_order",
+    "retry",
+    "grace_period",
+    "cancellation",
+    "refund",
+    "entitlement_consistency"
+  ],
+  "witness_stripe_fields": [
+    "customer",
+    "subscription",
+    "payment_method_tokens",
+    "invoices",
+    "webhooks",
+    "refunds",
+    "tax_metadata",
+    "portal"
+  ],
+  "witness_paypal_fields": [
+    "payment_subscription_flow",
+    "redirects",
+    "webhooks",
+    "refunds",
+    "region",
+    "errors"
+  ],
+  "witness_midtrans_fields": [
+    "payment_methods",
+    "redirects",
+    "notifications",
+    "signature",
+    "region",
+    "settlement",
+    "errors"
+  ],
+  "readable_source_count": 9,
+  "declared_signal_count": 9,
+  "declared_signals": [
+    "checkout",
+    "webhook",
+    "idempotency",
+    "invoice",
+    "entitlement",
+    "renewal",
+    "cancellation",
+    "refund",
+    "dispute"
+  ],
+  "canonical_signals": [
+    "checkout",
+    "webhook",
+    "idempotency",
+    "invoice",
+    "entitlement",
+    "renewal",
+    "cancellation",
+    "refund",
+    "dispute"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_116_paypal_billing_certification.json",
+    "docs/planning/v1.2/sprint_116_stripe_billing_certification.json",
+    "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+    "docs/planning/v1.2/sprint_115_invoices_receipts_billing_history.json",
+    "docs/planning/v1.2/sprint_115_subscription_entitlement_model.json",
+    "docs/planning/v1.2/sprint_115_billing_account_cost_summary.json",
+    "docs/planning/v1.2/sprint_115_subscription_entitlement_model.json",
+    "docs/planning/v1.2/sprint_116_paypal_billing_certification.json",
+    "docs/planning/v1.2/sprint_115_invoices_receipts_billing_history.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "checkout",
+      "reference_state": "payment_subscription_flow",
+      "source": "docs/planning/v1.2/sprint_116_paypal_billing_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "webhook",
+      "reference_state": "webhooks",
+      "source": "docs/planning/v1.2/sprint_116_stripe_billing_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "idempotency",
+      "reference_state": "idempotency",
+      "source": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "invoice",
+      "reference_state": "invoice_list",
+      "source": "docs/planning/v1.2/sprint_115_invoices_receipts_billing_history.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "entitlement",
+      "reference_state": "entitlements",
+      "source": "docs/planning/v1.2/sprint_115_subscription_entitlement_model.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "renewal",
+      "reference_state": "billing_cycle",
+      "source": "docs/planning/v1.2/sprint_115_billing_account_cost_summary.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "cancellation",
+      "reference_state": "cancellation",
+      "source": "docs/planning/v1.2/sprint_115_subscription_entitlement_model.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "refund",
+      "reference_state": "refunds",
+      "source": "docs/planning/v1.2/sprint_116_paypal_billing_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "dispute",
+      "reference_state": "dispute_path",
+      "source": "docs/planning/v1.2/sprint_115_invoices_receipts_billing_history.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 115.34 subscription & entitlement model, 115.35 billing account & cost summary, 115.36 payment method abstraction, 115.37 invoices/receipts/billing history, 116.40 billing entitlement & webhook reconciliation, 116.36 Stripe billing certification, 116.37 PayPal billing certification, and 116.38 Midtrans billing certification evidence. A pass means the declared review carries all five required fields for every one of the nine canonical billing & entitlement signals; it does not run any checkout, webhook delivery, invoice settlement, entitlement mutation, renewal charge, cancellation, refund, or dispute, and it does not authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a billing reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.34, 115.35, 115.36, and 115.37 acceptance items, the 116.40 required acceptance items, and the 116.36/116.37/116.38 required fields, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the subscription & entitlement, billing account, payment method, invoices, webhook reconciliation, Stripe, PayPal, and Midtrans witness vocabularies, read from the committed witnesses, so the review and the billing contracts cannot drift apart silently.",
+    "Live checkout, provider webhook delivery, invoice settlement, entitlement mutation, renewal charging, cancellation, refund, dispute handling, provider certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live checkout session creation",
+    "provider webhook delivery and signature verification",
+    "invoice settlement",
+    "entitlement mutation",
+    "subscription renewal charge",
+    "subscription cancellation",
+    "refund execution",
+    "dispute handling",
+    "payment provider credential and token access",
+    "billing provider certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "canonical_step": "118.27",
+  "title": "Rollout Progression Decision",
+  "document_role": "rollout-progression-decision-record",
+  "state": "pass",
+  "verdict": "ROLLOUT_PROGRESSION_DECISION_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "selected_decision": "HOLD",
+  "decision_verified": true,
+  "required_decisions": [
+    "EXPAND",
+    "HOLD",
+    "REDUCE",
+    "DISABLE_CONNECTOR",
+    "ROLLBACK"
+  ],
+  "required_fields": [
+    "decision",
+    "reference_state",
+    "source",
+    "detail",
+    "limitations"
+  ],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "regression": "docs/planning/v1.3/sprint_118_maintenance_regression_matrix.json",
+    "connector_disable": "docs/planning/v1.3/sprint_118_connector_disable_safe_degradation.json",
+    "approval_gate": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "rollout_plan": "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+    "rollback_drill": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "regression_state": "pass",
+  "regression_verdict": "MAINTENANCE_REGRESSION_MATRIX_VERIFIED_LOCAL",
+  "connector_disable_state": "pass",
+  "connector_disable_verdict": "CONNECTOR_DISABLE_SAFE_DEGRADATION_VERIFIED_LOCAL",
+  "approval_decision": "delay",
+  "approval_state": "PENDING_CHOIRUDIN",
+  "execution_authorized": false,
+  "release_blocked": true,
+  "live_rollout_executed": false,
+  "readable_source_count": 7,
+  "reference_state_vocabulary": [
+    "stages",
+    "connector_subset",
+    "exposure",
+    "health_criteria",
+    "stop_conditions",
+    "kill_switches",
+    "rollback",
+    "support",
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication",
+    "per_connector_kill_switch",
+    "safe_queue_stop",
+    "cached_state",
+    "local_data_preserved",
+    "user_message",
+    "recovery_path",
+    "unit",
+    "connector_contract",
+    "auth",
+    "sync",
+    "billing",
+    "security",
+    "privacy",
+    "accessibility",
+    "ui",
+    "end_to_end",
+    "connection",
+    "reauth",
+    "quota",
+    "backup",
+    "ai",
+    "crash",
+    "performance",
+    "no_reference_state"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+    "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+    "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+    "docs/planning/v1.3/sprint_118_connector_disable_safe_degradation.json",
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json"
+  ],
+  "declared_decisions": [
+    "EXPAND",
+    "HOLD",
+    "REDUCE",
+    "DISABLE_CONNECTOR",
+    "ROLLBACK"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "decision": "EXPAND",
+      "reference_state": "exposure",
+      "source": "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+      "detail": "Expansion would raise the exposed connector subset and exposure percentage per the committed rollout plan, and is deferred until a release is authorized",
+      "limitations": [
+        "live_expansion_deferred",
+        "synthetic_local"
+      ],
+      "expansion_claimed": false,
+      "rollback_claimed": false,
+      "connector_disable_claimed": false,
+      "observed": false
+    },
+    {
+      "decision": "HOLD",
+      "reference_state": "stop_conditions",
+      "source": "docs/planning/v1.3/sprint_117_ga_approval_gate.json",
+      "detail": "The committed approval gate records a delay and blocked release, so the rollout is held at its declared state with nothing running",
+      "limitations": [
+        "live_rollout_deferred",
+        "synthetic_local"
+      ],
+      "expansion_claimed": false,
+      "rollback_claimed": false,
+      "connector_disable_claimed": false,
+      "observed": false
+    },
+    {
+      "decision": "REDUCE",
+      "reference_state": "connector_subset",
+      "source": "docs/planning/v1.3/sprint_117_staged_ga_rollout_plan.json",
+      "detail": "Reduction would shrink the exposed connector subset per the committed rollout plan, and is deferred while no rollout runs",
+      "limitations": [
+        "live_reduction_deferred",
+        "synthetic_local"
+      ],
+      "expansion_claimed": false,
+      "rollback_claimed": false,
+      "connector_disable_claimed": false,
+      "observed": false
+    },
+    {
+      "decision": "DISABLE_CONNECTOR",
+      "reference_state": "kill_switch",
+      "source": "docs/planning/v1.3/sprint_118_connector_disable_safe_degradation.json",
+      "detail": "Disabling a connector uses the committed per-connector kill switch and safe-degradation path, and is deferred until a release",
+      "limitations": [
+        "live_connector_disable_deferred",
+        "synthetic_local"
+      ],
+      "expansion_claimed": false,
+      "rollback_claimed": false,
+      "connector_disable_claimed": false,
+      "observed": false
+    },
+    {
+      "decision": "ROLLBACK",
+      "reference_state": "artifact_rollback",
+      "source": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+      "detail": "Rollback would restore the committed artifacts and connector state per the rollback drill, and is deferred because no rollout ran",
+      "limitations": [
+        "live_rollback_deferred",
+        "synthetic_local"
+      ],
+      "expansion_claimed": false,
+      "rollback_claimed": false,
+      "connector_disable_claimed": false,
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Rollout Progression Decision over the committed 118.4 post-release health baseline, the committed 118.2 stability expansion charter, the committed 118.26 maintenance regression matrix, the committed 118.25 connector-disable review, and the committed 117.45 approval gate, 117.44 rollout plan, and 117.8 rollback drill. A pass does not execute a rollout, expand or reduce exposure, disable a connector, roll back, authorize a release, or publish.",
+    "The decision is written against GA_DELAYED. It enumerates all five canonical decision options (EXPAND, HOLD, REDUCE, DISABLE_CONNECTOR, ROLLBACK), claims no live expansion, no live reduction, no live connector disable, no live rollback, and observes nothing live, and selects HOLD as the only decision the evidence supports.",
+    "A rollout progression decision is never made without a live rollout: when no live rollout has executed, the gate refuses any selected decision other than HOLD.",
+    "A rollout is never expanded without a release, a connector is never disabled without a release, and nothing is rolled back that never ran: the gate refuses each claim by name.",
+    "Live rollout execution, expansion, reduction, connector disable, rollback, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "live rollout execution",
+    "rollout expansion",
+    "rollout reduction",
+    "connector disable",
+    "rollback execution",
+    "public release publication"
+  ]
+}

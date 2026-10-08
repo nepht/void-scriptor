@@ -1,0 +1,180 @@
+{
+  "canonical_step": "118.7",
+  "title": "Connection Health Review",
+  "document_role": "connection-health-review-record",
+  "state": "pass",
+  "verdict": "CONNECTION_HEALTH_REVIEW_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_state_vocabulary_gap:latency",
+    "upstream_state_vocabulary_gap:disconnect_cleanup"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "state_machine": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_connection_states": [
+    "NOT_CONFIGURED",
+    "CONNECTING",
+    "CONNECTED",
+    "DEGRADED",
+    "EXPIRED",
+    "REVOKED",
+    "ERROR",
+    "UNAVAILABLE"
+  ],
+  "witness_health_states": [
+    "UNKNOWN",
+    "HEALTHY",
+    "DEGRADED",
+    "OUTAGE",
+    "RATE_LIMITED"
+  ],
+  "witness_transitions": [
+    "BEGIN_CONNECTING",
+    "CONNECT_SUCCEEDED",
+    "ERROR",
+    "UNAVAILABLE",
+    "EXPIRE",
+    "REVOKE",
+    "REFRESH_HEALTH",
+    "REAUTHENTICATE",
+    "RETRY"
+  ],
+  "readable_source_count": 7,
+  "declared_signal_count": 7,
+  "declared_signals": [
+    "connect_success",
+    "expiry",
+    "revoke",
+    "degraded",
+    "outage",
+    "latency",
+    "disconnect_cleanup"
+  ],
+  "canonical_signals": [
+    "connect_success",
+    "expiry",
+    "revoke",
+    "degraded",
+    "outage",
+    "latency",
+    "disconnect_cleanup"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+    "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+    "docs/planning/v1.2/sprint_115_performance_resilience.json",
+    "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+    "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+    "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json"
+  ],
+  "no_reference_state": "no_reference_state",
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "connect_success",
+      "reference_state": "CONNECT_SUCCEEDED",
+      "source": "docs/planning/v1.2/sprint_115_connection_health_state_machine.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "expiry",
+      "reference_state": "EXPIRED",
+      "source": "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "revoke",
+      "reference_state": "REVOKED",
+      "source": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "degraded",
+      "reference_state": "DEGRADED",
+      "source": "docs/planning/v1.2/sprint_115_performance_resilience.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "outage",
+      "reference_state": "OUTAGE",
+      "source": "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "latency",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_114_performance_responsiveness_health.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "disconnect_cleanup",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json",
+      "window": 60,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, and 115.10 connection & health state machine evidence. A pass means the declared review carries all five required fields for every one of the seven canonical connection signals; it does not probe any provider, certify any connector, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a connection and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.10 state machine, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the state machine connection states, health states, and transitions, read from the committed witness, so the review and the state machine cannot drift apart silently.",
+    "The objective names latency and disconnect_cleanup explicitly, but the committed 115.10 state machine declares no state for either; the review declares no_reference_state for those two signals and records the upstream gap as an open item rather than inventing a state or widening the gate.",
+    "Live connection observation, provider probing, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live connection observation",
+    "provider probing",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

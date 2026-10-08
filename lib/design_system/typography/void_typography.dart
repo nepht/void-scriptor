@@ -6,6 +6,13 @@ import 'package:flutter/material.dart';
 /// TIDAK mengunci `color` — tinta diambil dari cascade `DefaultTextStyle`
 /// yang dipimpin `ThemeData.textTheme` (dipasang dari `VoidPalette` aktif,
 /// lihat `VoidTheme`). Menulis warna di sini akan mematahkan tema terang.
+///
+/// Kontrak skala (full-bleed typography slice, 2026-10-08): tidak ada teks
+/// esensial di bawah 11px. Token panel, sidebar, dan inspector diselaraskan
+/// ke baseline 11–14px (section title 14, label 12, caption 11) supaya label
+/// tetap terbaca; jangan menambah gaya 7–9px untuk informasi esensial.
+/// Skala inti (display→caption) tidak berubah agar layout stabil tidak
+/// bergeser.
 abstract final class VoidTypography {
   static const displayLarge = TextStyle(
     fontSize: 32,
@@ -44,7 +51,7 @@ abstract final class VoidTypography {
   // Desktop shell and Character Overview typography contract.
   static const appBrand = TextStyle(fontSize: 14, fontWeight: FontWeight.w700);
   static const brandSubtitle = TextStyle(
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: FontWeight.w400,
   );
   static const topNavigation = TextStyle(
@@ -52,35 +59,35 @@ abstract final class VoidTypography {
     fontWeight: FontWeight.w500,
   );
   static const sidebarTitle = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w600,
   );
   static const sidebarItem = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
   );
   static const breadcrumb = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
   );
   static const primaryTab = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
   );
   static const activePrimaryTab = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w600,
   );
   static const secondaryTab = TextStyle(
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
   );
   static const panelTitle = TextStyle(
-    fontSize: 10,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
   );
   static const smallPanelLabel = TextStyle(
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: FontWeight.w500,
   );
   static const characterName = TextStyle(
@@ -92,56 +99,59 @@ abstract final class VoidTypography {
     fontWeight: FontWeight.w500,
   );
   static const metadataLabel = TextStyle(
-    fontSize: 9,
-    fontWeight: FontWeight.w600,
-  );
-  static const metadataValue = TextStyle(
-    fontSize: 9,
-    fontWeight: FontWeight.w400,
-  );
-  static const conceptTitle = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.w600,
-  );
-  static const conceptBody = TextStyle(
-    fontSize: 9,
-    fontWeight: FontWeight.w400,
-  );
-  static const paletteLabel = TextStyle(
-    fontSize: 9,
-    fontWeight: FontWeight.w500,
-  );
-  static const hexValue = TextStyle(fontSize: 8, fontWeight: FontWeight.w400);
-  static const accessoryName = TextStyle(
-    fontSize: 8,
-    fontWeight: FontWeight.w500,
-  );
-  static const accessorySubtitle = TextStyle(
-    fontSize: 7,
-    fontWeight: FontWeight.w400,
-  );
-  static const closeUpLabel = TextStyle(
-    fontSize: 8,
-    fontWeight: FontWeight.w500,
-  );
-  static const inspectorTitle = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w600,
   );
+  static const metadataValue = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+  );
+  static const conceptTitle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+  );
+  static const conceptBody = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+  );
+  static const paletteLabel = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+  );
+  static const hexValue = TextStyle(fontSize: 11, fontWeight: FontWeight.w400);
+  static const accessoryName = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+  );
+  static const accessorySubtitle = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+  );
+  static const closeUpLabel = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+  );
+  static const inspectorTitle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+  );
   static const inspectorSectionTitle = TextStyle(
-    fontSize: 10,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
   );
   static const inspectorProperty = TextStyle(
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
   );
-  static const tags = TextStyle(fontSize: 9, fontWeight: FontWeight.w500);
-  static const quickNotes = TextStyle(fontSize: 9, fontWeight: FontWeight.w400);
-  static const prompt = TextStyle(fontSize: 9, fontWeight: FontWeight.w400);
+  static const tags = TextStyle(fontSize: 11, fontWeight: FontWeight.w500);
+  static const quickNotes = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+  );
+  static const prompt = TextStyle(fontSize: 11, fontWeight: FontWeight.w400);
   static const actionButton = TextStyle(
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: FontWeight.w500,
   );
-  static const statusBar = TextStyle(fontSize: 10, fontWeight: FontWeight.w400);
+  static const statusBar = TextStyle(fontSize: 11, fontWeight: FontWeight.w400);
 }

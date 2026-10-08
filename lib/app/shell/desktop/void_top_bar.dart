@@ -236,9 +236,9 @@ class _SaveStateChip extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           dirty ? 'Belum tersimpan' : 'Tersimpan',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: context.palette.textMuted),
+          style: VoidTypography.caption.copyWith(
+            color: context.palette.textMuted,
+          ),
         ),
       ],
     ),
@@ -271,9 +271,7 @@ class _TopMenuButton extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+              style: VoidTypography.topNavigation.copyWith(
                 color: context.palette.textSecondary,
               ),
             ),
@@ -373,9 +371,7 @@ class _TopMenuButtonContent extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+          style: VoidTypography.topNavigation.copyWith(
             color: context.palette.textSecondary,
           ),
         ),
@@ -536,7 +532,7 @@ void _showDonationDialog(BuildContext context) {
                 'Pilih metode pembayaran. Integrasi otomatis belum '
                 'aktif — nomor/QR akan ditampilkan di sini setelah '
                 'konfigurasi payment gateway.',
-                style: TextStyle(fontSize: 12),
+                style: VoidTypography.caption,
               ),
               const SizedBox(height: 16),
               ...methods.map(
@@ -545,7 +541,7 @@ void _showDonationDialog(BuildContext context) {
                       ? BrandLogo(assetPath: m.asset!, width: 32, height: 32)
                       : Icon(m.icon ?? Icons.payment),
                   title: Text(m.label),
-                  subtitle: Text(m.note, style: const TextStyle(fontSize: 11)),
+                  subtitle: Text(m.note, style: VoidTypography.caption),
                   onTap: () {
                     Navigator.of(ctx).pop();
                     ScaffoldMessenger.of(context).showSnackBar(

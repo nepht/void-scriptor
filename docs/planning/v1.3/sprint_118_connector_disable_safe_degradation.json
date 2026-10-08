@@ -1,0 +1,243 @@
+{
+  "canonical_step": "118.25",
+  "title": "Connector Disable & Safe Degradation",
+  "document_role": "connector-disable-safe-degradation-record",
+  "state": "pass",
+  "verdict": "CONNECTOR_DISABLE_SAFE_DEGRADATION_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_acceptance": [
+    "per_connector_kill_switch",
+    "safe_queue_stop",
+    "cached_state",
+    "local_data_preserved",
+    "user_message",
+    "recovery_path"
+  ],
+  "required_fields": [
+    "acceptance",
+    "reference_state",
+    "source",
+    "detail",
+    "limitations"
+  ],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "rollback_drill": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+    "rollout": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "outage_review": "docs/planning/v1.3/sprint_118_provider_outage_recovery_review.json",
+    "token_expiry": "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "cached_metadata": "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+    "readiness": "docs/planning/v1.3/sprint_117_support_incident_readiness.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "drill_state": "pass",
+  "drill_verdict": "PROVIDER_ROLLBACK_DRILL_DEFINED_LOCAL",
+  "drill_control_vocabulary": [
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication"
+  ],
+  "rollout_live_executed": false,
+  "outage_signal_vocabulary": [
+    "timeout",
+    "circuit_breaker",
+    "retry_after",
+    "queue_recovery",
+    "cached_state",
+    "kill_switch",
+    "provider_recovery"
+  ],
+  "reauth_acceptance_vocabulary": [
+    "expiry_notice",
+    "affected_scope",
+    "reauth",
+    "retry",
+    "revoke",
+    "local_data_preserved"
+  ],
+  "cached_acceptance_vocabulary": [
+    "freshness_label",
+    "stale_state",
+    "remote_disable",
+    "local_actions",
+    "reconnect",
+    "cache_clear"
+  ],
+  "rollout_field_vocabulary": [
+    "flags",
+    "stages",
+    "health_metrics",
+    "stop_conditions",
+    "provider_kill_switches",
+    "rollback",
+    "communication"
+  ],
+  "readable_source_count": 8,
+  "reference_state_vocabulary": [
+    "kill_switch",
+    "token_revoke",
+    "queue_stop",
+    "cache_handling",
+    "artifact_rollback",
+    "communication",
+    "timeout",
+    "circuit_breaker",
+    "retry_after",
+    "queue_recovery",
+    "cached_state",
+    "provider_recovery",
+    "expiry_notice",
+    "affected_scope",
+    "reauth",
+    "retry",
+    "revoke",
+    "local_data_preserved",
+    "freshness_label",
+    "stale_state",
+    "remote_disable",
+    "local_actions",
+    "reconnect",
+    "cache_clear",
+    "flags",
+    "stages",
+    "health_metrics",
+    "stop_conditions",
+    "provider_kill_switches",
+    "rollback",
+    "no_reference_state"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+    "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+    "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+    "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+    "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "docs/planning/v1.3/sprint_117_support_incident_readiness.json"
+  ],
+  "declared_acceptance": [
+    "per_connector_kill_switch",
+    "safe_queue_stop",
+    "cached_state",
+    "local_data_preserved",
+    "user_message",
+    "recovery_path"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "acceptance": "per_connector_kill_switch",
+      "reference_state": "kill_switch",
+      "source": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+      "detail": "A misbehaving connector is disabled by its own kill switch without affecting the Account Center",
+      "limitations": [
+        "live_connector_disable_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    },
+    {
+      "acceptance": "safe_queue_stop",
+      "reference_state": "queue_stop",
+      "source": "docs/planning/v1.3/sprint_117_provider_rollback_drill.json",
+      "detail": "Queued connector work is stopped safely instead of running while a connector is disabled",
+      "limitations": [
+        "live_queue_stop_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    },
+    {
+      "acceptance": "cached_state",
+      "reference_state": "cached_state",
+      "source": "docs/planning/v1.2/sprint_116_offline_cached_metadata_certification.json",
+      "detail": "Disabling a connector keeps its cached state readable and labeled stale rather than deleting it",
+      "limitations": [
+        "live_cache_invalidation_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    },
+    {
+      "acceptance": "local_data_preserved",
+      "reference_state": "local_data_preserved",
+      "source": "docs/planning/v1.2/sprint_115_token_expiry_reauthentication_ux.json",
+      "detail": "Disabling a connector never touches local project data or the Account Center",
+      "limitations": [
+        "live_local_scan_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    },
+    {
+      "acceptance": "user_message",
+      "reference_state": "communication",
+      "source": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+      "detail": "The disable is explained to the user through a committed message template rather than silent failure",
+      "limitations": [
+        "live_message_send_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    },
+    {
+      "acceptance": "recovery_path",
+      "reference_state": "artifact_rollback",
+      "source": "docs/planning/v1.3/sprint_117_support_incident_readiness.json",
+      "detail": "A committed recovery path exists so the connector can be restored after the disable",
+      "limitations": [
+        "live_recovery_execution_deferred",
+        "synthetic_local"
+      ],
+      "connector_disabled": false,
+      "local_data_touched": false,
+      "message_sent": false,
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Connector Disable & Safe Degradation review over the committed 118.4 post-release health baseline, the committed 118.2 stability expansion charter, the committed 117.8 provider rollback drill, the committed 116.50 staged beta rollout monitoring witness, the committed 118.17 provider outage recovery review, the committed 115.43 token-expiry UX witness, the committed 116.44 offline cached-metadata certification witness, and the committed 117.6 support incident readiness witness. A pass does not disable a connector, stop a queue, invalidate a cache, touch local data, send a user message, execute a recovery, certify a connector, expose a provider, authorize a release, or publish.",
+    "The review is written against GA_DELAYED. Every entry registers a reference for one of the six canonical acceptance items (per_connector_kill_switch, safe_queue_stop, cached_state, local_data_preserved, user_message, recovery_path), claims no live connector disable, touches no local data, sends no message, and observes nothing live.",
+    "A connector is never claimed disabled without a release: the gate refuses any entry that claims a live connector disable.",
+    "A disable never touches local data: the gate refuses any entry that claims local data was touched by the disable.",
+    "Live connector disable, queue stop, cache invalidation, user messaging, recovery execution, connector certification, provider exposure, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "live connector disable",
+    "live queue stop",
+    "live cache invalidation",
+    "live local data scan",
+    "live user message send",
+    "live recovery execution",
+    "connector certification",
+    "provider exposure",
+    "public release publication"
+  ]
+}

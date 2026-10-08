@@ -76,7 +76,7 @@
    "authority": "ADVISORY",
    "status": "ACTIVE",
    "integrity": "IMMUTABLE",
-   "sha256": "1f39929e5627954fa4460a27e50475f459c56de1a2e1124183d0b7b1e84b1e6b",
+   "sha256": "220b6dfa3c1bfddabd6b5bd3e9fab55069987fb87f21b058255cb95ffd95e543",
    "owner": "roadmap-audit",
    "effective_date": "2026-10-07",
    "linked_sprints": [

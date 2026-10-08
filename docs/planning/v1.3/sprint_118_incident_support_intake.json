@@ -1,0 +1,197 @@
+{
+  "canonical_step": "118.6",
+  "title": "Incident & Support Intake",
+  "document_role": "incident-support-intake-record",
+  "state": "pass",
+  "verdict": "INCIDENT_SUPPORT_INTAKE_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "intake_verified": true,
+  "required_fields": [
+    "incident_id",
+    "source",
+    "provider",
+    "version",
+    "impact",
+    "reproduction",
+    "evidence",
+    "owner"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "support_readiness": "docs/planning/v1.3/sprint_117_support_incident_readiness.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "support_state": "pass",
+  "support_verdict": "SUPPORT_INCIDENT_READINESS_DEFINED_LOCAL",
+  "live_incident_executed": false,
+  "severity_levels": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "owners": [
+    "Choirudin",
+    "nephthys"
+  ],
+  "readable_source_count": 10,
+  "incident_count": 10,
+  "declared_categories": [
+    "support",
+    "crash",
+    "auth",
+    "quota",
+    "sync",
+    "ai",
+    "billing",
+    "security",
+    "privacy",
+    "accessibility"
+  ],
+  "canonical_categories": [
+    "support",
+    "crash",
+    "auth",
+    "quota",
+    "sync",
+    "ai",
+    "billing",
+    "security",
+    "privacy",
+    "accessibility"
+  ],
+  "no_impact": "none",
+  "entries": [
+    {
+      "category": "support",
+      "incident_id": "INTAKE-SUPPORT-REF",
+      "source": "support",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.3/sprint_117_support_incident_readiness.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "crash",
+      "incident_id": "INTAKE-CRASH-REF",
+      "source": "crash",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_114_crash_startup_health.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "auth",
+      "incident_id": "INTAKE-AUTH-REF",
+      "source": "auth",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.3/sprint_117_identity_workflow_validation.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "quota",
+      "incident_id": "INTAKE-QUOTA-REF",
+      "source": "quota",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "sync",
+      "incident_id": "INTAKE-SYNC-REF",
+      "source": "sync",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_cross_storage_sync_backup_certification.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "ai",
+      "incident_id": "INTAKE-AI-REF",
+      "source": "ai",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_ai_usage_cost_reconciliation.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "billing",
+      "incident_id": "INTAKE-BILLING-REF",
+      "source": "billing",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_billing_entitlement_webhook_reconciliation.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "security",
+      "incident_id": "INTAKE-SECURITY-REF",
+      "source": "security",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "privacy",
+      "incident_id": "INTAKE-PRIVACY-REF",
+      "source": "privacy",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.3/sprint_118_privacy_safe_observation.json",
+      "owner": "Choirudin"
+    },
+    {
+      "category": "accessibility",
+      "incident_id": "INTAKE-ACCESSIBILITY-REF",
+      "source": "accessibility",
+      "provider": "unassigned",
+      "version": "1.3.1",
+      "impact": "none",
+      "reproduction": "deferred_external",
+      "evidence": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+      "owner": "Choirudin"
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline and 117.6 support-incident-readiness evidence. A pass means the declared intake carries all eight required fields for every canonical incident category; it does not execute any incident, open any support channel, page any on-call rotation, or authorize any release.",
+    "The intake is written against the delayed release state (GA_DELAYED). No release ran, so no entry registers a live incident and every entry carries impact \"none\".",
+    "The gate reads the committed witnesses directly, derives its impact and owner vocabularies from the 117.6 readiness witness, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the intake blocked rather than assumed.",
+    "The impact vocabulary is the readiness witness severity levels plus the no-impact marker; the owner vocabulary is the readiness witness owners. Both are read from the committed witness, so the intake and the readiness plan cannot drift apart silently.",
+    "Live incident handling, support channels, on-call rotation, provider escalation, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live incident handling",
+    "support channel operations",
+    "on-call rotation",
+    "provider escalation",
+    "connector certification evidence",
+    "public release publication"
+  ]
+}

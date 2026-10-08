@@ -1,0 +1,199 @@
+{
+  "canonical_step": "118.10",
+  "title": "Sync, Backup & Recovery Health",
+  "document_role": "sync-backup-recovery-health-review-record",
+  "state": "pass",
+  "verdict": "SYNC_BACKUP_RECOVERY_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "sync_health": "docs/planning/v1.2/sprint_114_cloud_sync_conflict_health.json",
+    "backup_health": "docs/planning/v1.2/sprint_114_backup_restore_health.json",
+    "integrity_health": "docs/planning/v1.2/sprint_114_data_integrity_health.json",
+    "workspace_boundary": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_sync_evidence": [
+    "sync_success",
+    "queue_age",
+    "transfer_failure",
+    "retry_success",
+    "conflict_rate",
+    "resolution_success",
+    "duplicate_effect"
+  ],
+  "witness_backup_evidence": [
+    "backup_success",
+    "encryption_success",
+    "restore_success",
+    "media_integrity",
+    "link_integrity",
+    "recovery_time"
+  ],
+  "witness_integrity_evidence": [
+    "broken_links",
+    "orphan_records",
+    "index_mismatch",
+    "checksum_failure",
+    "silent_loss_report",
+    "repair_success"
+  ],
+  "witness_boundary_acceptance": [
+    "global_user_scope",
+    "no_workspace_co_ownership",
+    "explicit_workspace_permission",
+    "explicit_transfer_consent",
+    "separate_backup_boundaries"
+  ],
+  "readable_source_count": 8,
+  "declared_signal_count": 8,
+  "declared_signals": [
+    "queue_age",
+    "transfer_failure",
+    "retry_success",
+    "conflict_rate",
+    "backup_success",
+    "restore_success",
+    "boundary_issue",
+    "integrity_issue"
+  ],
+  "canonical_signals": [
+    "queue_age",
+    "transfer_failure",
+    "retry_success",
+    "conflict_rate",
+    "backup_success",
+    "restore_success",
+    "boundary_issue",
+    "integrity_issue"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_114_cloud_sync_conflict_health.json",
+    "docs/planning/v1.2/sprint_115_cloud_transfer_sync_controls.json",
+    "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+    "docs/planning/v1.2/sprint_115_sync_conflict_center.json",
+    "docs/planning/v1.2/sprint_115_backup_policies_destinations.json",
+    "docs/planning/v1.2/sprint_114_backup_restore_health.json",
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_114_data_integrity_health.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "queue_age",
+      "reference_state": "queue_age",
+      "source": "docs/planning/v1.2/sprint_114_cloud_sync_conflict_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "transfer_failure",
+      "reference_state": "transfer_failure",
+      "source": "docs/planning/v1.2/sprint_115_cloud_transfer_sync_controls.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "retry_success",
+      "reference_state": "retry_success",
+      "source": "docs/planning/v1.2/sprint_116_retry_backoff_circuit_breaker_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "conflict_rate",
+      "reference_state": "conflict_rate",
+      "source": "docs/planning/v1.2/sprint_115_sync_conflict_center.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "backup_success",
+      "reference_state": "backup_success",
+      "source": "docs/planning/v1.2/sprint_115_backup_policies_destinations.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "restore_success",
+      "reference_state": "restore_success",
+      "source": "docs/planning/v1.2/sprint_114_backup_restore_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "boundary_issue",
+      "reference_state": "separate_backup_boundaries",
+      "source": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "integrity_issue",
+      "reference_state": "checksum_failure",
+      "source": "docs/planning/v1.2/sprint_114_data_integrity_health.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 114.15 cloud sync & conflict health, 114.14 backup & restore health, 114.12 data integrity health, and 115.4 workspace boundary evidence. A pass means the declared review carries all five required fields for every one of the eight canonical sync/backup/recovery signals; it does not run any sync, transfer, retry, conflict resolution, encrypted backup, restore, or credential access, and it does not authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a sync/backup/recovery reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 114.15 sync required-evidence, the 114.14 backup required-evidence, the 114.12 integrity required-evidence, and the 115.4 boundary acceptance items, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the sync, backup, integrity, and boundary witness vocabularies, read from the committed witnesses, so the review and the sync/backup/recovery contracts cannot drift apart silently.",
+    "Live sync, transfer, retry, conflict resolution, encrypted backup, restore, credential access, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live cloud sync and transfer",
+    "bounded retry and circuit-breaker execution",
+    "conflict resolution execution",
+    "encrypted backup execution",
+    "clean-install restore execution",
+    "credential and token access",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "canonical_step": "118.20",
+  "title": "Novel-Character Permission Boundary Health",
+  "document_role": "permission-boundary-health-review-record",
+  "state": "pass",
+  "verdict": "NOVEL_CHARACTER_PERMISSION_BOUNDARY_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_evidence": [
+    "novel_permission",
+    "character_permission",
+    "transfer_consent",
+    "backup_boundary",
+    "unlink_behavior",
+    "audit"
+  ],
+  "missing_evidence": [],
+  "required_fields": [
+    "evidence",
+    "reference_state",
+    "source",
+    "detail",
+    "limitations"
+  ],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "boundary_contract": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "boundary_validation": "docs/planning/v1.3/sprint_117_global_scope_workspace_boundary_validation.json",
+    "novel_character": "docs/planning/v1.2/sprint_114_novel_character_boundary_health.json",
+    "audit": "docs/planning/v1.2/sprint_115_activity_audit_overview.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "boundary_state": "pass",
+  "boundary_verdict": "GLOBAL_SCOPE_WORKSPACE_BOUNDARY_VALIDATED_LOCAL",
+  "boundary_coverage": 1.0,
+  "boundary_checks": [
+    "global_route",
+    "profile_summary_only",
+    "novel_permission",
+    "character_permission",
+    "transfer_consent",
+    "no_cross_workspace_leak"
+  ],
+  "boundary_unmet": [],
+  "co_ownership_allowed": false,
+  "boundary_acceptance": [
+    "global_user_scope",
+    "no_workspace_co_ownership",
+    "explicit_workspace_permission",
+    "explicit_transfer_consent",
+    "separate_backup_boundaries"
+  ],
+  "novel_character_evidence": [
+    "distinct_namespaces",
+    "reference_integrity",
+    "override_isolation",
+    "unlink_safety",
+    "delete_safety",
+    "permission_boundary",
+    "restore_results"
+  ],
+  "audit_acceptance": [
+    "filters",
+    "timestamps",
+    "actor",
+    "result",
+    "redaction",
+    "retention",
+    "detail_link"
+  ],
+  "readable_source_count": 6,
+  "declared_evidence_count": 6,
+  "declared_evidence": [
+    "novel_permission",
+    "character_permission",
+    "transfer_consent",
+    "backup_boundary",
+    "unlink_behavior",
+    "audit"
+  ],
+  "canonical_evidence": [
+    "novel_permission",
+    "character_permission",
+    "transfer_consent",
+    "backup_boundary",
+    "unlink_behavior",
+    "audit"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+    "docs/planning/v1.2/sprint_114_novel_character_boundary_health.json",
+    "docs/planning/v1.2/sprint_115_activity_audit_overview.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "evidence": "novel_permission",
+      "reference_state": "novel_permission",
+      "source": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "detail": "Novel workspace access stays denied without explicit permission",
+      "limitations": [
+        "live_connector_access_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    },
+    {
+      "evidence": "character_permission",
+      "reference_state": "character_permission",
+      "source": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "detail": "Character workspace access stays denied without explicit permission",
+      "limitations": [
+        "live_connector_access_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    },
+    {
+      "evidence": "transfer_consent",
+      "reference_state": "explicit_transfer_consent",
+      "source": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "detail": "Every workspace-touching transfer requires explicit consent",
+      "limitations": [
+        "live_provider_transfer_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    },
+    {
+      "evidence": "backup_boundary",
+      "reference_state": "separate_backup_boundaries",
+      "source": "docs/planning/v1.2/sprint_115_workspace_boundary_contract.json",
+      "detail": "Account global, novel, and character backup boundaries stay separate",
+      "limitations": [
+        "live_backup_execution_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    },
+    {
+      "evidence": "unlink_behavior",
+      "reference_state": "unlink_safety",
+      "source": "docs/planning/v1.2/sprint_114_novel_character_boundary_health.json",
+      "detail": "Unlink keeps references intact and never leaks workspace data",
+      "limitations": [
+        "live_unlink_execution_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    },
+    {
+      "evidence": "audit",
+      "reference_state": "redaction",
+      "source": "docs/planning/v1.2/sprint_115_activity_audit_overview.json",
+      "detail": "Boundary access is recorded as redacted audit metadata only",
+      "limitations": [
+        "live_audit_backend_deferred",
+        "synthetic_local"
+      ],
+      "automatic_access": false,
+      "explicit_transfer": true,
+      "boundary_separate": true,
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Novel-Character permission boundary over committed 118.4 baseline, 118.2 charter, 115.4 workspace boundary contract, 117.11 global-scope validation, 114.13 novel-character boundary health, and 115.31 activity & audit evidence. A pass does not grant a connector access, transfer workspace data, run an unlink, restore a backup, or authorize a release.",
+    "The review is written against GA_DELAYED. All entries observe nothing live and retain the explicit deferred/synthetic limitations.",
+    "The gate refuses automatic Novel/Character access, a missing explicit transfer, a collapsed backup boundary, or a live observation claim instead of assuming the boundary holds.",
+    "Live connector access, provider transfer, real unlink, workspace backup/restore, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "live connector Novel/Character access",
+    "provider cross-workspace transfer",
+    "real workspace unlink",
+    "workspace backup and restore execution",
+    "public release publication"
+  ]
+}

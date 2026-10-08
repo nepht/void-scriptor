@@ -28,8 +28,8 @@
   "active_sprint": 118,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_118.json",
   "active_ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
-  "last_verified_step": "118.15",
-  "next_step": "118.16",
+  "last_verified_step": "118.16",
+  "next_step": "118.17",
   "stability_gate": {
     "status": "PASS",
     "resume_step": "118.13",
@@ -62,8 +62,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-08T16:25:26.773279000+07:00",
-  "updated_by": "core-worker-cron-slice-118.15",
+  "updated_at": "2026-10-08T16:47:03.3525110+07:00",
+  "updated_by": "core-worker-cron-slice-118.16",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -3847,7 +3847,7 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "377894b",
+  "last_slice_commit": "3ebe9ea",
   "last_verified_on": "2026-10-07",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
@@ -3964,7 +3964,7 @@
   "suites_unresolved": [],
   "notes": "117.40 is a pure gate rerun and declares only required_suites, so no suite vocabulary was invented. 10 sprint-117 gate files outside those 10 suites are out of acceptance and are NOT claimed as run here. External gates remain DEFERRED-EXTERNAL: hosted CI, real raster/GPU, live providers, beta cohort. Reported out of scope: performance_scale_validation_test.dart:191 and provider_resilience_validation_test.dart:126,983 rewrite another slice's manifest on every run, which makes those suites non-idempotent.",
   "commit": "07145b9",
-  "ahead": 91,
+  "ahead": 93,
   "defect_117_43_27": {
     "date": "2026-10-04",
     "hunt_ordinal": 22,

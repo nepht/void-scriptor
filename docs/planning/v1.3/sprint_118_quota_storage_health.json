@@ -1,0 +1,184 @@
+{
+  "canonical_step": "118.9",
+  "title": "Quota & Storage Health",
+  "document_role": "quota-storage-health-review-record",
+  "state": "pass",
+  "verdict": "QUOTA_STORAGE_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "quota_contract": "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+    "quota_adapter": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+    "local_storage": "docs/planning/v1.2/sprint_115_local_storage_summary.json",
+    "aggregation": "docs/planning/v1.2/sprint_115_cloud_storage_aggregation.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_quota_acceptance": [
+    "raw_units",
+    "display_units",
+    "freshness",
+    "unavailable",
+    "partial_total",
+    "stale_warning",
+    "no_mock_values"
+  ],
+  "witness_adapter_acceptance": [
+    "raw_bytes",
+    "provider_timestamp",
+    "unit_metadata",
+    "quota_unavailable",
+    "stale_state",
+    "refresh"
+  ],
+  "witness_local_acceptance": [
+    "local_scan",
+    "category_breakdown",
+    "free_space",
+    "protected_data",
+    "regenerable_data",
+    "scan_freshness"
+  ],
+  "witness_aggregation_acceptance": [
+    "remote_only_total",
+    "partial_indicator",
+    "stale_indicator",
+    "excluded_accounts",
+    "last_updated",
+    "no_false_precision"
+  ],
+  "readable_source_count": 7,
+  "declared_signal_count": 7,
+  "declared_signals": [
+    "quota_match",
+    "refresh_failure",
+    "stale_data",
+    "partial_total",
+    "unit_issue",
+    "local_scan",
+    "false_precision"
+  ],
+  "canonical_signals": [
+    "quota_match",
+    "refresh_failure",
+    "stale_data",
+    "partial_total",
+    "unit_issue",
+    "local_scan",
+    "false_precision"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+    "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+    "docs/planning/v1.2/sprint_115_cloud_storage_aggregation.json",
+    "docs/planning/v1.3/sprint_117_cloud_storage_quota_validation.json",
+    "docs/planning/v1.2/sprint_115_storage_usage_cards.json",
+    "docs/planning/v1.2/sprint_115_local_storage_summary.json",
+    "docs/planning/v1.2/sprint_116_local_storage_certification.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "quota_match",
+      "reference_state": "raw_units",
+      "source": "docs/planning/v1.2/sprint_116_quota_usage_cross_provider_contract.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "refresh_failure",
+      "reference_state": "refresh",
+      "source": "docs/planning/v1.2/sprint_115_provider_quota_adapters.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "stale_data",
+      "reference_state": "stale_indicator",
+      "source": "docs/planning/v1.2/sprint_115_cloud_storage_aggregation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "partial_total",
+      "reference_state": "partial_total",
+      "source": "docs/planning/v1.3/sprint_117_cloud_storage_quota_validation.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "unit_issue",
+      "reference_state": "display_units",
+      "source": "docs/planning/v1.2/sprint_115_storage_usage_cards.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "local_scan",
+      "reference_state": "local_scan",
+      "source": "docs/planning/v1.2/sprint_115_local_storage_summary.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "false_precision",
+      "reference_state": "no_false_precision",
+      "source": "docs/planning/v1.2/sprint_116_local_storage_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 116.41 quota cross-provider contract, and 115 provider quota adapter / local storage summary / cloud storage aggregation evidence. A pass means the declared review carries all five required fields for every one of the seven canonical quota/storage signals; it does not read any live provider quota, scan any device, access any credential, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a quota reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 116.41 quota acceptance items and the 115 adapter / local storage / aggregation acceptance items, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the quota and storage witness acceptance items, read from the committed witnesses, so the review and the quota/storage contracts cannot drift apart silently.",
+    "Live provider quota reads, storage scans, credential access, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live provider quota and usage reads",
+    "device storage scans",
+    "credential and token access",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

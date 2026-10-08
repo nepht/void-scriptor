@@ -1,0 +1,211 @@
+{
+  "canonical_step": "118.18",
+  "title": "Security Health Review",
+  "document_role": "security-health-review-record",
+  "state": "pass",
+  "verdict": "SECURITY_HEALTH_REVIEW_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "security_certification": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "token_vault": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "session_device": "docs/planning/v1.2/sprint_115_session_device_management.json",
+    "oauth_identity": "docs/planning/v1.2/sprint_115_oauth_linked_identity_flow.json",
+    "credential_safety": "docs/planning/v1.2/sprint_116_credential_secret_test_safety.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_security_certification": [
+    "oauth_tests",
+    "vault_tests",
+    "redirect_tests",
+    "session_tests",
+    "permission_tests",
+    "webhook_tests",
+    "dependency_scan",
+    "audit_tests"
+  ],
+  "witness_token_vault": [
+    "os_secure_store",
+    "no_plaintext",
+    "masked_display",
+    "reauth",
+    "audit_redaction",
+    "clipboard_timeout"
+  ],
+  "witness_session_device": [
+    "list_sessions",
+    "device_details",
+    "trust_state",
+    "revoke",
+    "force_logout",
+    "security_alert"
+  ],
+  "witness_oauth_identity": [
+    "pkce",
+    "state_validation",
+    "nonce_when_required",
+    "scoped_consent",
+    "token_rotation",
+    "revocation"
+  ],
+  "witness_credential_safety": [
+    "test_only_credentials",
+    "least_privilege",
+    "rotation",
+    "redaction",
+    "no_artifact_leak",
+    "revocation"
+  ],
+  "readable_source_count": 8,
+  "declared_signal_count": 8,
+  "declared_signals": [
+    "oauth_alert",
+    "vault_health",
+    "session_alert",
+    "permission_denial",
+    "redirect_alert",
+    "webhook_alert",
+    "dependency_alert",
+    "redaction_failure"
+  ],
+  "canonical_signals": [
+    "oauth_alert",
+    "vault_health",
+    "session_alert",
+    "permission_denial",
+    "redirect_alert",
+    "webhook_alert",
+    "dependency_alert",
+    "redaction_failure"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+    "docs/planning/v1.2/sprint_115_session_device_management.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.2/sprint_116_credential_secret_test_safety.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "oauth_alert",
+      "reference_state": "oauth_tests",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "vault_health",
+      "reference_state": "os_secure_store",
+      "source": "docs/planning/v1.2/sprint_115_secure_token_secret_vault.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "session_alert",
+      "reference_state": "security_alert",
+      "source": "docs/planning/v1.2/sprint_115_session_device_management.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "permission_denial",
+      "reference_state": "permission_tests",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "redirect_alert",
+      "reference_state": "redirect_tests",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "webhook_alert",
+      "reference_state": "webhook_tests",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "dependency_alert",
+      "reference_state": "dependency_scan",
+      "source": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "redaction_failure",
+      "reference_state": "redaction",
+      "source": "docs/planning/v1.2/sprint_116_credential_secret_test_safety.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 116.45 security certification gate, 115.12 secure token & secret vault, 115.33 session & device management, 115.11 OAuth & linked identity flow, and 116.6 credential & secret test safety evidence. A pass means the declared review carries all five required fields for every one of the eight canonical security signals; it does not perform any live OAuth handshake, read any real vault or key custody backend, revoke any live session, enforce any runtime permission, contact any production redirect allow-list, verify any real webhook signature, run any live dependency advisory scan, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a live OAuth alert, a real vault read, a real session revocation, or a real dependency advisory and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 116.45 security certification gate acceptance areas, the 115.12 secure token & secret vault acceptance items, the 115.33 session & device management acceptance items, the 115.11 OAuth & linked identity flow acceptance items, and the 116.6 credential & secret test safety required controls, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the security-certification, token-vault, session-device, oauth-identity, and credential-safety witness vocabularies, read from the committed witnesses, so the review and the security contracts cannot drift apart silently.",
+    "All eight canonical security signals have a witness state: oauth_alert, permission_denial, redirect_alert, webhook_alert, and dependency_alert draw from the 116.45 security certification gate (oauth_tests, permission_tests, redirect_tests, webhook_tests, dependency_scan), vault_health from the 115.12 secure token & secret vault (os_secure_store), session_alert from the 115.33 session & device management (security_alert), and redaction_failure from the 116.6 credential & secret test safety (redaction), so no no_reference_state marker is needed and no upstream gap is recorded.",
+    "Live OAuth handshakes, real vault and key custody, live session revocation, runtime permission enforcement, production redirect allow-lists, real webhook signature verification, live dependency advisory scans, release authorization, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live OAuth handshake",
+    "real vault and key custody read",
+    "live session revocation",
+    "runtime permission enforcement",
+    "production redirect allow-list",
+    "real webhook signature verification",
+    "live dependency advisory scan",
+    "release authorization",
+    "public release publication"
+  ]
+}

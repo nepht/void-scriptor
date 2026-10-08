@@ -1,0 +1,178 @@
+{
+  "canonical_step": "118.13",
+  "title": "Provider Icon & Brand Health",
+  "document_role": "provider-icon-brand-health-review-record",
+  "state": "pass",
+  "verdict": "PROVIDER_ICON_BRAND_HEALTH_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "review_verified": true,
+  "required_fields": [
+    "signal",
+    "reference_state",
+    "source",
+    "window",
+    "limitations"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [
+    "upstream_state_vocabulary_gap:brand_issue"
+  ],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "icon_registry": "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+    "brand_certification": "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+    "brand_visual": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_window_minutes": 60480,
+  "witness_icon_registry_fields": [
+    "provider_id",
+    "display_name",
+    "category",
+    "asset_light",
+    "asset_dark",
+    "monochrome_fallback",
+    "trademark_notice",
+    "asset_version"
+  ],
+  "witness_icon_registry_acceptance": [
+    "provider_id_lookup",
+    "official_asset_policy",
+    "aspect_ratio",
+    "fallback_icon",
+    "accessible_name",
+    "asset_version"
+  ],
+  "witness_brand_certification_fields": [
+    "provider_id",
+    "asset_source",
+    "license_or_permission",
+    "asset_version",
+    "theme_variants",
+    "fallback",
+    "accessible_name",
+    "review_status"
+  ],
+  "witness_brand_visual_acceptance": [
+    "icon_review",
+    "visual_regression",
+    "breakpoints",
+    "fallbacks",
+    "keyboard",
+    "screen_reader",
+    "chart_alternatives"
+  ],
+  "readable_source_count": 6,
+  "declared_signal_count": 6,
+  "declared_signals": [
+    "missing_asset",
+    "outdated_asset",
+    "theme_variant",
+    "distortion",
+    "accessible_name",
+    "brand_issue"
+  ],
+  "canonical_signals": [
+    "missing_asset",
+    "outdated_asset",
+    "theme_variant",
+    "distortion",
+    "accessible_name",
+    "brand_issue"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+    "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+    "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+    "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+    "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+    "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json"
+  ],
+  "observed_count": 0,
+  "entries": [
+    {
+      "signal": "missing_asset",
+      "reference_state": "fallback_icon",
+      "source": "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "outdated_asset",
+      "reference_state": "asset_version",
+      "source": "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "theme_variant",
+      "reference_state": "theme_variants",
+      "source": "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "distortion",
+      "reference_state": "aspect_ratio",
+      "source": "docs/planning/v1.2/sprint_115_provider_icon_registry.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "accessible_name",
+      "reference_state": "accessible_name",
+      "source": "docs/planning/v1.2/sprint_116_brand_asset_icon_certification.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    },
+    {
+      "signal": "brand_issue",
+      "reference_state": "no_reference_state",
+      "source": "docs/planning/v1.2/sprint_116_brand_visual_accessibility_gate.json",
+      "window": 1440,
+      "limitations": [
+        "live_observation_deferred"
+      ],
+      "observed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record is the gate verdict over committed 118.4 baseline, 118.2 charter, 115.8 provider icon registry, 116.7 brand asset & icon certification, and 116.47 brand, visual & accessibility gate evidence. A pass means the declared review carries all five required fields for every one of the six canonical provider icon & brand signals; it does not render any icon, compare any screenshot baseline, collect any brand complaint, or authorize any release.",
+    "The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes an icon or brand reading and every entry carries at least one stated limitation.",
+    "The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.8 provider icon registry required fields and acceptance items, the 116.7 brand asset & icon certification required fields, and the 116.47 brand, visual & accessibility gate acceptance areas, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.",
+    "The reference-state vocabulary is the distinct union of the provider icon registry, brand asset & icon certification, and brand, visual & accessibility gate witness vocabularies, read from the committed witnesses, so the review and the icon & brand contracts cannot drift apart silently.",
+    "The brand_issue signal carries the no_reference_state marker because the committed icon & brand witnesses declare no state for a brand complaint; the gate records that upstream gap as an open item rather than inventing a state or widening the gate.",
+    "Live icon rendering, screenshot baseline comparison, per-provider brand approval, brand complaint intake, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized."
+  ],
+  "external_gates": [
+    "live icon rendering",
+    "screenshot baseline comparison",
+    "per-provider brand approval",
+    "brand complaint intake and resolution",
+    "connector certification evidence",
+    "provider exposure",
+    "public release publication"
+  ]
+}

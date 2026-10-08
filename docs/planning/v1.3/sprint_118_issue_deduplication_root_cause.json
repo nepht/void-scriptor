@@ -1,0 +1,244 @@
+{
+  "canonical_step": "118.22",
+  "title": "Issue Deduplication & Root Cause",
+  "document_role": "issue-deduplication-root-cause-record",
+  "state": "pass",
+  "verdict": "ISSUE_DEDUPLICATION_ROOT_CAUSE_VERIFIED_LOCAL",
+  "release_state": "GA_DELAYED",
+  "log_verified": true,
+  "required_fields": [
+    "issue_id",
+    "duplicates",
+    "connector_version",
+    "component",
+    "reproduction",
+    "root_cause",
+    "impact",
+    "owner"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "baseline": "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "connector": "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
+    "readiness": "docs/planning/v1.3/sprint_117_support_incident_readiness.json"
+  },
+  "baseline_state": "pass",
+  "baseline_verdict": "POST_RELEASE_HEALTH_BASELINE_FROZEN_LOCAL",
+  "baseline_release_state": "GA_DELAYED",
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "live_incident_executed": false,
+  "component_vocabulary": [
+    "connection",
+    "reauth",
+    "quota",
+    "sync",
+    "backup",
+    "ai",
+    "billing",
+    "crash",
+    "performance",
+    "support"
+  ],
+  "connector_version_vocabulary": [
+    "manifest-v1"
+  ],
+  "impact_vocabulary": [
+    "P0",
+    "P1",
+    "P2",
+    "P3",
+    "none"
+  ],
+  "owner_vocabulary": [
+    "Choirudin",
+    "nephthys"
+  ],
+  "readable_source_count": 10,
+  "canonical_components": [
+    "connection",
+    "reauth",
+    "quota",
+    "sync",
+    "backup",
+    "ai",
+    "billing",
+    "crash",
+    "performance",
+    "support"
+  ],
+  "canonical_sources": [
+    "docs/planning/v1.3/sprint_118_connection_health_review.json",
+    "docs/planning/v1.3/sprint_118_oauth_reauth_health.json",
+    "docs/planning/v1.3/sprint_118_quota_storage_health.json",
+    "docs/planning/v1.3/sprint_118_sync_backup_recovery_health.json",
+    "docs/planning/v1.3/sprint_118_sync_backup_recovery_health.json",
+    "docs/planning/v1.3/sprint_118_ai_provider_health.json",
+    "docs/planning/v1.3/sprint_118_billing_entitlement_health.json",
+    "docs/planning/v1.3/sprint_118_incident_support_intake.json",
+    "docs/planning/v1.3/sprint_118_performance_resource_health.json",
+    "docs/planning/v1.3/sprint_118_incident_support_intake.json"
+  ],
+  "declared_components": [
+    "connection",
+    "reauth",
+    "quota",
+    "sync",
+    "backup",
+    "ai",
+    "billing",
+    "crash",
+    "performance",
+    "support"
+  ],
+  "entry_count": 10,
+  "entries": [
+    {
+      "issue_id": "ISSUE-CONNECTION-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "connection",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-REAUTH-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "reauth",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-QUOTA-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "quota",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-SYNC-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "sync",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-BACKUP-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "backup",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-AI-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "ai",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-BILLING-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "billing",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-CRASH-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "crash",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "Choirudin",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-PERFORMANCE-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "performance",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "nephthys",
+      "root_cause_treated_as_confirmed": false
+    },
+    {
+      "issue_id": "ISSUE-SUPPORT-REF",
+      "duplicates": [],
+      "connector_version": "manifest-v1",
+      "component": "support",
+      "reproduction": [
+        "reference_reproduction_not_live"
+      ],
+      "root_cause": "reference_root_cause_not_determined",
+      "impact": "none",
+      "owner": "Choirudin",
+      "root_cause_treated_as_confirmed": false
+    }
+  ],
+  "claim_boundary": [
+    "This record freezes the local Issue Deduplication & Root Cause log over the committed 118.4 post-release health baseline, the committed 118.2 stability expansion charter, the committed 117.5 certification snapshot lock, and the committed 117.6 support incident readiness witness. A pass does not ingest a live issue tracker, execute a live incident, certify a connector, expose a provider, authorize a release, or publish.",
+    "The log is written against GA_DELAYED. Every entry registers a reference issue, folds no duplicates yet, claims no live impact, and stops short of confirming a root cause.",
+    "A root cause is never confirmed without a live incident: the gate refuses any entry that treats its reference root-cause classification as a confirmed cause, and any entry that claims a live impact.",
+    "Live issue-tracker ingestion, live incident execution, connector certification, provider exposure, release authorization, and publication remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": [
+    "live issue-tracker ingestion",
+    "live incident execution",
+    "connector certification",
+    "provider exposure",
+    "public release publication"
+  ]
+}

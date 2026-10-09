@@ -1,0 +1,128 @@
+{
+  "canonical_step": "119.1",
+  "title": "Sprint 119 Entry Gate",
+  "document_role": "sprint-119-entry-gate-record",
+  "state": "blocked",
+  "verdict": "SPRINT_119_ENTRY_BLOCKED_UPSTREAM",
+  "execution_allowed": false,
+  "active_sprint_unchanged": "118",
+  "next_step": "119.1",
+  "required_evidence": [
+    "sprint_118_readiness",
+    "stable_account_center",
+    "certification_examples",
+    "incident_status",
+    "security_constraints",
+    "support_capacity"
+  ],
+  "required_sources": {
+    "sprint_118_readiness": "docs/planning/v1.3/sprint_119_readiness_gate.json",
+    "stable_account_center": "docs/planning/v1.3/sprint_118_stability_expansion_report.json",
+    "certification_examples": "docs/planning/v1.3/sprint_118_versioned_connector_certification.json",
+    "incident_status": "docs/planning/v1.3/sprint_118_critical_incident_response.json",
+    "security_constraints": "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "support_capacity": "docs/planning/v1.3/sprint_118_incident_support_intake.json"
+  },
+  "canonical_sources": [
+    "docs/planning/v1.3/sprint_119_readiness_gate.json",
+    "docs/planning/v1.3/sprint_118_stability_expansion_report.json",
+    "docs/planning/v1.3/sprint_118_versioned_connector_certification.json",
+    "docs/planning/v1.3/sprint_118_critical_incident_response.json",
+    "docs/planning/v1.2/sprint_116_security_certification_gate.json",
+    "docs/planning/v1.3/sprint_118_incident_support_intake.json",
+    "docs/planning/v1.3/sprint_118_sprint_closure.json",
+    "docs/planning/v1.3/sprint_118_certified_connector_snapshot.json",
+    "docs/planning/v1.3/sprint_118_expansion_acceptance_gate.json",
+    "docs/planning/v1.3/sprint_118_security_health_review.json",
+    "test/features/account/presentation/account_cloud_center_screen_test.dart",
+    "test/features/account/presentation/account_cloud_center_visual_regression_test.dart",
+    "test/features/account/application/account_cloud_connect_wiring_test.dart"
+  ],
+  "criteria": [
+    {
+      "key": "sprint_118_readiness",
+      "status": "blocked",
+      "entry_satisfied": false,
+      "evidence": [
+        "docs/planning/v1.3/sprint_119_readiness_gate.json"
+      ],
+      "detail": "Sprint 118 remains GA_DELAYED/CORRECTIVE_STABILIZATION."
+    },
+    {
+      "key": "stable_account_center",
+      "status": "blocked",
+      "entry_satisfied": false,
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_stability_expansion_report.json",
+        "docs/planning/v1.3/sprint_118_sprint_closure.json"
+      ],
+      "detail": "Only local corrective evidence exists; external stability is not proven."
+    },
+    {
+      "key": "certification_examples",
+      "status": "blocked",
+      "entry_satisfied": false,
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_versioned_connector_certification.json",
+        "docs/planning/v1.3/sprint_118_certified_connector_snapshot.json",
+        "docs/planning/v1.3/sprint_118_expansion_acceptance_gate.json"
+      ],
+      "detail": "No certified connector example is recorded."
+    },
+    {
+      "key": "incident_status",
+      "status": "documented",
+      "entry_satisfied": true,
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_critical_incident_response.json"
+      ],
+      "detail": "Incident and safe-response status is documented; live execution remains deferred."
+    },
+    {
+      "key": "security_constraints",
+      "status": "documented",
+      "entry_satisfied": true,
+      "evidence": [
+        "docs/planning/v1.2/sprint_116_security_certification_gate.json"
+      ],
+      "detail": "Security constraints are documented locally; live verification remains deferred."
+    },
+    {
+      "key": "support_capacity",
+      "status": "documented",
+      "entry_satisfied": true,
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_incident_support_intake.json"
+      ],
+      "detail": "Support owners and intake are documented locally."
+    }
+  ],
+  "satisfied_count": 3,
+  "blocked_count": 3,
+  "blockers": [
+    "sprint_118_readiness_not_expansion_ready",
+    "stable_account_center_not_proven_external",
+    "certification_examples_missing"
+  ],
+  "missing_evidence": [],
+  "violations": [],
+  "notes": [
+    "readiness_decision:CORRECTIVE_STABILIZATION",
+    "sprint_118_certified_count:0",
+    "account_center_release_blocked:true",
+    "live_incident_execution:deferred_external",
+    "live_security_verification:deferred_external"
+  ],
+  "claim_boundary": [
+    "This gate only decides whether Sprint 119.1 may be admitted; it does not activate Sprint 119, publish a connector, expose a provider, or authorize a release.",
+    "Local Sprint 118 closure and Account Center tests are not the same as live stability or a certified connector example. Deferred external observations remain blocked.",
+    "The active Hermes sprint remains 118 while this gate is blocked. SDK, sandbox, signed packaging, catalog, and self-service expansion steps remain unopened.",
+    "No secret, credential, provider token, or live account data is read by this gate."
+  ],
+  "external_gates": [
+    "live Account Center stability observation",
+    "connector certification example",
+    "release authorization",
+    "Sprint 119 execution authorization"
+  ]
+}

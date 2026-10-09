@@ -11,10 +11,33 @@ class AuthController extends AsyncNotifier<AuthSession> {
   @override
   FutureOr<AuthSession> build() {
     final initialSession = ref.watch(initialAuthSessionProvider);
+    final identityProvider = ref.read(authIdentityProviderProvider);
+
+    // A remote account is authoritative when an opaque web session token is
+    // present. Network failure remains non-fatal: the local Guest/Offline
+    // session is still allowed to boot.
+    if (identityProvider case final AuthSessionRestorer restorer) {
+      return _restoreRemoteSession(restorer, initialSession);
+    }
+
     if (initialSession != null) return initialSession;
 
     // Sprint 145.20: restore a persisted local session (Guest/Offline) so a
     // restart does not force the user back through the login screen.
+    return loadLocalFirstAuthSession(ref.read(authSessionStoreProvider));
+  }
+
+  Future<AuthSession> _restoreRemoteSession(
+    AuthSessionRestorer restorer,
+    AuthSession? fallback,
+  ) async {
+    try {
+      final remote = await restorer.restoreSession();
+      if (remote != null) return remote;
+    } on Object {
+      // Fail closed to the local session; never block startup on auth.
+    }
+    if (fallback != null) return fallback;
     return loadLocalFirstAuthSession(ref.read(authSessionStoreProvider));
   }
 
@@ -24,6 +47,22 @@ class AuthController extends AsyncNotifier<AuthSession> {
       final session = await ref
           .read(authIdentityProviderProvider)
           .signIn(email: email, password: password);
+      state = AsyncData(session);
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+    }
+  }
+
+  Future<void> loginWithProvider(String provider) async {
+    final identityProvider = ref.read(authIdentityProviderProvider);
+    if (identityProvider is! SocialAuthIdentityProvider) {
+      state = AsyncError(const AuthIdentityUnavailable(), StackTrace.current);
+      return;
+    }
+    state = const AsyncLoading();
+    try {
+      final session = await (identityProvider as SocialAuthIdentityProvider)
+          .signInWithProvider(provider: provider);
       state = AsyncData(session);
     } catch (error, stackTrace) {
       state = AsyncError(error, stackTrace);
@@ -40,6 +79,14 @@ class AuthController extends AsyncNotifier<AuthSession> {
 
   Future<void> logout() async {
     state = const AsyncData(AuthSession.loggedOut());
+    final identityProvider = ref.read(authIdentityProviderProvider);
+    if (identityProvider case final AuthSessionRestorer restorer) {
+      try {
+        await restorer.logoutRemote();
+      } on Object {
+        // Local logout must still complete if the remote is unavailable.
+      }
+    }
     try {
       await ref.read(authSessionStoreProvider).clear();
     } on Object {

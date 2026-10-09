@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/routing/app_router.dart';
+import '../../../core/auth/auth_identity_provider.dart';
+import 'web_account_auth_identity_provider.dart';
 import 'oauth_callback_arguments.dart';
 import 'oauth_callback_bootstrap.dart';
 
@@ -30,9 +32,15 @@ final class _OAuthCallbackBootstrapGateState
       if (!mounted || _processed) return;
       _processed = true;
       final wiring = ref.read(oauthWiringProvider);
+      final identityProvider = ref.read(authIdentityProviderProvider);
       final bootstrap = OAuthCallbackBootstrap(
-        complete: (callback) =>
-            wiring.completeAuthorization(callback: callback),
+        complete: (callback) async {
+          if (identityProvider case final WebAccountAuthIdentityProvider web) {
+            final consumed = await web.completeCallback(callback);
+            if (consumed) return;
+          }
+          await wiring.completeAuthorization(callback: callback);
+        },
       );
       bootstrap.process(getOAuthCallbackArguments());
       _channel.setMethodCallHandler((call) async {

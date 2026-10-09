@@ -353,6 +353,8 @@ void _configureOAuthClientId(
 List<RouteBase> _routes({
   VoidCallback? onLogout,
   AccountCloudConnectWiring? oauthWiring,
+  VoidCallback? onGoogleSignIn,
+  VoidCallback? onGithubSignIn,
 }) {
   final resolvedOAuthWiring = oauthWiring ?? AccountCloudConnectWiring();
   return [
@@ -374,6 +376,8 @@ List<RouteBase> _routes({
               ? '${AppRoutes.forgotPassword}?from=account-cloud'
               : AppRoutes.forgotPassword,
         ),
+        onGoogleSignIn: onGoogleSignIn,
+        onGithubSignIn: onGithubSignIn,
       ),
     ),
     GoRoute(
@@ -780,6 +784,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ref.read(authControllerProvider.notifier).logout();
       },
       oauthWiring: ref.read(oauthWiringProvider),
+      onGoogleSignIn: () {
+        unawaited(
+          ref.read(authControllerProvider.notifier).loginWithProvider('google'),
+        );
+      },
+      onGithubSignIn: () {
+        unawaited(
+          ref.read(authControllerProvider.notifier).loginWithProvider('github'),
+        );
+      },
     ),
   );
 });

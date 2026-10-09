@@ -9,12 +9,19 @@ import 'app/bootstrap/app_diagnostics.dart';
 import 'app/bootstrap/bootstrap_gate.dart';
 import 'app/void_app.dart';
 import 'features/account/application/oauth_callback_bootstrap_gate.dart';
+import 'features/account/application/oauth_client_configuration.dart';
+import 'features/account/application/web_account_auth_identity_provider.dart';
 import 'core/auth/auth_controller.dart';
+import 'core/auth/auth_identity_provider.dart';
 import 'core/auth/auth_session.dart';
 import 'core/auth/auth_session_platform.dart'
     if (dart.library.io) 'core/auth/auth_session_platform_io.dart'
     if (dart.library.js_interop) 'core/auth/auth_session_platform_web.dart';
 import 'core/auth/auth_session_store.dart';
+import 'core/security/credential_store.dart';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'l10n/app_localizations.dart';
 
 Future<void> main() async {
@@ -29,6 +36,7 @@ Future<void> main() async {
   // the in-memory provider default; a store failure must never block boot.
   AuthSessionStore? sessionStore;
   AuthSession? initialSession;
+  WebAccountAuthIdentityProvider? accountIdentityProvider;
   if (!kIsWeb) {
     try {
       sessionStore = await createDiskAuthSessionStore();
@@ -37,6 +45,10 @@ Future<void> main() async {
       sessionStore = null;
       initialSession = const AuthSession.offline();
     }
+    accountIdentityProvider = WebAccountAuthIdentityProvider(
+      tokenStore: const SecureCredentialStore(FlutterSecureStorage()),
+      browserLauncher: const WindowsOAuthBrowserLauncher(),
+    );
   }
 
   // Sprint 101.9: honor the persisted decision — an escalated mode boots
@@ -59,6 +71,10 @@ Future<void> main() async {
           authSessionStoreProvider.overrideWithValue(sessionStore),
         if (initialSession != null)
           initialAuthSessionProvider.overrideWithValue(initialSession),
+        if (accountIdentityProvider != null)
+          authIdentityProviderProvider.overrideWithValue(
+            accountIdentityProvider,
+          ),
       ],
       // BootstrapGate must always have the minimum Material environment.
       // RecoveryShell can be the first rendered surface, before the full

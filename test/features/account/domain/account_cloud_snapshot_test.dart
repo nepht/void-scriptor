@@ -47,4 +47,31 @@ void main() {
       );
     },
   );
+
+  test(
+    'authenticated Google and GitHub sessions expose their real provider',
+    () {
+      for (final provider in const ['google', 'github']) {
+        final snapshot = AccountCloudSnapshot.localOnly(
+          session: AuthSession(
+            status: AuthStatus.authenticated,
+            userId: 'provider-user',
+            displayName: 'Verified Creator',
+            email: 'verified@example.com',
+            identityProvider: provider,
+          ),
+        );
+
+        expect(snapshot.connectedSignInServiceId, '$provider-sign-in');
+        expect(
+          snapshot.service('$provider-sign-in').state,
+          AccountCloudConnectionState.connected,
+        );
+        expect(
+          snapshot.service('email-sign-in').state,
+          AccountCloudConnectionState.notConnected,
+        );
+      }
+    },
+  );
 }

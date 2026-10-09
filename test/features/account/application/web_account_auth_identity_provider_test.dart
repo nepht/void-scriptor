@@ -56,6 +56,7 @@ void main() {
           'session_token': 'signed-session-fixture',
           'user': {
             'id': 'usr_fixture',
+            'provider': 'google',
             'name': 'Qowner',
             'email': 'qowner@example.com',
           },
@@ -91,6 +92,7 @@ void main() {
     expect(consumed, isTrue);
     expect(session.status, AuthStatus.authenticated);
     expect(session.userId, 'usr_fixture');
+    expect(session.identityProvider, 'google');
     expect(
       await credentials.read('account.session_token'),
       'signed-session-fixture',
@@ -144,7 +146,11 @@ void main() {
         authorization = request.headers['authorization'];
         return _jsonResponse(200, {
           'ok': true,
-          'user': {'id': 'usr_restore', 'name': 'Restored Creator'},
+          'user': {
+            'id': 'usr_restore',
+            'provider': 'github',
+            'name': 'Restored Creator',
+          },
         });
       }),
     );
@@ -154,5 +160,6 @@ void main() {
     expect(authorization, 'Bearer signed-session');
     expect(session?.status, AuthStatus.authenticated);
     expect(session?.userId, 'usr_restore');
+    expect(session?.identityProvider, 'github');
   });
 }

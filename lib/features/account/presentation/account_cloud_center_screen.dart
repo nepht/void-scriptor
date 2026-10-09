@@ -1046,13 +1046,14 @@ class _AuthenticationProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryIdentity = _primaryIdentity;
     final profile = AuthenticationProfileCard.authenticated(
       avatar: const ProfileAvatar.initials('VS'),
       displayName: snapshot.accountDisplayName,
       email: snapshot.accountEmail ?? 'No email on this local session',
       plan: _planFrom(snapshot),
       signInMethods: _signInMethods,
-      primaryIdentity: SignInMethod.email,
+      primaryIdentity: primaryIdentity,
     );
 
     return LayoutBuilder(
@@ -1189,8 +1190,8 @@ class _AuthenticationProfileCard extends StatelessWidget {
             icon: _signInIconFor(service),
             label: _signInLabelFor(service),
             state: service.state,
-            primary: service.id == 'email-sign-in',
-            account: service.id == 'email-sign-in'
+            primary: service.id == snapshot.connectedSignInServiceId,
+            account: service.id == snapshot.connectedSignInServiceId
                 ? (snapshot.accountEmail ?? profile.email)
                 : null,
           ),
@@ -1241,12 +1242,17 @@ class _AuthenticationProfileCard extends StatelessWidget {
     SignInMethod.github,
   ];
 
+  SignInMethod get _primaryIdentity =>
+      switch (snapshot.connectedSignInServiceId) {
+        'google-sign-in' => SignInMethod.google,
+        'github-sign-in' => SignInMethod.github,
+        _ => SignInMethod.email,
+      };
+
   /// Subscription lokal dipetakan dari mode akun, karena belum ada billing
   /// service yang terhubung pada build ini.
   AccountPlan _planFrom(AccountCloudSnapshot snapshot) {
-    final authenticated =
-        snapshot.connectionStateOf('email-sign-in') ==
-        AccountCloudConnectionState.connected;
+    final authenticated = snapshot.connectedSignInServiceId != null;
     return authenticated ? AccountPlan.pro : AccountPlan.free;
   }
 }

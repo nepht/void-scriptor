@@ -144,7 +144,10 @@ final class WebAccountAuthIdentityProvider
       if (token is! String || token.trim().isEmpty) {
         throw const AuthRemoteRequestFailed('missing_session_token');
       }
-      final session = _sessionFromUser(body['user']);
+      final session = _sessionFromUser(
+        body['user'],
+        fallbackProvider: pending.provider,
+      );
       await tokenStore.write(key: _sessionTokenKey, value: token);
       _completeSuccess(pending, session);
     } on AuthException catch (error, stackTrace) {
@@ -238,7 +241,7 @@ final class WebAccountAuthIdentityProvider
     }
   }
 
-  AuthSession _sessionFromUser(Object? value) {
+  AuthSession _sessionFromUser(Object? value, {String? fallbackProvider}) {
     if (value is! Map) throw const AuthRemoteRequestFailed('invalid_user');
     final id = value['id'];
     if (id is! String || id.trim().isEmpty) {
@@ -246,12 +249,23 @@ final class WebAccountAuthIdentityProvider
     }
     String? optionalString(Object? input) =>
         input is String && input.trim().isNotEmpty ? input.trim() : null;
+    final provider = _knownProvider(value['provider']) ?? fallbackProvider;
     return AuthSession(
       status: AuthStatus.authenticated,
       userId: id,
       displayName: optionalString(value['name']),
       email: optionalString(value['email']),
+      identityProvider: provider,
     );
+  }
+
+  static String? _knownProvider(Object? value) {
+    if (value is! String) return null;
+    final normalized = value.trim().toLowerCase();
+    return switch (normalized) {
+      'google' || 'github' => normalized,
+      _ => null,
+    };
   }
 
   static Map<String, dynamic> _jsonObject(String value) {

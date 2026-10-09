@@ -33,6 +33,35 @@ class AccountCloudSnapshot {
 
   factory AccountCloudSnapshot.localOnly({required AuthSession? session}) {
     final authenticated = session?.status == AuthStatus.authenticated;
+    final connectedSignInId = switch (session?.identityProvider) {
+      'google' => 'google-sign-in',
+      'github' => 'github-sign-in',
+      // Older injected/test sessions did not carry provider metadata. Keep
+      // their established honest fallback rather than claiming a provider we
+      // cannot identify.
+      _ when authenticated => 'email-sign-in',
+      _ => null,
+    };
+
+    AccountCloudService signInService({
+      required String id,
+      required String label,
+      required String providerDescription,
+    }) {
+      final connected = id == connectedSignInId;
+      return AccountCloudService(
+        id: id,
+        label: label,
+        group: AccountCloudServiceGroup.signIn,
+        state: connected
+            ? AccountCloudConnectionState.connected
+            : AccountCloudConnectionState.notConnected,
+        description: connected
+            ? 'Identity verified by $providerDescription.'
+            : '$label sign-in is not connected.',
+      );
+    }
+
     final mode = switch (session?.status) {
       AuthStatus.authenticated => 'Connected account',
       AuthStatus.guest => 'Guest mode',
@@ -44,44 +73,30 @@ class AccountCloudSnapshot {
       accountDisplayName: session?.displayName ?? 'Local user',
       accountEmail: session?.email,
       services: [
-        AccountCloudService(
+        signInService(
           id: 'email-sign-in',
           label: 'Email sign-in',
-          group: AccountCloudServiceGroup.signIn,
-          state: authenticated
-              ? AccountCloudConnectionState.connected
-              : AccountCloudConnectionState.notConnected,
-          description: authenticated
-              ? 'Identity verified by the configured provider.'
-              : 'An identity provider has not been configured.',
+          providerDescription: 'the configured email identity',
         ),
-        const AccountCloudService(
+        signInService(
           id: 'google-sign-in',
           label: 'Google',
-          group: AccountCloudServiceGroup.signIn,
-          state: AccountCloudConnectionState.notConnected,
-          description: 'Google OAuth is not connected.',
+          providerDescription: 'Google',
         ),
-        const AccountCloudService(
+        signInService(
           id: 'microsoft-sign-in',
           label: 'Microsoft',
-          group: AccountCloudServiceGroup.signIn,
-          state: AccountCloudConnectionState.notConnected,
-          description: 'Microsoft OAuth is not connected.',
+          providerDescription: 'Microsoft',
         ),
-        const AccountCloudService(
+        signInService(
           id: 'github-sign-in',
           label: 'GitHub',
-          group: AccountCloudServiceGroup.signIn,
-          state: AccountCloudConnectionState.notConnected,
-          description: 'GitHub OAuth is not connected.',
+          providerDescription: 'GitHub',
         ),
-        const AccountCloudService(
+        signInService(
           id: 'apple-sign-in',
           label: 'Apple ID',
-          group: AccountCloudServiceGroup.signIn,
-          state: AccountCloudConnectionState.notConnected,
-          description: 'Apple ID is not connected.',
+          providerDescription: 'Apple ID',
         ),
         const AccountCloudService(
           id: 'local-project-storage',
@@ -159,4 +174,18 @@ class AccountCloudSnapshot {
   /// State koneksi untuk [id], atau `notConnected` bila entri tidak ada.
   AccountCloudConnectionState connectionStateOf(String id) =>
       serviceOrNull(id)?.state ?? AccountCloudConnectionState.notConnected;
+
+  /// The one sign-in identity that was verified for this snapshot, if known.
+  /// A local authenticated test/session without provider metadata may still
+  /// use the legacy `email-sign-in` fallback above, so this getter remains
+  /// useful for both old and new session shapes.
+  String? get connectedSignInServiceId {
+    for (final service in services) {
+      if (service.group == AccountCloudServiceGroup.signIn &&
+          service.state == AccountCloudConnectionState.connected) {
+        return service.id;
+      }
+    }
+    return null;
+  }
 }

@@ -28,8 +28,8 @@
   "active_sprint": 118,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_118.json",
   "active_ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
-  "last_verified_step": "118.45",
-  "next_step": "118.46",
+  "last_verified_step": "118.46",
+  "next_step": null,
   "stability_gate": {
     "status": "PASS",
     "resume_step": "118.13",
@@ -63,7 +63,7 @@
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
   "updated_at": "2026-10-09T08:30:00.000000+07:00",
-  "updated_by": "core-worker-cron-slice-118.45",
+  "updated_by": "codex-118.46-closure",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -464,8 +464,8 @@
   },
   "active_stream_details": {
     "status": "SPRINT_COMPLETE_PENDING_OPERATOR_DECISION",
-    "next_step": "117.46",
-    "note": "Sprint 116 seluruh 52 langkah VERIFIED-LOCAL. next_step sengaja dibiarkan null: stream transition /inityasi sprint berikutnya adalah keputusan operator, cron tidak boleh mengaktifkannya sendiri."
+    "next_step": null,
+    "note": "Sprint 118 seluruh 46 langkah VERIFIED-LOCAL. Runtime sengaja berhenti setelah closure lokal; transisi ke Sprint 119 tidak diaktifkan otomatis karena readiness memilih CORRECTIVE_STABILIZATION dan kontrak Sprint 119 masih PLANNED_BLOCKED."
   },
   "activation_rules_11122_run362": {
     "status": "VERIFIED-LOCAL",

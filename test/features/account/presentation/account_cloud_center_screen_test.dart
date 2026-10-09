@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:void_scriptor/core/auth/auth_controller.dart';
 import 'package:void_scriptor/core/auth/auth_session.dart';
+import 'package:void_scriptor/core/auth/auth_status.dart';
 import 'package:void_scriptor/features/account/application/account_operational_metrics.dart';
 import 'package:void_scriptor/features/account/domain/account_cloud_snapshot.dart';
 import 'package:void_scriptor/features/account/presentation/account_cloud_center_screen.dart';
+
+class _GoogleAuthController extends AuthController {
+  @override
+  Future<AuthSession> build() async => const AuthSession(
+    status: AuthStatus.authenticated,
+    userId: 'google-user',
+    displayName: 'Google Creator',
+    email: 'creator@example.com',
+    identityProvider: 'google',
+  );
+}
 
 void main() {
   final snapshot = AccountCloudSnapshot.localOnly(
@@ -95,6 +108,38 @@ void main() {
     await tester.pump();
     expect(signInRequested, isTrue);
   });
+
+  testWidgets(
+    'renders the live Google identity as the primary sign-in method',
+    (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            authControllerProvider.overrideWith(_GoogleAuthController.new),
+          ],
+          child: const MaterialApp(home: AccountCloudCenterScreen()),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final googleRow = find.byKey(
+        const ValueKey('account-sign-in-method-google-sign-in'),
+      );
+      final emailRow = find.byKey(
+        const ValueKey('account-sign-in-method-email-sign-in'),
+      );
+      expect(googleRow, findsOneWidget);
+      expect(emailRow, findsOneWidget);
+      expect(
+        find.descendant(of: googleRow, matching: find.text('Primary')),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: emailRow, matching: find.text('Not connected')),
+        findsOneWidget,
+      );
+    },
+  );
 
   testWidgets('renders live project usage and storage metrics when available', (
     tester,

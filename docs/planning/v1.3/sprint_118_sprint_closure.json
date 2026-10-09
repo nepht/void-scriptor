@@ -1,0 +1,190 @@
+{
+  "canonical_step": "118.46",
+  "title": "Sprint Closure",
+  "document_role": "sprint-closure-manifest",
+  "state": "pass",
+  "decision": "closedLocalDeferredExternal",
+  "verdict": "SPRINT_118_CLOSED_LOCAL_DEFERRED_EXTERNAL",
+  "release_decision": "DELAY",
+  "release_decision_owner": "PENDING_OPERATOR",
+  "live_release_executed": false,
+  "criteria": [
+    {
+      "name": "entry_gate_passed",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_entry_gate.json",
+        "docs/planning/v1.3/sprint_118_stability_expansion_charter.json"
+      ],
+      "detail": "Entry is pass, corrective scope is approved, and local execution is allowed."
+    },
+    {
+      "name": "release_state_confirmed",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_entry_gate.json",
+        "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+        "docs/planning/v1.3/sprint_118_stability_expansion_report.json",
+        "docs/planning/v1.3/sprint_119_readiness_gate.json"
+      ],
+      "detail": "The committed witnesses agree on GA_DELAYED; no live release is inferred."
+    },
+    {
+      "name": "critical_incidents_resolved_or_connectors_disabled",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_incident_support_intake.json",
+        "docs/planning/v1.3/sprint_118_critical_incident_response.json",
+        "docs/planning/v1.3/sprint_118_connector_disable_safe_degradation.json"
+      ],
+      "detail": "No live incident was executed; response and safe-degradation plans are locally verified."
+    },
+    {
+      "name": "maintenance_decision_recorded",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_stability_fixes.json",
+        "docs/planning/v1.3/sprint_118_maintenance_regression_matrix.json",
+        "docs/planning/v1.3/sprint_118_maintenance_release_gate.json"
+      ],
+      "detail": "Maintenance decision is recorded as NO_PATCH."
+    },
+    {
+      "name": "expansion_certification_evidence_recorded",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_certified_connector_snapshot.json",
+        "docs/planning/v1.3/sprint_118_versioned_connector_certification.json",
+        "docs/planning/v1.3/sprint_118_expansion_acceptance_gate.json"
+      ],
+      "detail": "Certification evidence is recorded for 32 registered providers; 0 are certified on GA_DELAYED."
+    },
+    {
+      "name": "report_complete",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_118_stability_expansion_report.json"
+      ],
+      "detail": "The stability and expansion record declares all nine canonical sections."
+    },
+    {
+      "name": "next_direction_decided",
+      "status": "satisfied",
+      "evidence": [
+        "docs/planning/v1.3/sprint_119_readiness_gate.json",
+        "docs/sprints/sprint-118-account-cloud-center-stability.md"
+      ],
+      "detail": "Next direction is CORRECTIVE_STABILIZATION and all prior 118 steps are resolved."
+    }
+  ],
+  "satisfied_count": 7,
+  "deferred_count": 0,
+  "unmet_criteria": [],
+  "deferred_criteria": [],
+  "missing_evidence": [],
+  "violations": [],
+  "source_manifests": [
+    "docs/planning/v1.3/sprint_118_entry_gate.json",
+    "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "docs/planning/v1.3/sprint_118_certified_connector_snapshot.json",
+    "docs/planning/v1.3/sprint_118_post_release_health_baseline.json",
+    "docs/planning/v1.3/sprint_118_privacy_safe_observation.json",
+    "docs/planning/v1.3/sprint_118_incident_support_intake.json",
+    "docs/planning/v1.3/sprint_118_connection_health_review.json",
+    "docs/planning/v1.3/sprint_118_oauth_reauth_health.json",
+    "docs/planning/v1.3/sprint_118_quota_storage_health.json",
+    "docs/planning/v1.3/sprint_118_sync_backup_recovery_health.json",
+    "docs/planning/v1.3/sprint_118_ai_provider_health.json",
+    "docs/planning/v1.3/sprint_118_billing_entitlement_health.json",
+    "docs/planning/v1.3/sprint_118_provider_icon_brand_health.json",
+    "docs/planning/v1.3/sprint_118_responsive_ui_health.json",
+    "docs/planning/v1.3/sprint_118_accessibility_health.json",
+    "docs/planning/v1.3/sprint_118_performance_resource_health.json",
+    "docs/planning/v1.3/sprint_118_provider_outage_recovery_review.json",
+    "docs/planning/v1.3/sprint_118_security_health_review.json",
+    "docs/planning/v1.3/sprint_118_privacy_health_review.json",
+    "docs/planning/v1.3/sprint_118_permission_boundary_health.json",
+    "docs/planning/v1.3/sprint_118_feedback_adoption_evidence_log.json",
+    "docs/planning/v1.3/sprint_118_issue_deduplication_root_cause.json",
+    "docs/planning/v1.3/sprint_118_critical_incident_response.json",
+    "docs/planning/v1.3/sprint_118_stability_fixes.json",
+    "docs/planning/v1.3/sprint_118_connector_disable_safe_degradation.json",
+    "docs/planning/v1.3/sprint_118_maintenance_regression_matrix.json",
+    "docs/planning/v1.3/sprint_118_rollout_progression_decision.json",
+    "docs/planning/v1.3/sprint_118_maintenance_release_gate.json",
+    "docs/planning/v1.3/sprint_118_provider_expansion_evidence_inventory.json",
+    "docs/planning/v1.3/sprint_118_expansion_prioritization.json",
+    "docs/planning/v1.3/sprint_118_api_terms_feasibility.json",
+    "docs/planning/v1.3/sprint_118_brand_legal_readiness.json",
+    "docs/planning/v1.3/sprint_118_identity_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_storage_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_ai_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_developer_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_creative_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_payment_connector_expansion.json",
+    "docs/planning/v1.3/sprint_118_versioned_connector_certification.json",
+    "docs/planning/v1.3/sprint_118_expansion_contract_e2e.json",
+    "docs/planning/v1.3/sprint_118_expansion_feature_flags_rollout.json",
+    "docs/planning/v1.3/sprint_118_expansion_acceptance_gate.json",
+    "docs/planning/v1.3/sprint_118_documentation_support_update.json",
+    "docs/planning/v1.3/sprint_118_stability_expansion_report.json",
+    "docs/planning/v1.3/sprint_119_readiness_gate.json"
+  ],
+  "ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
+  "evidence_anchor": {
+    "entry_gate": {
+      "state": "pass",
+      "execution_allowed": true,
+      "corrective_scope_approved": true
+    },
+    "release_state": "GA_DELAYED",
+    "provider_snapshot": {
+      "snapshot_state": "pass",
+      "snapshot_frozen": true,
+      "registered_provider_count": 32,
+      "certified_provider_count": 0
+    },
+    "incident_and_degradation": {
+      "incident_state": "pass",
+      "live_incident_executed": false,
+      "disable_state": "pass"
+    },
+    "maintenance": {
+      "fixes_state": "pass",
+      "maintenance_state": "pass",
+      "decision": "NO_PATCH"
+    },
+    "expansion_certification": {
+      "certification_state": "pass",
+      "acceptance_state": "pass"
+    },
+    "report": {
+      "state": "pass",
+      "verified": true,
+      "declared_section_count": 9,
+      "expected_section_count": 9
+    },
+    "next_direction": {
+      "state": "pass",
+      "verified": true,
+      "decision": "CORRECTIVE_STABILIZATION",
+      "all_prior_steps_resolved": true
+    },
+    "readable_source_count": 45
+  },
+  "external_gates": "DEFERRED-EXTERNAL",
+  "open_items": [],
+  "limitations": [
+    "No public release, publication, push, or live GA observation is claimed.",
+    "Connector certification and external provider visibility remain deferred until an authorized release.",
+    "Sprint 119 execution remains gated by its own entry contract and operator authorization."
+  ],
+  "summary": "Sprint 118 is closed locally on the GA_DELAYED path; external release and certification gates remain deferred.",
+  "claim_boundary": [
+    "This closes Sprint 118 locally on the GA_DELAYED corrective path. It releases nothing, publishes nothing, tags nothing, and pushes nothing.",
+    "The seven canonical definition-of-done items are derived from the committed 118.1-118.45 evidence and the active ledger; missing evidence, violations, or unresolved prior steps block closure.",
+    "The provider snapshot and expansion gates record 0 certified providers of 32 registered providers. This is certification evidence, not connector certification or visibility.",
+    "The maintenance decision is recorded locally. A build, publication, signing, hosted CI run, or live observation is never inferred from this manifest.",
+    "Sprint 119 remains CORRECTIVE_STABILIZATION and requires its own entry gate and explicit authorization."
+  ]
+}

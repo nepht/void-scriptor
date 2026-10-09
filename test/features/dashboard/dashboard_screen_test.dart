@@ -43,6 +43,17 @@ void main() {
     expect(find.text('Your writing desk'), findsOneWidget);
     expect(find.byKey(const ValueKey('dashboard-content')), findsOneWidget);
     expect(
+      find.byKey(const ValueKey('dashboard-overview-strip')),
+      findsOneWidget,
+    );
+    expect(find.text('Workspace overview'), findsOneWidget);
+    expect(find.text('Local-first workspace'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('dashboard-quick-actions')),
+      findsOneWidget,
+    );
+    expect(find.text('Start creating'), findsOneWidget);
+    expect(
       tester.getSize(find.byKey(const ValueKey('dashboard-content'))).width,
       lessThanOrEqualTo(1280),
     );
@@ -69,6 +80,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Welcome back, Guest'), findsOneWidget);
+    expect(find.text('Workspace overview'), findsOneWidget);
     expect(find.text('Recent Projects'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

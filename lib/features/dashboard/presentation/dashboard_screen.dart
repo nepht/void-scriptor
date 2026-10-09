@@ -9,6 +9,7 @@ import '../../character/presentation/character_controller.dart';
 import '../../projects/presentation/project_persistence_providers.dart';
 import '../../../design_system/typography/void_typography.dart';
 import 'widgets/local_only_status.dart';
+import 'widgets/dashboard_overview.dart';
 import 'widgets/quick_actions.dart';
 import 'widgets/recent_projects.dart';
 import 'widgets/statistics_panel.dart';
@@ -122,6 +123,12 @@ class DashboardScreen extends ConsumerWidget {
                               ?.copyWith(color: context.palette.textMuted),
                         ),
                         const SizedBox(height: 32),
+                        DashboardOverview(
+                          isLocalOnly:
+                              authSession.status == AuthStatus.guest ||
+                              authSession.status == AuthStatus.offline,
+                        ),
+                        const SizedBox(height: 16),
                         WelcomeCard(
                           displayName: authSession.displayName ?? 'Creator',
                         ),

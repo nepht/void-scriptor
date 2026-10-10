@@ -70,7 +70,7 @@ void main() {
       'This record is the gate verdict over committed 118.4 baseline and 117.7 privacy-safe monitoring evidence. A pass means the declared observation is privacy-safe; it does not execute any observation, collect any live signal, certify any connector, or authorize any release.',
       'The observation is written against the delayed release state (GA_DELAYED). No release ran, so no signal observes a live reading and the consent gate remains opt-in default OFF.',
       'The gate reads the committed witnesses directly, classifies every collected field against the full creative/secret/payment/media exclusion vocabulary, and verifies each committed privacy-evidence source is readable; an unreadable witness or an unfrozen baseline keeps the verification blocked rather than assumed.',
-      'The 118.5 objective names media and raw payment data explicitly while the committed 117.7 witness omits both from its excluded_categories; the gate owns the full vocabulary and records the upstream omission as an open item.',
+      'The committed 117.7 witness carries media and raw payment in its excluded_categories; the gate owns the full vocabulary and keeps any future omission visible as an open item.',
       'Live observation execution, external telemetry, connector certification, provider exposure, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized.',
     ],
     'external_gates': <String>[

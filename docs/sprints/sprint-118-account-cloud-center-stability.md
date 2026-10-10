@@ -167,6 +167,15 @@ Sprint 118 is active only for the approved delayed corrective scope. Provider ce
 - Commit: `56c0759` `feat(118.7): connection health review gate, test, and manifest` -- explicit paths only: the lib gate, the gate test, the emitter, and the evidence manifest. Committed-blob sha256: lib `e007a15f`, test `bff8372c`, emitter `c2f43017`, evidence `28901551`.
 - Claim boundary: local evidence only. No release, tag, publication, push, or execution authorization. `execution_authorized=false`, `approval_state=PENDING_OPERATOR`.
 
+### 2026-10-10 - Deferred vocabulary follow-up for 118.5 and 118.7 (VERIFIED-LOCAL)
+
+- 118.5 upstream privacy witness remediation: `docs/planning/v1.3/sprint_117_privacy_safe_monitoring.json` now records `payment` and `media` in `excluded_categories`. The 118.5 gate still owns the complete four-family vocabulary and now reports `open_items=[]`; no live observation or telemetry was introduced.
+- 118.7 upstream state vocabulary remediation: `docs/planning/v1.2/sprint_115_connection_health_state_machine.json` and `lib/features/account/domain/account_center_connection_health_state_machine.dart` now carry `LATENCY` as a health state and `DISCONNECT_CLEANUP` as a transition. The 118.7 review derives those references and now reports `open_items=[]`.
+- Runtime behavior is covered: `LATENCY` maps to a degraded connection with an explicit high-latency message; `DISCONNECT_CLEANUP` is the only recovery transition from `REVOKED` and returns the local connection to `NOT_CONFIGURED` without clearing unrelated account identity.
+- Evidence regenerated deterministically: `docs/planning/v1.3/sprint_118_privacy_safe_observation.json` and `docs/planning/v1.3/sprint_118_connection_health_review.json`, both `state=pass`, `blockers=0`, `violations=0`, `open_items=0`.
+- Verification: RED focused run recorded the expected old-vocabulary failures; GREEN focused slice `63/63` PASS; connected-account consumer test `13/13` PASS; relevant regression `1167/1167` PASS; emitters returned `state=pass` with `open_items=0` for both gates.
+- Claim boundary: local contract and state-machine evidence only. Live connection observation, provider probing, connector certification, telemetry, release authorization, and publication remain `DEFERRED-EXTERNAL`.
+
 ## Slice 118.8 - OAuth & Reauthentication Health (VERIFIED-LOCAL)
 
 - Objective: monitor callback errors, state failures, token rotation, reauth completion, scope changes, and provider revoke (external canonical `sprint_118.json` step 118.8). The canonical signal list is exactly six items: `callback_error`, `state_failure`, `rotation_failure`, `reauth_completion`, `scope_change`, and `provider_revoke`.

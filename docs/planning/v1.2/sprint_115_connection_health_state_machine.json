@@ -43,7 +43,8 @@
     "HEALTHY",
     "DEGRADED",
     "OUTAGE",
-    "RATE_LIMITED"
+    "RATE_LIMITED",
+    "LATENCY"
   ],
   "transitions": [
     "BEGIN_CONNECTING",
@@ -54,7 +55,8 @@
     "REVOKE",
     "REFRESH_HEALTH",
     "REAUTHENTICATE",
-    "RETRY"
+    "RETRY",
+    "DISCONNECT_CLEANUP"
   ],
   "policy": {
     "state_machine": "Per-account instance; no static shared connection state.",

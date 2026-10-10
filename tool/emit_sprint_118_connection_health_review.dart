@@ -77,7 +77,7 @@ void main() {
       'The review is written against the delayed release state (GA_DELAYED). No release ran, so no entry observes a connection and every entry carries at least one stated limitation.',
       'The gate reads the committed witnesses directly, derives its reference-state vocabulary from the 115.10 state machine, and verifies each entry cites a committed, readable evidence source; an unreadable witness or an unfrozen baseline keeps the review blocked rather than assumed.',
       'The reference-state vocabulary is the distinct union of the state machine connection states, health states, and transitions, read from the committed witness, so the review and the state machine cannot drift apart silently.',
-      'The objective names latency and disconnect_cleanup explicitly, but the committed 115.10 state machine declares no state for either; the review declares no_reference_state for those two signals and records the upstream gap as an open item rather than inventing a state or widening the gate.',
+      'The committed 115.10 state machine declares LATENCY and DISCONNECT_CLEANUP for the two signals; the review derives those reference states from the witness and keeps no_reference_state available for future omissions.',
       'Live connection observation, provider probing, connector certification, provider exposure, and publication remain DEFERRED-EXTERNAL; nothing here is performed or authorized.',
     ],
     'external_gates': <String>[

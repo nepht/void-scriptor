@@ -88,6 +88,7 @@ Sprint118ConnectionHealthAnchor _anchor({
           'DEGRADED',
           'OUTAGE',
           'RATE_LIMITED',
+          'LATENCY',
         ],
     witnessTransitions:
         witnessTransitions ??
@@ -101,6 +102,7 @@ Sprint118ConnectionHealthAnchor _anchor({
           'REFRESH_HEALTH',
           'REAUTHENTICATE',
           'RETRY',
+          'DISCONNECT_CLEANUP',
         ],
     readableSources:
         readableSources ?? Sprint118ConnectionHealthContract.canonicalSources,
@@ -200,16 +202,32 @@ void main() {
       expect(report.observedCount, 0);
       expect(report.violations, isEmpty);
       expect(report.blockers, isEmpty);
-      // The two signals the committed state-machine witness has no state for
-      // are reported honestly rather than dropped.
-      expect(
-        report.openItems,
-        containsAll(<String>[
-          'upstream_state_vocabulary_gap:latency',
-          'upstream_state_vocabulary_gap:disconnect_cleanup',
-        ]),
-      );
+      expect(report.openItems, isEmpty);
     });
+
+    test(
+      'canonical latency and disconnect cleanup states come from the witness',
+      () {
+        final review = Sprint118ConnectionHealthContract.canonicalReview;
+        expect(
+          review.entries
+              .firstWhere((entry) => entry.signal == 'latency')
+              .referenceState,
+          'LATENCY',
+        );
+        expect(
+          review.entries
+              .firstWhere((entry) => entry.signal == 'disconnect_cleanup')
+              .referenceState,
+          'DISCONNECT_CLEANUP',
+        );
+
+        final anchor = const Sprint118ConnectionHealthLoader().loadAnchor();
+        expect(anchor, isNotNull);
+        expect(anchor!.witnessHealthStates, contains('LATENCY'));
+        expect(anchor.witnessTransitions, contains('DISCONNECT_CLEANUP'));
+      },
+    );
 
     test('blocks when the committed evidence is unreadable', () {
       final report = const Sprint118ConnectionHealthGate().evaluateWith(

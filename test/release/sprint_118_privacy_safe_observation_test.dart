@@ -87,6 +87,8 @@ Sprint118PrivacyObservationAnchor _anchor({
           'secret',
           'token',
           'api_key',
+          'payment',
+          'media',
           'screenshot',
           'recording',
           'email_address',
@@ -187,6 +189,20 @@ void main() {
       expect(report.collectedFieldCount, greaterThan(0));
       expect(report.violations, isEmpty);
       expect(report.blockers, isEmpty);
+      expect(report.openItems, isEmpty);
+    });
+
+    test('committed witness carries the complete exclusion vocabulary', () {
+      final anchor = const Sprint118PrivacyObservationLoader().loadAnchor();
+      expect(anchor, isNotNull);
+      expect(
+        anchor!.excludedCategories,
+        containsAll(<String>['media', 'payment']),
+      );
+      expect(
+        const Sprint118PrivacyObservationGate().evaluate().openItems,
+        isEmpty,
+      );
     });
 
     test('blocks when the committed evidence is unreadable', () {
@@ -455,21 +471,6 @@ void main() {
       expect(
         Sprint118PrivacyObservationContract.fieldCategory('company_name'),
         isNull,
-      );
-    });
-
-    test('reports the upstream exclusion vocabulary gap honestly', () {
-      // The committed 117.7 witness omits media and raw payment, both named by
-      // the 118.5 objective; the gate records the gap as an open item without
-      // treating it as a violation, because 118.5 owns the full vocabulary.
-      final report = _run(_observation());
-      expect(
-        report.openItems,
-        contains('upstream_exclusion_vocabulary_gap:media'),
-      );
-      expect(
-        report.openItems,
-        contains('upstream_exclusion_vocabulary_gap:payment'),
       );
     });
 

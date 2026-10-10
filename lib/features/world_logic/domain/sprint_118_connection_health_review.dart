@@ -33,12 +33,9 @@
 ///   health state machine (its connection states, health states, and
 ///   transitions), so the review and the state machine cannot drift apart.
 ///
-/// The objective names `latency` and `disconnect_cleanup` explicitly, but the
-/// committed 115.10 state machine declares no state for either. Rather than
-/// widen the gate silently or drop the requirement, the gate owns a declared
-/// `no_reference_state` marker and records the upstream omission as an open item
-/// (`upstream_state_vocabulary_gap:<signal>`) -- an honest boundary, not a
-/// violation of this step.
+/// The committed 115.10 state machine now declares explicit `LATENCY` and
+/// `DISCONNECT_CLEANUP` vocabulary for the two signals. The gate still retains
+/// a `no_reference_state` marker for future upstream omissions.
 ///
 /// Live connection observation, provider probing, connector certification,
 /// provider exposure, release authorization, and publication remain
@@ -235,9 +232,9 @@ abstract final class Sprint118ConnectionHealthContract {
     'disconnect_cleanup',
   ];
 
-  /// The declared marker for a signal the committed state-machine witness has no
-  /// state for. It is honest on the delayed path: it declares no reference state
-  /// rather than inventing one.
+  /// The declared marker for a signal whose committed state-machine witness has
+  /// no state. It is honest on the delayed path and remains available for a
+  /// future upstream omission.
   static const String noReferenceState = 'no_reference_state';
 
   /// The charter's declared observation window, in minutes: 42 days.
@@ -285,9 +282,8 @@ abstract final class Sprint118ConnectionHealthContract {
   /// evaluates exactly this object, and the emitter writes exactly this object,
   /// so the record cannot be made to agree with itself. With the release
   /// delayed, every entry declares a reference and observes nothing. The
-  /// `latency` and `disconnect_cleanup` signals carry the `no_reference_state`
-  /// marker because the committed 115.10 state machine declares no state for
-  /// them; the gate records that upstream gap as an open item.
+  /// `latency` and `disconnect_cleanup` signals resolve to the explicit
+  /// upstream states `LATENCY` and `DISCONNECT_CLEANUP`.
   static const Sprint118ConnectionHealthReview
   canonicalReview = Sprint118ConnectionHealthReview(
     releaseState: delayedReleaseState,
@@ -332,7 +328,7 @@ abstract final class Sprint118ConnectionHealthContract {
       ),
       Sprint118ConnectionHealthEntry(
         signal: 'latency',
-        referenceState: noReferenceState,
+        referenceState: 'LATENCY',
         source:
             'docs/planning/v1.2/sprint_114_performance_responsiveness_health.json',
         window: 60,
@@ -340,7 +336,7 @@ abstract final class Sprint118ConnectionHealthContract {
       ),
       Sprint118ConnectionHealthEntry(
         signal: 'disconnect_cleanup',
-        referenceState: noReferenceState,
+        referenceState: 'DISCONNECT_CLEANUP',
         source:
             'docs/planning/v1.2/sprint_116_connector_contract_e2e_matrix.json',
         window: 60,

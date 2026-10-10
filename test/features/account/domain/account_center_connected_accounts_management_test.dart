@@ -253,5 +253,20 @@ void main() {
       expect(checked.lastCheckedAt, checkedAt);
       expect(checked.connectionState, AccountConnectionState.degraded);
     });
+
+    test('maps latency health to a degraded connection', () {
+      final manager = AccountConnectedAccountsManagement(
+        initial: <AccountConnectedAccount>[account()],
+      );
+
+      final checked = manager.recordHealthCheck(
+        'google/account-42',
+        healthState: AccountHealthState.latency,
+        checkedAt: DateTime.utc(2026, 9, 25, 9),
+      );
+
+      expect(checked.healthState, AccountHealthState.latency);
+      expect(checked.connectionState, AccountConnectionState.degraded);
+    });
   });
 }

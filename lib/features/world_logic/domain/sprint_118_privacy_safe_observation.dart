@@ -33,11 +33,9 @@
 /// * Every canonical signal must be present exactly once, must collect at least
 ///   one field, and every committed privacy-evidence source must be readable.
 ///
-/// The objective names media and raw payment data explicitly, but the committed
-/// 117.7 witness omits both from its `excluded_categories`. Rather than widen the
-/// gate silently or drop the requirement, the gate owns the full vocabulary and
-/// records the upstream omission as an open item -- an honest boundary, not a
-/// violation of this step.
+/// The committed 117.7 witness carries the media and raw payment exclusions
+/// required by this step. The gate still owns the full vocabulary so a future
+/// witness regression remains visible as an open item.
 ///
 /// Live observation execution, external telemetry, connector certification,
 /// provider exposure, release authorization, and publication remain
@@ -272,8 +270,7 @@ abstract final class Sprint118PrivacyObservationContract {
   ];
 
   /// The full exclusion vocabulary this step owns: the union of the four
-  /// families. The objective names media and raw payment explicitly even though
-  /// the committed 117.7 witness omits them.
+  /// families.
   static List<String> get excludedVocabulary => <String>[
     ...creativeTerms,
     ...secretTerms,
@@ -614,9 +611,9 @@ class Sprint118PrivacyObservationGate {
       }
     }
 
-    // The committed 117.7 witness omits media and raw payment from its
-    // exclusion vocabulary even though the 118.5 objective names both. Record
-    // the gap as an open item -- honest, and not a violation of this step.
+    // Keep the upstream witness vocabulary aligned with the four exclusion
+    // families owned by this step. A future omission remains visible as an
+    // open item without weakening the privacy verdict.
     for (final term in <String>['media', 'payment']) {
       if (!anchor.excludedCategories.contains(term)) {
         openItems.add('upstream_exclusion_vocabulary_gap:$term');

@@ -29,7 +29,8 @@ enum AccountHealthState {
   healthy('HEALTHY'),
   degraded('DEGRADED'),
   outage('OUTAGE'),
-  rateLimited('RATE_LIMITED');
+  rateLimited('RATE_LIMITED'),
+  latency('LATENCY');
 
   const AccountHealthState(this.wireName);
 
@@ -50,7 +51,8 @@ enum AccountConnectionTransition {
   revoke('REVOKE'),
   refreshHealth('REFRESH_HEALTH'),
   reauthenticate('REAUTHENTICATE'),
-  retry('RETRY');
+  retry('RETRY'),
+  disconnectCleanup('DISCONNECT_CLEANUP');
 
   const AccountConnectionTransition(this.wireName);
 
@@ -109,6 +111,8 @@ class AccountConnectionHealthSnapshot {
     switch (healthState) {
       case AccountHealthState.rateLimited:
         return 'Rate limited';
+      case AccountHealthState.latency:
+        return 'High latency';
       case AccountHealthState.outage:
         return 'Provider outage';
       case AccountHealthState.degraded:
@@ -141,6 +145,7 @@ class AccountConnectionHealthSnapshot {
     AccountConnectionState? connectionState,
     AccountHealthState? healthState,
     DateTime? lastCheckedAt,
+    bool clearLastCheckedAt = false,
     bool? reauthRequired,
     String? connectorVersion,
     int? retryAttempt,
@@ -152,7 +157,9 @@ class AccountConnectionHealthSnapshot {
     accountLabel: accountLabel,
     connectionState: connectionState ?? this.connectionState,
     healthState: healthState ?? this.healthState,
-    lastCheckedAt: lastCheckedAt ?? this.lastCheckedAt,
+    lastCheckedAt: clearLastCheckedAt
+        ? null
+        : lastCheckedAt ?? this.lastCheckedAt,
     reauthRequired: reauthRequired ?? this.reauthRequired,
     connectorVersion: connectorVersion ?? this.connectorVersion,
     retryAttempt: retryAttempt ?? this.retryAttempt,
@@ -361,6 +368,15 @@ class AccountConnectionHealthStateMachine {
           retryAttempt: _snapshot.retryAttempt + 1,
           clearError: true,
         );
+      case AccountConnectionTransition.disconnectCleanup:
+        _snapshot = _snapshot.copyWith(
+          connectionState: AccountConnectionState.notConfigured,
+          healthState: AccountHealthState.unknown,
+          clearLastCheckedAt: true,
+          reauthRequired: false,
+          retryAttempt: 0,
+          clearError: true,
+        );
     }
     return _snapshot;
   }
@@ -371,6 +387,7 @@ class AccountConnectionHealthStateMachine {
       AccountHealthState.degraded => AccountConnectionState.degraded,
       AccountHealthState.outage => AccountConnectionState.unavailable,
       AccountHealthState.rateLimited => AccountConnectionState.connected,
+      AccountHealthState.latency => AccountConnectionState.degraded,
       AccountHealthState.unknown => _snapshot.connectionState,
     };
     _snapshot = _snapshot.copyWith(
@@ -379,7 +396,11 @@ class AccountConnectionHealthStateMachine {
       lastCheckedAt: at,
       reauthRequired: false,
       userVisibleError: _messageForHealth(health),
-      errorCode: health == AccountHealthState.healthy ? null : 'health',
+      errorCode: switch (health) {
+        AccountHealthState.healthy => null,
+        AccountHealthState.latency => 'latency',
+        _ => 'health',
+      },
       clearError: health == AccountHealthState.healthy,
     );
   }
@@ -432,6 +453,8 @@ class AccountConnectionHealthStateMachine {
       'Provider is currently in outage. Try again later.',
     AccountHealthState.rateLimited =>
       'Provider rate limit reached. Try again after the provider window resets.',
+    AccountHealthState.latency =>
+      'Provider response latency is high. Retry may be available; local data is preserved.',
   };
 
   static void _validateVisibleError(String? value) {
@@ -498,7 +521,9 @@ class AccountConnectionHealthStateMachine {
       AccountConnectionTransition.reauthenticate,
       AccountConnectionTransition.revoke,
     },
-    AccountConnectionState.revoked => <AccountConnectionTransition>{},
+    AccountConnectionState.revoked => {
+      AccountConnectionTransition.disconnectCleanup,
+    },
     AccountConnectionState.error => {
       AccountConnectionTransition.retry,
       AccountConnectionTransition.reauthenticate,

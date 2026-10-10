@@ -291,7 +291,8 @@ final class AccountConnectedAccountsManagement {
     final connectionState = switch (healthState) {
       AccountHealthState.healthy ||
       AccountHealthState.rateLimited => AccountConnectionState.connected,
-      AccountHealthState.degraded => AccountConnectionState.degraded,
+      AccountHealthState.degraded ||
+      AccountHealthState.latency => AccountConnectionState.degraded,
       AccountHealthState.outage => AccountConnectionState.unavailable,
       AccountHealthState.unknown => account.connectionState,
     };

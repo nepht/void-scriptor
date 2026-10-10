@@ -282,7 +282,7 @@ void main() {
     });
 
     test(
-      'revocation is explicit, visible, and terminal until a new config',
+      'revocation is explicit and cleanup is the only terminal recovery path',
       () {
         final machine = _connectedMachine();
         machine.transition(
@@ -300,7 +300,7 @@ void main() {
         for (final transition in AccountConnectionTransition.values) {
           expect(
             machine.canTransition(transition),
-            isFalse,
+            transition == AccountConnectionTransition.disconnectCleanup,
             reason: transition.wireName,
           );
         }
@@ -403,6 +403,21 @@ void main() {
       expect(machine.snapshot.userVisibleError, contains('outage'));
     });
 
+    test('latency is a first-class degraded health state', () {
+      final machine = _connectedMachine();
+      machine.transition(
+        AccountConnectionTransition.refreshHealth,
+        at: DateTime.utc(2026, 1, 1, 0, 2),
+        healthState: AccountHealthState.latency,
+      );
+
+      expect(machine.snapshot.connectionState, AccountConnectionState.degraded);
+      expect(machine.snapshot.healthState, AccountHealthState.latency);
+      expect(machine.snapshot.statusLabel, 'High latency');
+      expect(machine.snapshot.errorCode, 'latency');
+      expect(machine.snapshot.userVisibleError, contains('latency'));
+    });
+
     test(
       'health refresh requires a health value and records its timestamp',
       () {
@@ -463,6 +478,35 @@ void main() {
         expect(machine.snapshot.userVisibleError, isNot(contains('token')));
       }
     });
+
+    test(
+      'disconnect cleanup returns a revoked connection to not configured',
+      () {
+        final machine = _connectedMachine();
+        machine.transition(
+          AccountConnectionTransition.revoke,
+          at: DateTime.utc(2026, 1, 1, 0, 2),
+        );
+
+        expect(
+          machine.canTransition(AccountConnectionTransition.disconnectCleanup),
+          isTrue,
+        );
+        machine.transition(
+          AccountConnectionTransition.disconnectCleanup,
+          at: DateTime.utc(2026, 1, 1, 0, 3),
+        );
+
+        expect(
+          machine.snapshot.connectionState,
+          AccountConnectionState.notConfigured,
+        );
+        expect(machine.snapshot.healthState, AccountHealthState.unknown);
+        expect(machine.snapshot.reauthRequired, isFalse);
+        expect(machine.snapshot.userVisibleError, isNull);
+        expect(machine.snapshot.errorCode, isNull);
+      },
+    );
   });
 
   test('status is stable and exposes the required action paths', () {

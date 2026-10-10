@@ -21,9 +21,7 @@ import '../../../canonical_source_support.dart';
 /// 2. snapshot manifest di repo == domain, plus re-hash sumber bila file-nya
 ///    ada di mesin ini.
 void main() {
-  const manifestPath =
-      'D:/VoidScriptor/void_scriptor_multiplatform/'
-      '${AccountCenterDesktopTabletAdaptation.manifestPath}';
+  final manifestPath = AccountCenterDesktopTabletAdaptation.manifestPath;
 
   group('115.46 right_drawer', () {
     test('desktop 1180-1439: ringkasan jadi drawer, bukan band kanan', () {

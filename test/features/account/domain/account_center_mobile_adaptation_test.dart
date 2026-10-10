@@ -23,9 +23,7 @@ import '../../../canonical_source_support.dart';
 /// 3. snapshot manifest di repo == domain, plus re-hash sumber bila file-nya
 ///    ada di mesin ini.
 void main() {
-  const manifestPath =
-      'D:/VoidScriptor/void_scriptor_multiplatform/'
-      '${AccountCenterMobileAdaptation.manifestPath}';
+  final manifestPath = AccountCenterMobileAdaptation.manifestPath;
 
   AccountCenterMobileLayout at(
     double width, {

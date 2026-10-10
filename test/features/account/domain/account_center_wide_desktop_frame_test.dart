@@ -21,9 +21,7 @@ import '../../../canonical_source_support.dart';
 /// `scroll_containment` -> heights clamp; `consistent_cards` -> cardWidthFor;
 /// `right_rail` -> tier gating; `status_bar` -> statusBarItems.
 void main() {
-  const manifestPath =
-      'D:/VoidScriptor/void_scriptor_multiplatform/'
-      '${AccountCenterWideDesktopFrame.manifestPath}';
+  final manifestPath = AccountCenterWideDesktopFrame.manifestPath;
 
   group('115.45 layout_dimensions', () {
     test('frame reference 1536x1024 memakai angka mockup terukur', () {

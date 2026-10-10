@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — Void Scriptor
 
-Peta arsitektur dari repo live (`D:\VoidScriptor\void_scriptor_multiplatform`, branch `master`).
+Peta arsitektur dari repo live (`D:\Project\Void Scriptor Studio`, branch `master`).
 Kontrak perilaku untuk kontributor/agent ada di `AGENTS.md`.
 
 ## 1. Ringkas

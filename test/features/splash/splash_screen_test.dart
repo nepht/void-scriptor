@@ -9,8 +9,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SplashScreen()));
     await tester.pump(const Duration(milliseconds: 120));
 
-    expect(find.text('VOID SCRIPTOR'), findsOneWidget);
-    expect(find.bySemanticsLabel('Void Scriptor logo'), findsOneWidget);
+    expect(find.text('VOID SCRIPTOR STUDIO'), findsOneWidget);
+    expect(find.bySemanticsLabel('Void Scriptor Studio logo'), findsOneWidget);
     expect(find.byKey(const Key('startup-byte-mascot')), findsNothing);
     expect(
       find.bySemanticsLabel('Byte, Void Scriptor assistant'),
@@ -51,7 +51,7 @@ void main() {
     );
     await tester.pump(const Duration(milliseconds: 120));
 
-    expect(find.text('VOID SCRIPTOR'), findsOneWidget);
+    expect(find.text('VOID SCRIPTOR STUDIO'), findsOneWidget);
     expect(find.byKey(const Key('startup-byte-mascot')), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -67,7 +67,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SplashScreen()));
     await tester.pump(const Duration(milliseconds: 120));
 
-    expect(find.bySemanticsLabel('Void Scriptor logo'), findsOneWidget);
+    expect(find.bySemanticsLabel('Void Scriptor Studio logo'), findsOneWidget);
     expect(find.byKey(const Key('startup-byte-mascot')), findsNothing);
     expect(tester.takeException(), isNull);
   });

@@ -15,7 +15,7 @@ void main() {
       ).readAsStringSync();
 
       expect(mainSource, contains('CreateNativeBrandWindow'));
-      expect(mainSource, contains('L"Void Scriptor"'));
+      expect(mainSource, contains('L"Void Scriptor Studio"'));
       expect(windowSource, contains('SetNextFrameCallback'));
       expect(windowSource, contains('DestroyNativeBrandWindow'));
       expect(cmakeSource, contains('native_brand_window.cpp'));

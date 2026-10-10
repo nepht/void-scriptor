@@ -863,6 +863,13 @@ class Sprint117IdentityWorkflowDrill {
     final outgoing = machine.availableTransitions
         .map((transition) => transition.wireName)
         .toList(growable: false);
+    // A revoked connection keeps exactly one way out: the local disconnect
+    // cleanup that returns the account to not-configured. It can never be
+    // reopened by retrying or reconnecting.
+    final cleanupOnly =
+        outgoing.length == 1 &&
+        outgoing.single ==
+            AccountConnectionTransition.disconnectCleanup.wireName;
     final retryAfterRevoke = _captureStateError(
       () => machine.transition(AccountConnectionTransition.retry, at: fixedNow),
     );
@@ -885,7 +892,7 @@ class Sprint117IdentityWorkflowDrill {
         validateError == 'StateError' &&
         revokedSnapshot.connectionState == AccountConnectionState.revoked &&
         revokedSnapshot.userVisibleError != null &&
-        outgoing.isEmpty &&
+        cleanupOnly &&
         retryAfterRevoke == 'StateError' &&
         audit.contains('revoke') &&
         unlinked &&

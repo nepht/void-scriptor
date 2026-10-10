@@ -481,9 +481,14 @@ class Sprint117DeveloperConnectorWorkflowDrill {
     machine.transition(AccountConnectionTransition.revoke, at: fixedNow);
     final snapshot = machine.snapshot;
 
+    // A revoked connection keeps exactly one way out — the local disconnect
+    // cleanup — and can never be reopened by retrying or reconnecting.
+    final cleanupOnly =
+        machine.availableTransitions.length == 1 &&
+        machine.canTransition(AccountConnectionTransition.disconnectCleanup);
     final terminal =
         snapshot.connectionState == AccountConnectionState.revoked &&
-        !AccountConnectionTransition.values.any(machine.canTransition);
+        cleanupOnly;
     final visible =
         (snapshot.userVisibleError ?? '').toLowerCase().contains('revoked') &&
         snapshot.statusLabel == 'Connection revoked';
@@ -503,6 +508,15 @@ class Sprint117DeveloperConnectorWorkflowDrill {
     } on StateError {
       reconnectRefused = true;
     }
+
+    // The one transition a revoked connection keeps: a local cleanup that
+    // returns the account to not-configured without reopening it.
+    final cleanupSnapshot = machine.transition(
+      AccountConnectionTransition.disconnectCleanup,
+      at: fixedNow,
+    );
+    final cleanupLanded =
+        cleanupSnapshot.connectionState == AccountConnectionState.notConfigured;
 
     // The developer seam: ending a connection needs the gate, and the gate
     // refusing is itself a decided, audited outcome.
@@ -563,6 +577,7 @@ class Sprint117DeveloperConnectorWorkflowDrill {
         visible &&
         retryRefused &&
         reconnectRefused &&
+        cleanupLanded &&
         !refused &&
         refusedKeptConnection &&
         refusedAudited &&
@@ -580,7 +595,8 @@ class Sprint117DeveloperConnectorWorkflowDrill {
           : 'REVOKE_REOPENABLE_OR_DISCONNECT_UNGATED_OR_UNAUDITED',
       facts: <String, Object?>{
         'connection_state_after_revoke': snapshot.connectionState.wireName,
-        'no_transition_available': terminal,
+        'revoked_offers_cleanup_only': terminal,
+        'cleanup_after_revoke_state': cleanupSnapshot.connectionState.wireName,
         'revoke_visible_to_user': visible,
         'retry_after_revoke_refused': retryRefused,
         'reconnect_after_revoke_refused': reconnectRefused,

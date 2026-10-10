@@ -197,7 +197,7 @@ void main() {
       final observation = run.observationFor('revoke')!;
       expect(observation.passed, isTrue, reason: observation.outcome);
       expect(observation.facts['connection_state_after_revoke'], 'REVOKED');
-      expect(observation.facts['no_transition_available'], isTrue);
+      expect(observation.facts['revoked_offers_cleanup_only'], isTrue);
       expect(observation.facts['retry_after_revoke_refused'], isTrue);
       expect(observation.facts['reconnect_after_revoke_refused'], isTrue);
       expect(

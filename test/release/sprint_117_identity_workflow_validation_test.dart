@@ -356,14 +356,19 @@ void main() {
       expect(revoke.facts['validate_after_revoke_error'], 'StateError');
     });
 
-    test('leaves a revoked connection with no way back', () async {
-      final run = await const Sprint117IdentityWorkflowDrill().run();
-      final revoke = run.observationFor('revoke')!;
-      expect(revoke.facts['connection_state_after_revoke'], 'REVOKED');
-      expect(revoke.facts['outgoing_transitions_after_revoke'], isEmpty);
-      expect(revoke.facts['retry_after_revoke_error'], 'StateError');
-      expect(revoke.facts['provider_revocations'], 1);
-    });
+    test(
+      'leaves a revoked connection with only the cleanup way back',
+      () async {
+        final run = await const Sprint117IdentityWorkflowDrill().run();
+        final revoke = run.observationFor('revoke')!;
+        expect(revoke.facts['connection_state_after_revoke'], 'REVOKED');
+        expect(revoke.facts['outgoing_transitions_after_revoke'], <String>[
+          'DISCONNECT_CLEANUP',
+        ]);
+        expect(revoke.facts['retry_after_revoke_error'], 'StateError');
+        expect(revoke.facts['provider_revocations'], 1);
+      },
+    );
   });
 
   group('drill run boundaries', () {

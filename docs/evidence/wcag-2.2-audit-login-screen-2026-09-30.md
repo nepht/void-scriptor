@@ -5573,6 +5573,63 @@ File probe di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/probe_backup_fase105.da
 - Tidak ada kontrak baru, tidak ada perubahan kode produksi; satu-satunya perubahan yang di-commit = section ini.
 - Keputusan Choirudin (fase 86/95, belum dijawab) tetap menentukan arah run berikutnya: (1) turunkan ambang kontrak ke `>= 1 stop` - laporan fase 104 mencatat 21 layar terukur `leaf=1` langsung siap dikontrakkan, dan enam layar terukur run ini termasuk kelas yang sama; (2) perluas audit ke widget non-`*_screen.dart` (24 kandidat, fase 88); atau (3) tutup audit in-glob di 61/89. Tanpa keputusan itu, run berikutnya dengan kriteria identik akan menghasilkan DEFERRED ke-25.
 
+## 106. Fase 106 - Kontrak focus order `WorkspaceImportOptionsDialog` (2.4.3)
+
+**Tanggal:** 2026-10-05. **Status: KONTRAK BARU** - kolam kandidat in-glob `lib/features/*/presentation/*_screen.dart` tetap **0** (28 layar tanpa kontrak semuanya display-only, 0 token handler; enam di antaranya sudah diukur live `leaf=1` di fase 105). Run ini menempuh opsi (2) yang belum dijawab Choirudin: **perluas audit ke permukaan non-`*_screen.dart`** - dan menemukan satu **genuine sibling gap**: `WorkspaceImportOptionsDialog` (`lib/features/workspaces/presentation/workspace_import_options_dialog.dart`) belum punya kontrak, sedangkan dialog sibling-nya `WorkspaceExportOptionsDialog` **sudah** berkontrak (`test/features/workspaces/presentation/workspace_export_options_dialog_focus_order_test.dart`, fase 66). Kontrak baru dibuat run ini; satu-satunya perubahan yang di-commit = section ini + satu file test kontrak.
+
+### (a) Kandidat: mengapa dialog ini, bukan layar lain
+
+1. Audit in-glob fase 80-105 mencatat kolam kandidat = 0 (semua layar tanpa kontrak display-only). Keputusan Choirudin (opsi 2, fase 88/95) mengizinkan perluasan ke widget non-`*_screen.dart`; riwayat fase 61/65/66 sudah mengontrak permukaan dialog, jadi preseden ada.
+2. Verifikasi simetri sibling: `git ls-files`/scan menemukan `workspace_export_options_dialog_focus_order_test.dart` **ada**, sedangkan `workspace_import_options_dialog_focus_order_test.dart` **tidak ada** - satu-satunya pasangan dialog import/export di workspace yang tidak simetris. Ini kandidat sah (bukan kebetulan), punya >= 2 elemen interaktif (satu grup radio 3 pilihan + Cancel + Import), dan **tanpa database/network** (`loadRepresentation` di-inject sebagai `Future<String?> Function()`).
+3. Sumber kode: `WorkspaceImportOptionsDialog` = `StatefulWidget`; body `FutureBuilder` merender label representasi (`ValueKey('representation-label')`) lalu `RadioGroup` berisi 3 `RadioListTile`; `actions` = `TextButton` "Cancel" + `FilledButton` "Import" yang `onPressed: _chosen == null ? null : ...` (terkunci sampai ada pilihan tabrakan eksplisit).
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/workspaces/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105: `showDialog` dari harness tanpa tombol lain, `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 14 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon`; rect = `RenderBox.localToGlobal(Offset.zero) & size`. `loadRepresentation` di-inject deterministik (`'embedded_snapshot'`, `'fork'`, `null`).
+
+Ground truth **sebelum** memilih tabrakan (Import terkunci -> bukan stop):
+- Tab 1: grup radio `Fail` @ L=504.0 T=418.0 W=528.0 H=80.0
+- Tab 2: `Cancel` @ L=782.8 T=686.0 W=108.6 H=40.0
+- Tab 3: kembali ke grup (ring tertutup, 2 stop).
+
+**Sesudah** `arrowDown` memilih pilihan kedua (`Skip`), Import aktif dan ring jadi 3 stop:
+- Tab 1: `Skip` @ L=504.0 T=498.0 W=528.0 H=80.0
+- Tab 2: `Cancel` @ L=782.8 T=686.0 W=108.6 H=40.0
+- Tab 3: `Import` @ L=899.4 T=686.0 W=132.6 H=40.0
+
+Shift+Tab menelusuri ring yang sama mundur (`Import` -> `Cancel` -> ...). Tiga pilihan tabrakan dijangkau lewat **arrow key di dalam grup**, bukan lewat Tab - bentuk 2.4.3 yang benar untuk kontrol pilih-tunggal. Representasi tak terdeklarasikan (`null`) merender label `Not declared` dan tetap mengunci Import. `takeException()` = null di semua kasus.
+
+### (c) Kontrak final
+
+`test/features/workspaces/presentation/workspace_import_options_dialog_focus_order_test.dart` - **10 test**, mengunci: grup = 3 `RadioListTile` (satu Tab stop, bukan tiga); urutan Tab sebelum pilihan = `[Fail, Cancel]`; aksi Import terkunci **bukan** Tab stop; urutan Tab sesudah pilihan = `[Skip, Cancel, Import]`; arrow key menelusuri ketiga pilihan lalu wrap (`Fail -> Skip -> Adopt existing links -> Fail`) dan menyalakan Import; Shift+Tab menelusuri ring mundur (`Import -> Cancel`); stop konten berada **di atas** baris aksi dan aksi kiri-ke-kanan (`Cancel.left < Import.left`); setiap stop ber-rect non-zero (W>0, H>0); fokus tidak pernah null dan tidak keluar dialog; representasi `null` merender `Not declared` dan tetap terkunci.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata), lalu `--set-exit-if-changed` -> **0 changed**, exit 0.
+- `dart analyze test/features/workspaces/presentation/workspace_import_options_dialog_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (10 test)`**, exit 0.
+- `flutter test test/features/workspaces/` (gate feature) -> lihat hasil di bawah.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/ws_import_negctl_backup.dart`, lalu satu ekspektasi dipalsukan: urutan Tab sebelum pilihan `['Fail','Cancel']` ditukar menjadi `['Cancel','Fail']`.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1**; kegagalan pada test "Tab order before a choice is group then Cancel" (`Expected: ['Cancel', 'Fail']` / `Actual: ['Fail', 'Cancel']`), `+9 -1`.
+- Restore dari backup, backup dihapus, test dijalankan ulang -> **`All tests passed! (10 test)`** exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- Tidak ada defect kode produksi pada `WorkspaceImportOptionsDialog`: traversal keyboard-nya sudah benar (grup radio satu stop + arrow key, Import terkunci tidak memakan Tab stop, aksi kiri-ke-kanan). Kontrak ini **mengunci perilaku yang sudah benar**, bukan memperbaiki bug. **Tidak ada perubahan kode produksi run ini.**
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap` di 9 layar) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: 61/89 layar in-glob berkontrak + 1 kontrak baru pada permukaan dialog (`WorkspaceImportOptionsDialog`), sehingga total 62 permukaan berkontrak focus order.** Kolam kandidat in-glob tetap 0; run ini membuka jalur opsi (2) yang belum dijawab Choirudin dan menemukan satu genuine sibling gap.
+- `git status --porcelain -- test lib` sebelum commit: hanya file kontrak baru + file sibling WIP milik Core Worker (tidak disentuh).
+- Line ending laporan: **LF murni** -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

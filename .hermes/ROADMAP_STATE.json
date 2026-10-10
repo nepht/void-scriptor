@@ -6,10 +6,10 @@
     "adr_0002": "ACCEPTED: retain Windows-first local-first foundation D1-D7",
     "adr_0003": "ACCEPTED: Option B, stabilize existing Core with safety-first sequencing",
     "source": "docs/adr/ADR-0003-core-mvp-recovery-decision.md",
-    "next_action": "Eksekusi antrean bug terkonfirmasi run320 yang tersisa sebagai slice cron: BUG-4 (Medium, competing-create re-read sessionId sebelum menulis recovery marker), lalu BUG-9 (Low, JSON compare struktural). Setelah antrean hunt habis: 145.30 tersisa murni hardware-bound (power-loss nyata + USB cold-eject tangan Choi) = NO-OP singkat, jangan fabrikasi slice. Antrean keputusan Choi: STORY-02, PLAT-03/04, STU-03/06, routing, 145.43-50, push.",
-    "following_actions": "145.28 and 145.29 are already VERIFIED in the canonical ledger; continue from 145.30 only after the next product decision. Preserve 145.43-145.47 external pilot evidence as later contracts.",
+    "next_action": "145.30 diterima DEFERRED (hardware-bound); stream corrective_core_mvp dijeda dan stream sequential_expansion aktif mulai 111.21. Hunt run320 BUG-4/BUG-6/BUG-7/BUG-8/BUG-9 sudah selesai; tidak ada slice baru tanpa keputusan atau bukti regresi baru. Antrean keputusan Choi: STORY-02, PLAT-03/04, STU-03/06, routing, 145.43-50, push.",
+    "following_actions": "145.30 tetap DEFERRED karena sisa acceptance membutuhkan power-loss nyata dan USB cold-eject tangan Choi. Stream aktif sequential_expansion dilanjutkan dari 111.21; 145.43-145.47 external pilot evidence tetap kontrak berikutnya.",
     "constraints": "No new modules, broad refactor, automatic release/push, user-data fault tests, or fabricated physical power-loss/device proof. Do not block independent safety work on route mapping or the now-decided ADR choice.",
-    "acceptance": "145.27 VERIFIED run321. 145.28/145.29 VERIFIED ledger. Guard recovery candidate = 145.30. 145.42 interrupted_* TUTUP SEMUA level kill literal (move 316, restore 318, import 321, export 322); hardware-bound tetap. Hunt run320: BUG-3 03f4cad, BUG-8 bf43716, BUG-6 d185d4e, BUG-7 db4f282 FIXED; tersisa BUG-4/BUG-9."
+    "acceptance": "145.27 VERIFIED run321. 145.28/145.29 VERIFIED ledger. 145.30 DEFERRED hardware-bound. 145.42 interrupted_* TUTUP SEMUA level kill literal (move 316, restore 318, import 321, export 322). Hunt run320: BUG-3 03f4cad, BUG-8 bf43716, BUG-6 d185d4e, BUG-7 db4f282, BUG-4 7b1da8a, BUG-9 3793e5c FIXED."
   },
   "session_lock_safety_review": {
     "status": "PARTIAL",
@@ -21,8 +21,8 @@
     "user_data": "No user project or marker modified during this safety correction."
   },
   "product": "Void Scriptor",
-  "repository": "D:\\VoidScriptor\\void_scriptor_multiplatform",
-  "flutter_sdk": "D:\\DevTools\\Flutter-SDK-3.47.6\\flutter\\bin\\flutter.bat",
+  "repository": "D:\\Project\\Void Scriptor Studio",
+  "flutter_sdk": "C:\\Flutter-SDK-3.47.6\\flutter\\bin\\flutter.bat",
   "canonical_archive_root": "C:\\Users\\nepht\\Documents\\Codex\\2026-08-22\\referenced-chatgpt-conversation-this-is-an-2\\outputs",
   "hermes_reference_root": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor",
   "active_sprint": 118,
@@ -62,8 +62,8 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-09T08:30:00.000000+07:00",
-  "updated_by": "codex-118.46-closure",
+  "updated_at": "2026-10-10T14:48:15.4400864+07:00",
+  "updated_by": "codex-roadmap-pointer-repair",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
     "status": "hunt COMPLETE (VERIFIED scan-only) + BUG-01/02/03/04/05/07/09/10/12/13/16/17/20 resolved (BUG-09 verified already-closed); fix queue EMPTY",
@@ -657,9 +657,9 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "117.46",
-  "current_step_status": "PARTIAL-LOCAL-EXTERNAL-BLOCKED",
-  "last_run_summary": "2026-10-05 slice 117.43-47/48 ledger + keputusan operator: operator memilih opsi (a) untuk 117.43-02 (re-sign kandidat 1.2.0-rc.1 lalu refresh checksum), bukan menyatakan drift sebagai limitasi GA. Rebuild kanonik dari pohon bersih (clean -> pub get -> build windows --release -> sign 6 artefak -> generate_release_metadata) menutup drift: 6 signed MATCH=6/DRIFT=0 (dari 0/6) dan index 493 entri MATCH=493/DRIFT=0/MISSING=0 (dari 485/7/1). Dua suite 113.38/113.39 pulih 32/32 exit 0 (dari 17 pass/3 FAIL). Satu assertion gate 117.43 yang mengunci KEBERADAAN defect dipensiunkan menjadi klaim lebih kuat (setiap path checksum + sign manifest harus ADA), bukan di-skip; gate 224/224 exit 0. Ledger 117.43 PARTIAL-LOCAL -> VERIFIED-LOCAL; 117.43-02 ditutup atas keputusan operator. Sisa antrean dependabot dibersihkan: setup-java 6.0.0 -> 6.0.1 (commit 7621033) dan 5 PR stale ditutup karena sudah terlampaui di pubspec.lock (flutter_lints 6.0.0, drift 2.35.1, drift_dev 2.35.1, build_runner 2.16.1, archive 4.3.0). BATAS KLAIM: sertifikat self-signed lokal, bukan CA publik; penandatanganan CA publik, builder kedua, kohort beta, dan publikasi GA tetap DEFERRED-EXTERNAL.",
+  "current_step": "118.46",
+  "current_step_status": "SPRINT_COMPLETE_PENDING_OPERATOR_DECISION",
+  "last_run_summary": "2026-10-10 roadmap pointer repair: canonical Sprint 118 ledger resolved 118.1-118.46; current_step and last_resolved_step aligned to 118.46. Sprint 119.1 remains PLANNED_BLOCKED by upstream external stability and certification evidence; no Sprint 119 activation or release claim.",
   "last_commit": "a5d07e5",
   "sprint_112_step_11242": {
     "status": "VERIFIED-LOCAL",
@@ -771,7 +771,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "117.43",
+  "last_resolved_step": "118.46",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",
@@ -1872,7 +1872,7 @@
     "snapshot": "C:/Users/nepht/AppData/Local/vs-run11652-snap",
     "evidence": "docs/evidence/sprint-116-52-{red,focused,reg-a,reg-b,analyze,format,build}-20260929.{log,meta}"
   },
-  "next_step_status": "PARTIAL-LOCAL",
+  "next_step_status": "PLANNED_BLOCKED",
   "sprint_116_closure": {
     "closed_at": "2026-09-29",
     "steps_verified": 52,
@@ -3847,8 +3847,8 @@
     ],
     "note": "Slice commit 94e1e93. No git add -A, no reset/restore/clean; WIP snapshot at %LOCALAPPDATA%/hermes/cache/scratch/vs-11714-presnap."
   },
-  "last_slice_commit": "66ab1a0",
-  "last_verified_on": "2026-10-08",
+  "last_slice_commit": "812d140",
+  "last_verified_on": "2026-10-10",
   "sprint_117_19_team_collaboration": {
     "status": "VERIFIED-LOCAL",
     "verdict": "TEAM_COLLABORATION_WORKFLOW_VALIDATED_LOCAL",

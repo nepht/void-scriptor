@@ -139,7 +139,7 @@ List<PatchRegressionMatrixEntry> _completeEntries() {
     for (final suite in PatchRegressionMatrix.requiredSuites)
       PatchRegressionMatrixEntry(
         suite: suite,
-        command: 'D:/DevTools/Flutter SDK/flutter/bin/flutter.bat test $suite',
+        command: 'C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test $suite',
         result: PatchRegressionSuiteResult.passed,
         evidence: <String>['docs/evidence/sprint-114-35-$suite.meta'],
       ),

@@ -24,12 +24,10 @@
     "limitations": 4
   },
   "provider_count": 32,
-  "distinct_derived_limitation_sets": 4,
+  "distinct_derived_limitation_sets": 5,
   "checks": 8,
   "failures": [],
-  "open_items": [
-    "permission_scope_undocumented:developer:github,gitlab,bitbucket,azure_devops — ProviderPermission has no developer/repository member, so developer connectors ship an identity permission set verbatim"
-  ],
+  "open_items": [],
   "probes": {
     "all_declared_documents_exist": true,
     "every_provider_derives_limitations": true,
@@ -38,10 +36,8 @@
     "billing_reports_not_verified": true
   },
   "defects_fixed": [
-    "117.42-01: provider limitations were a hand-typed test constant and ProviderConnectorEntry ships no limitations field, so any caller could publish any limitation set; derivation now binds limitations to the shipped manifest entry and the gate compares declared against derived"
-  ],
-  "defects_measured_not_fixed": [
-    "117.42-02: ProviderPermission has no developer/repository member, so developer connectors ship an identity permission set verbatim; widening the shared enum is a manifest-contract change outside this slice and is reported as an open item"
+    "117.42-01: provider limitations were a hand-typed test constant and ProviderConnectorEntry ships no limitations field, so any caller could publish any limitation set; derivation now binds limitations to the shipped manifest entry and the gate compares declared against derived",
+    "117.42-02: ProviderPermission lacked developer/repository scope and developer connectors therefore reused identity permissions; the manifest now declares developer_repository explicitly while the connectors remain unverified and withheld"
   ],
   "claim_boundary": "No live beta, no participant, and no release is claimed. Every status here is local documentation state measured on test-owned fixtures and on committed documents. Live provider health, quota, cost, hosted CI, and publication remain DEFERRED-EXTERNAL."
 }

@@ -24,14 +24,12 @@
 /// `Sprint117ProviderLimitationCatalogue.derive` computes the set from the
 /// fields the entry does ship, and this gate compares declared against derived.
 ///
-/// Defect 117.42-02 (measured and reported, NOT fixed): the shipped
-/// `ProviderPermission` vocabulary has no member covering developer/repository
-/// access, so the four developer connectors ship a permission set byte-identical
-/// to an identity connector's. `permission_guides` therefore cannot describe
-/// developer scope. Widening the shared enum changes the manifest contract used
-/// by 115.9 and every other connector step, which is outside this step's
-/// documentation scope, so it is recorded as a named open item and never
-/// converted to a pass.
+/// Defect 117.42-02 (fixed in the follow-up contract slice): the shipped
+/// `ProviderPermission` vocabulary had no member covering developer/repository
+/// access, so the four developer connectors shipped a permission set
+/// byte-identical to an identity connector's. The shared manifest now carries
+/// the explicit `developer_repository` scope. This remains metadata only:
+/// developer connectors are still UNVERIFIED and WITHHELD until certification.
 ///
 /// Status per check:
 /// * `pass` — the shipped seam produced the measured value;

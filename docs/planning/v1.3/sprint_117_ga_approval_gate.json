@@ -49,7 +49,7 @@
         "lib/features/world_logic/domain/sprint_117_documentation_known_limitations.dart",
         "docs/release/v1.2.0-rc.1-known-limits.md"
       ],
-      "summary": "117.42 documentation & known limitations reconciled all 8 required outputs against 32 providers and carries the open item permission_scope_undocumented:developer:github,gitlab,bitbucket,azure_devops (ProviderPermission has no developer/repository member). The limitation is recorded, not resolved."
+      "summary": "117.42 documentation & known limitations reconciled all 8 required outputs against 32 providers. Developer connectors now declare the explicit developer_repository permission scope; they remain UNVERIFIED and WITHHELD until connector certification."
     },
     "signed_artifacts": {
       "present": true,
@@ -92,7 +92,6 @@
       "117.4: cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED — no verified participant cohort",
       "117.43: artifact reproducibility measured 2026-10-02 (pass=false); the sole failing group is checksums — commit 02279bc (2026-10-05) regenerated the committed index on the release machine, which is not independently re-verifiable in a clean checkout (all 493 index paths live under gitignored build/), so signed-artifact agreement remains unmeasured, not disproven",
       "117.39: 7 of 9 GA blocker domains unresolved (accessibility, auth, billing, data, privacy, quota, sync)",
-      "117.42: permission_scope_undocumented for developer connectors (github, gitlab, bitbucket, azure_devops)",
       "117.8: rollback drill defined but not executed (all 6 controls executed=false)"
     ]
   },

@@ -3735,3 +3735,20 @@ snapshot fix `756477f8`.
 `execution_authorized` tetap `false`, `approval_state` tetap `PENDING_CHOIRUDIN`,
 `decision` tetap `BLOCKED_EXTERNAL_GATES`. Slice ini HANYA memperketat gerbang
 lokal; tidak ada release, tag, publikasi, atau otorisasi eksekusi.
+
+## 117.42 follow-up — developer permission scope (2026-10-09)
+
+Follow-up slice menutup open item `permission_scope_undocumented` tanpa
+mengaktifkan connector. `ProviderPermission.developerRepository` dengan wire
+name `developer_repository` kini menjadi bagian dari manifest contract, dan
+keempat connector developer (`github`, `gitlab`, `bitbucket`, `azure_devops`)
+membawanya secara eksplisit. `ProviderConnectorManifest.standard` tetap
+`UNVERIFIED` dan non-connectable; status certification/visibility tidak
+berubah.
+
+RED: dua probe 117.42 gagal tepat pada vocabulary dan permission set yang
+masih identik dengan identity. GREEN: `sprint_117_documentation_known_limitations_test.dart`
+**22/22 PASS**, manifest evidence `docs/evidence/sprint-117-42-manifest-20261002.json`
+sekarang `open_items=[]` dan `defects_fixed` mencakup 117.42-02. Provider
+limitation derivation membedakan lima set (scope repository termasuk), dan
+tidak ada live OAuth, certification, beta, atau release yang diklaim.

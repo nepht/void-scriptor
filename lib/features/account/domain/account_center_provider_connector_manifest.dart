@@ -90,7 +90,13 @@ enum ProviderPermission {
   backup('backup'),
   billing('billing'),
   novelWorkspace('novel_workspace'),
-  characterWorkspace('character_workspace');
+  characterWorkspace('character_workspace'),
+
+  /// Repository and developer-project access for developer connectors.
+  ///
+  /// This is metadata only: the standard manifest remains UNVERIFIED and
+  /// non-connectable until a connector-specific certification grants access.
+  developerRepository('developer_repository');
 
   const ProviderPermission(this.wireName);
 
@@ -481,6 +487,9 @@ ProviderConnectorEntry _entryForIcon(ProviderIconEntry icon) {
       ProviderConnectorCategory.payment => ProviderPermission.billing,
     },
   };
+  if (category == ProviderConnectorCategory.developer) {
+    permissions.add(ProviderPermission.developerRepository);
+  }
   return ProviderConnectorEntry(
     providerId: icon.providerId,
     displayName: icon.displayName,

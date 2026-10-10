@@ -29,14 +29,12 @@
 //   permissions), and this gate compares DECLARED against DERIVED so a constant
 //   and a fabricated string both fail.
 //
-// Defect 117.42-02 (MEASURED, REPORTED — not fixed) — the shipped
-//   `ProviderPermission` vocabulary has no member that covers developer/repo
-//   access, so the four developer connectors (github, gitlab, bitbucket,
-//   azure_devops) ship a permission set byte-identical to an identity
-//   connector's. `permission_guides` therefore cannot describe developer scope.
-//   Widening the shared permission enum is a manifest-contract change outside
-//   117.42's documentation scope, so it is recorded as a named open item and
-//   never converted to a pass.
+// Defect 117.42-02 (fixed in this follow-up slice) — the shipped
+//   `ProviderPermission` vocabulary previously had no member that covered
+//   developer/repo access, so the four developer connectors (github, gitlab,
+//   bitbucket, azure_devops) shipped a permission set byte-identical to an
+//   identity connector's. The manifest now carries an explicit
+//   `developer_repository` scope while remaining unverified and withheld.
 //
 // Every `observed` value is produced by running the shipped seam in this run;
 // the aggregate test throws `StateError` rather than letting a hand-typed
@@ -66,7 +64,7 @@ int _writeManifest(Map<String, Object?> manifest, String relativePath) {
 }
 
 void main() {
-  const manifestPath = 'docs/evidence/sprint-117-42-manifest-20261002.json';
+  const manifestFileName = 'sprint-117-42-manifest-20261002.json';
 
   group('117.42 defect 1 — provider limitations were never derived', () {
     // Root cause: nothing bound `limitations` to the shipped manifest entry, so
@@ -163,51 +161,55 @@ void main() {
     });
   });
 
-  group(
-    '117.42 defect 2 — developer scope is undocumented (measured only)',
-    () {
-      test('the permission vocabulary has no developer/repo member', () {
-        final wireNames = ProviderPermission.values
-            .map((permission) => permission.wireName)
-            .toList();
+  group('117.42 defect 2 — developer scope is explicit', () {
+    test('the permission vocabulary names developer/repository access', () {
+      final wireNames = ProviderPermission.values
+          .map((permission) => permission.wireName)
+          .toList();
+      expect(
+        wireNames,
+        contains('developer_repository'),
+        reason:
+            'developer connectors need an explicit repository scope in the '
+            'shared manifest vocabulary',
+      );
+    });
+
+    test('developer connectors carry a repository-scoped permission', () {
+      final manifest = ProviderConnectorManifest.standard;
+      final identity = manifest.require('google').permissions;
+      const developers = <String>[
+        'github',
+        'gitlab',
+        'bitbucket',
+        'azure_devops',
+      ];
+
+      for (final providerId in developers) {
+        final entry = manifest.require(providerId);
         expect(
-          wireNames,
-          isNot(
-            contains(anyOf('developer', 'repository', 'repository_access')),
-          ),
+          entry.capabilities,
+          contains(ProviderConnectorCapability.developer),
           reason:
-              'this slice MEASURES the gap; adding an enum member changes the '
-              'shared manifest contract and belongs to its own slice',
+              '$providerId must ship the developer capability it is gated on',
         );
-      });
-
-      test('developer connectors ship an identity permission set verbatim', () {
-        final manifest = ProviderConnectorManifest.standard;
-        final identity = manifest.require('google').permissions;
-        const developers = <String>[
-          'github',
-          'gitlab',
-          'bitbucket',
-          'azure_devops',
-        ];
-
-        for (final providerId in developers) {
-          final entry = manifest.require(providerId);
-          expect(
-            entry.capabilities,
-            contains(ProviderConnectorCapability.developer),
-            reason:
-                '$providerId must ship the developer capability it is gated on',
-          );
-          expect(
-            entry.permissions,
-            equals(identity),
-            reason: '$providerId has no developer-scoped permission to declare',
-          );
-        }
-      });
-    },
-  );
+        expect(
+          entry.permissions.map((permission) => permission.wireName),
+          contains('developer_repository'),
+          reason: '$providerId must declare repository scope explicitly',
+        );
+        expect(
+          entry.permissions,
+          isNot(equals(identity)),
+          reason: '$providerId must not reuse the identity permission set',
+        );
+        expect(
+          Sprint117ProviderLimitationCatalogue.derive(entry),
+          contains('permission_developer_repository'),
+        );
+      }
+    });
+  });
 
   group('117.42 canonical contract gate', () {
     test('declares the eight canonical outputs verbatim', () {
@@ -689,14 +691,6 @@ void main() {
         rows,
       );
 
-      // 117.42-02 is MEASURED and REPORTED, never converted into a pass and
-      // never widened into a manifest-contract change in this slice.
-      const openItems = <String>[
-        'permission_scope_undocumented:developer:github,gitlab,bitbucket,azure_devops — '
-            'ProviderPermission has no developer/repository member, so developer '
-            'connectors ship an identity permission set verbatim',
-      ];
-
       if (probes.values.any((value) => !value)) {
         throw StateError(
           'A 117.42 probe measured false: '
@@ -728,7 +722,7 @@ void main() {
         }.length,
         'checks': result.checks.length,
         'failures': result.failures,
-        'open_items': <String>[...result.openItems, ...openItems],
+        'open_items': result.openItems,
         'probes': probes,
         'defects_fixed': const <String>[
           '117.42-01: provider limitations were a hand-typed test constant and '
@@ -736,12 +730,10 @@ void main() {
               'could publish any limitation set; derivation now binds limitations '
               'to the shipped manifest entry and the gate compares declared '
               'against derived',
-        ],
-        'defects_measured_not_fixed': const <String>[
-          '117.42-02: ProviderPermission has no developer/repository member, so '
-              'developer connectors ship an identity permission set verbatim; '
-              'widening the shared enum is a manifest-contract change outside '
-              'this slice and is reported as an open item',
+          '117.42-02: ProviderPermission lacked developer/repository scope and '
+              'developer connectors therefore reused identity permissions; the '
+              'manifest now declares developer_repository explicitly while the '
+              'connectors remain unverified and withheld',
         ],
         'claim_boundary':
             'No live beta, no participant, and no release is claimed. Every '
@@ -750,13 +742,22 @@ void main() {
             'cost, hosted CI, and publication remain DEFERRED-EXTERNAL.',
       };
 
-      final written = _writeManifest(manifestJson, manifestPath);
-      final reread = jsonDecode(File(manifestPath).readAsStringSync());
-      expect(reread['verdict'], result.verdict);
-      expect(reread['pass'], isTrue);
-      expect(probes.length, greaterThanOrEqualTo(5));
-      // ignore: avoid_print
-      print('PROBE_11742_MANIFEST bytes=$written');
+      final outputDirectory = Directory.systemTemp.createTempSync(
+        'void-scriptor-sprint-117-42-',
+      );
+      try {
+        final outputPath =
+            '${outputDirectory.path}${Platform.pathSeparator}$manifestFileName';
+        final written = _writeManifest(manifestJson, outputPath);
+        final reread = jsonDecode(File(outputPath).readAsStringSync());
+        expect(reread['verdict'], result.verdict);
+        expect(reread['pass'], isTrue);
+        expect(probes.length, greaterThanOrEqualTo(5));
+        // ignore: avoid_print
+        print('PROBE_11742_MANIFEST bytes=$written');
+      } finally {
+        outputDirectory.deleteSync(recursive: true);
+      }
     });
   });
 }

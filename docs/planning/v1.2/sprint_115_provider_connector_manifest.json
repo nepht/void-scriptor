@@ -56,7 +56,7 @@
     "regions": "Non-empty explicit region set. GLOBAL is metadata intent only and is not proof of regional reachability.",
     "connector_version": "Non-empty version label for the connector contract. manifest-v1 is the local metadata contract, not a deployed connector release.",
     "auth_type": "One of OAUTH2_PKCE, API_KEY, OIDC, DEVICE_CODE, LOCAL_BROKER, NONE. No credential is stored by this manifest.",
-    "permissions": "Non-empty explicit permission set. Novel and Character workspace permissions are independent and absent from all standard entries.",
+    "permissions": "Non-empty explicit permission set. Standard vocabulary includes account_metadata, provider_connection, usage_metadata, cloud_transfer, backup, billing, novel_workspace, character_workspace, and developer_repository; developer_repository is metadata for developer connectors and does not grant access until certification.",
     "health_endpoint": "Optional HTTP(S) URL, default null/UNVERIFIED. A URL never changes availability or proves a healthy connector."
   },
   "standard_manifest": {

@@ -618,7 +618,7 @@ void main() {
       probes['circuit_breaker_zero_budget_refused'] = '$refused';
     });
 
-    test('a revoked connection is terminal, not quietly restorable', () {
+    test('a revoked connection permits cleanup, not quiet restoration', () {
       final machine = _connectedMachine()
         ..transition(
           AccountConnectionTransition.revoke,
@@ -626,7 +626,12 @@ void main() {
           userVisibleError: 'probe revoked',
         );
       expect(machine.snapshot.connectionState, AccountConnectionState.revoked);
-      expect(machine.availableTransitions, isEmpty);
+      expect(
+        machine.availableTransitions,
+        <AccountConnectionTransition>[
+          AccountConnectionTransition.disconnectCleanup,
+        ],
+      );
       var reviveRefused = false;
       try {
         machine.transition(
@@ -637,8 +642,16 @@ void main() {
         reviveRefused = true;
       }
       expect(reviveRefused, isTrue);
+      machine.transition(
+        AccountConnectionTransition.disconnectCleanup,
+        at: DateTime.utc(2026, 10, 2, 12, 32),
+      );
+      expect(
+        machine.snapshot.connectionState,
+        AccountConnectionState.notConfigured,
+      );
       probes['circuit_breaker_revoked_terminal'] =
-          'transitions=${machine.availableTransitions.length} revive_refused=$reviveRefused';
+          'cleanup_only=true transitions_before_cleanup=1 revive_refused=$reviveRefused';
     });
 
     test(

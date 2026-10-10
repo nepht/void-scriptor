@@ -48,7 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   });
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
-  if (!window.Create(L"Void Scriptor", origin, size)) {
+  if (!window.Create(L"Void Scriptor Studio", origin, size)) {
     DestroyNativeBrandWindow(brand_window);
     return EXIT_FAILURE;
   }

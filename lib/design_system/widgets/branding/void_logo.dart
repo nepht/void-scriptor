@@ -28,13 +28,18 @@ class VoidLogo extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               const SizedBox(width: 10),
-              Text(
-                'VOID SCRIPTOR',
-                style: TextStyle(
-                  color: labelColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.4,
+              Flexible(
+                child: Text(
+                  'VOID SCRIPTOR STUDIO',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: TextStyle(
+                    color: labelColor,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.4,
+                  ),
                 ),
               ),
             ],

@@ -51,7 +51,7 @@ void main() {
     await tester.pumpWidget(_app());
     await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.bySemanticsLabel('Void Scriptor logo'), findsOneWidget);
+    expect(find.bySemanticsLabel('Void Scriptor Studio logo'), findsOneWidget);
     expect(find.byKey(const Key('startup-byte-mascot')), findsNothing);
     expect(find.text('Welcome back, Offline User'), findsNothing);
 

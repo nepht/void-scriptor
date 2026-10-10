@@ -33,6 +33,6 @@ void main() {
     expect(find.text('Undo'), findsOneWidget);
     expect(find.text('Redo'), findsOneWidget);
     expect(find.text('Dirty'), findsOneWidget);
-    expect(find.text('Void Scriptor 0.1 Alpha'), findsOneWidget);
+    expect(find.text('Void Scriptor Studio 0.1 Alpha'), findsOneWidget);
   });
 }

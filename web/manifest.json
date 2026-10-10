@@ -1,11 +1,11 @@
 {
-    "name": "void_scriptor",
-    "short_name": "void_scriptor",
+    "name": "Void Scriptor Studio",
+    "short_name": "Void Scriptor Studio",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Local-first creative studio for characters, worlds, and stories.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

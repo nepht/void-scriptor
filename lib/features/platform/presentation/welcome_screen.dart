@@ -9,7 +9,7 @@ import 'package:void_scriptor/design_system/theme/void_theme_context.dart';
 
 /// Step 50.45 — Welcome Experience.
 ///
-/// Pertama kali: Welcome to Void Scriptor
+/// Pertama kali: Welcome to Void Scriptor Studio
 /// [Create Project] [Open Project] [Explore Demo].
 class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({

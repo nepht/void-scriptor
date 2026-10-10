@@ -28,7 +28,7 @@ class VoidScriptorApp extends ConsumerWidget {
     return MaterialApp.router(
       builder: (context, child) =>
           ProjectExitGuard(child: child ?? const SizedBox.shrink()),
-      title: 'Void Scriptor',
+      title: 'Void Scriptor Studio',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode?.themeMode ?? ThemeMode.system,
       theme: variant == VoidThemeVariant.voidPurple

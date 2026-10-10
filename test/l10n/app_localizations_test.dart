@@ -6,7 +6,7 @@ void main() {
   test('loads the English welcome pilot strings', () {
     const l10n = AppLocalizations(Locale('en'));
 
-    expect(l10n.welcomeTitle, 'Welcome to Void Scriptor');
+    expect(l10n.welcomeTitle, 'Welcome to Void Scriptor Studio');
     expect(l10n.createProject, 'Create Project');
     expect(l10n.openProject, 'Open Project');
     expect(l10n.exploreDemo, 'Explore Demo');
@@ -18,9 +18,9 @@ void main() {
       const id = AppLocalizations(Locale('id'));
       const fallback = AppLocalizations(Locale('ja'));
 
-      expect(id.welcomeTitle, 'Selamat datang di Void Scriptor');
+      expect(id.welcomeTitle, 'Selamat datang di Void Scriptor Studio');
       expect(id.createProject, 'Buat Proyek');
-      expect(fallback.welcomeTitle, 'Welcome to Void Scriptor');
+      expect(fallback.welcomeTitle, 'Welcome to Void Scriptor Studio');
     },
   );
 

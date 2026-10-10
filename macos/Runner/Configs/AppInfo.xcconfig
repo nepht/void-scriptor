@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = void_scriptor
+PRODUCT_NAME = Void Scriptor Studio
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.voidscriptor.voidScriptor
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 Void Scriptor. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 Void Scriptor Studio. All rights reserved.

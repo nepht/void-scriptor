@@ -70,6 +70,6 @@ void main() {
     expect(find.text('Local'), findsNothing);
     expect(find.text('Undo'), findsNothing);
     expect(find.text('Dirty'), findsNothing);
-    expect(find.textContaining('Void Scriptor 0.1 Alpha'), findsNothing);
+    expect(find.textContaining('Void Scriptor Studio 0.1 Alpha'), findsNothing);
   });
 }

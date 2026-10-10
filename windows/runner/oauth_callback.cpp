@@ -10,7 +10,7 @@ namespace {
 
 constexpr wchar_t kMutexName[] = L"Local\\VoidScriptor.OAuth.SingleInstance";
 constexpr wchar_t kWindowClass[] = L"VoidScriptor.OAuth.Callback";
-constexpr wchar_t kWindowTitle[] = L"Void Scriptor OAuth Callback Receiver";
+constexpr wchar_t kWindowTitle[] = L"Void Scriptor Studio OAuth Callback Receiver";
 HANDLE g_mutex = nullptr;
 HWND g_callback_window = nullptr;
 OAuthCallbackReceiver g_receiver;
@@ -79,7 +79,7 @@ bool RegisterOAuthProtocolHandler() {
     return false;
   }
 
-  const wchar_t description[] = L"URL:Void Scriptor OAuth Callback";
+  const wchar_t description[] = L"URL:Void Scriptor Studio OAuth Callback";
   const wchar_t url_protocol[] = L"";
   success = WriteDefaultValue(protocol_key, description) &&
             RegSetValueExW(protocol_key, L"URL Protocol", 0, REG_SZ,

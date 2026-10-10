@@ -33,7 +33,7 @@ class ProjectManifest {
     'description': description,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
-    'application': {'name': 'Void Scriptor', 'version': appVersion},
+    'application': {'name': 'Void Scriptor Studio', 'version': appVersion},
     'database': {'file': databaseFilename},
     'assets': {'root': 'assets'},
     'projectVersion': projectVersion,

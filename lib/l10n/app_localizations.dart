@@ -14,8 +14,8 @@ class AppLocalizations {
   bool get _isIndonesian => locale.languageCode == 'id';
 
   String get welcomeTitle => _isIndonesian
-      ? 'Selamat datang di Void Scriptor'
-      : 'Welcome to Void Scriptor';
+      ? 'Selamat datang di Void Scriptor Studio'
+      : 'Welcome to Void Scriptor Studio';
 
   String get createProject => _isIndonesian ? 'Buat Proyek' : 'Create Project';
 

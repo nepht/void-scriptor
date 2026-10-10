@@ -39,7 +39,7 @@ class VoidStatusBar extends StatelessWidget {
           _Status(label: 'Dirty', active: dirty),
           const Spacer(),
           Text(
-            'Void Scriptor 0.1 Alpha',
+            'Void Scriptor Studio 0.1 Alpha',
             style: VoidTypography.statusBar.copyWith(
               color: context.palette.textMuted,
             ),

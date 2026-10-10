@@ -94,7 +94,7 @@ LRESULT CALLBACK BrandWindowProc(HWND window, UINT message, WPARAM wparam,
       }
 
       RECT title = {20, 150, client.right - 20, 190};
-      DrawCenteredText(dc, L"VOID SCRIPTOR", title, RGB(246, 242, 255), 22,
+      DrawCenteredText(dc, L"VOID SCRIPTOR STUDIO", title, RGB(246, 242, 255), 22,
                        FW_SEMIBOLD);
       RECT subtitle = {20, 190, client.right - 20, 220};
       DrawCenteredText(dc, L"LOCAL-FIRST CREATIVE WORKSPACE", subtitle,
@@ -161,7 +161,7 @@ HWND CreateNativeBrandWindow(HINSTANCE instance) {
 
   HWND window = CreateWindowExW(
       WS_EX_TOOLWINDOW, kBrandWindowClass,
-      L"Void Scriptor - Opening local workspace", WS_POPUP, x, y, kBrandWidth,
+      L"Void Scriptor Studio - Opening local workspace", WS_POPUP, x, y, kBrandWidth,
       kBrandHeight, nullptr, nullptr, instance, state);
   if (window == nullptr) {
     // WM_NCDESTROY owns state cleanup once creation has reached the window

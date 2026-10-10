@@ -113,7 +113,7 @@ class _BrandStage extends StatelessWidget {
               width: logoSize,
               height: logoSize,
               child: Semantics(
-                label: 'Void Scriptor logo',
+                label: 'Void Scriptor Studio logo',
                 image: true,
                 child: Image.asset(
                   'assets/logos/void_scriptor_logo.png',
@@ -140,7 +140,7 @@ class _BrandCopy extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'VOID SCRIPTOR',
+            'VOID SCRIPTOR STUDIO',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: const Color(0xFFF4EEFF),

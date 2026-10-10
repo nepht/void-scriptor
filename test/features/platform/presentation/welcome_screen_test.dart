@@ -9,7 +9,7 @@ void main() {
 
   testWidgets('menampilkan welcome experience', (tester) async {
     await tester.pumpWidget(wrap(const WelcomeScreen()));
-    expect(find.text('Welcome to Void Scriptor'), findsOneWidget);
+    expect(find.text('Welcome to Void Scriptor Studio'), findsOneWidget);
     expect(find.text('Create Project'), findsOneWidget);
     expect(find.text('Open Project'), findsOneWidget);
     expect(find.text('Explore Demo'), findsOneWidget);
@@ -31,7 +31,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Selamat datang di Void Scriptor'), findsOneWidget);
+    expect(find.text('Selamat datang di Void Scriptor Studio'), findsOneWidget);
     expect(find.text('Buat Proyek'), findsOneWidget);
     expect(find.text('Buka Proyek'), findsOneWidget);
     expect(find.text('Jelajahi Demo'), findsOneWidget);

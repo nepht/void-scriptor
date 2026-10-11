@@ -1,0 +1,99 @@
+{
+  "canonical_step": "119.3",
+  "title": "Connector Trust Model",
+  "document_role": "trust-model-evaluation-record",
+  "state": "pass",
+  "verdict": "TRUST_MODEL_COMPLETE_LOCAL",
+  "model_executable": true,
+  "required_areas": [
+    "tier_rules",
+    "permission_defaults",
+    "review_requirements",
+    "visibility",
+    "support_owner",
+    "revocation"
+  ],
+  "permission_default": "DENY",
+  "missing_areas": [],
+  "violations": [],
+  "blockers": [],
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_execution_allowed": true,
+  "tier_rules": [
+    {
+      "tier": "BUILT_IN",
+      "rule": "first-party code is reviewed as part of the application release",
+      "review": "owner review, security gate, and regression evidence",
+      "visibility": "visible to eligible local users after the application gate",
+      "support": "Void Scriptor core support owner"
+    },
+    {
+      "tier": "VERIFIED_PARTNER",
+      "rule": "partner code stays scoped to an approved manifest and publisher",
+      "review": "publisher identity, contract tests, security review, and recheck date",
+      "visibility": "WITHHELD until authorized certification evidence exists",
+      "support": "named partner owner plus core escalation"
+    },
+    {
+      "tier": "COMMUNITY",
+      "rule": "community code is isolated and receives no implicit capability grant",
+      "review": "automated contract checks and explicit operator review",
+      "visibility": "local development visibility only; publication is deferred",
+      "support": "community maintainer with incident escalation path"
+    },
+    {
+      "tier": "LOCAL_DEVELOPMENT",
+      "rule": "local fixtures and mocks cannot make production or provider claims",
+      "review": "developer-owned tests with an explicit non-production boundary",
+      "visibility": "developer-only and never exposed as certified",
+      "support": "local developer; no production support commitment"
+    }
+  ],
+  "permission_defaults": [
+    {
+      "default_decision": "DENY",
+      "undeclared_capabilities": "DENY",
+      "undeclared_destinations": "DENY",
+      "secret_access": "opaque references only; plaintext is DENIED"
+    }
+  ],
+  "review_requirements": [
+    {
+      "review_id": "trust_review_before_exposure",
+      "requirement": "tier, publisher, capabilities, destinations, and support owner must be reviewed",
+      "evidence": "committed manifest, deterministic contract tests, and dated review record"
+    }
+  ],
+  "visibility": [
+    {
+      "uncertified": "WITHHELD",
+      "certified": "LOCAL_ONLY until external authorization and evidence are present",
+      "publication": "DEFERRED_EXTERNAL"
+    }
+  ],
+  "support_owner": [
+    {
+      "owner_id": "connector_support_owner",
+      "scope": "triage, incident intake, disable, revoke, and audit handoff",
+      "escalation": "unresolved security or provider incidents escalate to the operator"
+    }
+  ],
+  "revocation": [
+    {
+      "trigger": "policy violation, expired review, security incident, or operator request",
+      "actions": [
+        "disable",
+        "revoke",
+        "audit"
+      ],
+      "fail_closed": true
+    }
+  ],
+  "claim_boundary": [
+    "This local record defines trust policy; it does not certify, expose, install, execute, publish, or release a connector.",
+    "Trust tiers, permission defaults, review, visibility, support, and revocation are policy boundaries, not live provider observations.",
+    "Certification, provider exposure, external telemetry, signing, publication, and release remain DEFERRED-EXTERNAL."
+  ],
+  "external_gates": "DEFERRED-EXTERNAL"
+}

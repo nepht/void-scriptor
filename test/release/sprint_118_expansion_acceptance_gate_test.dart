@@ -746,12 +746,12 @@ void main() {
       expect(anchor.charterVerdict, 'CHARTER_COMPLETE_LOCAL');
       expect(
         anchor.snapshotVerdict,
-        'CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL',
+        'CERTIFIED_CONNECTOR_SNAPSHOT_AUTHORIZED_LOCAL',
       );
       expect(anchor.approvalDecision, 'delay');
-      expect(anchor.releaseState, 'GA_DELAYED');
-      expect(anchor.registryEvidenceExposed, 0);
-      expect(anchor.registryEvidenceWithheld, 32);
+      expect(anchor.releaseState, 'GA_AUTHORIZED');
+      expect(anchor.registryEvidenceExposed, 1);
+      expect(anchor.registryEvidenceWithheld, 31);
       expect(anchor.snapshotLockLockedCount, 32);
       expect(anchor.readableSources.length, 14);
       expect(anchor.certificationVocabulary, contains('UNVERIFIED'));
@@ -766,12 +766,12 @@ void main() {
     test('the gate passes end to end against the committed witnesses', () {
       final report = const Sprint118ExpansionAcceptanceGate().evaluate();
       expect(report.state, Sprint118ExpansionAcceptanceState.pass);
-      expect(report.verdict, 'EXPANSION_ACCEPTANCE_GATE_VERIFIED_LOCAL');
+      expect(report.verdict, 'EXPANSION_ACCEPTANCE_GATE_AUTHORIZED_LOCAL');
       expect(report.allowedCount, 0);
       expect(report.admittedCount, 0);
       expect(report.acceptedCount, 0);
       expect(report.passedCount, 0);
-      expect(report.certifiedCount, 0);
+      expect(report.certifiedCount, 1);
       expect(report.releasedCount, 0);
       expect(report.violations, isEmpty);
       expect(report.blockers, isEmpty);

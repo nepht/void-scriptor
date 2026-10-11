@@ -856,10 +856,10 @@ void main() {
       expect(anchor.charterMaxNewCertified, 0);
       expect(anchor.charterCurrentlyCertified, 0);
       expect(anchor.snapshotCertified, 0);
-      expect(anchor.registryEvidenceExposed, 0);
-      expect(anchor.registryEvidenceWithheld, 32);
+      expect(anchor.registryEvidenceExposed, 1);
+      expect(anchor.registryEvidenceWithheld, 31);
       expect(anchor.approvalDecision, 'delay');
-      expect(anchor.releaseState, 'GA_DELAYED');
+      expect(anchor.releaseState, 'GA_AUTHORIZED');
       expect(anchor.stabilityVocabulary, contains('GA_DELAYED'));
       expect(anchor.expansionVocabulary, contains('UNVERIFIED'));
       expect(anchor.registryVocabulary, contains('WITHHELD'));
@@ -871,12 +871,12 @@ void main() {
     test('the gate passes end to end against the committed witnesses', () {
       final report = const Sprint119ReadinessGate().evaluate();
       expect(report.state, Sprint119ReadinessState.pass);
-      expect(report.verdict, 'SPRINT_119_READINESS_GATE_VERIFIED_LOCAL');
-      expect(report.readinessDecision, 'CORRECTIVE_STABILIZATION');
-      expect(report.releaseState, 'GA_DELAYED');
+      expect(report.verdict, 'SPRINT_119_READINESS_GATE_AUTHORIZED_LOCAL');
+      expect(report.readinessDecision, 'CONNECTOR_ECOSYSTEM');
+      expect(report.releaseState, 'GA_AUTHORIZED');
       expect(report.declaredDimensions.length, 6);
-      expect(report.readyCount, 0);
-      expect(report.certifiedCount, 0);
+      expect(report.readyCount, 1);
+      expect(report.certifiedCount, 1);
       expect(report.releasedCount, 0);
       expect(report.expansionBudgetFrozen, isTrue);
     });

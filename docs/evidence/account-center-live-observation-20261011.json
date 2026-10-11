@@ -64,6 +64,18 @@
     "browser_after_provider_selection": "https://voidscriptor.com/",
     "dashboard_after_return": "AKTIF; identity provider GitHub; Google and GitHub Terhubung",
     "activity_confirmation": "GitHub login and browser session creation were visible in the server activity log.",
+    "fresh_observation": {
+      "observed_at": "2026-10-11T10:29:51Z",
+      "entrypoint": "/api/auth/github",
+      "result": "OAuth round trip returned to the website with the account signed in as Nephthys",
+      "dashboard_state": "AKTIF; Google Terhubung; GitHub Terhubung",
+      "github_application_page": "Never used",
+      "github_application_permissions": [
+        "Read all user profile data",
+        "Access user email addresses (read-only)"
+      ],
+      "interpretation": "Website sign-in was observed, but GitHub's application-usage signal did not provide provider-certification evidence."
+    },
     "not_observed": [
       "Authorization code value or token response",
       "Granted-scope confirmation",
@@ -71,12 +83,215 @@
       "Provider revoke response"
     ]
   },
+  "github_developer_app_observation": {
+    "observed_at": "2026-10-11T11:09:58Z",
+    "app_name": "Void Scriptor Developer Connector",
+    "owner": "@nepht",
+    "scope": "Only on this account",
+    "homepage_url": "https://voidscriptor.com",
+    "redirect_uri": "https://voidscriptor.com/api/integrations/github/callback",
+    "repository_permissions": {
+      "contents": "Read-only",
+      "metadata": "Read-only"
+    },
+    "repositories_selected": [
+      "nepht/quiz-qowner",
+      "nepht/void-scriptor-website",
+      "nepht/void-scriptor"
+    ],
+    "setup_url": "https://voidscriptor.com/api/integrations/github/callback",
+    "webhook_active": false,
+    "private_key_generated": true,
+    "key_pair_count_observed": 1,
+    "private_key_download_observed": false,
+    "registration_result": "GitHub displayed the installation success message for @nepht with three selected repositories and read-only code/metadata access.",
+    "setup_url_save_result": "GitHub displayed 'Your GitHub App has been updated' after the callback URL was saved as the Setup URL.",
+    "status": "APP_INSTALLED_SETUP_URL_SAVED",
+    "interpretation": "The GitHub App installation and callback configuration were observed in GitHub. No private-key contents or credential values were read or stored in this evidence."
+  },
+  "github_dashboard_connection_observation": {
+    "observed_at": "2026-10-11T11:09:58Z",
+    "surface": "https://voidscriptor.com/dashboard#dash-connections",
+    "method": "computer-use accessibility tree observation in an authenticated Brave session",
+    "result": "Dashboard displayed Google Terhubung and GitHub Terhubung as the application's OAuth identity cards; this observation did not prove the separate GitHub App Connector installation state.",
+    "account_label": "Nephthys",
+    "status": "OAUTH_VISIBLE_APP_STATUS_UNVERIFIABLE",
+    "app_connector_state": "UNVERIFIABLE; the remote github_app_connections query returned an empty result set.",
+    "not_observed": [
+      "GitHub resources payload",
+      "GitHub rate-limit payload",
+      "GitHub audit payload",
+      "provider revoke response"
+    ]
+  },
+  "authenticated_dashboard_recheck": {
+    "observed_at": "2026-10-11T11:20:00Z",
+    "surface": "https://voidscriptor.com/dashboard#dash-connections",
+    "method": "computer-use accessibility tree observation in an authenticated in-app browser session",
+    "result": "Website login succeeded and the dashboard displayed Google Terhubung and GitHub Terhubung. The cards represent the website OAuth identity session; GitHub App resource details were not exposed in the dashboard observation.",
+    "status": "OAUTH_SESSION_VERIFIED_APP_CONNECTOR_UNVERIFIABLE",
+    "not_observed": [
+      "github_app_connections row",
+      "GitHub App resources payload",
+      "GitHub App rate-limit payload",
+      "GitHub App audit payload"
+    ]
+  },
+  "chrome_authenticated_endpoint_observation": {
+    "observed_at": "2026-10-11T11:38:52Z",
+    "surface": "https://voidscriptor.com/api/integrations/github",
+    "method": "computer-use Chrome extension session after successful GitHub website login",
+    "result": "Chrome reported net::ERR_BLOCKED_BY_CLIENT before the authenticated GitHub App endpoint response could be observed.",
+    "status": "BROWSER_CLIENT_BLOCKED_ENDPOINT_UNVERIFIABLE"
+  },
+  "github_app_connection_observation": {
+    "observed_at": "2026-10-11T11:45:12Z",
+    "surface": "GitHub App installation settings and production D1",
+    "method": "computer-use Chrome accessibility tree plus safe remote D1 queries",
+    "result": "Removing and restoring nepht/quiz-qowner triggered the GitHub App setup callback. The first update returned to https://voidscriptor.com/dashboard?github_app=connected. The second callback page was blocked by Chrome, but the persisted production state was verified independently.",
+    "account_login": "nepht",
+    "installation_id": "170235221",
+    "repository_selection": "selected",
+    "revoked_at": null,
+    "github_repository_selection_observed": [
+      "nepht/quiz-qowner",
+      "nepht/void-scriptor-website",
+      "nepht/void-scriptor"
+    ],
+    "audit_observation": "github_app_audit_events reported app_connected count 1",
+    "status": "VERIFIED_CONNECTION_PARTIAL_RESOURCE_ENDPOINT_BLOCKED",
+    "not_observed": [
+      "GitHub resources endpoint payload in the browser",
+      "GitHub rate-limit endpoint payload in the browser"
+    ]
+  },
+  "github_app_certification_example_observation": {
+    "observed_at": "2026-10-11T11:48:08Z",
+    "surface": "https://voidscriptor.com/dashboard#dash-center-connections",
+    "method": "computer-use Chrome accessibility tree; dashboard links opened the authenticated JSON endpoints",
+    "resources": {
+      "count": 3,
+      "repositories": [
+        {
+          "full_name": "nepht/void-scriptor",
+          "private": true,
+          "default_branch": "master"
+        },
+        {
+          "full_name": "nepht/void-scriptor-website",
+          "private": true,
+          "default_branch": "main"
+        },
+        {
+          "full_name": "nepht/quiz-qowner",
+          "private": true,
+          "default_branch": "master"
+        }
+      ]
+    },
+    "rate_limit": {
+      "limit": 5000,
+      "remaining": 5000,
+      "reset_epoch": 1791722876
+    },
+    "audit_event_counts": {
+      "app_connected": 1,
+      "resources_read": 2,
+      "rate_limit_read": 1
+    },
+    "status": "VERIFIED_LIVE_CERTIFICATION_EXAMPLE",
+    "limitations": [
+      "This proves the live GitHub App example and its read-only resource/rate-limit responses; it does not authorize release or public exposure.",
+      "No private key, installation token, password, OTP, or other secret was read or stored."
+    ]
+  },
+  "cloudflare_pages_secret_observation": {
+    "observed_at": "2026-10-11T10:45:28Z",
+    "project": "voidscriptor",
+    "environment": "production",
+    "secret_names": [
+      "GITHUB_APP_ID",
+      "GITHUB_APP_PRIVATE_KEY"
+    ],
+    "values_observed": false,
+    "result": "Wrangler listed both names as Value Encrypted in the production Pages environment.",
+    "status": "CONFIGURED_NOT_CONSUMED"
+  },
+  "github_connector_local_implementation": {
+    "observed_at": "2026-10-11T10:52:19Z",
+    "scope": "local website Worker source only",
+    "routes_prepared": [
+      "/api/integrations/github",
+      "/api/integrations/github/install",
+      "/api/integrations/github/callback",
+      "/api/integrations/github/resources",
+      "/api/integrations/github/rate-limit",
+      "/api/integrations/github/revoke",
+      "/api/integrations/github/audit"
+    ],
+    "security_controls": [
+      "private key read only from Cloudflare secret binding",
+      "installation token encrypted before D1 storage",
+      "session-bound signed installation state",
+      "revoke requires POST"
+    ],
+    "verification": {
+      "focused_test": "node --test test/github_app_connector_test.mjs test/github_app_dashboard_wiring_test.mjs",
+      "focused_test_result": "4 passed, 0 failed",
+      "syntax_check": "node --check github_app_connector.js; node --check _worker.js",
+      "syntax_check_result": "exit 0",
+      "diff_check": "exit 0",
+      "local_migration": "npx --yes wrangler@latest d1 execute voidscriptor-accounts --local --file migrations/0008_github_app_connector.sql",
+      "local_migration_result": "4 commands executed successfully",
+      "local_route_smoke": "GET /api/integrations/github without a session",
+      "local_route_smoke_result": "HTTP 401 unauthenticated; route bundle loaded"
+    },
+    "production_callback_http": 400,
+    "production_migration": {
+      "observed_at": "2026-10-11T10:57:05Z",
+      "command": "npx --yes wrangler@latest d1 execute voidscriptor-accounts --remote --file migrations/0008_github_app_connector.sql",
+      "result": "SUCCESS; 4 queries executed, 6 rows read, 7 rows written",
+      "database": "voidscriptor-accounts",
+      "verification_command": "npx --yes wrangler@latest d1 execute voidscriptor-accounts --remote --command \"SELECT name FROM sqlite_master WHERE type = 'table' AND name IN ('github_app_connections','github_app_audit_events') ORDER BY name\"",
+      "verification_result": "Both github_app_audit_events and github_app_connections returned",
+      "status": "REMOTE_MIGRATION_VERIFIED"
+    },
+    "production_deployment": {
+      "observed_at": "2026-10-11T10:59:07Z",
+      "command": "npx --yes wrangler@latest pages deploy . --project-name voidscriptor --commit-dirty=true",
+      "result": "SUCCESS; Worker compiled and deployment completed",
+      "uploaded_files": 5,
+      "already_uploaded_files": 549,
+      "deployment_preview_url": "https://79ef7187.voidscriptor.pages.dev",
+      "status": "PRODUCTION_DEPLOYED"
+    },
+    "production_route_smoke": {
+      "custom_domain_github_status": 401,
+      "custom_domain_callback_status": 400,
+      "deployment_preview_github_status": 200,
+      "interpretation": "Custom-domain integration route is live and rejects unauthenticated access; callback route is live and rejects a request without OAuth state."
+    },
+    "authenticated_evidence_observation": {
+      "observed_at": "2026-10-11T11:17:37Z",
+      "dashboard_status": "OAuth GitHub Terhubung; App Connector status not observed",
+      "detail_endpoint_observation": "Direct browser navigation to /api/integrations/github/resources was blocked by the browser client; no payload was inferred. A later safe remote D1 query verified the connection row and app_connected audit event.",
+      "status": "CONNECTION_ROW_VERIFIED_RESOURCE_ENDPOINT_UNVERIFIABLE"
+    },
+    "callback_attempt_observation": {
+      "observed_at": "2026-10-11T11:45:12Z",
+      "surface": "GitHub App installation update redirect",
+      "result": "The callback was persisted: remote D1 returned account_login nepht, installation_id 170235221, repository_selection selected, and revoked_at null; the audit query returned app_connected count 1. Chrome still reported net::ERR_BLOCKED_BY_CLIENT on the second callback response page.",
+      "status": "CALLBACK_PERSISTED_BROWSER_RESPONSE_BLOCKED"
+    },
+    "status": "PRODUCTION_DEPLOYED_ROUTE_VERIFIED",
+    "next_action": "Use the verified live certification example for the operator certification review; release and Sprint 119 expansion remain gated by the canonical certification and readiness records."
+  },
   "activity_log_boundary": "Log live menyatakan bahwa isi file, token, dan detail rahasia tidak dicatat.",
   "evidence_boundary": [
     "Observasi ini membuktikan label dan state yang tampil pada website pada waktu observasi.",
     "Observasi ini tidak membaca token, password, OTP, atau isi akun.",
-    "Observasi ini bukan sertifikasi provider, bukan bukti release authorization, dan tidak mengaktifkan Sprint 119.",
+    "Observasi live GitHub App ini adalah certification example yang terverifikasi; observasi ini bukan release authorization dan tidak mengaktifkan Sprint 119.",
     "Native login/logout RC2 tetap membutuhkan bukti sesi aplikasi yang terpisah; operator melaporkan tiga siklus berhasil."
   ],
-  "next_action": "Gunakan observasi ini sebagai input corrective review; jangan mengubah status connector menjadi CERTIFIED tanpa workflow provider-specific yang dapat direproduksi dan gate release yang sesuai."
+  "next_action": "Gunakan certification example GitHub yang sudah terbaca untuk corrective review; jangan mengubah status release atau membuka Sprint 119 sebelum canonical certification/readiness gate dan otorisasi release terpenuhi."
 }

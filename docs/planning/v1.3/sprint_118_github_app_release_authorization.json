@@ -1,0 +1,30 @@
+{
+  "canonical_step": "118.39-authorized-overlay",
+  "document_role": "github-app-certification-release-authorization",
+  "state": "pass",
+  "verdict": "GITHUB_APP_CERTIFICATION_AUTHORIZED",
+  "operator": "Choirudin",
+  "authorized_at": "2026-10-11T12:19:16.3313908Z",
+  "provider_id": "github",
+  "connector_version": "manifest-v1",
+  "status": "CERTIFIED",
+  "visibility": "EXPOSED",
+  "release_state": "GA_AUTHORIZED",
+  "operator_authorized": true,
+  "scope": [
+    "github_app_certification",
+    "canonical_release_gate",
+    "sprint_119_entry"
+  ],
+  "evidence_source": "docs/evidence/account-center-live-observation-20261011.json",
+  "evidence_status": "VERIFIED_LIVE_CERTIFICATION_EXAMPLE",
+  "limitations": [
+    "read_only_github_app_resources_and_rate_limit_observed",
+    "no_public_release_or_publication_authorized"
+  ],
+  "claim_boundary": [
+    "This operator authorization admits only the observed GitHub App connector example into the canonical certification and release gate.",
+    "It does not certify Google, GitHub OAuth identity, or any other provider, and it does not publish a public release.",
+    "No secret, private key, installation token, password, OTP, or API key is stored or read by this authorization record."
+  ]
+}

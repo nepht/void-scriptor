@@ -16,6 +16,8 @@ void main() {
     'state': report.state.name,
     'verdict': report.verdict,
     'execution_allowed': report.executionAllowed,
+    'corrective_execution_allowed': report.correctiveExecutionAllowed,
+    'execution_mode': report.executionMode,
     'active_sprint_unchanged': report.activeSprintUnchanged,
     'next_step': Sprint119EntryContract.nextStep,
     'required_evidence': Sprint119EntryContract.requiredEvidence,
@@ -30,8 +32,9 @@ void main() {
     'notes': report.notes,
     'claim_boundary': <String>[
       'This gate only decides whether Sprint 119.1 may be admitted; it does not activate Sprint 119, publish a connector, expose a provider, or authorize a release.',
-      'Local Sprint 118 closure and Account Center tests are not the same as live stability or a certified connector example. Deferred external observations remain blocked.',
+      'Local Sprint 118 closure alone is not live stability; this gate accepts only a measured live Account Center observation for that dimension, while connector certification, release, and expansion remain blocked until their own evidence is present.',
       'The active Hermes sprint remains 118 while this gate is blocked. SDK, sandbox, signed packaging, catalog, and self-service expansion steps remain unopened.',
+      'When corrective_execution_allowed is true, Hermes may run only the approved Sprint 118 local corrective scope; it must not activate Sprint 119 expansion, certify a connector, expose a provider, release, or publish.',
       'No secret, credential, provider token, or live account data is read by this gate.',
     ],
     'external_gates': <String>[
@@ -49,6 +52,10 @@ void main() {
 
   stdout.writeln('state=${report.state.name}');
   stdout.writeln('verdict=${report.verdict}');
+  stdout.writeln(
+    'corrective_execution_allowed=${report.correctiveExecutionAllowed}',
+  );
+  stdout.writeln('execution_mode=${report.executionMode}');
   stdout.writeln('active_sprint_unchanged=${report.activeSprintUnchanged}');
   stdout.writeln('satisfied_count=${report.satisfiedCount}');
   stdout.writeln('blocked_count=${report.blockedCount}');

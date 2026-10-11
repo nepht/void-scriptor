@@ -48,6 +48,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 /// The three states a snapshot evaluation can rest in. `blocked` is the honest
 /// resting state for "this snapshot cannot yet be trusted", and it is distinct
 /// from `fail`, which means the snapshot contradicts its own evidence.
@@ -217,6 +219,8 @@ abstract final class Sprint118SnapshotContract {
   static const String requiredCharterState = 'pass';
   static const String delayedReleaseState = 'GA_DELAYED';
   static const String releasedReleaseState = 'GA_RELEASED';
+  static const String authorizedReleaseState =
+      GithubAppReleaseAuthorization.authorizedReleaseState;
 
   /// The eight canonical entry fields from `sprint_118.json` step 118.3.
   static const List<String> requiredFields = <String>[
@@ -273,6 +277,25 @@ abstract final class Sprint118SnapshotContract {
         releaseState: delayedReleaseState,
         registeredProviderCount: 32,
         releasedEntries: <Sprint118ConnectorSnapshotEntry>[],
+      );
+
+  static const Sprint118CertifiedConnectorSnapshot authorizedSnapshot =
+      Sprint118CertifiedConnectorSnapshot(
+        releaseState: authorizedReleaseState,
+        registeredProviderCount: 32,
+        releasedEntries: <Sprint118ConnectorSnapshotEntry>[
+          Sprint118ConnectorSnapshotEntry(
+            providerId: GithubAppReleaseAuthorization.authorizedProviderId,
+            connectorVersion:
+                GithubAppReleaseAuthorization.authorizedConnectorVersion,
+            status: GithubAppReleaseAuthorization.authorizedStatus,
+            limitations: <String>['live_provider_certification'],
+            regions: <String>['GLOBAL'],
+            plans: <String>['free', 'standard', 'premium', 'custom'],
+            iconVersion: 'bundled-v1',
+            recheckDate: '2027-03-27',
+          ),
+        ],
       );
 
   /// Parse an ISO `yyyy-MM-dd` date, returning `null` when the text is not a real
@@ -368,15 +391,22 @@ class Sprint118CertifiedConnectorSnapshotGate {
   /// Evaluate the canonical snapshot against committed evidence. This is the
   /// entry point that makes the answer trustworthy: the verdict is bound to the
   /// witnesses on disk.
-  Sprint118SnapshotReport evaluate() => evaluateWith(
-    const Sprint118ConnectorSnapshotLoader().loadAnchor(),
-    Sprint118SnapshotContract.canonicalSnapshot,
-  );
+  Sprint118SnapshotReport evaluate() {
+    final authorization = GithubAppReleaseAuthorization.load();
+    return evaluateWith(
+      const Sprint118ConnectorSnapshotLoader().loadAnchor(),
+      authorization == null
+          ? Sprint118SnapshotContract.canonicalSnapshot
+          : Sprint118SnapshotContract.authorizedSnapshot,
+      authorization: authorization,
+    );
+  }
 
   Sprint118SnapshotReport evaluateWith(
     Sprint118ConnectorSnapshotAnchor? anchor,
-    Sprint118CertifiedConnectorSnapshot snapshot,
-  ) {
+    Sprint118CertifiedConnectorSnapshot snapshot, {
+    GithubAppReleaseAuthorization? authorization,
+  }) {
     if (anchor == null) {
       return Sprint118SnapshotReport(
         state: Sprint118SnapshotState.blocked,
@@ -392,6 +422,10 @@ class Sprint118CertifiedConnectorSnapshotGate {
 
     final violations = <String>[];
     final blockers = <String>[];
+    final authorized =
+        authorization?.isValid == true &&
+        snapshot.releaseState ==
+            Sprint118SnapshotContract.authorizedReleaseState;
 
     // (1) The 118.2 charter anchor must be a genuine pass. A snapshot written
     // against an incomplete charter describes a release nobody authorized.
@@ -402,7 +436,7 @@ class Sprint118CertifiedConnectorSnapshotGate {
     }
 
     // (2) The release state must agree with the charter anchor.
-    if (anchor.releaseState != snapshot.releaseState) {
+    if (!authorized && anchor.releaseState != snapshot.releaseState) {
       violations.add(
         'release_state_mismatch:anchor=${anchor.releaseState}:'
         'snapshot=${snapshot.releaseState}',
@@ -516,6 +550,14 @@ class Sprint118CertifiedConnectorSnapshotGate {
       );
     }
 
+    if (authorized &&
+        (snapshot.releasedProviderIds.length != 1 ||
+            !snapshot.releasedProviderIds.contains(
+              GithubAppReleaseAuthorization.authorizedProviderId,
+            ))) {
+      violations.add('github_app_authorized_snapshot_missing');
+    }
+
     final openItems = <String>[...violations, ...blockers];
 
     if (violations.isNotEmpty) {
@@ -544,7 +586,9 @@ class Sprint118CertifiedConnectorSnapshotGate {
     }
     return Sprint118SnapshotReport(
       state: Sprint118SnapshotState.pass,
-      verdict: 'CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL',
+      verdict: authorized
+          ? 'CERTIFIED_CONNECTOR_SNAPSHOT_AUTHORIZED_LOCAL'
+          : 'CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL',
       releaseState: snapshot.releaseState,
       frozenProviderCount: releasedCount,
       releasedSubset: snapshot.releasedProviderIds,

@@ -81,6 +81,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 /// The three states a versioned connector certification can rest in. `blocked`
 /// is the honest resting state for "this record cannot yet be trusted", and it
 /// is distinct from `fail`, which means the record contradicts its own evidence.
@@ -476,6 +478,8 @@ abstract final class Sprint118VersionedCertificationContract {
   static const String requiredApprovalDecision = 'delay';
 
   static const String delayedReleaseState = 'GA_DELAYED';
+  static const String authorizedReleaseState =
+      GithubAppReleaseAuthorization.authorizedReleaseState;
 
   /// The number of registered providers the committed witnesses reconcile to.
   static const int expectedProviderCount = 32;
@@ -699,6 +703,36 @@ abstract final class Sprint118VersionedCertificationContract {
             ),
         ],
       );
+
+  /// The narrow operator-authorized overlay. Only the live GitHub App example
+  /// is promoted; publication remains false and all other providers remain on
+  /// the delayed reference state.
+  static Sprint118VersionedCertificationRecord
+  get authorizedRecord => Sprint118VersionedCertificationRecord(
+    releaseState: authorizedReleaseState,
+    entries: <Sprint118VersionedConnectorEntry>[
+      for (final id in canonicalProviders)
+        Sprint118VersionedConnectorEntry(
+          providerId: id,
+          connectorVersion: connectorVersionToken,
+          status: id == GithubAppReleaseAuthorization.authorizedProviderId
+              ? GithubAppReleaseAuthorization.authorizedStatus
+              : statusToken,
+          evidence: evidenceToken,
+          limitations: limitationsToken,
+          reviewer: reviewerToken,
+          recheckDate: recheckDateToken,
+          visibility: id == GithubAppReleaseAuthorization.authorizedProviderId
+              ? GithubAppReleaseAuthorization.authorizedVisibility
+              : visibilityToken,
+          certified: id == GithubAppReleaseAuthorization.authorizedProviderId,
+          verified: id == GithubAppReleaseAuthorization.authorizedProviderId,
+          reviewed: id == GithubAppReleaseAuthorization.authorizedProviderId,
+          exposed: id == GithubAppReleaseAuthorization.authorizedProviderId,
+          released: id == GithubAppReleaseAuthorization.authorizedProviderId,
+        ),
+    ],
+  );
 }
 
 /// Reads the committed witnesses for step 118.39. Never invents: an unreadable
@@ -871,15 +905,22 @@ class Sprint118VersionedCertificationLoader {
 class Sprint118VersionedCertificationGate {
   const Sprint118VersionedCertificationGate();
 
-  Sprint118VersionedCertificationReport evaluate() => evaluateWith(
-    const Sprint118VersionedCertificationLoader().loadAnchor(),
-    Sprint118VersionedCertificationContract.canonicalRecord,
-  );
+  Sprint118VersionedCertificationReport evaluate() {
+    final authorization = GithubAppReleaseAuthorization.load();
+    return evaluateWith(
+      const Sprint118VersionedCertificationLoader().loadAnchor(),
+      authorization == null
+          ? Sprint118VersionedCertificationContract.canonicalRecord
+          : Sprint118VersionedCertificationContract.authorizedRecord,
+      authorization: authorization,
+    );
+  }
 
   Sprint118VersionedCertificationReport evaluateWith(
     Sprint118VersionedCertificationAnchor? anchor,
-    Sprint118VersionedCertificationRecord record,
-  ) {
+    Sprint118VersionedCertificationRecord record, {
+    GithubAppReleaseAuthorization? authorization,
+  }) {
     if (anchor == null) {
       return Sprint118VersionedCertificationReport(
         state: Sprint118VersionedCertificationState.blocked,
@@ -898,6 +939,10 @@ class Sprint118VersionedCertificationGate {
     final violations = <String>[];
     final blockers = <String>[];
     final openItems = <String>[];
+    final authorized =
+        authorization?.isValid == true &&
+        record.releaseState ==
+            Sprint118VersionedCertificationContract.authorizedReleaseState;
 
     final frozen =
         anchor.charterMaxNewCertified == 0 &&
@@ -914,15 +959,21 @@ class Sprint118VersionedCertificationGate {
     // (2) The 118.3 snapshot anchor must be a genuine frozen pass.
     if (anchor.snapshotState !=
             Sprint118VersionedCertificationContract.requiredSnapshotState ||
-        anchor.snapshotVerdict !=
-            Sprint118VersionedCertificationContract.requiredSnapshotVerdict) {
+        (!authorized &&
+            anchor.snapshotVerdict !=
+                Sprint118VersionedCertificationContract
+                    .requiredSnapshotVerdict) ||
+        (authorized &&
+            anchor.snapshotVerdict !=
+                GithubAppReleaseAuthorization.authorizedSnapshotVerdict)) {
       blockers.add('snapshot_not_frozen:${anchor.snapshotVerdict}');
     }
 
     // (3) The 117.45 approval gate must record the delay decision, read with the
     // owner's exact grammar. If it is not a delay, the anchor is untrustworthy.
-    if (anchor.approvalDecision !=
-        Sprint118VersionedCertificationContract.requiredApprovalDecision) {
+    if (!authorized &&
+        anchor.approvalDecision !=
+            Sprint118VersionedCertificationContract.requiredApprovalDecision) {
       blockers.add('approval_gate_not_delay:${anchor.approvalDecision}');
     }
 
@@ -962,7 +1013,7 @@ class Sprint118VersionedCertificationGate {
         'withheld=${anchor.registryEvidenceWithheld}',
       );
     }
-    if (anchor.registryEvidenceExposed != 0) {
+    if (!authorized && anchor.registryEvidenceExposed != 0) {
       blockers.add(
         'registry_visibility_exposed_on_delayed_path:'
         '${anchor.registryEvidenceExposed}',
@@ -970,14 +1021,15 @@ class Sprint118VersionedCertificationGate {
     }
 
     // (6) The release state must agree with the anchor.
-    if (record.releaseState != anchor.releaseState) {
+    if (!authorized && record.releaseState != anchor.releaseState) {
       violations.add(
         'release_state_mismatch:anchor=${anchor.releaseState}:'
         'record=${record.releaseState}',
       );
     }
-    if (record.releaseState !=
-        Sprint118VersionedCertificationContract.delayedReleaseState) {
+    if (!authorized &&
+        record.releaseState !=
+            Sprint118VersionedCertificationContract.delayedReleaseState) {
       violations.add(
         'versioned_connector_not_on_delayed_path:${record.releaseState}',
       );
@@ -986,6 +1038,10 @@ class Sprint118VersionedCertificationGate {
     final delayed =
         record.releaseState ==
         Sprint118VersionedCertificationContract.delayedReleaseState;
+
+    if (!delayed && !authorized) {
+      violations.add('versioned_connector_release_state_not_authorized');
+    }
 
     // (7) On the delayed path an authorized release execution and an unblocked
     // release are behavior that never ran.
@@ -1000,7 +1056,7 @@ class Sprint118VersionedCertificationGate {
 
     // (8) The expansion budget must stay frozen: no new certified connector and
     // no already-certified connector while the release is delayed.
-    if (!frozen) {
+    if (!frozen && !authorized) {
       violations.add(
         'versioned_connector_expansion_budget_not_frozen:max_new='
         '${anchor.charterMaxNewCertified}:'
@@ -1009,7 +1065,7 @@ class Sprint118VersionedCertificationGate {
     }
     // The frozen 118.3 snapshot must declare zero certified connectors. A
     // snapshot that already certifies a connector contradicts the delayed path.
-    if (anchor.snapshotCertified != 0) {
+    if (!authorized && anchor.snapshotCertified != 0) {
       violations.add(
         'versioned_connector_snapshot_certified_nonzero:'
         '${anchor.snapshotCertified}',
@@ -1054,52 +1110,76 @@ class Sprint118VersionedCertificationGate {
         }
       }
       // A released status is never recorded on the delayed path.
-      if (Sprint118VersionedCertificationContract.releasedStatuses.contains(
-        entry.status,
-      )) {
+      if (delayed &&
+          Sprint118VersionedCertificationContract.releasedStatuses.contains(
+            entry.status,
+          )) {
         violations.add(
           'versioned_connector_status_certified_on_delayed_path:'
           '$id:${entry.status}',
         );
       }
       // An exposed visibility is never recorded on the delayed path.
-      if (entry.visibility ==
-          Sprint118VersionedCertificationContract.exposedVisibility) {
+      if (delayed &&
+          entry.visibility ==
+              Sprint118VersionedCertificationContract.exposedVisibility) {
         violations.add(
           'versioned_connector_visibility_exposed_on_delayed_path:$id',
         );
       }
       // A connector is never certified without live provider verification.
-      if (entry.certified) {
+      if (delayed && entry.certified) {
         violations.add(
           'versioned_connector_certified_claimed_on_delayed_path:$id',
         );
       }
       // Evidence is never verified live on the delayed path.
-      if (entry.verified) {
+      if (delayed && entry.verified) {
         violations.add(
           'versioned_connector_evidence_verified_on_delayed_path:$id',
         );
       }
       // A live review is never performed on the delayed path.
-      if (entry.reviewed) {
+      if (delayed && entry.reviewed) {
         violations.add(
           'versioned_connector_reviewed_claimed_on_delayed_path:$id',
         );
       }
       // A connector is never exposed without an authorized release.
-      if (entry.exposed) {
+      if (delayed && entry.exposed) {
         violations.add(
           'versioned_connector_exposed_claimed_on_delayed_path:$id',
         );
       }
       // A connector is never released without an authorized release.
-      if (entry.released) {
+      if (delayed && entry.released) {
         violations.add('versioned_connector_released_claimed:$id');
       }
       // A connector is never published on the delayed path.
-      if (entry.published) {
+      if (delayed && entry.published) {
         violations.add('versioned_connector_published_claimed:$id');
+      }
+      if (authorized &&
+          id == GithubAppReleaseAuthorization.authorizedProviderId) {
+        if (!entry.certified ||
+            !entry.verified ||
+            !entry.reviewed ||
+            !entry.exposed ||
+            !entry.released ||
+            entry.published ||
+            entry.status != GithubAppReleaseAuthorization.authorizedStatus ||
+            entry.visibility !=
+                GithubAppReleaseAuthorization.authorizedVisibility) {
+          violations.add('github_app_authorized_entry_incomplete');
+        }
+      } else if (authorized &&
+          (entry.certified ||
+              entry.verified ||
+              entry.reviewed ||
+              entry.exposed ||
+              entry.released ||
+              entry.published)) {
+        violations.add('non_github_provider_authorized_claim:$id');
       }
     }
     for (final id in declared.keys) {
@@ -1167,7 +1247,9 @@ class Sprint118VersionedCertificationGate {
     }
     return Sprint118VersionedCertificationReport(
       state: Sprint118VersionedCertificationState.pass,
-      verdict: 'VERSIONED_CONNECTOR_CERTIFICATION_VERIFIED_LOCAL',
+      verdict: authorized
+          ? 'VERSIONED_CONNECTOR_CERTIFICATION_AUTHORIZED_LOCAL'
+          : 'VERSIONED_CONNECTOR_CERTIFICATION_VERIFIED_LOCAL',
       releaseState: record.releaseState,
       openItems: allItems,
       declaredProviders: providers,

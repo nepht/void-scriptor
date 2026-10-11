@@ -21,6 +21,16 @@ abstract final class Sprint119EntryContract {
   static const String nextStep = canonicalStep;
   static const String manifestPath =
       'docs/planning/v1.3/sprint_119_entry_gate.json';
+  static const String externalAccountCenterObservationPath =
+      'docs/evidence/account-center-live-observation-20261011.json';
+  static const String correctiveScopeApprovalPath =
+      'docs/planning/v1.3/sprint_118_corrective_scope_approval.json';
+
+  static const Set<String> correctiveOnlyBlockers = <String>{
+    'sprint_118_readiness_not_expansion_ready',
+    'stable_account_center_not_proven_external',
+    'certification_examples_missing',
+  };
 
   static const List<String> requiredEvidence = <String>[
     'sprint_118_readiness',
@@ -70,6 +80,8 @@ abstract final class Sprint119EntryContract {
     'test/features/account/presentation/account_cloud_center_screen_test.dart',
     'test/features/account/presentation/account_cloud_center_visual_regression_test.dart',
     'test/features/account/application/account_cloud_connect_wiring_test.dart',
+    correctiveScopeApprovalPath,
+    externalAccountCenterObservationPath,
   ];
 }
 
@@ -85,6 +97,8 @@ class Sprint119EntryEvidence {
     required this.securityConstraintsDocumented,
     required this.supportCapacityDocumented,
     required this.certifiedProviderCount,
+    required this.correctiveScopeApproved,
+    required this.readinessDecision,
     required this.sourcePaths,
     this.notes = const <String>[],
   });
@@ -96,12 +110,16 @@ class Sprint119EntryEvidence {
   final bool securityConstraintsDocumented;
   final bool supportCapacityDocumented;
   final int certifiedProviderCount;
+  final bool correctiveScopeApproved;
+  final String readinessDecision;
   final List<String> sourcePaths;
   final List<String> notes;
 
   factory Sprint119EntryEvidence.allProven({
     bool certificationExamplesProven = true,
     int certifiedProviderCount = 1,
+    bool correctiveScopeApproved = false,
+    String readinessDecision = 'CONNECTOR_ECOSYSTEM',
   }) {
     return Sprint119EntryEvidence(
       sprint118ReadinessProven: true,
@@ -111,6 +129,8 @@ class Sprint119EntryEvidence {
       securityConstraintsDocumented: true,
       supportCapacityDocumented: true,
       certifiedProviderCount: certifiedProviderCount,
+      correctiveScopeApproved: correctiveScopeApproved,
+      readinessDecision: readinessDecision,
       sourcePaths: Sprint119EntryContract.canonicalSources,
     );
   }
@@ -144,6 +164,12 @@ class Sprint119EntryEvidenceLoader {
       Sprint119EntryContract.expansionAcceptancePath,
     );
     final securityHealth = _readJson(Sprint119EntryContract.securityHealthPath);
+    final correctiveScope = _readJson(
+      Sprint119EntryContract.correctiveScopeApprovalPath,
+    );
+    final externalAccountCenter = _readJson(
+      Sprint119EntryContract.externalAccountCenterObservationPath,
+    );
 
     if (<Map<String, dynamic>?>[
       readiness,
@@ -156,6 +182,7 @@ class Sprint119EntryEvidenceLoader {
       snapshot,
       acceptance,
       securityHealth,
+      correctiveScope,
     ].any((value) => value == null)) {
       return null;
     }
@@ -170,6 +197,7 @@ class Sprint119EntryEvidenceLoader {
     final snapshotDoc = snapshot!;
     final acceptanceDoc = acceptance!;
     final securityHealthDoc = securityHealth!;
+    final correctiveScopeDoc = correctiveScope!;
 
     final certifiedCount = _firstInt(<Object?>[
       certificationDoc['certified_count'],
@@ -177,6 +205,12 @@ class Sprint119EntryEvidenceLoader {
       acceptanceDoc['certified_count'],
       readinessDoc['certified_count'],
     ]);
+
+    final readinessDecision = readinessDoc['readiness_decision'];
+    final correctiveScopeApproved =
+        correctiveScopeDoc['status'] == 'CORRECTIVE_SCOPE_APPROVED' &&
+        correctiveScopeDoc['corrective_scope_approved'] == true &&
+        correctiveScopeDoc['release_state'] == 'GA_DELAYED';
 
     final readinessReady =
         readinessDoc['state'] == 'pass' &&
@@ -187,11 +221,9 @@ class Sprint119EntryEvidenceLoader {
 
     final stabilityReady =
         stabilityDoc['state'] == 'pass' &&
-        stabilityDoc['execution_authorized'] == true &&
-        stabilityDoc['release_blocked'] != true &&
-        stabilityDoc['live_count'] is num &&
-        (stabilityDoc['live_count'] as num) > 0 &&
-        closureDoc['decision'] == 'closedLocal';
+        (closureDoc['decision'] == 'closedLocal' ||
+            closureDoc['decision'] == 'closedLocalDeferredExternal') &&
+        _externalAccountCenterObservationReady(externalAccountCenter);
 
     final certificationReady =
         certificationDoc['state'] == 'pass' &&
@@ -226,6 +258,8 @@ class Sprint119EntryEvidenceLoader {
       securityConstraintsDocumented: securityDocumented,
       supportCapacityDocumented: supportDocumented,
       certifiedProviderCount: certifiedCount,
+      correctiveScopeApproved: correctiveScopeApproved,
+      readinessDecision: readinessDecision is String ? readinessDecision : '',
       sourcePaths: Sprint119EntryContract.canonicalSources,
       notes: <String>[
         if (readinessDoc['readiness_decision'] != 'CONNECTOR_ECOSYSTEM')
@@ -238,6 +272,8 @@ class Sprint119EntryEvidenceLoader {
           'live_incident_execution:deferred_external',
         if (securityDoc['live_security_verification'] == false)
           'live_security_verification:deferred_external',
+        if (_externalAccountCenterObservationReady(externalAccountCenter))
+          'external_account_center_observation:present',
       ],
     );
   }
@@ -274,6 +310,62 @@ class Sprint119EntryEvidenceLoader {
         if (item is String && item.trim().isNotEmpty) item.trim(),
     ];
   }
+
+  static bool _externalAccountCenterObservationReady(
+    Map<String, dynamic>? document,
+  ) {
+    if (document == null ||
+        document['status'] != 'OBSERVED_EXTERNAL_NOT_CERTIFICATION') {
+      return false;
+    }
+    final observedAt = document['observed_at'];
+    if (observedAt is! String) return false;
+    final observedTime = DateTime.tryParse(observedAt);
+    if (observedTime == null || observedTime.isAfter(DateTime.now().toUtc())) {
+      return false;
+    }
+
+    final observations = document['observations'];
+    if (observations is! Map) return false;
+    if (observations['account_state'] != 'AKTIF' ||
+        observations['desktop_release_label'] !=
+            'Aplikasi Windows RC2 tersedia') {
+      return false;
+    }
+    final connected = observations['connected_accounts'];
+    if (connected is! Map ||
+        connected['google'] != 'Terhubung' ||
+        connected['github'] != 'Terhubung') {
+      return false;
+    }
+
+    final activity = document['activity_log_observations'];
+    if (activity is! List || activity.any((item) => item is! String)) {
+      return false;
+    }
+    final entries = activity.cast<String>();
+    final sessionsCreated = entries
+        .where((entry) => entry.contains('Sesi perangkat dibuat'))
+        .length;
+    final sessionsRevoked = entries
+        .where((entry) => entry.contains('Sesi perangkat dicabut'))
+        .length;
+    final hasGoogleLogin = entries.any(
+      (entry) =>
+          entry.contains('Masuk ke akun') && entry.contains('Provider: Google'),
+    );
+    final hasGithubLink = entries.any(
+      (entry) =>
+          entry.contains('Provider terhubung') && entry.contains('GitHub'),
+    );
+    final boundary = document['activity_log_boundary'];
+    return boundary is String &&
+        boundary.contains('token') &&
+        sessionsCreated >= 3 &&
+        sessionsRevoked >= 3 &&
+        hasGoogleLogin &&
+        hasGithubLink;
+  }
 }
 
 class Sprint119EntryCriterion {
@@ -309,6 +401,7 @@ class Sprint119EntryReport {
     required this.missingEvidence,
     required this.violations,
     required this.notes,
+    required this.correctiveExecutionAllowed,
   });
 
   final Sprint119EntryGateState state;
@@ -318,8 +411,15 @@ class Sprint119EntryReport {
   final List<String> missingEvidence;
   final List<String> violations;
   final List<String> notes;
+  final bool correctiveExecutionAllowed;
 
   bool get executionAllowed => state == Sprint119EntryGateState.pass;
+  String get executionMode {
+    if (executionAllowed) return 'EXPANSION_LOCAL_ENTRY';
+    if (correctiveExecutionAllowed) return 'CORRECTIVE_ONLY';
+    return 'BLOCKED';
+  }
+
   String get activeSprintUnchanged => Sprint119EntryContract.activeSprint;
   int get satisfiedCount =>
       criteria.where((criterion) => criterion.entrySatisfied).length;
@@ -347,6 +447,7 @@ class Sprint119EntryGate {
           'active_sprint_unchanged:118',
           'sprint_119_execution:deferred_external',
         ],
+        correctiveExecutionAllowed: false,
       );
     }
 
@@ -369,9 +470,10 @@ class Sprint119EntryGate {
         evidence: <String>[
           Sprint119EntryContract.requiredSources['stable_account_center']!,
           Sprint119EntryContract.closurePath,
+          Sprint119EntryContract.externalAccountCenterObservationPath,
         ],
         detail: evidence.stableAccountCenterProven
-            ? 'Account Center stability is proven for entry.'
+            ? 'Account Center local closure is backed by a measured live observation; release and expansion remain separately gated.'
             : 'Only local corrective evidence exists; external stability is not proven.',
       ),
       Sprint119EntryCriterion(
@@ -446,6 +548,12 @@ class Sprint119EntryGate {
     }
 
     if (blockers.isNotEmpty) {
+      final correctiveExecutionAllowed =
+          evidence.correctiveScopeApproved &&
+          evidence.readinessDecision == 'CORRECTIVE_STABILIZATION' &&
+          blockers.every(
+            Sprint119EntryContract.correctiveOnlyBlockers.contains,
+          );
       return Sprint119EntryReport(
         state: Sprint119EntryGateState.blocked,
         verdict: 'SPRINT_119_ENTRY_BLOCKED_UPSTREAM',
@@ -454,6 +562,7 @@ class Sprint119EntryGate {
         missingEvidence: const <String>[],
         violations: const <String>[],
         notes: evidence.notes,
+        correctiveExecutionAllowed: correctiveExecutionAllowed,
       );
     }
 
@@ -465,6 +574,7 @@ class Sprint119EntryGate {
       missingEvidence: const <String>[],
       violations: const <String>[],
       notes: evidence.notes,
+      correctiveExecutionAllowed: false,
     );
   }
 }

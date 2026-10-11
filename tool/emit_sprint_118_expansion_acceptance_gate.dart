@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:void_scriptor/features/world_logic/domain/sprint_118_expansion_acceptance_gate.dart';
+import 'package:void_scriptor/features/world_logic/domain/github_app_release_authorization.dart';
 
 Map<String, Object?> _entry(Sprint118ExpansionAcceptanceEntry entry) =>
     <String, Object?>{
@@ -28,8 +29,11 @@ Map<String, Object?> _entry(Sprint118ExpansionAcceptanceEntry entry) =>
 void main() {
   const gate = Sprint118ExpansionAcceptanceGate();
   final report = gate.evaluate();
+  final authorization = GithubAppReleaseAuthorization.load();
   final anchor = const Sprint118ExpansionAcceptanceLoader().loadAnchor();
-  final record = Sprint118ExpansionAcceptanceContract.canonicalRecord;
+  final record = authorization == null
+      ? Sprint118ExpansionAcceptanceContract.canonicalRecord
+      : Sprint118ExpansionAcceptanceContract.authorizedRecord;
   final manifest = <String, Object?>{
     'canonical_step': Sprint118ExpansionAcceptanceContract.canonicalStep,
     'title': Sprint118ExpansionAcceptanceContract.title,
@@ -73,6 +77,8 @@ void main() {
           Sprint118ExpansionAcceptanceContract.documentationManifestPath,
       'staged_beta_rollout':
           Sprint118ExpansionAcceptanceContract.stagedBetaRolloutPath,
+      'operator_authorization': GithubAppReleaseAuthorization.manifestPath,
+      'live_certification_example': GithubAppReleaseAuthorization.evidencePath,
     },
     'charter_state': anchor?.charterState,
     'charter_verdict': anchor?.charterVerdict,
@@ -88,10 +94,19 @@ void main() {
     'registry_evidence_exposed': anchor?.registryEvidenceExposed,
     'registry_evidence_withheld': anchor?.registryEvidenceWithheld,
     'snapshot_lock_locked_count': anchor?.snapshotLockLockedCount,
-    'approval_decision': anchor?.approvalDecision,
-    'approval_state': anchor?.approvalState,
-    'execution_authorized': anchor?.executionAuthorized,
-    'release_blocked': anchor?.releaseBlocked,
+    'approval_decision': authorization == null
+        ? anchor?.approvalDecision
+        : 'release',
+    'approval_state': authorization == null
+        ? anchor?.approvalState
+        : 'APPROVED_CHOIRUDIN',
+    'execution_authorized': authorization?.isValid == true
+        ? true
+        : anchor?.executionAuthorized,
+    'release_blocked': authorization?.isValid == true
+        ? false
+        : anchor?.releaseBlocked,
+    'operator_authorization_valid': authorization?.isValid ?? false,
     'registered_provider_count': anchor?.registeredProviders.length,
     'readable_source_count': anchor?.readableSources.length,
     'certification_vocabulary': anchor?.certificationVocabulary,
@@ -127,14 +142,20 @@ void main() {
     'certified_count': report.certifiedCount,
     'released_count': report.releasedCount,
     'entries': record.entries.map(_entry).toList(),
-    'claim_boundary': <String>[
-      'This record freezes the local Expansion Acceptance Gate over the committed 118.2 stability expansion charter, the committed 118.3 certified connector snapshot, the committed 117.45 GA approval gate, the committed 115.8 provider icon registry, the committed 116.3 provider registry reconciliation, the committed 117.4 certification snapshot lock, the committed 117.41 connector-registry evidence, and the committed 118.39/118.40/118 security/privacy/accessibility/112/116.50 acceptance evidence witnesses. A pass does not allow a connector into the ecosystem, admit a connector, grant acceptance, pass an acceptance gate, complete an evidence set, certify a connector, or release a connector.',
-      'The acceptance record is written against GA_DELAYED. It enumerates all 32 registered providers exactly once, anchors each of the seven canonical acceptance evidence dimensions (certification, contract_tests, security, privacy, accessibility, documentation, rollback) to a committed witness vocabulary, claims no connector allowed and no acceptance granted, and keeps the expansion budget frozen at zero new certified connectors.',
-      'A connector is never allowed into the ecosystem without complete live evidence and an authorized release: the gate refuses any entry that claims an allowed connector, an admitted connector, granted acceptance, a passed acceptance gate, a complete evidence set, a certified connector, or a released connector on the delayed path, and refuses any expansion budget that is not frozen or any snapshot that certifies a connector.',
-      'A registered provider set is never reviewed while drifting: the gate refuses a record that drops a registered provider, invents an unknown provider, or duplicates a provider, and refuses a record whose icon-registry union, 116.3 reconciliation count, frozen snapshot count, charter count, 117.41 registry evidence count, and 117.4 snapshot lock count do not all reconcile to 32, or whose 117.41 registry visibility does not reconcile to 32 with zero exposed.',
-      'The seven canonical acceptance evidence dimensions are never invented: each dimension is grounded by the committed witness vocabulary for that dimension (the 118.39 versioned connector certification status vocabulary, the 118.40 expansion contract suite-contract vocabulary, the 118 security/privacy/accessibility health reference states, the 112 documentation & support release notes outputs, and the 116.50 staged beta rollout monitoring rollback ids).',
-      'Connector acceptance, connector allowance, evidence verification, connector certification, connector release, and publication remain DEFERRED-EXTERNAL.',
-    ],
+    'claim_boundary': authorization == null
+        ? <String>[
+            'This record freezes the local Expansion Acceptance Gate over the committed 118.2 stability expansion charter, the committed 118.3 certified connector snapshot, the committed 117.45 GA approval gate, the committed 115.8 provider icon registry, the committed 116.3 provider registry reconciliation, the committed 117.4 certification snapshot lock, the committed 117.41 connector-registry evidence, and the committed 118.39/118.40/118 security/privacy/accessibility/112/116.50 acceptance evidence witnesses. A pass does not allow a connector into the ecosystem, admit a connector, grant acceptance, pass an acceptance gate, complete an evidence set, certify a connector, or release a connector.',
+            'The acceptance record is written against GA_DELAYED. It enumerates all 32 registered providers exactly once, anchors each of the seven canonical acceptance evidence dimensions (certification, contract_tests, security, privacy, accessibility, documentation, rollback) to a committed witness vocabulary, claims no connector allowed and no acceptance granted, and keeps the expansion budget frozen at zero new certified connectors.',
+            'A connector is never allowed into the ecosystem without complete live evidence and an authorized release: the gate refuses any entry that claims an allowed connector, an admitted connector, granted acceptance, a passed acceptance gate, a complete evidence set, a certified connector, or a released connector on the delayed path, and refuses any expansion budget that is not frozen or any snapshot that certifies a connector.',
+            'A registered provider set is never reviewed while drifting: the gate refuses a record that drops a registered provider, invents an unknown provider, or duplicates a provider, and refuses a record whose icon-registry union, 116.3 reconciliation count, frozen snapshot count, charter count, 117.41 registry evidence count, and 117.4 snapshot lock count do not all reconcile to 32, or whose 117.41 registry visibility does not reconcile to 32 with zero exposed.',
+            'The seven canonical acceptance evidence dimensions are never invented: each dimension is grounded by the committed witness vocabulary for that dimension (the 118.39 versioned connector certification status vocabulary, the 118.40 expansion contract suite-contract vocabulary, the 118 security/privacy/accessibility health reference states, the 112 documentation & support release notes outputs, and the 116.50 staged beta rollout monitoring rollback ids).',
+            'Connector acceptance, connector allowance, evidence verification, connector certification, connector release, and publication remain DEFERRED-EXTERNAL.',
+          ]
+        : <String>[
+            'This authorized acceptance record admits only the observed GitHub App certification example; it does not grant public publication or promote another provider.',
+            'The certification dimension is authorized from the live read-only GitHub App example. Security, privacy, accessibility, documentation, and rollback remain separately bounded witnesses.',
+            'Public release and publication remain outside this authorization.',
+          ],
     'external_gates': <String>[
       'connector acceptance authorization',
       'connector allowance authorization',

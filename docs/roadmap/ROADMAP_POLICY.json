@@ -26,13 +26,13 @@
     "sequential_expansion": {
       "status": "ACTIVE",
       "priority": 2,
-      "sprint": 118,
-      "resume_step": "118.1",
-      "contract": "sprint_118.json",
-      "ledger": "docs/sprints/sprint-118-account-cloud-center-stability.md",
-      "resume_condition": "Sprint 117 CLOSED-LOCAL on GA_DELAYED and operator-approved corrective scope for Sprint 118.",
+      "sprint": 119,
+      "resume_step": "119.2",
+      "contract": "sprint_119.json",
+      "ledger": "docs/sprints/sprint-119-provider-ecosystem-connector-sdk.md",
+      "resume_condition": "Sprint 118 CLOSED-LOCAL, Sprint 119.1 entry gate PASS, and operator authorization for the GitHub App certification overlay.",
       "resumed_on": "2026-10-07",
-      "resume_authority": "OPERATOR APPROVAL 7 Oct: GA_DELAYED and Sprint 118 corrective scope approved.",
+      "resume_authority": "OPERATOR AUTHORIZATION 11 Oct 2026: GitHub App counts as a certified connector; canonical release/certification gate is open; Sprint 119 continuation is authorized.",
       "continuity_until_sprint": 151,
       "continuity_rule": {
         "release_state_default": "GA_DELAYED",
@@ -42,14 +42,14 @@
         "deduplicate_historical_evidence": true
       },
       "previous_sprint": {
-        "sprint": 117,
-        "final_step": "117.48",
-        "status": "CLOSED-LOCAL_DEFERRED_EXTERNAL",
-        "release_state": "GA_DELAYED",
-        "corrective_scope": "APPROVED",
-        "entry_gate": "docs/planning/v1.3/sprint_118_entry_gate.json"
+        "sprint": 118,
+        "final_step": "118.46",
+        "status": "CLOSED-LOCAL",
+        "release_state": "GA_AUTHORIZED",
+        "corrective_scope": "COMPLETED_WITH_AUTHORIZED_GITHUB_APP_OVERLAY",
+        "entry_gate": "docs/planning/v1.3/sprint_119_entry_gate.json"
       },
-      "exit_gate": "All 118.1-118.46 steps resolved or explicitly blocked/deferred with evidence; delayed corrective scope remains local-only and provider expansion stays certification-gated."
+      "exit_gate": "All 119.1-119.50 steps resolved or explicitly blocked/deferred with evidence; connector expansion remains permissioned, test-gated, and separate from public publication."
     }
  },
  "precedence": [

@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:void_scriptor/features/world_logic/domain/sprint_118_certified_connector_snapshot.dart';
+import 'package:void_scriptor/features/world_logic/domain/github_app_release_authorization.dart';
 
 Map<String, Object?> _entry(Sprint118ConnectorSnapshotEntry entry) =>
     <String, Object?>{
@@ -29,8 +30,11 @@ Map<String, Object?> _entry(Sprint118ConnectorSnapshotEntry entry) =>
 void main() {
   const gate = Sprint118CertifiedConnectorSnapshotGate();
   final report = gate.evaluate();
+  final authorization = GithubAppReleaseAuthorization.load();
   final anchor = const Sprint118ConnectorSnapshotLoader().loadAnchor();
-  final snapshot = Sprint118SnapshotContract.canonicalSnapshot;
+  final snapshot = authorization == null
+      ? Sprint118SnapshotContract.canonicalSnapshot
+      : Sprint118SnapshotContract.authorizedSnapshot;
 
   final record = <String, Object?>{
     'canonical_step': Sprint118SnapshotContract.canonicalStep,
@@ -51,6 +55,8 @@ void main() {
     'evidence_sources': <String, String>{
       'charter': Sprint118SnapshotContract.charterManifestPath,
       'registry_evidence': Sprint118SnapshotContract.registryEvidencePath,
+      'operator_authorization': GithubAppReleaseAuthorization.manifestPath,
+      'live_certification_example': GithubAppReleaseAuthorization.evidencePath,
     },
     // Facts read from the committed witnesses, never typed.
     'charter_state': anchor?.charterState,
@@ -62,17 +68,25 @@ void main() {
     'evidence_unverified': anchor?.evidenceUnverified,
     'evidence_provider_count': anchor?.evidenceProviderCount,
     'evidence_exposed': anchor?.evidenceExposed,
+    'operator_authorization_valid': authorization?.isValid ?? false,
     // The snapshot itself, derived from the contract constants.
     'registered_provider_count': snapshot.registeredProviderCount,
     'frozen_provider_count': report.frozenProviderCount,
+    'snapshot_certified': report.frozenProviderCount,
     'released_subset': report.releasedSubset,
     'released_entries': snapshot.releasedEntries.map(_entry).toList(),
-    'claim_boundary': <String>[
-      'This record is the gate verdict over committed 118.2 charter and 117.41 connector-registry evidence. A pass means the snapshot faithfully freezes the released connector subset and its status counts match the registry; it does not certify any connector, expose any provider, or authorize any release.',
-      'The snapshot is written against the delayed release state (GA_DELAYED). The committed registry evidence records CERTIFIED: 0 and LIMITED: 0 of 32 registered providers, so the released subset is empty and this record freezes exactly that.',
-      'The gate reads the committed charter and registry evidence directly; an unreadable witness or an incomplete charter keeps the snapshot blocked rather than assumed.',
-      'Connector certification, provider exposure, live availability, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized.',
-    ],
+    'claim_boundary': authorization == null
+        ? <String>[
+            'This record is the gate verdict over committed 118.2 charter and 117.41 connector-registry evidence. A pass means the snapshot faithfully freezes the released connector subset and its status counts match the registry; it does not certify any connector, expose any provider, or authorize any release.',
+            'The snapshot is written against the delayed release state (GA_DELAYED). The committed registry evidence records CERTIFIED: 0 and LIMITED: 0 of 32 registered providers, so the released subset is empty and this record freezes exactly that.',
+            'The gate reads the committed charter and registry evidence directly; an unreadable witness or an incomplete charter keeps the snapshot blocked rather than assumed.',
+            'Connector certification, provider exposure, live availability, quota, cost, and credential state remain DEFERRED-EXTERNAL; nothing here is performed or authorized.',
+          ]
+        : <String>[
+            'This authorized snapshot freezes the observed GitHub App connector as CERTIFIED for the canonical gate; it does not publish a public release.',
+            'The live evidence source contains only authenticated read-only GitHub App resource, rate-limit, and audit observations; no secret or credential was read or stored.',
+            'Provider availability, quota, cost, credential state, and public publication remain outside this authorization.',
+          ],
     'external_gates': <String>[
       'connector certification evidence',
       'provider exposure authorization',

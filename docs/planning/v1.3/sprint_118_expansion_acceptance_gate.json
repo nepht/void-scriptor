@@ -3,8 +3,8 @@
   "title": "Expansion Acceptance Gate",
   "document_role": "expansion-acceptance-gate-record",
   "state": "pass",
-  "verdict": "EXPANSION_ACCEPTANCE_GATE_VERIFIED_LOCAL",
-  "release_state": "GA_DELAYED",
+  "verdict": "EXPANSION_ACCEPTANCE_GATE_AUTHORIZED_LOCAL",
+  "release_state": "GA_AUTHORIZED",
   "record_verified": true,
   "expansion_budget_frozen": true,
   "required_fields": [
@@ -44,7 +44,9 @@
     "privacy": "docs/planning/v1.3/sprint_118_privacy_health_review.json",
     "accessibility": "docs/planning/v1.3/sprint_118_accessibility_health.json",
     "documentation": "docs/planning/v1.2/sprint_112_documentation_support_release_notes.json",
-    "staged_beta_rollout": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json"
+    "staged_beta_rollout": "docs/planning/v1.2/sprint_116_staged_beta_rollout_monitoring.json",
+    "operator_authorization": "docs/planning/v1.3/sprint_118_github_app_release_authorization.json",
+    "live_certification_example": "docs/evidence/account-center-live-observation-20261011.json"
   },
   "charter_state": "pass",
   "charter_verdict": "CHARTER_COMPLETE_LOCAL",
@@ -52,18 +54,19 @@
   "charter_currently_certified": 0,
   "charter_registered_providers": 32,
   "snapshot_state": "pass",
-  "snapshot_verdict": "CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL",
+  "snapshot_verdict": "CERTIFIED_CONNECTOR_SNAPSHOT_AUTHORIZED_LOCAL",
   "snapshot_certified": 0,
   "snapshot_registered": 32,
   "registry_expected_count": 32,
   "registry_evidence_provider_count": 32,
-  "registry_evidence_exposed": 0,
-  "registry_evidence_withheld": 32,
+  "registry_evidence_exposed": 1,
+  "registry_evidence_withheld": 31,
   "snapshot_lock_locked_count": 32,
-  "approval_decision": "delay",
-  "approval_state": "PENDING_CHOIRUDIN",
-  "execution_authorized": false,
-  "release_blocked": true,
+  "approval_decision": "release",
+  "approval_state": "APPROVED_CHOIRUDIN",
+  "execution_authorized": true,
+  "release_blocked": false,
+  "operator_authorization_valid": true,
   "registered_provider_count": 32,
   "readable_source_count": 14,
   "certification_vocabulary": [
@@ -230,13 +233,15 @@
   "admitted_providers": [],
   "accepted_providers": [],
   "passed_providers": [],
-  "certified_providers": [],
+  "certified_providers": [
+    "github"
+  ],
   "released_providers": [],
   "allowed_count": 0,
   "admitted_count": 0,
   "accepted_count": 0,
   "passed_count": 0,
-  "certified_count": 0,
+  "certified_count": 1,
   "released_count": 0,
   "entries": [
     {
@@ -309,7 +314,7 @@
     },
     {
       "provider_id": "github",
-      "certification": "UNVERIFIED",
+      "certification": "CERTIFIED",
       "contract_tests": "manifest",
       "security": "oauth_tests",
       "privacy": "consent",
@@ -321,7 +326,7 @@
       "accepted": false,
       "passed": false,
       "evidence_complete": false,
-      "certified": false,
+      "certified": true,
       "released": false
     },
     {
@@ -785,12 +790,9 @@
     }
   ],
   "claim_boundary": [
-    "This record freezes the local Expansion Acceptance Gate over the committed 118.2 stability expansion charter, the committed 118.3 certified connector snapshot, the committed 117.45 GA approval gate, the committed 115.8 provider icon registry, the committed 116.3 provider registry reconciliation, the committed 117.4 certification snapshot lock, the committed 117.41 connector-registry evidence, and the committed 118.39/118.40/118 security/privacy/accessibility/112/116.50 acceptance evidence witnesses. A pass does not allow a connector into the ecosystem, admit a connector, grant acceptance, pass an acceptance gate, complete an evidence set, certify a connector, or release a connector.",
-    "The acceptance record is written against GA_DELAYED. It enumerates all 32 registered providers exactly once, anchors each of the seven canonical acceptance evidence dimensions (certification, contract_tests, security, privacy, accessibility, documentation, rollback) to a committed witness vocabulary, claims no connector allowed and no acceptance granted, and keeps the expansion budget frozen at zero new certified connectors.",
-    "A connector is never allowed into the ecosystem without complete live evidence and an authorized release: the gate refuses any entry that claims an allowed connector, an admitted connector, granted acceptance, a passed acceptance gate, a complete evidence set, a certified connector, or a released connector on the delayed path, and refuses any expansion budget that is not frozen or any snapshot that certifies a connector.",
-    "A registered provider set is never reviewed while drifting: the gate refuses a record that drops a registered provider, invents an unknown provider, or duplicates a provider, and refuses a record whose icon-registry union, 116.3 reconciliation count, frozen snapshot count, charter count, 117.41 registry evidence count, and 117.4 snapshot lock count do not all reconcile to 32, or whose 117.41 registry visibility does not reconcile to 32 with zero exposed.",
-    "The seven canonical acceptance evidence dimensions are never invented: each dimension is grounded by the committed witness vocabulary for that dimension (the 118.39 versioned connector certification status vocabulary, the 118.40 expansion contract suite-contract vocabulary, the 118 security/privacy/accessibility health reference states, the 112 documentation & support release notes outputs, and the 116.50 staged beta rollout monitoring rollback ids).",
-    "Connector acceptance, connector allowance, evidence verification, connector certification, connector release, and publication remain DEFERRED-EXTERNAL."
+    "This authorized acceptance record admits only the observed GitHub App certification example; it does not grant public publication or promote another provider.",
+    "The certification dimension is authorized from the live read-only GitHub App example. Security, privacy, accessibility, documentation, and rollback remain separately bounded witnesses.",
+    "Public release and publication remain outside this authorization."
   ],
   "external_gates": [
     "connector acceptance authorization",

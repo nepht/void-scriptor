@@ -32,7 +32,7 @@
    "authority": "BINDING",
    "status": "ACTIVE",
    "integrity": "IMMUTABLE",
-   "sha256": "e3923acb1aa4f3e2b39250e3afe60faee49ddf740753bf070b8fec28bca1d02a",
+   "sha256": "0a404b22626ed3a02ec0dfdf9e3e1cf319e3cd2eef9878390a09773f622a8b20",
    "owner": "product-governance",
    "effective_date": "2026-09-01",
    "linked_sprints": [
@@ -44,13 +44,14 @@
     116,
     117,
     118,
+    119,
     145
    ],
    "may_create_scope": false,
    "may_mark_implementation_complete": false,
    "may_change_runtime_pointer": true,
-   "re_pinned_on": "2026-10-07",
-   "re_pin_reason": "Sprint 117 CLOSED-LOCAL_DEFERRED_EXTERNAL on GA_DELAYED; operator approved Sprint 118 corrective scope",
+   "re_pinned_on": "2026-10-11",
+   "re_pin_reason": "Sprint 118 CLOSED-LOCAL; Sprint 119.1 PASS; operator authorized GitHub App certification overlay, canonical release/certification gate, and Sprint 119 continuation",
    "previous_pin_sha256": "3e16a3342fd9d5ab0ea50e3159cf607e2e1881e4dde52de79b8cbfd036a628cd"
   },
   {

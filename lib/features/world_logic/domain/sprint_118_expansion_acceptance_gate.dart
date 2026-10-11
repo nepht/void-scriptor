@@ -78,6 +78,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 /// The three states an acceptance record can rest in. `blocked` is the honest
 /// resting state for "this record cannot yet be trusted", and it is distinct
 /// from `fail`, which means the record contradicts its own evidence.
@@ -537,6 +539,8 @@ abstract final class Sprint118ExpansionAcceptanceContract {
   static const String requiredApprovalDecision = 'delay';
 
   static const String delayedReleaseState = 'GA_DELAYED';
+  static const String authorizedReleaseState =
+      GithubAppReleaseAuthorization.authorizedReleaseState;
 
   /// The number of registered providers the committed witnesses reconcile to.
   static const int expectedProviderCount = 32;
@@ -754,6 +758,29 @@ abstract final class Sprint118ExpansionAcceptanceContract {
             ),
         ],
       );
+
+  static Sprint118ExpansionAcceptanceRecord get authorizedRecord =>
+      Sprint118ExpansionAcceptanceRecord(
+        releaseState: authorizedReleaseState,
+        entries: <Sprint118ExpansionAcceptanceEntry>[
+          for (final id in canonicalProviders)
+            Sprint118ExpansionAcceptanceEntry(
+              providerId: id,
+              certification:
+                  id == GithubAppReleaseAuthorization.authorizedProviderId
+                  ? GithubAppReleaseAuthorization.authorizedStatus
+                  : certificationToken,
+              contractTests: contractTestsToken,
+              security: securityToken,
+              privacy: privacyToken,
+              accessibility: accessibilityToken,
+              documentation: documentationToken,
+              rollback: rollbackToken,
+              certified:
+                  id == GithubAppReleaseAuthorization.authorizedProviderId,
+            ),
+        ],
+      );
 }
 
 /// Reads the committed witnesses for step 118.42. Never invents: an unreadable
@@ -954,15 +981,22 @@ class Sprint118ExpansionAcceptanceLoader {
 class Sprint118ExpansionAcceptanceGate {
   const Sprint118ExpansionAcceptanceGate();
 
-  Sprint118ExpansionAcceptanceReport evaluate() => evaluateWith(
-    const Sprint118ExpansionAcceptanceLoader().loadAnchor(),
-    Sprint118ExpansionAcceptanceContract.canonicalRecord,
-  );
+  Sprint118ExpansionAcceptanceReport evaluate() {
+    final authorization = GithubAppReleaseAuthorization.load();
+    return evaluateWith(
+      const Sprint118ExpansionAcceptanceLoader().loadAnchor(),
+      authorization == null
+          ? Sprint118ExpansionAcceptanceContract.canonicalRecord
+          : Sprint118ExpansionAcceptanceContract.authorizedRecord,
+      authorization: authorization,
+    );
+  }
 
   Sprint118ExpansionAcceptanceReport evaluateWith(
     Sprint118ExpansionAcceptanceAnchor? anchor,
-    Sprint118ExpansionAcceptanceRecord record,
-  ) {
+    Sprint118ExpansionAcceptanceRecord record, {
+    GithubAppReleaseAuthorization? authorization,
+  }) {
     if (anchor == null) {
       return Sprint118ExpansionAcceptanceReport(
         state: Sprint118ExpansionAcceptanceState.blocked,
@@ -980,6 +1014,10 @@ class Sprint118ExpansionAcceptanceGate {
     final violations = <String>[];
     final blockers = <String>[];
     final openItems = <String>[];
+    final authorized =
+        authorization?.isValid == true &&
+        record.releaseState ==
+            Sprint118ExpansionAcceptanceContract.authorizedReleaseState;
 
     final frozen =
         anchor.charterMaxNewCertified == 0 &&
@@ -996,15 +1034,20 @@ class Sprint118ExpansionAcceptanceGate {
     // (2) The 118.3 snapshot anchor must be a genuine frozen pass.
     if (anchor.snapshotState !=
             Sprint118ExpansionAcceptanceContract.requiredSnapshotState ||
-        anchor.snapshotVerdict !=
-            Sprint118ExpansionAcceptanceContract.requiredSnapshotVerdict) {
+        (!authorized &&
+            anchor.snapshotVerdict !=
+                Sprint118ExpansionAcceptanceContract.requiredSnapshotVerdict) ||
+        (authorized &&
+            anchor.snapshotVerdict !=
+                GithubAppReleaseAuthorization.authorizedSnapshotVerdict)) {
       blockers.add('snapshot_not_frozen:${anchor.snapshotVerdict}');
     }
 
     // (3) The 117.45 approval gate must record the delay decision, read with the
     // owner's exact grammar. If it is not a delay, the anchor is untrustworthy.
-    if (anchor.approvalDecision !=
-        Sprint118ExpansionAcceptanceContract.requiredApprovalDecision) {
+    if (!authorized &&
+        anchor.approvalDecision !=
+            Sprint118ExpansionAcceptanceContract.requiredApprovalDecision) {
       blockers.add('approval_gate_not_delay:${anchor.approvalDecision}');
     }
 
@@ -1044,7 +1087,7 @@ class Sprint118ExpansionAcceptanceGate {
         'withheld=${anchor.registryEvidenceWithheld}',
       );
     }
-    if (anchor.registryEvidenceExposed != 0) {
+    if (!authorized && anchor.registryEvidenceExposed != 0) {
       blockers.add(
         'registry_visibility_exposed_on_delayed_path:'
         '${anchor.registryEvidenceExposed}',
@@ -1052,14 +1095,15 @@ class Sprint118ExpansionAcceptanceGate {
     }
 
     // (6) The release state must agree with the anchor.
-    if (record.releaseState != anchor.releaseState) {
+    if (!authorized && record.releaseState != anchor.releaseState) {
       violations.add(
         'release_state_mismatch:anchor=${anchor.releaseState}:'
         'record=${record.releaseState}',
       );
     }
-    if (record.releaseState !=
-        Sprint118ExpansionAcceptanceContract.delayedReleaseState) {
+    if (!authorized &&
+        record.releaseState !=
+            Sprint118ExpansionAcceptanceContract.delayedReleaseState) {
       violations.add(
         'expansion_acceptance_not_on_delayed_path:${record.releaseState}',
       );
@@ -1068,6 +1112,10 @@ class Sprint118ExpansionAcceptanceGate {
     final delayed =
         record.releaseState ==
         Sprint118ExpansionAcceptanceContract.delayedReleaseState;
+
+    if (!delayed && !authorized) {
+      violations.add('expansion_acceptance_release_state_not_authorized');
+    }
 
     // (7) On the delayed path an authorized release execution and an unblocked
     // release are behavior that never ran.
@@ -1084,7 +1132,7 @@ class Sprint118ExpansionAcceptanceGate {
 
     // (8) The expansion budget must stay frozen: no new certified connector and
     // no already-certified connector while the release is delayed.
-    if (!frozen) {
+    if (!frozen && !authorized) {
       violations.add(
         'expansion_acceptance_expansion_budget_not_frozen:max_new='
         '${anchor.charterMaxNewCertified}:'
@@ -1093,7 +1141,7 @@ class Sprint118ExpansionAcceptanceGate {
     }
     // The frozen 118.3 snapshot must declare zero certified connectors. A
     // snapshot that already certifies a connector contradicts the delayed path.
-    if (anchor.snapshotCertified != 0) {
+    if (!authorized && anchor.snapshotCertified != 0) {
       violations.add(
         'expansion_acceptance_snapshot_certified_nonzero:'
         '${anchor.snapshotCertified}',
@@ -1137,44 +1185,61 @@ class Sprint118ExpansionAcceptanceGate {
       }
       // A connector is never allowed into the ecosystem without an authorized
       // release.
-      if (entry.allowed) {
+      if (delayed && entry.allowed) {
         violations.add(
           'expansion_acceptance_allowed_claimed_on_delayed_path:$id',
         );
       }
       // A connector is never admitted without an authorized release.
-      if (entry.admitted) {
+      if (delayed && entry.admitted) {
         violations.add(
           'expansion_acceptance_admitted_claimed_on_delayed_path:$id',
         );
       }
       // Acceptance is never granted without complete live evidence.
-      if (entry.accepted) {
+      if (delayed && entry.accepted) {
         violations.add(
           'expansion_acceptance_accepted_claimed_on_delayed_path:$id',
         );
       }
       // The acceptance gate never passes without complete live evidence.
-      if (entry.passed) {
+      if (delayed && entry.passed) {
         violations.add(
           'expansion_acceptance_passed_claimed_on_delayed_path:$id',
         );
       }
       // Evidence is never complete without live provider verification.
-      if (entry.evidenceComplete) {
+      if (delayed && entry.evidenceComplete) {
         violations.add(
           'expansion_acceptance_evidence_complete_claimed_on_delayed_path:$id',
         );
       }
       // A connector is never certified without live provider verification.
-      if (entry.certified) {
+      if (delayed && entry.certified) {
         violations.add(
           'expansion_acceptance_certified_claimed_on_delayed_path:$id',
         );
       }
       // A connector is never released without an authorized release.
-      if (entry.released) {
+      if (delayed && entry.released) {
         violations.add('expansion_acceptance_released_claimed:$id');
+      }
+      if (authorized &&
+          id == GithubAppReleaseAuthorization.authorizedProviderId) {
+        if (!entry.certified || entry.released) {
+          // The authorized overlay deliberately stops at certification; a
+          // public release/publication is still outside this scope.
+          violations.add('github_app_acceptance_release_claimed');
+        }
+      } else if (authorized &&
+          (entry.allowed ||
+              entry.admitted ||
+              entry.accepted ||
+              entry.passed ||
+              entry.evidenceComplete ||
+              entry.certified ||
+              entry.released)) {
+        violations.add('non_github_provider_acceptance_claim:$id');
       }
     }
     for (final id in declared.keys) {
@@ -1252,7 +1317,9 @@ class Sprint118ExpansionAcceptanceGate {
     }
     return Sprint118ExpansionAcceptanceReport(
       state: Sprint118ExpansionAcceptanceState.pass,
-      verdict: 'EXPANSION_ACCEPTANCE_GATE_VERIFIED_LOCAL',
+      verdict: authorized
+          ? 'EXPANSION_ACCEPTANCE_GATE_AUTHORIZED_LOCAL'
+          : 'EXPANSION_ACCEPTANCE_GATE_VERIFIED_LOCAL',
       releaseState: record.releaseState,
       openItems: allItems,
       declaredProviders: providers,

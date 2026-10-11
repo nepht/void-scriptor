@@ -772,12 +772,12 @@ void main() {
       expect(anchor.charterVerdict, 'CHARTER_COMPLETE_LOCAL');
       expect(
         anchor.snapshotVerdict,
-        'CERTIFIED_CONNECTOR_SNAPSHOT_FROZEN_LOCAL',
+        'CERTIFIED_CONNECTOR_SNAPSHOT_AUTHORIZED_LOCAL',
       );
       expect(anchor.approvalDecision, 'delay');
-      expect(anchor.releaseState, 'GA_DELAYED');
-      expect(anchor.registryEvidenceExposed, 0);
-      expect(anchor.registryEvidenceWithheld, 32);
+      expect(anchor.releaseState, 'GA_AUTHORIZED');
+      expect(anchor.registryEvidenceExposed, 1);
+      expect(anchor.registryEvidenceWithheld, 31);
       expect(anchor.snapshotLockLockedCount, 32);
       expect(anchor.readableSources.length, 8);
       expect(anchor.connectorVersionVocabulary, contains('manifest-v1'));
@@ -797,11 +797,11 @@ void main() {
       expect(report.state, Sprint118VersionedCertificationState.pass);
       expect(
         report.verdict,
-        'VERSIONED_CONNECTOR_CERTIFICATION_VERIFIED_LOCAL',
+        'VERSIONED_CONNECTOR_CERTIFICATION_AUTHORIZED_LOCAL',
       );
-      expect(report.certifiedCount, 0);
-      expect(report.exposedCount, 0);
-      expect(report.releasedCount, 0);
+      expect(report.certifiedCount, 1);
+      expect(report.exposedCount, 1);
+      expect(report.releasedCount, 1);
       expect(report.violations, isEmpty);
       expect(report.blockers, isEmpty);
     });

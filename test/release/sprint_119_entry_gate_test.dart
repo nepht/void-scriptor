@@ -23,27 +23,49 @@ void main() {
       for (final source in Sprint119EntryContract.requiredSources.values) {
         expect(File(source).existsSync(), isTrue, reason: 'Missing $source');
       }
+      expect(
+        File(
+          Sprint119EntryContract.externalAccountCenterObservationPath,
+        ).existsSync(),
+        isTrue,
+        reason: 'Missing external Account Center observation',
+      );
     });
 
     test(
-      'committed witnesses keep the SDK entry closed until certification is proven',
+      'authorized GitHub App certification opens the local Sprint 119 entry',
       () {
         final report = const Sprint119EntryGate().evaluate();
 
-        expect(report.state, Sprint119EntryGateState.blocked);
-        expect(report.verdict, 'SPRINT_119_ENTRY_BLOCKED_UPSTREAM');
-        expect(report.executionAllowed, isFalse);
-        expect(
-          report.blockers,
-          contains('sprint_118_readiness_not_expansion_ready'),
-        );
-        expect(
-          report.blockers,
-          contains('stable_account_center_not_proven_external'),
-        );
-        expect(report.blockers, contains('certification_examples_missing'));
+        expect(report.state, Sprint119EntryGateState.pass);
+        expect(report.verdict, 'SPRINT_119_ENTRY_READY_LOCAL');
+        expect(report.executionAllowed, isTrue);
+        expect(report.correctiveExecutionAllowed, isFalse);
+        expect(report.executionMode, 'EXPANSION_LOCAL_ENTRY');
+        expect(report.blockers, isEmpty);
         expect(report.criteria, hasLength(6));
-        expect(report.satisfiedCount, 3);
+        expect(report.satisfiedCount, 6);
+      },
+    );
+
+    test(
+      'a measured live Account Center observation remains part of the ready entry',
+      () {
+        final report = const Sprint119EntryGate().evaluate();
+        final criterion = report.criteria.firstWhere(
+          (item) => item.key == 'stable_account_center',
+        );
+
+        expect(criterion.entrySatisfied, isTrue);
+        expect(
+          criterion.evidence,
+          contains(Sprint119EntryContract.externalAccountCenterObservationPath),
+        );
+        expect(
+          report.blockers,
+          isNot(contains('stable_account_center_not_proven_external')),
+        );
+        expect(report.executionAllowed, isTrue);
       },
     );
 
@@ -59,6 +81,11 @@ void main() {
       expect(record['state'], report.state.name);
       expect(record['verdict'], report.verdict);
       expect(record['execution_allowed'], report.executionAllowed);
+      expect(
+        record['corrective_execution_allowed'],
+        report.correctiveExecutionAllowed,
+      );
+      expect(record['execution_mode'], report.executionMode);
       expect(record['active_sprint_unchanged'], '118');
       expect(record['next_step'], '119.1');
       expect(record['criteria'], hasLength(6));
@@ -71,6 +98,8 @@ void main() {
       expect(report.state, Sprint119EntryGateState.blocked);
       expect(report.verdict, 'SPRINT_119_ENTRY_EVIDENCE_UNREADABLE');
       expect(report.executionAllowed, isFalse);
+      expect(report.correctiveExecutionAllowed, isFalse);
+      expect(report.executionMode, 'BLOCKED');
       expect(report.missingEvidence, Sprint119EntryContract.requiredEvidence);
       expect(report.activeSprintUnchanged, '118');
     });
@@ -83,6 +112,8 @@ void main() {
       expect(report.state, Sprint119EntryGateState.pass);
       expect(report.verdict, 'SPRINT_119_ENTRY_READY_LOCAL');
       expect(report.executionAllowed, isTrue);
+      expect(report.correctiveExecutionAllowed, isFalse);
+      expect(report.executionMode, 'EXPANSION_LOCAL_ENTRY');
       expect(report.blockers, isEmpty);
       expect(report.satisfiedCount, 6);
     });
@@ -99,6 +130,26 @@ void main() {
         expect(report.state, Sprint119EntryGateState.blocked);
         expect(report.blockers, contains('certification_examples_missing'));
         expect(report.executionAllowed, isFalse);
+        expect(report.correctiveExecutionAllowed, isFalse);
+      },
+    );
+
+    test(
+      'approved corrective scope can run locally without opening expansion',
+      () {
+        final report = const Sprint119EntryGate().evaluateWith(
+          Sprint119EntryEvidence.allProven(
+            certificationExamplesProven: false,
+            certifiedProviderCount: 0,
+            correctiveScopeApproved: true,
+            readinessDecision: 'CORRECTIVE_STABILIZATION',
+          ),
+        );
+
+        expect(report.state, Sprint119EntryGateState.blocked);
+        expect(report.executionAllowed, isFalse);
+        expect(report.correctiveExecutionAllowed, isTrue);
+        expect(report.executionMode, 'CORRECTIVE_ONLY');
       },
     );
   });

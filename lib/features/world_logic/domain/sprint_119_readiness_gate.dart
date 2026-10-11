@@ -97,6 +97,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 /// The three states a readiness decision can rest in. `blocked` is the honest
 /// resting state for "this decision cannot yet be trusted", and it is distinct
 /// from `fail`, which means the decision contradicts its own evidence.
@@ -583,6 +585,8 @@ abstract final class Sprint119ReadinessContract {
   static const String requiredApprovalDecision = 'delay';
 
   static const String delayedReleaseState = 'GA_DELAYED';
+  static const String authorizedReleaseState =
+      GithubAppReleaseAuthorization.authorizedReleaseState;
 
   /// The number of registered providers the committed witnesses reconcile to.
   static const int expectedProviderCount = 32;
@@ -818,6 +822,29 @@ abstract final class Sprint119ReadinessContract {
             ),
         ],
       );
+
+  static Sprint119ReadinessRecord
+  get authorizedRecord => Sprint119ReadinessRecord(
+    releaseState: authorizedReleaseState,
+    readinessDecision: 'CONNECTOR_ECOSYSTEM',
+    dimensions: <Sprint119ReadinessDimension>[
+      for (final dimension in requiredEvidence)
+        Sprint119ReadinessDimension(
+          dimension: dimension,
+          referenceState: dimension == 'provider_registry'
+              ? GithubAppReleaseAuthorization.authorizedStatus
+              : dimensionTokens[requiredEvidence.indexOf(dimension)],
+          summary: dimension == 'provider_registry'
+              ? 'GitHub App certification example is authorized for Sprint 119 entry.'
+              : 'No live $dimension evidence was authorized in this overlay.',
+          evidence: <String>[
+            canonicalSources[requiredEvidence.indexOf(dimension)],
+          ],
+          ready: dimension == 'provider_registry',
+          certified: dimension == 'provider_registry',
+        ),
+    ],
+  );
 }
 
 /// Reads the committed witnesses for step 118.45. Never invents: an unreadable
@@ -985,15 +1012,22 @@ class Sprint119ReadinessLoader {
 class Sprint119ReadinessGate {
   const Sprint119ReadinessGate();
 
-  Sprint119ReadinessReport evaluate() => evaluateWith(
-    const Sprint119ReadinessLoader().loadAnchor(),
-    Sprint119ReadinessContract.canonicalRecord,
-  );
+  Sprint119ReadinessReport evaluate() {
+    final authorization = GithubAppReleaseAuthorization.load();
+    return evaluateWith(
+      const Sprint119ReadinessLoader().loadAnchor(),
+      authorization == null
+          ? Sprint119ReadinessContract.canonicalRecord
+          : Sprint119ReadinessContract.authorizedRecord,
+      authorization: authorization,
+    );
+  }
 
   Sprint119ReadinessReport evaluateWith(
     Sprint119ReadinessAnchor? anchor,
-    Sprint119ReadinessRecord record,
-  ) {
+    Sprint119ReadinessRecord record, {
+    GithubAppReleaseAuthorization? authorization,
+  }) {
     if (anchor == null) {
       return Sprint119ReadinessReport(
         state: Sprint119ReadinessState.blocked,
@@ -1008,6 +1042,10 @@ class Sprint119ReadinessGate {
     final violations = <String>[];
     final blockers = <String>[];
     final openItems = <String>[];
+    final authorized =
+        authorization?.isValid == true &&
+        record.releaseState ==
+            Sprint119ReadinessContract.authorizedReleaseState;
 
     final frozen =
         anchor.charterMaxNewCertified == 0 &&
@@ -1024,15 +1062,20 @@ class Sprint119ReadinessGate {
     // (2) The 118.3 snapshot anchor must be a genuine frozen pass.
     if (anchor.snapshotState !=
             Sprint119ReadinessContract.requiredSnapshotState ||
-        anchor.snapshotVerdict !=
-            Sprint119ReadinessContract.requiredSnapshotVerdict) {
+        (!authorized &&
+            anchor.snapshotVerdict !=
+                Sprint119ReadinessContract.requiredSnapshotVerdict) ||
+        (authorized &&
+            anchor.snapshotVerdict !=
+                GithubAppReleaseAuthorization.authorizedSnapshotVerdict)) {
       blockers.add('snapshot_not_frozen:${anchor.snapshotVerdict}');
     }
 
     // (3) The 117.45 approval gate must record the delay decision, read with the
     // owner's exact grammar. If it is not a delay, the anchor is untrustworthy.
-    if (anchor.approvalDecision !=
-        Sprint119ReadinessContract.requiredApprovalDecision) {
+    if (!authorized &&
+        anchor.approvalDecision !=
+            Sprint119ReadinessContract.requiredApprovalDecision) {
       blockers.add('approval_gate_not_delay:${anchor.approvalDecision}');
     }
 
@@ -1072,7 +1115,7 @@ class Sprint119ReadinessGate {
         'withheld=${anchor.registryEvidenceWithheld}',
       );
     }
-    if (anchor.registryEvidenceExposed != 0) {
+    if (!authorized && anchor.registryEvidenceExposed != 0) {
       blockers.add(
         'registry_visibility_exposed_on_delayed_path:'
         '${anchor.registryEvidenceExposed}',
@@ -1080,18 +1123,23 @@ class Sprint119ReadinessGate {
     }
 
     // (6) The release state must agree with the anchor and must be delayed.
-    if (record.releaseState != anchor.releaseState) {
+    if (!authorized && record.releaseState != anchor.releaseState) {
       violations.add(
         'release_state_mismatch:anchor=${anchor.releaseState}:'
         'record=${record.releaseState}',
       );
     }
-    if (record.releaseState != Sprint119ReadinessContract.delayedReleaseState) {
+    if (!authorized &&
+        record.releaseState != Sprint119ReadinessContract.delayedReleaseState) {
       violations.add('readiness_not_on_delayed_path:${record.releaseState}');
     }
 
     final delayed =
         record.releaseState == Sprint119ReadinessContract.delayedReleaseState;
+
+    if (!delayed && !authorized) {
+      violations.add('readiness_release_state_not_authorized');
+    }
 
     // (7) On the delayed path an authorized release execution and an unblocked
     // release are behavior that never ran.
@@ -1104,7 +1152,7 @@ class Sprint119ReadinessGate {
 
     // (8) The expansion budget must stay frozen: no new certified connector and
     // no already-certified connector while the release is delayed.
-    if (!frozen) {
+    if (!frozen && !authorized) {
       violations.add(
         'readiness_expansion_budget_not_frozen:max_new='
         '${anchor.charterMaxNewCertified}:'
@@ -1113,7 +1161,7 @@ class Sprint119ReadinessGate {
     }
     // The frozen 118.3 snapshot must declare zero certified connectors. A
     // snapshot that already certifies a connector contradicts the delayed path.
-    if (anchor.snapshotCertified != 0) {
+    if (!authorized && anchor.snapshotCertified != 0) {
       violations.add(
         'readiness_snapshot_certified_nonzero:${anchor.snapshotCertified}',
       );
@@ -1189,41 +1237,41 @@ class Sprint119ReadinessGate {
         openItems.add('upstream_state_vocabulary_gap:$name');
       }
       // Readiness is never declared without live evidence.
-      if (dimension.ready) {
+      if (delayed && dimension.ready) {
         violations.add('readiness_ready_claimed_on_delayed_path:$name');
       }
       // A provider is never admitted without live evidence.
-      if (dimension.admitted) {
+      if (delayed && dimension.admitted) {
         violations.add('readiness_admitted_claimed_on_delayed_path:$name');
       }
       // A dimension is never passed live without live evidence.
-      if (dimension.passed) {
+      if (delayed && dimension.passed) {
         violations.add('readiness_passed_claimed_on_delayed_path:$name');
       }
       // A dimension is never verified live without live evidence.
-      if (dimension.verified) {
+      if (delayed && dimension.verified) {
         violations.add('readiness_verified_claimed_on_delayed_path:$name');
       }
       // A dimension is never complete without live verification.
-      if (dimension.complete) {
+      if (delayed && dimension.complete) {
         violations.add('readiness_complete_claimed_on_delayed_path:$name');
       }
       // A connector is never certified without live provider verification.
-      if (dimension.certified) {
+      if (delayed && dimension.certified) {
         violations.add('readiness_certified_claimed_on_delayed_path:$name');
       }
       // A connector is never released without an authorized release.
-      if (dimension.released) {
+      if (delayed && dimension.released) {
         violations.add('readiness_released_claimed:$name');
       }
       // Self-service tooling is never enabled without an authorized release.
-      if (dimension.selfServiceEnabled) {
+      if (delayed && dimension.selfServiceEnabled) {
         violations.add(
           'readiness_self_service_enabled_claimed_on_delayed_path:$name',
         );
       }
       // A connector ecosystem is never ready without certified connectors.
-      if (dimension.ecosystemReady) {
+      if (delayed && dimension.ecosystemReady) {
         violations.add(
           'readiness_ecosystem_ready_claimed_on_delayed_path:$name',
         );
@@ -1317,7 +1365,9 @@ class Sprint119ReadinessGate {
     }
     return Sprint119ReadinessReport(
       state: Sprint119ReadinessState.pass,
-      verdict: 'SPRINT_119_READINESS_GATE_VERIFIED_LOCAL',
+      verdict: authorized
+          ? 'SPRINT_119_READINESS_GATE_AUTHORIZED_LOCAL'
+          : 'SPRINT_119_READINESS_GATE_VERIFIED_LOCAL',
       releaseState: record.releaseState,
       readinessDecision: record.readinessDecision,
       openItems: allItems,

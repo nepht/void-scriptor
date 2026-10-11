@@ -9,7 +9,8 @@ import 'package:void_scriptor/database/project/project_database_service.dart';
 ///
 /// Matriks memegang case ini sebagai PARTIAL dengan bukti injection
 /// extended result code sintetis (run89). Slice ini menaikkan buktinya ke
-/// level engine: SQLite yang sama dengan produksi (sqlite3_flutter_libs)
+/// level engine: SQLite yang sama dengan produksi (native assets dari
+/// package:sqlite3 3.x, pengganti sqlite3_flutter_libs yang kini EOL)
 /// memancarkan SQLITE_FULL (13) **asli** dari jalur allokasi halaman, dan
 /// exception asli engine itu diklasifikasikan typed di
 /// [classifyProjectDatabaseOpenError] - cabang produksi yang sama dengan

@@ -62,7 +62,7 @@
     "signed_file_count": 6
   },
   "dependency_evidence": {
-    "pubspec_lock_sha256": "d500c1c5c4cb4706ae4ce47d28341b02e7c564b242dfee2ea718e0a4758c8f9a",
+    "pubspec_lock_sha256": "93dc73f551e4ce1e76ff534d20ff50342c1d4387f9989135e1e893fff56e9c1b",
     "sbom_components": 130,
     "sbom_format": "CycloneDX",
     "source": "pubspec.lock hash-pinned; tools/generate_release_metadata.py"

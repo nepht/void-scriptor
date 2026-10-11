@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/project_resilience/application/project_session_manager.dart';
 import 'package:void_scriptor/app/routing/app_router.dart';
 import 'package:void_scriptor/app/routing/app_routes.dart';
+import 'package:void_scriptor/core/build_identity.dart';
 import 'package:void_scriptor/features/projects/presentation/project_persistence_providers.dart';
 import 'package:void_scriptor/features/settings/presentation/settings_hub_screen.dart';
 
@@ -61,7 +62,7 @@ void main() {
   ) async {
     await tester.pumpWidget(wrap(const SettingsHubScreen()));
     await tester.pumpAndSettle();
-    expect(find.text('1.2.0-rc.1'), findsOneWidget);
+    expect(find.text(BuildIdentity.version), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

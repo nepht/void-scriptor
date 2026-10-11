@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/bootstrap/app_diagnostics.dart';
 import '../../../app/routing/app_routes.dart';
-import '../../../core/project_package/void_project_format.dart';
+import '../../../core/build_identity.dart';
 import '../../../features/explorer/presentation/explorer_panel.dart';
 import '../../../features/projects/presentation/project_persistence_providers.dart';
 
@@ -88,7 +88,7 @@ class SettingsHubScreen extends ConsumerWidget {
                 const ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('Versi'),
-                  subtitle: Text(VoidProjectFormat.applicationVersion),
+                  subtitle: Text(BuildIdentity.version),
                 ),
                 ListTile(
                   leading: const Icon(Icons.devices_outlined),

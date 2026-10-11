@@ -77,11 +77,31 @@
     "native_login_logout_repetition_reported_by_operator": 3,
     "secrets_or_tokens_recorded": false
   },
+  "connector_workflow_observation": {
+    "provider_id": "google_drive",
+    "observed_at_local": "11 Okt 2026, 12.07",
+    "snapshot_creation": {
+      "ui_status": "TERSIMPAN",
+      "ui_detail": "Snapshot tersedia; 11 Okt 2026, 12.07 · 1 KB",
+      "result": "PASS"
+    },
+    "remote_write": {
+      "action": "Simpan ke Google Drive",
+      "ui_result": "Snapshot belum dapat disimpan ke Google Drive.",
+      "result": "FAIL"
+    },
+    "remote_read": {
+      "attempted": false,
+      "reason": "Remote write did not produce a Drive snapshot."
+    },
+    "certification_result": "BLOCKED",
+    "secrets_or_tokens_recorded": false
+  },
   "certification_boundary": {
     "certification_claim": "WITHHELD",
     "release_claim": "WITHHELD",
     "sprint_119_expansion_claim": "WITHHELD",
-    "reason": "This record is an observation only; live provider verification, authorized review, release, and publication remain external gates."
+    "reason": "Login and account-center observations are not connector certification; the Google Drive snapshot write failed, so live provider verification remains an external blocker."
   },
   "canonical_observation_source": "docs/evidence/account-center-live-observation-20261011.json"
 }

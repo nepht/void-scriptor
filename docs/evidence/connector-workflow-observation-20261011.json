@@ -1,0 +1,87 @@
+{
+  "status": "OBSERVED_NOT_CERTIFIED",
+  "observed_at": "2026-10-11T04:48:29Z",
+  "source": "https://voidscriptor.com/dashboard",
+  "method": "computer-use accessibility observation of an authenticated Brave session",
+  "account_label": "Choirudin",
+  "purpose": "Record provider-specific workflow observations without claiming connector certification.",
+  "latest_live_flow": {
+    "provider_id": "google",
+    "account_selection": "Existing signed-in account selected in Google's account chooser; no password or OTP entered.",
+    "browser_after_provider_selection": "https://voidscriptor.com/",
+    "dashboard_after_return": "AKTIF; identity provider Google; Google and GitHub Terhubung",
+    "activity_confirmation": [
+      "11/10/2026 11.59.12 — Masuk ke akun Provider: Google",
+      "11/10/2026 11.59.12 — Sesi perangkat dibuat Peramban",
+      "11/10/2026 11.58.39 — Sesi perangkat dicabut Peramban"
+    ],
+    "not_observed": [
+      "Authorization code value or token response",
+      "Granted-scope confirmation",
+      "Refresh-token rotation response",
+      "Provider revoke response"
+    ]
+  },
+  "github_live_flow": {
+    "provider_id": "github",
+    "account_label_after_return": "Nephthys",
+    "account_selection": "Existing signed-in GitHub session completed the provider flow; no password or OTP entered.",
+    "browser_after_provider_selection": "https://voidscriptor.com/",
+    "dashboard_after_return": "AKTIF; identity provider GitHub; Google and GitHub Terhubung",
+    "activity_confirmation": [
+      "11/10/2026 12.01.05 — Masuk ke akun Provider: GitHub",
+      "11/10/2026 12.01.05 — Sesi perangkat dibuat Peramban",
+      "11/10/2026 12.00.52 — Sesi perangkat dicabut Peramban"
+    ],
+    "not_observed": [
+      "Authorization code value or token response",
+      "Granted-scope confirmation",
+      "Refresh-token rotation response",
+      "Provider revoke response"
+    ]
+  },
+  "provider_observations": [
+    {
+      "provider_id": "google",
+      "observed": [
+        "Provider login event was visible in the server activity log.",
+        "Google account was shown as Terhubung in Connected Accounts.",
+        "Google account detail showed email terverifikasi and SESI INI.",
+        "Google Drive was shown as GOOGLE DRIVE TERHUBUNG."
+      ],
+      "not_observed": [
+        "OAuth callback URI and authorization-code exchange response.",
+        "Granted-scope confirmation from the provider.",
+        "Refresh-token rotation response.",
+        "Provider revoke response and post-revoke rejection."
+      ]
+    },
+    {
+      "provider_id": "github",
+      "observed": [
+        "GitHub was shown as Terhubung in Connected Accounts.",
+        "GitHub account detail showed email terverifikasi.",
+        "Provider terhubung GitHub was visible in the server activity log."
+      ],
+      "not_observed": [
+        "OAuth callback URI and authorization-code exchange response.",
+        "Granted-scope confirmation from the provider.",
+        "Refresh-token rotation response.",
+        "Provider revoke response and post-revoke rejection."
+      ]
+    }
+  ],
+  "session_observation": {
+    "device_session_created_events_observed": 3,
+    "device_session_revoked_events_observed": 3,
+    "native_login_logout_repetition_reported_by_operator": 3,
+    "secrets_or_tokens_recorded": false
+  },
+  "certification_boundary": {
+    "certification_claim": "WITHHELD",
+    "release_claim": "WITHHELD",
+    "sprint_119_expansion_claim": "WITHHELD",
+    "reason": "This record is an observation only; live provider verification, authorized review, release, and publication remain external gates."
+  },
+  "canonical_observation_source": "docs/evidence/account-center-live-observation-20261011.json"
+}

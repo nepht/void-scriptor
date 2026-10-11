@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "case_id": "account_center_live_observation_2026-10-11",
+  "status": "OBSERVED_EXTERNAL_NOT_CERTIFICATION",
+  "observed_at": "2026-10-11T04:48:29Z",
+  "surface": "https://voidscriptor.com/dashboard",
+  "method": "computer-use accessibility tree observation in an authenticated Brave session",
+  "account_label": "Choirudin",
+  "observations": {
+    "account_state": "AKTIF",
+    "identity_provider": "Google",
+    "website_identity": "Identitas akun Website aktif",
+    "desktop_release_label": "Aplikasi Windows RC2 tersedia",
+    "connected_accounts": {
+      "google": "Terhubung",
+      "github": "Terhubung",
+      "detail": [
+        "GitHub Nephthys · email terverifikasi · terhubung 9/10/2026, 12.31.19",
+        "Google Choirudin · email terverifikasi · terhubung 9/10/2026, 10.19.14 · SESI INI"
+      ]
+    },
+    "google_drive": "GOOGLE DRIVE TERHUBUNG",
+    "storage_note": "Google Drive bersifat opsional; isi berkas dan token tidak pernah ikut disalin.",
+    "readiness": {
+      "byte_bridge": "Belum terhubung",
+      "browser_storage": "Tersedia di browser ini",
+      "byte_voice": "Didukung browser",
+      "safe_mode": "Aktif di Byte"
+    }
+  },
+  "activity_log_observations": [
+    "11/10/2026 12.01.05 — Masuk ke akun · Provider: GitHub",
+    "11/10/2026 12.01.05 — Sesi perangkat dibuat · Peramban",
+    "11/10/2026 12.00.52 — Sesi perangkat dicabut · Peramban",
+    "11/10/2026 11.59.12 — Masuk ke akun · Provider: Google",
+    "11/10/2026 11.59.12 — Sesi perangkat dibuat · Peramban",
+    "11/10/2026 11.58.39 — Sesi perangkat dicabut · Peramban",
+    "11/10/2026 11.13.05 — Masuk ke akun · Provider: Google",
+    "11/10/2026 11.13.06 — Sesi perangkat dibuat · Void Scriptor Desktop",
+    "11/10/2026 11.08.22 — Sesi perangkat dicabut · Void Scriptor Desktop",
+    "10/10/2026 23.18.23 — Sesi perangkat dibuat · Void Scriptor Desktop",
+    "10/10/2026 23.17.46 — Sesi perangkat dicabut · Void Scriptor Desktop",
+    "10/10/2026 23.13.22 — Sesi perangkat dibuat · Void Scriptor Desktop",
+    "10/10/2026 23.12.27 — Sesi perangkat dicabut · Void Scriptor Desktop",
+    "10/10/2026 12.31.19 — Provider terhubung · GitHub"
+  ],
+  "latest_live_flow": {
+    "provider": "Google",
+    "account_selection": "Existing signed-in account selected in Google's account chooser; no password or OTP entered.",
+    "browser_after_provider_selection": "https://voidscriptor.com/",
+    "dashboard_after_return": "AKTIF; identity provider Google; Google and GitHub Terhubung",
+    "activity_confirmation": "Google login and browser session creation were visible in the server activity log.",
+    "not_observed": [
+      "Authorization code value or token response",
+      "Granted-scope confirmation",
+      "Refresh-token rotation response",
+      "Provider revoke response"
+    ]
+  },
+  "github_live_flow": {
+    "provider": "GitHub",
+    "account_label_after_return": "Nephthys",
+    "account_selection": "Existing signed-in GitHub session completed the provider flow; no password or OTP entered.",
+    "browser_after_provider_selection": "https://voidscriptor.com/",
+    "dashboard_after_return": "AKTIF; identity provider GitHub; Google and GitHub Terhubung",
+    "activity_confirmation": "GitHub login and browser session creation were visible in the server activity log.",
+    "not_observed": [
+      "Authorization code value or token response",
+      "Granted-scope confirmation",
+      "Refresh-token rotation response",
+      "Provider revoke response"
+    ]
+  },
+  "activity_log_boundary": "Log live menyatakan bahwa isi file, token, dan detail rahasia tidak dicatat.",
+  "evidence_boundary": [
+    "Observasi ini membuktikan label dan state yang tampil pada website pada waktu observasi.",
+    "Observasi ini tidak membaca token, password, OTP, atau isi akun.",
+    "Observasi ini bukan sertifikasi provider, bukan bukti release authorization, dan tidak mengaktifkan Sprint 119.",
+    "Native login/logout RC2 tetap membutuhkan bukti sesi aplikasi yang terpisah; operator melaporkan tiga siklus berhasil."
+  ],
+  "next_action": "Gunakan observasi ini sebagai input corrective review; jangan mengubah status connector menjadi CERTIFIED tanpa workflow provider-specific yang dapat direproduksi dan gate release yang sesuai."
+}

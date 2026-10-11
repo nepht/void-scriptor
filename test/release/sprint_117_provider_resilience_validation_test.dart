@@ -115,22 +115,20 @@ final Map<String, Object?> evidence = <String, Object?>{
   'external_gate': 'DEFERRED-EXTERNAL',
 };
 
-/// Menulis bukti ke `docs/evidence/`. Manifest ini adalah dokumen yang
-/// mengutip hasil run, bukan dokumen yang ditulis lebih dulu lalu diisi tebakan.
-void writeEvidenceFile() {
+/// Menulis bukti run ke direktori yang diberikan.
+///
+/// Test tidak boleh menimpa manifest tracked di `docs/evidence/`: output run
+/// sementara harus terisolasi agar suite tidak mengubah worktree.
+File writeEvidenceFile(Directory outputDirectory) {
   final file = File(
-    p.join(
-      Directory.current.path,
-      'docs',
-      'evidence',
-      'sprint-117-36-manifest-20261002.json',
-    ),
+    p.join(outputDirectory.path, 'sprint-117-36-manifest-20261002.json'),
   );
   file.parent.createSync(recursive: true);
   file.writeAsStringSync(
     '${const JsonEncoder.withIndent('  ').convert(evidence)}\n',
     flush: true,
   );
+  return file;
 }
 
 /// Mesin koneksi yang sudah `CONNECTED`, dibangun lewat transisi nyata.
@@ -626,12 +624,9 @@ void main() {
           userVisibleError: 'probe revoked',
         );
       expect(machine.snapshot.connectionState, AccountConnectionState.revoked);
-      expect(
-        machine.availableTransitions,
-        <AccountConnectionTransition>[
-          AccountConnectionTransition.disconnectCleanup,
-        ],
-      );
+      expect(machine.availableTransitions, <AccountConnectionTransition>[
+        AccountConnectionTransition.disconnectCleanup,
+      ]);
       var reviveRefused = false;
       try {
         machine.transition(
@@ -987,24 +982,25 @@ void main() {
       evidence['probes'] = probes;
       evidence['open_items'] = result.openItems;
       evidence['verdict'] = result.summary;
-      writeEvidenceFile();
-      final file = File(
-        p.join(
-          Directory.current.path,
-          'docs',
-          'evidence',
-          'sprint-117-36-manifest-20261002.json',
-        ),
+      final outputDirectory = Directory.systemTemp.createTempSync(
+        'void-scriptor-sprint-117-36-',
       );
-      expect(file.existsSync(), isTrue);
-      final decoded =
-          jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
-      expect(decoded['canonical_step'], '117.36');
-      expect((decoded['gate'] as Map<String, dynamic>)['pass'], isTrue);
-      // ignore: avoid_print
-      print('11736_GATE ${result.summary}');
-      // ignore: avoid_print
-      print('11736_PROBES ${jsonEncode(probes)}');
+      try {
+        final file = writeEvidenceFile(outputDirectory);
+        expect(file.existsSync(), isTrue);
+        final decoded =
+            jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+        expect(decoded['canonical_step'], '117.36');
+        expect((decoded['gate'] as Map<String, dynamic>)['pass'], isTrue);
+        // ignore: avoid_print
+        print('11736_GATE ${result.summary}');
+        // ignore: avoid_print
+        print('11736_PROBES ${jsonEncode(probes)}');
+      } finally {
+        if (outputDirectory.existsSync()) {
+          outputDirectory.deleteSync(recursive: true);
+        }
+      }
     });
   });
 }

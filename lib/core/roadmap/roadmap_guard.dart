@@ -103,6 +103,15 @@ abstract final class RoadmapGuard {
 
     final canonicalFile = File(_join(archiveRoot, contractName));
     final referenceFile = File(_join(referenceRoot, contractName));
+    final continuityUntilSprint = activeStream['continuity_until_sprint'];
+    if (continuityUntilSprint is int && continuityUntilSprint > sprint) {
+      await _inspectCanonicalContinuity(
+        archiveRoot: archiveRoot,
+        activeSprint: sprint,
+        untilSprint: continuityUntilSprint,
+        issues: issues,
+      );
+    }
     final canonical = await _readObject(
       canonicalFile,
       issues,
@@ -190,10 +199,45 @@ abstract final class RoadmapGuard {
           'dengan policy $sprint.',
         );
       }
-      if (recommendedStep != null && runtime['next_step'] != recommendedStep) {
+      if (runtime.containsKey('next_step') &&
+          runtime['next_step'] != recommendedStep) {
         issues.add(
           'Runtime next_step ${runtime['next_step']} tidak cocok dengan '
           'recovery candidate $recommendedStep.',
+        );
+      }
+      final expectedCurrentStep = recommendedStep ?? lastResolvedStep;
+      if (expectedCurrentStep != null &&
+          runtime.containsKey('current_step') &&
+          runtime['current_step'] != expectedCurrentStep) {
+        issues.add(
+          'Runtime current_step ${runtime['current_step']} tidak cocok dengan '
+          'canonical progress $expectedCurrentStep.',
+        );
+      }
+      if (lastResolvedStep != null &&
+          runtime.containsKey('last_resolved_step') &&
+          runtime['last_resolved_step'] != lastResolvedStep) {
+        issues.add(
+          'Runtime last_resolved_step ${runtime['last_resolved_step']} tidak '
+          'cocok dengan canonical progress $lastResolvedStep.',
+        );
+      }
+      if (lastResolvedStep != null &&
+          runtime.containsKey('last_verified_step') &&
+          runtime['last_verified_step'] != lastResolvedStep) {
+        issues.add(
+          'Runtime last_verified_step ${runtime['last_verified_step']} tidak '
+          'cocok dengan canonical progress $lastResolvedStep.',
+        );
+      }
+      if (recommendedStep == null &&
+          runtime.containsKey('current_step_status') &&
+          runtime['current_step_status'] !=
+              'SPRINT_COMPLETE_PENDING_OPERATOR_DECISION') {
+        issues.add(
+          'Runtime current_step_status ${runtime['current_step_status']} tidak '
+          'menandai sprint selesai menunggu keputusan operator.',
         );
       }
       if (_normalized(runtime['active_ledger']) !=
@@ -265,6 +309,8 @@ abstract final class RoadmapGuard {
       }
     }
     final nextStep = preflight.recommendedStep;
+    final lastResolvedStep = preflight.lastResolvedStep;
+    final currentStep = nextStep ?? lastResolvedStep;
     final repaired = <String, dynamic>{
       ...previous,
       'schema_version': 2,
@@ -276,7 +322,13 @@ abstract final class RoadmapGuard {
       'active_sprint': sprint,
       'active_sprint_source': referenceFile.absolute.path,
       'active_ledger': stream['ledger'],
-      'last_verified_step': preflight.lastResolvedStep,
+      'last_verified_step': lastResolvedStep,
+      if (previous.containsKey('current_step') && currentStep != null)
+        'current_step': currentStep,
+      if (previous.containsKey('last_resolved_step'))
+        'last_resolved_step': lastResolvedStep,
+      if (previous.containsKey('current_step_status') && nextStep == null)
+        'current_step_status': 'SPRINT_COMPLETE_PENDING_OPERATOR_DECISION',
       'next_step': nextStep,
       'suspended_streams': suspended,
       'stability_gate': {
@@ -363,6 +415,67 @@ abstract final class RoadmapGuard {
     };
     await _writeObjectAtomically(runtimeFile, updated);
     return inspect(repository: repository, policyFile: policyPath);
+  }
+}
+
+Future<void> _inspectCanonicalContinuity({
+  required String archiveRoot,
+  required int activeSprint,
+  required int untilSprint,
+  required List<String> issues,
+}) async {
+  for (var sprint = activeSprint + 1; sprint <= untilSprint; sprint++) {
+    final file = File(_join(archiveRoot, 'sprint_$sprint.json'));
+    if (!file.existsSync()) {
+      issues.add(
+        'Canonical continuity contract sprint $sprint tidak tersedia: '
+        '${file.path}',
+      );
+      continue;
+    }
+    final contract = await _readObject(
+      file,
+      issues,
+      'canonical continuity contract sprint $sprint',
+    );
+    if (contract == null) continue;
+
+    final contractSprint = _asObject(contract['sprint'])?['number'];
+    if (contractSprint != sprint) {
+      issues.add(
+        'Canonical continuity contract sprint $sprint memiliki nomor '
+        '$contractSprint.',
+      );
+    }
+    final rawSteps = contract['steps'];
+    if (rawSteps is! List || rawSteps.isEmpty) {
+      issues.add(
+        'Canonical continuity contract sprint $sprint tidak memiliki steps.',
+      );
+      continue;
+    }
+    final stepIds = rawSteps
+        .map((step) => _asObject(step)?['id'])
+        .whereType<String>()
+        .toList(growable: false);
+    if (stepIds.length != rawSteps.length ||
+        stepIds.toSet().length != stepIds.length) {
+      issues.add(
+        'Canonical continuity contract sprint $sprint memiliki step IDs '
+        'kosong atau duplikat.',
+      );
+      continue;
+    }
+    for (var index = 0; index < stepIds.length; index++) {
+      final expected = '$sprint.${index + 1}';
+      if (stepIds[index] != expected) {
+        issues.add(
+          'Canonical continuity sequence terputus pada ${stepIds[index]}; '
+          'expected $expected.',
+        );
+        break;
+      }
+    }
   }
 }
 

@@ -26,6 +26,18 @@ void main() {
         {'id': '145.3'},
       ],
     });
+    _writeJson(File('${archive.path}/sprint_146.json'), {
+      'sprint': {'number': 146},
+      'steps': [
+        {'id': '146.1'},
+      ],
+    });
+    _writeJson(File('${archive.path}/sprint_147.json'), {
+      'sprint': {'number': 147},
+      'steps': [
+        {'id': '147.1'},
+      ],
+    });
     File('${root.path}/docs/sprints/sprint-145.md').writeAsStringSync('''
 | Step | Title | Status | Evidence |
 |---|---|---|---|
@@ -72,6 +84,23 @@ void main() {
     },
   );
 
+  test(
+    'rejects a missing canonical continuity contract before transition',
+    () async {
+      File(
+        '${archive.path}/sprint_145.json',
+      ).copySync('${references.path}/sprint_145.json');
+      _writeRuntime(root, references, sprint: 145, nextStep: '145.2');
+      File('${archive.path}/sprint_146.json').deleteSync();
+
+      final result = await RoadmapGuard.inspect(repository: root);
+
+      expect(result.ok, isFalse);
+      expect(result.issues, contains(contains('sprint 146')));
+      expect(result.issues, contains(contains('continuity')));
+    },
+  );
+
   test('repair rebuilds disposable runtime state and reference copy', () async {
     _writeRuntime(root, references, sprint: 111, nextStep: '111.20');
 
@@ -97,6 +126,56 @@ void main() {
       File('${archive.path}/sprint_145.json').readAsBytesSync(),
     );
   });
+
+  test(
+    'repair aligns stale progress pointers after a sprint is complete',
+    () async {
+      File('${root.path}/docs/sprints/sprint-145.md').writeAsStringSync('''
+| Step | Title | Status | Evidence |
+|---|---|---|---|
+| 145.1 | Gate | VERIFIED | evidence |
+| 145.2 | Compatibility | VERIFIED | evidence |
+| 145.3 | Closure | VERIFIED | evidence |
+''');
+      File(
+        '${archive.path}/sprint_145.json',
+      ).copySync('${references.path}/sprint_145.json');
+      _writeRuntime(
+        root,
+        references,
+        sprint: 145,
+        nextStep: '145.2',
+        currentStep: '144.9',
+        currentStepStatus: 'PARTIAL-LOCAL',
+        lastResolvedStep: '144.8',
+      );
+
+      final beforeRepair = await RoadmapGuard.inspect(repository: root);
+
+      expect(beforeRepair.ok, isFalse);
+      expect(beforeRepair.issues, contains(contains('current_step')));
+      expect(beforeRepair.issues, contains(contains('last_resolved_step')));
+      expect(beforeRepair.issues, contains(contains('next_step')));
+
+      final repaired = await RoadmapGuard.repair(repository: root);
+      final state =
+          jsonDecode(
+                File(
+                  '${root.path}/.hermes/ROADMAP_STATE.json',
+                ).readAsStringSync(),
+              )
+              as Map<String, dynamic>;
+
+      expect(repaired.ok, isTrue);
+      expect(state['current_step'], '145.3');
+      expect(
+        state['current_step_status'],
+        'SPRINT_COMPLETE_PENDING_OPERATOR_DECISION',
+      );
+      expect(state['last_resolved_step'], '145.3');
+      expect(state['next_step'], isNull);
+    },
+  );
 
   test(
     'sync pointer advances only a stale pointer and preserves PASS',
@@ -257,6 +336,7 @@ void _writePolicy(Directory root, Directory archive, Directory references) {
         'sprint': 145,
         'contract': 'sprint_145.json',
         'ledger': 'docs/sprints/sprint-145.md',
+        'continuity_until_sprint': 147,
       },
       'sequential_expansion': {'status': 'SUSPENDED', 'sprint': 111},
     },
@@ -296,15 +376,26 @@ void _writeRuntime(
   Directory references, {
   required int sprint,
   required String nextStep,
+  String? currentStep,
+  String? currentStepStatus,
+  String? lastResolvedStep,
 }) {
-  _writeJson(File('${root.path}/.hermes/ROADMAP_STATE.json'), {
+  final runtime = <String, dynamic>{
     'active_sprint': sprint,
     'active_sprint_source': '${references.path}/sprint_$sprint.json',
     'active_ledger': 'docs/sprints/sprint-$sprint.md',
     'last_verified_step': '$sprint.1',
     'next_step': nextStep,
     'stability_gate': {'status': 'PASS', 'resume_step': nextStep},
-  });
+  };
+  if (currentStep != null) runtime['current_step'] = currentStep;
+  if (currentStepStatus != null) {
+    runtime['current_step_status'] = currentStepStatus;
+  }
+  if (lastResolvedStep != null) {
+    runtime['last_resolved_step'] = lastResolvedStep;
+  }
+  _writeJson(File('${root.path}/.hermes/ROADMAP_STATE.json'), runtime);
 }
 
 void _writeJson(File file, Object value) {

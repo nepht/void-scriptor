@@ -180,22 +180,21 @@ final Map<String, Object?> evidence = <String, Object?>{
   'external_gate': 'DEFERRED-EXTERNAL',
 };
 
-/// Menulis bukti ke `docs/evidence/`. Manifest ini adalah dokumen yang
-/// mengutip hasil run, bukan dokumen yang ditulis lebih dulu lalu diisi tebakan.
-void writeEvidenceFile() {
+/// Menulis bukti run ke direktori yang diberikan.
+///
+/// Output harus diisolasi dari `docs/evidence/` agar menjalankan test tidak
+/// mengubah tracked evidence atau membuat full-suite exact-head menjadi tidak
+/// valid.
+File writeEvidenceFile(Directory outputDirectory) {
   final file = File(
-    p.join(
-      Directory.current.path,
-      'docs',
-      'evidence',
-      'sprint-117-35-manifest-20261002.json',
-    ),
+    p.join(outputDirectory.path, 'sprint-117-35-manifest-20261002.json'),
   );
   file.parent.createSync(recursive: true);
   file.writeAsStringSync(
     '${const JsonEncoder.withIndent('  ').convert(evidence)}\n',
     flush: true,
   );
+  return file;
 }
 
 /// Satu baris manifest yang dipakai untuk membangun skenario many-accounts.
@@ -1231,7 +1230,19 @@ void main() {
     evidence
       ..['probes'] = probes
       ..['gate'] = result.toJson();
-    writeEvidenceFile();
+    final outputDirectory = Directory.systemTemp.createTempSync(
+      'void-scriptor-sprint-117-35-',
+    );
+    try {
+      final written = writeEvidenceFile(outputDirectory);
+      expect(written.existsSync(), isTrue);
+      final decoded =
+          jsonDecode(written.readAsStringSync()) as Map<String, dynamic>;
+      expect(decoded['canonical_step'], '117.35');
+      expect((decoded['gate'] as Map<String, dynamic>)['pass'], isTrue);
+    } finally {
+      outputDirectory.deleteSync(recursive: true);
+    }
     // ignore: avoid_print
     print('11735_GATE ${result.summary}');
     // ignore: avoid_print

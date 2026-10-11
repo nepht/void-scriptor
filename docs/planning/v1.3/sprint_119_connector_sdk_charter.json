@@ -1,0 +1,244 @@
+{
+  "canonical_step": "119.2",
+  "title": "Connector SDK Charter",
+  "document_role": "charter-evaluation-record",
+  "state": "pass",
+  "verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_executable": true,
+  "required_fields": [
+    "use_cases",
+    "audiences",
+    "boundaries",
+    "non_goals",
+    "metrics",
+    "exit_criteria"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "evidence_sources": {
+    "entry_gate": "docs/planning/v1.3/sprint_119_entry_gate.json"
+  },
+  "entry_state": "pass",
+  "entry_verdict": "SPRINT_119_ENTRY_READY_LOCAL",
+  "entry_execution_allowed": true,
+  "use_cases": [
+    {
+      "use_case_id": "authorized_connect",
+      "audience_id": "writer",
+      "capability": "connect",
+      "outcome": "connect only after explicit permission and visible scope review"
+    },
+    {
+      "use_case_id": "scoped_resource_read",
+      "audience_id": "writer",
+      "capability": "read",
+      "outcome": "read an allowed resource through a brokered, auditable handle"
+    },
+    {
+      "use_case_id": "connection_diagnosis",
+      "audience_id": "operator",
+      "capability": "health",
+      "outcome": "diagnose health without exposing credentials or content"
+    },
+    {
+      "use_case_id": "contract_validation",
+      "audience_id": "developer",
+      "capability": "contract_test",
+      "outcome": "validate a connector against deterministic local contracts"
+    }
+  ],
+  "audiences": [
+    {
+      "audience_id": "writer",
+      "role": "writer",
+      "needs": "safe, understandable account and project capabilities"
+    },
+    {
+      "audience_id": "workspace_admin",
+      "role": "workspace administrator",
+      "needs": "permission review, disable, revoke, and support visibility"
+    },
+    {
+      "audience_id": "operator",
+      "role": "support and reliability operator",
+      "needs": "health, diagnostics, incident containment, and audit evidence"
+    },
+    {
+      "audience_id": "developer",
+      "role": "connector developer",
+      "needs": "typed contracts, mocks, diagnostics, and fail-closed tests"
+    }
+  ],
+  "boundaries": [
+    {
+      "boundary_id": "permission_default_deny",
+      "category": "security",
+      "rule": "undeclared capabilities and destinations are denied",
+      "enforcement": "manifest validation and broker policy"
+    },
+    {
+      "boundary_id": "secret_opaque",
+      "category": "security",
+      "rule": "connectors never receive plaintext secrets or tokens",
+      "enforcement": "opaque secret references and redacted diagnostics"
+    },
+    {
+      "boundary_id": "scoped_data_access",
+      "category": "data",
+      "rule": "novel, character, project, and account data stay separately scoped",
+      "enforcement": "brokered handles, consent, and audit records"
+    },
+    {
+      "boundary_id": "network_allowlist",
+      "category": "runtime",
+      "rule": "network access is limited to declared destinations and protocols",
+      "enforcement": "broker policy with denial diagnostics"
+    },
+    {
+      "boundary_id": "ui_extension_slots",
+      "category": "ui",
+      "rule": "connectors use approved Account Center slots, not arbitrary layout injection",
+      "enforcement": "typed extension points and visual regression coverage"
+    },
+    {
+      "boundary_id": "external_release_gate",
+      "category": "release",
+      "rule": "certification, provider exposure, publication, and release stay gated",
+      "enforcement": "separate evidence and operator approval gates"
+    }
+  ],
+  "non_goals": [
+    {
+      "non_goal_id": "public_marketplace",
+      "statement": "ship a public connector marketplace",
+      "reason": "requires external review, publication, and support evidence"
+    },
+    {
+      "non_goal_id": "arbitrary_connector_execution",
+      "statement": "run arbitrary third-party code in the desktop process",
+      "reason": "violates sandbox and failure-isolation boundaries"
+    },
+    {
+      "non_goal_id": "plaintext_secret_access",
+      "statement": "expose passwords, tokens, or API keys to connectors or logs",
+      "reason": "the security contract requires opaque references and redaction"
+    },
+    {
+      "non_goal_id": "silent_telemetry",
+      "statement": "collect connector or writing telemetry without consent",
+      "reason": "privacy and consent are explicit product boundaries"
+    },
+    {
+      "non_goal_id": "provider_certification",
+      "statement": "certify a new provider from the charter alone",
+      "reason": "certification requires its own live or otherwise authorized evidence"
+    },
+    {
+      "non_goal_id": "release_publication",
+      "statement": "publish or release an SDK package from this local contract",
+      "reason": "release authorization, signing, and external gates are separate"
+    }
+  ],
+  "metrics": [
+    {
+      "metric_id": "charter_completeness",
+      "name": "required charter fields complete",
+      "target": "100% of six required fields are populated",
+      "measurement": "gate report missing_fields count",
+      "source": "local charter evaluator"
+    },
+    {
+      "metric_id": "permission_default_deny",
+      "name": "undeclared capability denial",
+      "target": "100% of undeclared capability requests are denied",
+      "measurement": "contract test result",
+      "source": "manifest and broker tests"
+    },
+    {
+      "metric_id": "secret_exposure_zero",
+      "name": "plaintext secret exposure",
+      "target": "0 plaintext secrets in connector inputs and diagnostics",
+      "measurement": "redaction and boundary test result",
+      "source": "security test evidence"
+    },
+    {
+      "metric_id": "data_scope_integrity",
+      "name": "cross-scope data access",
+      "target": "0 unauthorized cross-scope reads or writes",
+      "measurement": "broker access decision result",
+      "source": "data boundary tests"
+    },
+    {
+      "metric_id": "kill_switch_coverage",
+      "name": "connector disable coverage",
+      "target": "100% of connectable providers have a defined disable path",
+      "measurement": "manifest and runtime capability inventory",
+      "source": "connector health and safety gate"
+    },
+    {
+      "metric_id": "contract_regression",
+      "name": "contract regression status",
+      "target": "0 failing focused tests before a charter exit decision",
+      "measurement": "focused test and analyzer result",
+      "source": "local verification pipeline"
+    }
+  ],
+  "exit_criteria": [
+    {
+      "criterion_id": "exit_use_cases",
+      "gate": "use_cases_bounded",
+      "description": "Each supported use case names one capability and outcome.",
+      "evidence": "canonical charter manifest and evaluator report",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_audiences",
+      "gate": "audiences_named",
+      "description": "Each audience has a role and a concrete product need.",
+      "evidence": "canonical audience list in the charter manifest",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_boundaries",
+      "gate": "boundaries_defined",
+      "description": "Security, data, runtime, UI, and release boundaries name enforcement.",
+      "evidence": "boundary list and boundary-focused tests",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_non_goals",
+      "gate": "non_goals_recorded",
+      "description": "Unsafe or externally gated work is explicitly excluded.",
+      "evidence": "canonical non-goal list in the charter manifest",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_metrics",
+      "gate": "metrics_measurable",
+      "description": "Every success metric has a target, measurement, and source.",
+      "evidence": "metric definitions and focused evaluator tests",
+      "requires_evidence": true
+    },
+    {
+      "criterion_id": "exit_external_boundary",
+      "gate": "external_work_deferred",
+      "description": "Certification, provider exposure, publication, and release remain separate gates.",
+      "evidence": "claim boundary and external gate record",
+      "requires_evidence": true
+    }
+  ],
+  "claim_boundary": [
+    "This local record defines the Connector SDK charter; it does not install, execute, certify, expose, release, or publish a connector.",
+    "Permission defaults, opaque secrets, scoped data, declared network access, approved UI slots, and separate release gates are contract boundaries, not live provider observations.",
+    "Certification, provider exposure, external telemetry, signing, publication, and release remain DEFERRED-EXTERNAL.",
+    "The authorized GitHub certification example does not authorize claims for other providers or bypass the later trust, manifest, runtime, and release gates."
+  ],
+  "external_gates": [
+    "live connector execution",
+    "provider certification",
+    "provider exposure",
+    "external telemetry",
+    "signed publication and release"
+  ]
+}

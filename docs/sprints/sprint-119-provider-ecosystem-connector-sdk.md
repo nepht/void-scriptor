@@ -13,7 +13,7 @@ handling, or claims for other providers.
 | Step | Title | Status | Evidence / next action |
 |---|---|---|---|
 | 119.1 | Sprint Entry Gate | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_entry_gate.json`; begin 119.2 |
-| 119.2 | Connector SDK Charter | PENDING | Define use cases, boundaries, non-goals, metrics, and exit criteria |
+| 119.2 | Connector SDK Charter | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_connector_sdk_charter.json`; external execution and publication remain deferred; begin 119.3 |
 | 119.3 | Connector Trust Model | PENDING | Define trust tiers, permission defaults, review, visibility, support, and revocation |
 | 119.4 | Manifest Schema v1 | PENDING | Define typed manifest validation and forbidden-field diagnostics |
 | 119.5 | Connector Identity & Stable IDs | PENDING | Define connector, publisher, package, installation, account, and connection IDs |

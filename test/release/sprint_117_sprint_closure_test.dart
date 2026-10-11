@@ -40,10 +40,10 @@ void main() {
     List<String> determinedExposed = const <String>['openai', 'gemini'],
     String registryVerdict = 'FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL',
     int registryProviderCount = 32,
-    int registryCertifiedCount = 0,
-    int registryUnverifiedCount = 32,
-    int registryWithheldCount = 32,
-    int registryExposedCount = 0,
+    int registryCertifiedCount = 1,
+    int registryUnverifiedCount = 31,
+    int registryWithheldCount = 31,
+    int registryExposedCount = 1,
     String rolloutState = 'pass',
     String rolloutVerdict = 'STAGED_GA_ROLLOUT_PLAN_DEFINED_LOCAL',
     int rolloutStageCount = 3,
@@ -65,7 +65,7 @@ void main() {
       'docs/evidence/sprint-117-36-manifest-20261002.json',
     ],
     List<String> gaOpenItems = const <String>[
-      '117.41: zero CERTIFIED connectors',
+      '117.41: one CERTIFIED connector (GitHub); remaining providers stay unverified',
     ],
     String handoffState = 'pass',
     String handoffVerdict = 'POST_RELEASE_OBSERVATION_HANDOFF_DEFINED_LOCAL',
@@ -237,11 +237,11 @@ void main() {
       }
     });
 
-    test('reports the real registry: 0 CERTIFIED of 32', () {
+    test('reports the real registry: 1 CERTIFIED of 32', () {
       final anchor = const Sprint117SprintClosureGate().evaluate().anchor!;
-      expect(anchor.registryCertifiedCount, 0);
-      expect(anchor.registryUnverifiedCount, 32);
-      expect(anchor.registryWithheldCount, 32);
+      expect(anchor.registryCertifiedCount, 1);
+      expect(anchor.registryUnverifiedCount, 31);
+      expect(anchor.registryWithheldCount, 31);
       expect(anchor.registryProviderCount, 32);
     });
 
@@ -331,7 +331,7 @@ void main() {
       expect(criterion.detail, contains('117.4['));
       expect(criterion.detail, contains('117.41['));
       expect(criterion.detail, contains('certified=30'));
-      expect(criterion.detail, contains('certified=0'));
+      expect(criterion.detail, contains('certified=1'));
     });
 
     test('a visible connector with no certification is unmet', () {
@@ -585,7 +585,7 @@ void main() {
       expect(report.anchor!.certificationSourcesDisagree, isTrue);
       expect(
         report.openItems,
-        contains('certification_source_disagreement:117.4=30:117.41=0'),
+        contains('certification_source_disagreement:117.4=30:117.41=1'),
       );
     });
 
@@ -613,7 +613,7 @@ void main() {
       );
       expect(report.openItems, contains('kill_switch_not_drilled:2'));
       expect(report.openItems, contains('rollback_not_verified:3'));
-      expect(report.openItems, contains('no_connector_exposed'));
+      expect(report.openItems, isNot(contains('no_connector_exposed')));
       expect(report.openItems, contains('live_release_not_executed'));
     });
 
@@ -621,7 +621,7 @@ void main() {
       final report = const Sprint117SprintClosureGate().evaluate();
       expect(
         report.openItems.any(
-          (item) => item.startsWith('117.41: zero CERTIFIED connectors'),
+          (item) => item.startsWith('117.41: one CERTIFIED connector'),
         ),
         isTrue,
         reason: 'the GA blocker list must be carried, not summarised away',

@@ -125,7 +125,7 @@ void main() {
     'claim_boundary': <String>[
       'This closes Sprint 117 locally. It records a delay decision: it releases nothing, publishes nothing, tags nothing, and pushes nothing.',
       'No live beta ran and no release was executed. 117.1 and 117.3 record live_beta_executed false and 117.45 records execution_authorized false, so the beta window is carried as an external gate, never as a completed window.',
-      'Certification is reported from two committed sources side by side: 117.4 froze the local certification chain (30 CERTIFIED of 32) while 117.41 reconciled the shipped registry (0 CERTIFIED of 32). The disagreement is recorded by name and never averaged.',
+      'Certification is reported from two committed sources side by side: 117.4 froze the local certification chain while 117.41 reconciled the shipped registry. The disagreement is recorded by name and never averaged.',
       'The seven canonical definition-of-done items are read from committed manifests only. A criterion with no evidence or a source that cannot be read yields blocked, never pass.',
       'A closure that reported verified connector health or a completed beta window would describe a release that never happened.',
     ],

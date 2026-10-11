@@ -35,7 +35,7 @@
         "docs/planning/v1.3/sprint_117_beta_exposure_flag_matrix.json",
         "docs/evidence/sprint-117-41-manifest-20261002.json"
       ],
-      "detail": "visible=0 determined_exposed=2 consent_gate_verified=false 117.4[scope=local_certification_freeze_only certified=30 limited=1 blocked=1] 117.41[certified=0 unverified=32 withheld=32]"
+      "detail": "visible=0 determined_exposed=2 consent_gate_verified=false 117.4[scope=local_certification_freeze_only certified=30 limited=1 blocked=1] 117.41[certified=1 unverified=31 withheld=31]"
     },
     {
       "name": "quality_gates_passed",
@@ -141,10 +141,10 @@
     "registry": {
       "verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
       "provider_count": 32,
-      "certified_count": 0,
-      "unverified_count": 32,
-      "withheld_count": 32,
-      "exposed_count": 0
+      "certified_count": 1,
+      "unverified_count": 31,
+      "withheld_count": 31,
+      "exposed_count": 1
     },
     "rollout": {
       "state": "pass",
@@ -184,7 +184,7 @@
   },
   "external_gates": "DEFERRED-EXTERNAL",
   "open_items": [
-    "117.41: zero CERTIFIED connectors (32 UNVERIFIED, 32 WITHHELD) — no certified connector to release",
+    "117.41: one CERTIFIED connector (GitHub); 31 UNVERIFIED and 31 WITHHELD remain — release is still blocked by the remaining gates",
     "117.1: canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED and live_beta_executed false",
     "117.4: cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED — no verified participant cohort",
     "117.43: artifact reproducibility measured 2026-10-02 (pass=false); the sole failing group is checksums — commit 02279bc (2026-10-05) regenerated the committed index on the release machine, which is not independently re-verifiable in a clean checkout (all 493 index paths live under gitignored build/), so signed-artifact agreement remains unmeasured, not disproven",
@@ -192,10 +192,9 @@
     "117.8: rollback drill defined but not executed (all 6 controls executed=false)",
     "entry_gate_readiness_contradiction:canonical_entry_block_resolved=true:canonical_entry_readiness=BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED",
     "cohort_verification_failed:COHORT_CONSENT_VERIFICATION_FAILED",
-    "certification_source_disagreement:117.4=30:117.41=0",
+    "certification_source_disagreement:117.4=30:117.41=1",
     "kill_switch_not_drilled:2",
     "rollback_not_verified:3",
-    "no_connector_exposed",
     "verified_cohort_size_zero",
     "live_release_not_executed"
   ],
@@ -209,7 +208,7 @@
   "claim_boundary": [
     "This closes Sprint 117 locally. It records a delay decision: it releases nothing, publishes nothing, tags nothing, and pushes nothing.",
     "No live beta ran and no release was executed. 117.1 and 117.3 record live_beta_executed false and 117.45 records execution_authorized false, so the beta window is carried as an external gate, never as a completed window.",
-    "Certification is reported from two committed sources side by side: 117.4 froze the local certification chain (30 CERTIFIED of 32) while 117.41 reconciled the shipped registry (0 CERTIFIED of 32). The disagreement is recorded by name and never averaged.",
+    "Certification is reported from two committed sources side by side: 117.4 froze the local certification chain while 117.41 reconciled the shipped registry. The disagreement is recorded by name and never averaged.",
     "The seven canonical definition-of-done items are read from committed manifests only. A criterion with no evidence or a source that cannot be read yields blocked, never pass.",
     "A closure that reported verified connector health or a completed beta window would describe a release that never happened."
   ]

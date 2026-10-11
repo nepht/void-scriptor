@@ -103,11 +103,12 @@ void main() {
       );
     });
 
-    test('reports the real registry: 32 UNVERIFIED, 0 CERTIFIED', () {
+    test('reports the real registry: 31 UNVERIFIED, 1 CERTIFIED', () {
       final anchor = const Sprint117HandoffGate().evaluate().anchor!;
-      expect(anchor.registryStatusCounts['UNVERIFIED'], 32);
-      expect(anchor.registryStatusCounts['CERTIFIED'], 0);
-      expect(anchor.unverifiedSubset.length, 32);
+      expect(anchor.registryStatusCounts['UNVERIFIED'], 31);
+      expect(anchor.registryStatusCounts['CERTIFIED'], 1);
+      expect(anchor.unverifiedSubset.length, 31);
+      expect(anchor.certifiedSubset, <String>['github']);
     });
 
     test('reads the cohort verdict from 117.3, which failed', () {
@@ -126,8 +127,12 @@ void main() {
 
     test('carries the honest unresolved items forward', () {
       final report = const Sprint117HandoffGate().evaluate();
-      expect(report.openItems, contains('no_certified_connector'));
-      expect(report.openItems, contains('connector_health_unproven'));
+      expect(report.openItems, isNot(contains('no_certified_connector')));
+      expect(report.openItems, isNot(contains('connector_health_unproven')));
+      expect(
+        report.openItems,
+        contains('beta_connector_flags_not_in_shipped_registry'),
+      );
       expect(report.openItems, contains('verified_cohort_size_zero'));
       expect(report.openItems, contains('cohort_not_verified'));
     });
@@ -331,8 +336,8 @@ void main() {
               )
               as Map<String, dynamic>;
       final counts = registry['status_counts'] as Map<String, dynamic>;
-      expect(counts['UNVERIFIED'], 32);
-      expect(counts['CERTIFIED'], 0);
+      expect(counts['UNVERIFIED'], 31);
+      expect(counts['CERTIFIED'], 1);
 
       final anchor = const Sprint117HandoffGate().evaluate().anchor!;
       expect(anchor.registryStatusCounts, counts.cast<String, int>());

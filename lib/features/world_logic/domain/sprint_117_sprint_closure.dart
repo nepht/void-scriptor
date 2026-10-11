@@ -19,7 +19,8 @@
 ///   promoted from deferred to satisfied by the passage of time.
 /// * The closure is a *record of a delay decision*, never a claim of release.
 ///   117.45 records `DELAY` with `execution_authorized: false`, 117.41 records
-///   zero CERTIFIED connectors, and 117.3 records zero verified participants.
+///   the shipped certification counts, and 117.3 records zero verified
+///   participants.
 ///   `liveReleaseExecuted` is therefore structurally false.
 /// * Two committed manifests that describe the same registry are recorded side
 ///   by side, never averaged. 117.4 froze a local certification chain

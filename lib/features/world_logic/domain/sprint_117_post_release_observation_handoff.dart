@@ -15,7 +15,7 @@
 /// Two rules carry the weight:
 ///
 /// * The handoff is a *transfer of ownership*, never a claim of health.
-///   117.41 records zero CERTIFIED connectors, 117.1 records
+///   117.41 records the shipped certification counts, 117.1 records
 ///   `live_beta_executed: false`, and 117.39 leaves seven GA blocker
 ///   domains unresolved. A handoff that reported verified connector health
 ///   would be describing a release that never happened.
@@ -343,34 +343,40 @@ class Sprint117HandoffLoader {
       if (value is num) counts[entry.key.toString()] = value.toInt();
     }
 
-    // 117.41 records aggregate status counts plus the withheld provider
-    // list. There is no per-provider status row, so a subset can only be
-    // attributed when the aggregate covers the whole registry. A partial
-    // aggregate leaves per-provider attribution undetermined, which keeps
-    // the subset empty rather than guessing which providers it covers.
+    // 117.41 records aggregate status counts plus exposed/withheld provider
+    // lists. A subset is attributable when its aggregate count exactly
+    // matches the corresponding list; a mismatch stays undetermined rather
+    // than guessing which providers it covers.
     final providerCount = (registry['provider_count'] as num?)?.toInt() ?? 0;
     final allProviders = <String>[
       ..._stringList(registry['exposed_provider_ids']),
       ..._stringList(registry['withheld_provider_ids']),
     ];
     final unverifiedCount = counts['UNVERIFIED'] ?? 0;
+    final exposedProviders = _stringList(registry['exposed_provider_ids']);
+    final withheldProviders = _stringList(registry['withheld_provider_ids']);
+    final listsCoverRegistry =
+        allProviders.length == providerCount && providerCount > 0;
     final unverifiedAttributable =
+        listsCoverRegistry &&
         unverifiedCount > 0 &&
-        unverifiedCount == providerCount &&
-        allProviders.length == providerCount;
-    final unverified = unverifiedAttributable ? allProviders : <String>[];
+        unverifiedCount == withheldProviders.length;
+    final unverified = unverifiedAttributable ? withheldProviders : <String>[];
     final certifiedCount = counts['CERTIFIED'] ?? 0;
     final certifiedAttributable =
-        certifiedCount == allProviders.length &&
+        listsCoverRegistry &&
+        certifiedCount == exposedProviders.length &&
         certifiedCount > 0 &&
-        providerCount > 0;
+        exposedProviders.isNotEmpty;
 
     return Sprint117HandoffAnchor(
-      // `exposed_subset` is the frozen provider *list*, not a set of
-      // certifications. 117.41 counts zero CERTIFIED, so the certified
-      // subset has to be derived from the registry status, never from the
-      // list of providers that were merely snapshotted.
-      certifiedSubset: certifiedAttributable ? allProviders : const <String>[],
+      // `exposed_provider_ids` is attributable to CERTIFIED only when its
+      // cardinality matches the aggregate CERTIFIED count. This preserves a
+      // one-provider certification such as GitHub without promoting an
+      // ambiguous partial aggregate.
+      certifiedSubset: certifiedAttributable
+          ? exposedProviders
+          : const <String>[],
       enabledSubset: _stringList(matrix['enabled_subset']),
       unverifiedSubset: unverified,
       supportVerdict: _text(support['verdict']),
@@ -466,7 +472,7 @@ class Sprint117HandoffLoader {
         Sprint117HandoffContract.registryManifestPath,
         Sprint117HandoffContract.matrixManifestPath,
       ],
-      'connector registry reconciled locally; certification remains unproven',
+      'connector registry reconciled locally; live connector health remains unproven',
       detail: <String>[
         anchor.registryVerdict,
         ...anchor.registryStatusCounts.entries.map(
@@ -712,7 +718,7 @@ class Sprint117HandoffGate {
 
     final limitations = <String>[
       'This handoff transfers recorded local ownership only. It reports no live connector health, no billing, no quota, and no incident telemetry because no release has been executed.',
-      'Connector health is reported as unverified because 117.41 records zero CERTIFIED connectors; a handoff that reported verified health would describe a release that never happened.',
+      'Connector health remains unverified as a live observation even though 117.41 records the operator-authorized GitHub certification; a handoff that reported live health would describe a release that never happened.',
       'Recertification is reported as a precondition, not a schedule: 117.3 records ${anchor?.cohortVerdict ?? 'no cohort verdict'} with ${anchor?.verifiedCohortSize ?? 0} verified participants and live_beta_executed is ${anchor?.liveBetaExecuted ?? false}.',
       'No provider was queried, no metric was scraped, and no operator has accepted this handoff; all external gates remain ${Sprint117HandoffContract.externalGates}.',
     ];

@@ -79,7 +79,7 @@ void main() {
     'limitations': report.limitations,
     'claim_boundary': <String>[
       'This manifest defines the handoff contract locally. It observes no live release: no provider was queried, no metric was scraped, no incident was triaged, and no billing or quota endpoint was contacted.',
-      'Connector health is reported from 117.41 as 0 CERTIFIED / 32 UNVERIFIED. A handoff reporting verified connector health would describe a release that never happened.',
+      'Connector health is reported from 117.41 as recorded in the shipped registry. A handoff reporting live connector health would describe a release that never happened.',
       'Recertification is a precondition, not a schedule: 117.3 records a failed cohort consent verification with 0 verified participants.',
       'The eight canonical outputs are resolved against committed manifests only. An absent or malformed source yields blocked, never pass.',
     ],

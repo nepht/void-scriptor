@@ -13,7 +13,7 @@
         "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json",
         "docs/evidence/sprint-117-37-manifest-20261002.json"
       ],
-      "summary": "117.1 beta entry gate records canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED with live_beta_executed false; 117.4 certification snapshot lock froze 32 providers with zero CERTIFIED (32 UNVERIFIED) and cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED; 117.37 beta feedback evidence log is the only recorded beta-facing evidence and it is a local measurement, not a live beta result. No live beta was executed, so there are no beta_results to approve."
+      "summary": "117.1 beta entry gate records canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED with live_beta_executed false; 117.4 certification snapshot lock froze the local certification chain and cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED; 117.37 beta feedback evidence log is the only recorded beta-facing evidence and it is a local measurement, not a live beta result. No live beta was executed, so there are no beta_results to approve."
     },
     "connector_registry": {
       "present": true,
@@ -22,7 +22,7 @@
         "lib/features/world_logic/domain/sprint_117_final_connector_registry_reconciliation.dart",
         "docs/planning/v1.3/sprint_117_certification_snapshot_lock.json"
       ],
-      "summary": "117.41 final connector registry reconciliation records provider_count 32, status_counts CERTIFIED 0 / UNVERIFIED 32, visibility_counts EXPOSED 0 / WITHHELD 32, exposed_provider_ids empty. The registry exposes no certified connector, so a release cannot be justified from it."
+      "summary": "117.41 final connector registry reconciliation records provider_count 32, status_counts CERTIFIED 1 / UNVERIFIED 31, visibility_counts EXPOSED 1 / WITHHELD 31, exposed_provider_ids [github]. The operator-authorized GitHub example is the only certified connector; the remaining release blockers still prevent publication."
     },
     "blocker_status": {
       "present": true,
@@ -82,12 +82,12 @@
     "decision": "delay",
     "approval_state": "PENDING_CHOIRUDIN",
     "execution_authorized": false,
-    "note": "The gate records a delay because sprint 117's committed evidence cannot support a release: no certified connector (117.41: 0 CERTIFIED of 32), beta entry blocked (117.1: BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED), no live beta executed, artifact reproducibility incomplete (117.43: pass=false), and rollback drill not executed. A release outcome would additionally require Choirudin's explicit approval, a clear release blocker, and confirmed rollback readiness, none of which hold. The final GA go/no-go remains Choirudin's explicit decision."
+    "note": "The gate records a delay because sprint 117's committed evidence cannot support a release: 117.41 records one certified GitHub connector while the canonical beta entry record remains blocked (117.1: BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED), no live beta executed, artifact reproducibility incomplete (117.43: pass=false), and rollback drill not executed. A release outcome would additionally require Choirudin's explicit approval, a clear release blocker, and confirmed rollback readiness, none of which hold. The final GA go/no-go remains Choirudin's explicit decision."
   },
   "blocker_status": {
     "release_blocked": true,
     "open_items": [
-      "117.41: zero CERTIFIED connectors (32 UNVERIFIED, 32 WITHHELD) — no certified connector to release",
+      "117.41: one CERTIFIED connector (GitHub); 31 UNVERIFIED and 31 WITHHELD remain — release is still blocked by the remaining gates",
       "117.1: canonical_entry_readiness BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED and live_beta_executed false",
       "117.4: cohort_verdict COHORT_CONSENT_VERIFICATION_FAILED — no verified participant cohort",
       "117.43: artifact reproducibility measured 2026-10-02 (pass=false); the sole failing group is checksums — commit 02279bc (2026-10-05) regenerated the committed index on the release machine, which is not independently re-verifiable in a clean checkout (all 493 index paths live under gitignored build/), so signed-artifact agreement remains unmeasured, not disproven",

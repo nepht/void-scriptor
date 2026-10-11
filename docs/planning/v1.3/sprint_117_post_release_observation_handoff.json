@@ -45,16 +45,18 @@
   ],
   "connector_health": {
     "status_counts": {
-      "CERTIFIED": 0,
+      "CERTIFIED": 1,
       "LIMITED": 0,
-      "UNVERIFIED": 32,
+      "UNVERIFIED": 31,
       "PLANNED": 0,
       "DEGRADED": 0,
       "BLOCKED": 0
     },
     "registry_verdict": "FINAL_CONNECTOR_REGISTRY_RECONCILED_LOCAL",
-    "certified_subset": [],
-    "unverified_count": 32,
+    "certified_subset": [
+      "github"
+    ],
+    "unverified_count": 31,
     "enabled_subset": []
   },
   "incident_queue": {
@@ -144,21 +146,19 @@
     "consent_without_participant:gemini",
     "exposure_undetermined:29",
     "beta_connector_flags_not_in_shipped_registry",
-    "no_certified_connector",
     "cohort_not_verified",
-    "connector_health_unproven",
     "verified_cohort_size_zero",
     "live_release_not_observed"
   ],
   "limitations": [
     "This handoff transfers recorded local ownership only. It reports no live connector health, no billing, no quota, and no incident telemetry because no release has been executed.",
-    "Connector health is reported as unverified because 117.41 records zero CERTIFIED connectors; a handoff that reported verified health would describe a release that never happened.",
+    "Connector health remains unverified as a live observation even though 117.41 records the operator-authorized GitHub certification; a handoff that reported live health would describe a release that never happened.",
     "Recertification is reported as a precondition, not a schedule: 117.3 records COHORT_CONSENT_VERIFICATION_FAILED with 0 verified participants and live_beta_executed is false.",
     "No provider was queried, no metric was scraped, and no operator has accepted this handoff; all external gates remain DEFERRED-EXTERNAL."
   ],
   "claim_boundary": [
     "This manifest defines the handoff contract locally. It observes no live release: no provider was queried, no metric was scraped, no incident was triaged, and no billing or quota endpoint was contacted.",
-    "Connector health is reported from 117.41 as 0 CERTIFIED / 32 UNVERIFIED. A handoff reporting verified connector health would describe a release that never happened.",
+    "Connector health is reported from 117.41 as recorded in the shipped registry. A handoff reporting live connector health would describe a release that never happened.",
     "Recertification is a precondition, not a schedule: 117.3 records a failed cohort consent verification with 0 verified participants.",
     "The eight canonical outputs are resolved against committed manifests only. An absent or malformed source yields blocked, never pass."
   ]

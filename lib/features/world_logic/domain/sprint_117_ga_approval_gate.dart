@@ -11,8 +11,9 @@
 /// evidence, never by preference. Sprint 117's own committed evidence forces
 /// [Sprint117GaDecision.delay]: 117.1 records
 /// `BLOCKED_NO_CERTIFIED_CONNECTOR_CURRENTLY_RECORDED`, 117.4 locked the
-/// certification snapshot with zero CERTIFIED connectors (32 UNVERIFIED),
-/// the beta cohort consent verification failed, and no beta was ever
+/// local certification snapshot, and 117.41 records one certified GitHub
+/// connector while the remaining registry entries are unverified. The beta
+/// cohort consent verification failed, and no beta was ever
 /// executed. A `release` recorded against that evidence would claim a beta
 /// that never ran, so the gate is where that rule is enforced rather than
 /// asserted.
@@ -130,7 +131,8 @@ class Sprint117GaApprovalGate {
   static const String canonicalStep = kSprint117GaApprovalStep;
 
   /// Canonical evidence keys, in contract order.
-  static const List<String> requiredEvidenceKeys = kSprint117GaApprovalEvidenceKeys;
+  static const List<String> requiredEvidenceKeys =
+      kSprint117GaApprovalEvidenceKeys;
 
   /// Evidence groups by canonical name.
   final Map<String, Sprint117GaEvidenceRecord>? evidence;

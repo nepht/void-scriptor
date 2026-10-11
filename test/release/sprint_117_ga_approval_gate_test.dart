@@ -36,8 +36,7 @@ void main() {
       expect(
         manifestFile.existsSync(),
         isTrue,
-        reason:
-            'missing docs/planning/v1.3/sprint_117_ga_approval_gate.json',
+        reason: 'missing docs/planning/v1.3/sprint_117_ga_approval_gate.json',
       );
       final manifest =
           jsonDecode(manifestFile.readAsStringSync()) as Map<String, dynamic>;
@@ -97,7 +96,8 @@ void main() {
       expect(
         openItems.join(' '),
         contains('117.41'),
-        reason: 'zero certified connectors is the primary release blocker',
+        reason:
+            'the connector registry remains part of the release blocker set',
       );
 
       final rollback = manifest['rollback_readiness'] as Map<String, dynamic>;
@@ -120,7 +120,9 @@ void main() {
 
       expect(Sprint117GaApprovalGate.missingEvidence(null), isNotEmpty);
       expect(
-        Sprint117GaApprovalGate.missingEvidence(const Sprint117GaApprovalGate()),
+        Sprint117GaApprovalGate.missingEvidence(
+          const Sprint117GaApprovalGate(),
+        ),
         unorderedEquals(Sprint117GaApprovalGate.requiredEvidenceKeys),
       );
 
@@ -263,59 +265,56 @@ void main() {
       },
     );
 
-    test(
-      'delay passes while approval stays pending; subset reduction and '
-      'rollback are recorded',
-      () {
-        final evidence = <String, Sprint117GaEvidenceRecord>{
-          for (final name in Sprint117GaApprovalGate.requiredEvidenceKeys)
-            name: const Sprint117GaEvidenceRecord(
-              present: true,
-              sources: <String>['docs/planning/v1.3/source.json'],
-            ),
-        };
-
-        final delayEval = Sprint117GaApprovalGate.evaluate(
-          Sprint117GaApprovalGate(
-            evidence: evidence,
-            decision: Sprint117GaDecision.delay,
-            approval: Sprint117GaApprovalState.pendingChoirudin,
-            rollbackReady: true,
-            releaseBlocked: true,
+    test('delay passes while approval stays pending; subset reduction and '
+        'rollback are recorded', () {
+      final evidence = <String, Sprint117GaEvidenceRecord>{
+        for (final name in Sprint117GaApprovalGate.requiredEvidenceKeys)
+          name: const Sprint117GaEvidenceRecord(
+            present: true,
+            sources: <String>['docs/planning/v1.3/source.json'],
           ),
-        );
-        expect(delayEval.state, Sprint117GaGateState.pass);
-        expect(delayEval.notes.join(' '), contains('decision: delay'));
-        expect(delayEval.notes.join(' '), contains('PENDING_CHOIRUDIN'));
+      };
 
-        final subsetEval = Sprint117GaApprovalGate.evaluate(
-          Sprint117GaApprovalGate(
-            evidence: evidence,
-            decision: Sprint117GaDecision.subsetReduction,
-            approval: Sprint117GaApprovalState.pendingChoirudin,
-            rollbackReady: true,
-            releaseBlocked: false,
-          ),
-        );
-        expect(subsetEval.state, Sprint117GaGateState.pass);
-        expect(
-          subsetEval.notes.join(' '),
-          contains('decision: subset_reduction'),
-        );
+      final delayEval = Sprint117GaApprovalGate.evaluate(
+        Sprint117GaApprovalGate(
+          evidence: evidence,
+          decision: Sprint117GaDecision.delay,
+          approval: Sprint117GaApprovalState.pendingChoirudin,
+          rollbackReady: true,
+          releaseBlocked: true,
+        ),
+      );
+      expect(delayEval.state, Sprint117GaGateState.pass);
+      expect(delayEval.notes.join(' '), contains('decision: delay'));
+      expect(delayEval.notes.join(' '), contains('PENDING_CHOIRUDIN'));
 
-        final rollbackEval = Sprint117GaApprovalGate.evaluate(
-          Sprint117GaApprovalGate(
-            evidence: evidence,
-            decision: Sprint117GaDecision.rollback,
-            approval: Sprint117GaApprovalState.pendingChoirudin,
-            rollbackReady: false,
-            releaseBlocked: true,
-          ),
-        );
-        expect(rollbackEval.state, Sprint117GaGateState.pass);
-        expect(rollbackEval.notes.join(' '), contains('decision: rollback'));
-      },
-    );
+      final subsetEval = Sprint117GaApprovalGate.evaluate(
+        Sprint117GaApprovalGate(
+          evidence: evidence,
+          decision: Sprint117GaDecision.subsetReduction,
+          approval: Sprint117GaApprovalState.pendingChoirudin,
+          rollbackReady: true,
+          releaseBlocked: false,
+        ),
+      );
+      expect(subsetEval.state, Sprint117GaGateState.pass);
+      expect(
+        subsetEval.notes.join(' '),
+        contains('decision: subset_reduction'),
+      );
+
+      final rollbackEval = Sprint117GaApprovalGate.evaluate(
+        Sprint117GaApprovalGate(
+          evidence: evidence,
+          decision: Sprint117GaDecision.rollback,
+          approval: Sprint117GaApprovalState.pendingChoirudin,
+          rollbackReady: false,
+          releaseBlocked: true,
+        ),
+      );
+      expect(rollbackEval.state, Sprint117GaGateState.pass);
+      expect(rollbackEval.notes.join(' '), contains('decision: rollback'));
+    });
 
     test('manifest parses into the domain and evaluates to delay-pass', () {
       final manifest =
@@ -330,7 +329,10 @@ void main() {
       final evaluation = Sprint117GaApprovalGate.evaluate(gate);
       expect(evaluation.state, Sprint117GaGateState.pass);
       expect(evaluation.notes.join(' '), contains('decision: delay'));
-      expect(evaluation.notes.join(' '), contains('approval: PENDING_CHOIRUDIN'));
+      expect(
+        evaluation.notes.join(' '),
+        contains('approval: PENDING_CHOIRUDIN'),
+      );
 
       // Execution is not authorized for a delayed record.
       expect(manifest['approval']['execution_authorized'], isFalse);

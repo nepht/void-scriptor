@@ -192,6 +192,30 @@ void main() {
     );
 
     test(
+      'managed Google Drive client ID starts authorization without vault input',
+      () async {
+        final launcher = _RecordingLauncher();
+        final wiring = AccountCloudConnectWiring(
+          credentialStore: MemoryCredentialStore(),
+          browserLauncher: launcher,
+        );
+        final entry = _entry(
+          'google_drive',
+          availability: ProviderConnectorAvailability.available,
+        );
+
+        wiring.onConnectProvider(entry);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(wiring.flow.liveAuthorizationCount, 1);
+        expect(launcher.calls, 1);
+      },
+      skip:
+          OAuthClientConfigurationStore.managedClientIdFor('google_drive') ==
+          null,
+    );
+
+    test(
       'multiple connect calls accumulate independent authorizations',
       () async {
         final broker = _RecordingBroker();

@@ -111,6 +111,25 @@ void main() {
     expect(find.text('Welcome back'), findsOneWidget);
   });
 
+  testWidgets('account center logout returns to login', (tester) async {
+    await tester.pumpWidget(_loggedOutApp());
+    await _settleAuth(tester);
+
+    await _tapVisible(tester, find.text('Continue as Guest'));
+    await tester.tap(find.byTooltip('Account menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Account & Cloud'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('ACCOUNT & CLOUD CENTER'), findsOneWidget);
+    await tester.tap(find.byTooltip('Account menu'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log out'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Welcome back'), findsOneWidget);
+  });
+
   testWidgets('offline auth flow reaches dashboard', (tester) async {
     await tester.pumpWidget(_loggedOutApp());
     await _settleAuth(tester);

@@ -162,4 +162,77 @@ void main() {
     expect(session?.userId, 'usr_restore');
     expect(session?.identityProvider, 'github');
   });
+
+  test('links another provider and refreshes the linked identity list', () async {
+    final launcher = _FakeLauncher();
+    final credentials = MemoryCredentialStore();
+    await credentials.write(
+      key: 'account.session_token',
+      value: 'signed-session',
+    );
+    String? startBody;
+    final provider = WebAccountAuthIdentityProvider(
+      tokenStore: credentials,
+      browserLauncher: launcher,
+      baseUri: Uri.parse('https://voidscriptor.test'),
+      client: _FakeClient((request) async {
+        if (request.url.path == '/api/account/connections/link/start') {
+          final requestBody =
+              jsonDecode(await request.finalize().bytesToString())
+                  as Map<String, dynamic>;
+          startBody = jsonEncode(requestBody);
+          final authorizationUri =
+              Uri.parse('https://voidscriptor.test/api/auth/github').replace(
+                queryParameters: <String, String>{
+                  'client': 'desktop',
+                  'state': requestBody['state'] as String,
+                },
+              );
+          return _jsonResponse(200, {
+            'ok': true,
+            'authorization_url': authorizationUri.toString(),
+          });
+        }
+        if (request.url.path == '/api/account/me') {
+          return _jsonResponse(200, {
+            'ok': true,
+            'user': {
+              'id': 'usr_fixture',
+              'provider': 'google',
+              'name': 'Qowner',
+              'email': 'qowner@example.com',
+            },
+          });
+        }
+        if (request.url.path == '/api/account/connections') {
+          return _jsonResponse(200, {
+            'ok': true,
+            'connections': [
+              {'provider': 'google'},
+              {'provider': 'github'},
+            ],
+          });
+        }
+        return _jsonResponse(404, {'ok': false});
+      }),
+    );
+
+    final linking = provider.linkProvider(provider: 'github');
+    await Future<void>.delayed(Duration.zero);
+    final authorizationUri = launcher.lastUri!;
+    expect(authorizationUri.path, '/api/auth/github');
+    expect(authorizationUri.queryParameters['client'], 'desktop');
+
+    final consumed = await provider.completeCallback(
+      Uri.parse(
+        'vscriptor://oauth/callback?linked=github&state=${authorizationUri.queryParameters['state']}',
+      ),
+    );
+    final session = await linking;
+
+    expect(consumed, isTrue);
+    expect(jsonDecode(startBody!)['provider'], 'github');
+    expect(session.identityProvider, 'google');
+    expect(session.linkedIdentityProviders, containsAll(['google', 'github']));
+  });
 }

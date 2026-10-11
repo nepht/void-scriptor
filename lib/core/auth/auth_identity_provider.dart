@@ -13,6 +13,12 @@ abstract interface class SocialAuthIdentityProvider {
   Future<AuthSession> signInWithProvider({required String provider});
 }
 
+/// Optional capability for linking another provider to the authenticated
+/// account without replacing the current session identity.
+abstract interface class SocialAccountLinker {
+  Future<AuthSession> linkProvider({required String provider});
+}
+
 /// Optional capability used by the composition root to restore a remote
 /// account session without making local/offline startup depend on a network.
 abstract interface class AuthSessionRestorer {

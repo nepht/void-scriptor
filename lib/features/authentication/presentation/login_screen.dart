@@ -4,6 +4,29 @@ import '../../../core/auth/auth_controller.dart';
 import '../../../core/theme/theme_mode_menu.dart';
 import '../../../design_system/theme/void_theme_context.dart';
 import '../../../design_system/widgets/branding/void_logo.dart';
+import '../../account/application/web_account_auth_identity_provider.dart';
+
+String loginFailureMessage(Object? error) {
+  final code = error is AuthException ? error.code : null;
+  return switch (code) {
+    'provider_cancelled' =>
+      'Sign-in was cancelled. Choose Google or GitHub to try again.',
+    'invalid_grant' =>
+      'The authorization expired or was already used. Try signing in again.',
+    'network_error' || 'timeout' =>
+      'The account service could not be reached. Check your connection and try again.',
+    'browser_launch_failed' =>
+      'The sign-in browser could not be opened. Try again.',
+    'state_mismatch' =>
+      'The sign-in callback was rejected. Start the sign-in process again.',
+    'provider_unavailable' ||
+    'provider_not_configured' ||
+    'auth_not_configured' ||
+    'accounts_not_configured' => 'This sign-in provider is not configured yet.',
+    _ =>
+      'Sign-in could not be completed. Try again or use Guest or Offline mode.',
+  };
+}
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({
@@ -210,7 +233,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Semantics(
                 liveRegion: true,
                 child: Text(
-                  'Sign-in could not be completed. Try again or use Guest or Offline mode.',
+                  loginFailureMessage(auth.error),
                   style: TextStyle(color: theme.colorScheme.error, height: 1.5),
                 ),
               ),

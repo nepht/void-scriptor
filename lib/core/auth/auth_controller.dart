@@ -69,6 +69,19 @@ class AuthController extends AsyncNotifier<AuthSession> {
     }
   }
 
+  /// Links a second OAuth identity while keeping the current session active.
+  /// The linker returns a refreshed account snapshot so Account Center can
+  /// immediately show both identities as connected.
+  Future<void> linkWithProvider(String provider) async {
+    final identityProvider = ref.read(authIdentityProviderProvider);
+    if (identityProvider is! SocialAccountLinker) {
+      throw const AuthIdentityUnavailable();
+    }
+    final linker = identityProvider as SocialAccountLinker;
+    final session = await linker.linkProvider(provider: provider);
+    state = AsyncData(session);
+  }
+
   Future<void> continueAsGuest() async {
     await _enterSession(const AuthSession.guest());
   }

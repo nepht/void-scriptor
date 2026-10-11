@@ -7,6 +7,7 @@ class AuthSession {
     this.displayName,
     this.email,
     this.identityProvider,
+    this.linkedIdentityProviders = const <String>[],
   });
 
   final AuthStatus status;
@@ -24,31 +25,39 @@ class AuthSession {
   /// authenticated the account instead of guessing Email.
   final String? identityProvider;
 
+  /// Provider identities linked to the same remote account. This is metadata
+  /// only; credentials and tokens never enter the session model.
+  final List<String> linkedIdentityProviders;
+
   const AuthSession.checking()
     : status = AuthStatus.checking,
       userId = null,
       displayName = null,
       email = null,
-      identityProvider = null;
+      identityProvider = null,
+      linkedIdentityProviders = const <String>[];
 
   const AuthSession.loggedOut()
     : status = AuthStatus.unauthenticated,
       userId = null,
       displayName = null,
       email = null,
-      identityProvider = null;
+      identityProvider = null,
+      linkedIdentityProviders = const <String>[];
 
   const AuthSession.guest()
     : status = AuthStatus.guest,
       userId = null,
       displayName = 'Guest',
       email = null,
-      identityProvider = null;
+      identityProvider = null,
+      linkedIdentityProviders = const <String>[];
 
   const AuthSession.offline()
     : status = AuthStatus.offline,
       userId = null,
       displayName = 'Offline User',
       email = null,
-      identityProvider = null;
+      identityProvider = null,
+      linkedIdentityProviders = const <String>[];
 }

@@ -21,6 +21,7 @@ final class WebAccountAuthIdentityProvider
     implements
         AuthIdentityProvider,
         SocialAuthIdentityProvider,
+        SocialAccountLinker,
         AuthSessionRestorer {
   WebAccountAuthIdentityProvider({
     required this.tokenStore,
@@ -48,7 +49,8 @@ final class WebAccountAuthIdentityProvider
   final http.Client client;
   final Random random;
   final Duration requestTimeout;
-  _PendingSignIn? _pending;
+  _PendingSignIn? _pendingSignIn;
+  _PendingLink? _pendingLink;
   Timer? _pendingTimeout;
 
   @override
@@ -65,7 +67,9 @@ final class WebAccountAuthIdentityProvider
     if (normalizedProvider != 'google' && normalizedProvider != 'github') {
       throw const AuthProviderUnavailable();
     }
-    if (_pending != null) throw const AuthFlowInProgress();
+    if (_pendingSignIn != null || _pendingLink != null) {
+      throw const AuthFlowInProgress();
+    }
 
     final verifier = _randomToken(48);
     final challenge = _pkceChallenge(verifier);
@@ -76,10 +80,10 @@ final class WebAccountAuthIdentityProvider
       verifier: verifier,
       completer: Completer<AuthSession>(),
     );
-    _pending = pending;
+    _pendingSignIn = pending;
     _pendingTimeout = Timer(const Duration(minutes: 5), () {
-      if (identical(_pending, pending)) {
-        _pending = null;
+      if (identical(_pendingSignIn, pending)) {
+        _pendingSignIn = null;
         pending.completer.completeError(const AuthFlowExpired());
       }
     });
@@ -95,14 +99,86 @@ final class WebAccountAuthIdentityProvider
     );
     final launched = await browserLauncher.launch(authorizationUri);
     if (!launched) {
-      _clearPending(pending);
+      _clearPendingSignIn(pending);
       throw const AuthBrowserLaunchFailed();
     }
 
     try {
       return await pending.completer.future.timeout(requestTimeout * 15);
     } finally {
-      _clearPending(pending);
+      _clearPendingSignIn(pending);
+    }
+  }
+
+  @override
+  Future<AuthSession> linkProvider({required String provider}) async {
+    final normalizedProvider = provider.trim().toLowerCase();
+    if (normalizedProvider != 'google' && normalizedProvider != 'github') {
+      throw const AuthProviderUnavailable();
+    }
+    if (_pendingSignIn != null || _pendingLink != null) {
+      throw const AuthFlowInProgress();
+    }
+    final token = await tokenStore.read(_sessionTokenKey);
+    if (token == null || token.trim().isEmpty) {
+      throw const AuthIdentityUnavailable();
+    }
+
+    final verifier = _randomToken(48);
+    final challenge = _pkceChallenge(verifier);
+    final state = _randomToken(24);
+    final pending = _PendingLink(
+      provider: normalizedProvider,
+      state: state,
+      verifier: verifier,
+      completer: Completer<AuthSession>(),
+    );
+    _pendingLink = pending;
+    _pendingTimeout = Timer(const Duration(minutes: 5), () {
+      if (identical(_pendingLink, pending)) {
+        _pendingLink = null;
+        pending.completer.completeError(const AuthFlowExpired());
+      }
+    });
+
+    try {
+      final response = await client
+          .post(
+            _endpoint('/api/account/connections/link/start'),
+            headers: <String, String>{
+              'authorization': 'Bearer $token',
+              'content-type': 'application/json',
+            },
+            body: jsonEncode(<String, String>{
+              'provider': normalizedProvider,
+              'redirect_uri': callbackUri,
+              'state': state,
+              'code_challenge': challenge,
+              'code_challenge_method': _pkceMethod,
+            }),
+          )
+          .timeout(requestTimeout);
+      final body = _jsonObject(response.body);
+      if (response.statusCode != 200 || body['ok'] != true) {
+        throw AuthRemoteRequestFailed(_errorCode(body));
+      }
+      final rawAuthorizationUrl = body['authorization_url'];
+      final authorizationUri = rawAuthorizationUrl is String
+          ? Uri.tryParse(rawAuthorizationUrl)
+          : null;
+      if (authorizationUri == null || authorizationUri.scheme != 'https') {
+        throw const AuthRemoteRequestFailed('missing_authorization_url');
+      }
+      if (!await browserLauncher.launch(authorizationUri)) {
+        throw const AuthBrowserLaunchFailed();
+      }
+      return await pending.completer.future.timeout(requestTimeout * 15);
+    } on AuthException {
+      _clearPendingLink(pending);
+      rethrow;
+    } on Object catch (error) {
+      _clearPendingLink(pending);
+      throw AuthRemoteRequestFailed(_safeNetworkCode(error));
     }
   }
 
@@ -112,15 +188,50 @@ final class WebAccountAuthIdentityProvider
   /// false so the existing cloud-connector flow can handle it.
   Future<bool> completeCallback(Uri uri) async {
     final envelope = OAuthCallbackRouter.parse(uri);
-    final pending = _pending;
-    if (envelope == null || pending == null) return false;
+    final pendingSignIn = _pendingSignIn;
+    final pendingLink = _pendingLink;
+    if (envelope == null || (pendingSignIn == null && pendingLink == null)) {
+      return false;
+    }
+    final expectedState = pendingSignIn?.state ?? pendingLink!.state;
 
-    if (envelope.state != pending.state) {
-      _completeError(pending, const AuthOAuthStateMismatch());
+    if (envelope.state != expectedState) {
+      if (pendingLink != null) {
+        _completeLinkError(pendingLink, const AuthOAuthStateMismatch());
+      } else {
+        _completeSignInError(pendingSignIn!, const AuthOAuthStateMismatch());
+      }
       return true;
     }
+    if (pendingLink != null) {
+      try {
+        if (envelope.error != null) {
+          throw AuthProviderCancelled();
+        }
+        if (envelope.uri.queryParameters['linked'] != pendingLink.provider) {
+          throw AuthRemoteRequestFailed(
+            envelope.error ?? envelope.errorDescription ?? 'link_failed',
+          );
+        }
+        final session = await restoreSession();
+        if (session == null) {
+          throw const AuthRemoteRequestFailed('session_unavailable');
+        }
+        _completeLinkSuccess(pendingLink, session);
+      } on AuthException catch (error, stackTrace) {
+        _completeLinkError(pendingLink, error, stackTrace);
+      } on Object catch (error, stackTrace) {
+        _completeLinkError(
+          pendingLink,
+          AuthRemoteRequestFailed(_safeNetworkCode(error)),
+          stackTrace,
+        );
+      }
+      return true;
+    }
+
     if (!envelope.isAuthorizationSuccess) {
-      _completeError(pending, const AuthProviderCancelled());
+      _completeSignInError(pendingSignIn!, const AuthProviderCancelled());
       return true;
     }
 
@@ -131,7 +242,7 @@ final class WebAccountAuthIdentityProvider
             headers: const {'content-type': 'application/json'},
             body: jsonEncode(<String, String>{
               'code': envelope.code!,
-              'code_verifier': pending.verifier,
+              'code_verifier': pendingSignIn!.verifier,
               'redirect_uri': callbackUri,
             }),
           )
@@ -146,15 +257,15 @@ final class WebAccountAuthIdentityProvider
       }
       final session = _sessionFromUser(
         body['user'],
-        fallbackProvider: pending.provider,
+        fallbackProvider: pendingSignIn.provider,
       );
       await tokenStore.write(key: _sessionTokenKey, value: token);
-      _completeSuccess(pending, session);
+      _completeSignInSuccess(pendingSignIn, session);
     } on AuthException catch (error, stackTrace) {
-      _completeError(pending, error, stackTrace);
+      _completeSignInError(pendingSignIn!, error, stackTrace);
     } on Object catch (error, stackTrace) {
-      _completeError(
-        pending,
+      _completeSignInError(
+        pendingSignIn!,
         AuthRemoteRequestFailed(_safeNetworkCode(error)),
         stackTrace,
       );
@@ -180,7 +291,8 @@ final class WebAccountAuthIdentityProvider
       if (response.statusCode != 200) return null;
       final body = _jsonObject(response.body);
       if (body['ok'] != true) return null;
-      return _sessionFromUser(body['user']);
+      final session = _sessionFromUser(body['user']);
+      return await _withLinkedProviders(session, token);
     } on Object {
       // A transient outage must not prevent local/offline startup.
       return null;
@@ -219,25 +331,89 @@ final class WebAccountAuthIdentityProvider
     sha256.convert(utf8.encode(verifier)).bytes,
   ).replaceAll('=', '');
 
-  void _clearPending(_PendingSignIn pending) {
-    if (identical(_pending, pending)) _pending = null;
+  void _clearPendingSignIn(_PendingSignIn pending) {
+    if (identical(_pendingSignIn, pending)) _pendingSignIn = null;
     _pendingTimeout?.cancel();
     _pendingTimeout = null;
   }
 
-  void _completeSuccess(_PendingSignIn pending, AuthSession session) {
-    _clearPending(pending);
+  void _clearPendingLink(_PendingLink pending) {
+    if (identical(_pendingLink, pending)) _pendingLink = null;
+    _pendingTimeout?.cancel();
+    _pendingTimeout = null;
+  }
+
+  void _completeSignInSuccess(_PendingSignIn pending, AuthSession session) {
+    _clearPendingSignIn(pending);
     if (!pending.completer.isCompleted) pending.completer.complete(session);
   }
 
-  void _completeError(
+  void _completeLinkSuccess(_PendingLink pending, AuthSession session) {
+    _clearPendingLink(pending);
+    if (!pending.completer.isCompleted) pending.completer.complete(session);
+  }
+
+  void _completeSignInError(
     _PendingSignIn pending,
     Object error, [
     StackTrace? stackTrace,
   ]) {
-    _clearPending(pending);
+    _clearPendingSignIn(pending);
     if (!pending.completer.isCompleted) {
       pending.completer.completeError(error, stackTrace ?? StackTrace.current);
+    }
+  }
+
+  void _completeLinkError(
+    _PendingLink pending,
+    Object error, [
+    StackTrace? stackTrace,
+  ]) {
+    _clearPendingLink(pending);
+    if (!pending.completer.isCompleted) {
+      pending.completer.completeError(error, stackTrace ?? StackTrace.current);
+    }
+  }
+
+  Future<AuthSession> _withLinkedProviders(
+    AuthSession session,
+    String token,
+  ) async {
+    try {
+      final response = await client
+          .get(
+            _endpoint('/api/account/connections'),
+            headers: <String, String>{'authorization': 'Bearer $token'},
+          )
+          .timeout(requestTimeout);
+      final body = _jsonObject(response.body);
+      final connections = body['connections'];
+      if (response.statusCode != 200 ||
+          body['ok'] != true ||
+          connections is! List) {
+        return session;
+      }
+      final providers = connections
+          .whereType<Map<String, dynamic>>()
+          .map((connection) => _knownProvider(connection['provider']))
+          .whereType<String>()
+          .followedBy(
+            session.identityProvider == null
+                ? const <String>[]
+                : <String>[session.identityProvider!],
+          )
+          .toSet()
+          .toList(growable: false);
+      return AuthSession(
+        status: session.status,
+        userId: session.userId,
+        displayName: session.displayName,
+        email: session.email,
+        identityProvider: session.identityProvider,
+        linkedIdentityProviders: providers,
+      );
+    } on Object {
+      return session;
     }
   }
 
@@ -256,6 +432,7 @@ final class WebAccountAuthIdentityProvider
       displayName: optionalString(value['name']),
       email: optionalString(value['email']),
       identityProvider: provider,
+      linkedIdentityProviders: <String>[?provider],
     );
   }
 
@@ -286,6 +463,20 @@ final class WebAccountAuthIdentityProvider
 
 final class _PendingSignIn {
   const _PendingSignIn({
+    required this.provider,
+    required this.state,
+    required this.verifier,
+    required this.completer,
+  });
+
+  final String provider;
+  final String state;
+  final String verifier;
+  final Completer<AuthSession> completer;
+}
+
+final class _PendingLink {
+  const _PendingLink({
     required this.provider,
     required this.state,
     required this.verifier,

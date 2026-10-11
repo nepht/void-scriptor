@@ -182,6 +182,11 @@ final class AccountCloudConnectWiring {
     clientId: clientId,
   );
 
+  /// Indicates that a public client ID comes from release configuration.
+  /// The actual value is intentionally not exposed to presentation code.
+  bool usesManagedClientId(String providerId) =>
+      _clientConfiguration.hasManagedClientId(providerId);
+
   Future<OAuthAuthorizationRequest?> _startAuthorization(
     ProviderConnectorEntry entry,
   ) async {

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_controller.dart';
+import '../../core/auth/auth_identity_provider.dart';
 import '../../core/auth/auth_status.dart';
 import '../../core/capabilities/route_capability_guard.dart';
 import '../../core/feature_flags/feature_flag_registry.dart';
@@ -14,6 +15,7 @@ import '../../features/authentication/presentation/register_screen.dart';
 import '../../features/account/domain/account_center_information_architecture.dart';
 import '../../features/account/domain/account_center_provider_connector_manifest.dart';
 import '../../features/account/application/account_cloud_connect_wiring.dart';
+import '../../features/account/application/account_link_failure_message.dart';
 import '../../features/account/presentation/account_cloud_center_screen.dart';
 import '../../features/settings/presentation/settings_hub_screen.dart';
 import '../../features/settings/presentation/storage_locations_screen.dart';
@@ -285,11 +287,87 @@ GoRouter createAppRouter({
   );
 }
 
+void _openAccountProviderLinkDialog(BuildContext context, Ref ref) {
+  final session = ref.read(authControllerProvider).value;
+  if (session?.status != AuthStatus.authenticated) {
+    context.go('${AppRoutes.login}?from=account-cloud');
+    return;
+  }
+
+  final identityProvider = ref.read(authIdentityProviderProvider);
+  if (identityProvider is! SocialAccountLinker) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account linking is not available.')),
+    );
+    return;
+  }
+  final linked = <String>{
+    ...?session?.linkedIdentityProviders,
+    ?session?.identityProvider,
+  };
+  final available = const <({String id, String label})>[
+    (id: 'google', label: 'Google'),
+    (id: 'github', label: 'GitHub'),
+  ].where((provider) => !linked.contains(provider.id)).toList(growable: false);
+
+  unawaited(
+    showDialog<String>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        title: const Text('Add another sign-in method'),
+        children: available.isEmpty
+            ? const [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24, 0, 24, 16),
+                  child: Text('Google and GitHub are already connected.'),
+                ),
+              ]
+            : [
+                for (final provider in available)
+                  SimpleDialogOption(
+                    onPressed: () =>
+                        Navigator.of(dialogContext).pop(provider.id),
+                    child: Text(provider.label),
+                  ),
+              ],
+      ),
+    ).then((provider) {
+      if (provider == null || !context.mounted) return;
+      unawaited(_linkAccountProvider(context, ref, provider));
+    }),
+  );
+}
+
+Future<void> _linkAccountProvider(
+  BuildContext context,
+  Ref ref,
+  String provider,
+) async {
+  try {
+    await ref.read(authControllerProvider.notifier).linkWithProvider(provider);
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('$provider account connected.')));
+    }
+  } on Object catch (error) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(accountLinkFailureMessage(provider, error))),
+      );
+    }
+  }
+}
+
 void _configureOAuthClientId(
   BuildContext context,
   AccountCloudConnectWiring wiring,
   ProviderConnectorEntry entry,
 ) {
+  if (wiring.usesManagedClientId(entry.providerId)) {
+    _showManagedOAuthConfiguration(context, entry);
+    return;
+  }
   final controller = TextEditingController();
   unawaited(
     showDialog<String>(
@@ -350,9 +428,34 @@ void _configureOAuthClientId(
   );
 }
 
+void _showManagedOAuthConfiguration(
+  BuildContext context,
+  ProviderConnectorEntry entry,
+) {
+  unawaited(
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('${entry.displayName} managed configuration'),
+        content: const Text(
+          'This release supplies the public OAuth client configuration. '
+          'No client ID needs to be entered on this device.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 List<RouteBase> _routes({
   VoidCallback? onLogout,
   AccountCloudConnectWiring? oauthWiring,
+  void Function(BuildContext context)? onAccountSignIn,
   VoidCallback? onGoogleSignIn,
   VoidCallback? onGithubSignIn,
 }) {
@@ -501,6 +604,7 @@ List<RouteBase> _routes({
       builder: (context, state) => ProviderScope(
         child: VoidDesktopShell(
           topBarHeight: 52,
+          onLogout: onLogout,
           content: AccountCloudCenterScreen(
             referenceVisual: true,
             initialTab:
@@ -510,6 +614,9 @@ List<RouteBase> _routes({
               '${AppRoutes.accountCloud}'
               '?${AccountCenterInformationArchitecture.tabQueryParameter}=$slug',
             ),
+            onSignIn: onAccountSignIn == null
+                ? null
+                : () => onAccountSignIn(context),
             onConnectProvider: resolvedOAuthWiring.onConnectProvider,
             onConfigureProvider: (entry) =>
                 _configureOAuthClientId(context, resolvedOAuthWiring, entry),
@@ -784,6 +891,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         ref.read(authControllerProvider.notifier).logout();
       },
       oauthWiring: ref.read(oauthWiringProvider),
+      onAccountSignIn: (context) =>
+          _openAccountProviderLinkDialog(context, ref),
       onGoogleSignIn: () {
         unawaited(
           ref.read(authControllerProvider.notifier).loginWithProvider('google'),

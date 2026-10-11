@@ -1,3 +1,5 @@
+import 'dart:ui' show Tristate;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -141,6 +143,29 @@ void main() {
     },
   );
 
+  testWidgets('sign-in methods use the registered provider marks', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: AccountCloudCenterScreen(
+          snapshot: AccountCloudSnapshot.localOnly(session: null),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    for (final provider in const ['google-sign-in', 'github-sign-in']) {
+      final row = find.byKey(ValueKey('account-sign-in-method-$provider'));
+      expect(row, findsOneWidget, reason: provider);
+      expect(
+        find.descendant(of: row, matching: find.byType(Image)),
+        findsOneWidget,
+        reason: '$provider should render its bundled provider mark',
+      );
+    }
+  });
+
   testWidgets('renders live project usage and storage metrics when available', (
     tester,
   ) async {
@@ -266,14 +291,51 @@ void main() {
     await tester.pump();
     expect(aiProvidersOpened, isTrue);
 
-    // 115.36: panel tidak lagi digulir, jadi tab tidak lagi pemicu scroll —
-    // tab menandai anchor dan breadcrumb. Memilih tab tidak boleh menyaring
-    // atau menyembunyikan kartu area lain.
-    await tester.tap(find.text('Cloud Storage').first);
+    // 115.36: panel tunggal tetap mempertahankan seluruh area. Target tab
+    // harus dicari di strip-nya (bukan `find.text(...).first` yang bisa
+    // memilih node di luar viewport setelah ensureVisible pada rail), lalu
+    // dipastikan benar-benar hit-testable sebelum tap.
+    final cloudStorageTab = find.descendant(
+      of: find.byKey(const ValueKey('account-center-tab-strip')),
+      matching: find.text('Cloud Storage'),
+    );
+    expect(cloudStorageTab, findsOneWidget);
+    await tester.ensureVisible(cloudStorageTab);
+    await tester.pumpAndSettle();
+    final cloudStorageInk = find.ancestor(
+      of: cloudStorageTab,
+      matching: find.byType(InkWell),
+    );
+    expect(cloudStorageInk, findsOneWidget);
+    final viewport = Size(
+      tester.view.physicalSize.width / tester.view.devicePixelRatio,
+      tester.view.physicalSize.height / tester.view.devicePixelRatio,
+    );
+    expect(
+      tester.getRect(cloudStorageInk).overlaps(Offset.zero & viewport),
+      isTrue,
+      reason: 'Cloud Storage tab harus terlihat sebelum tap',
+    );
+    final previousHitTestPolicy = WidgetController.hitTestWarningShouldBeFatal;
+    WidgetController.hitTestWarningShouldBeFatal = true;
+    addTearDown(
+      () =>
+          WidgetController.hitTestWarningShouldBeFatal = previousHitTestPolicy,
+    );
+    await tester.tap(cloudStorageInk);
     await tester.pump();
     expect(find.text('CLOUD STORAGE USAGE'), findsWidgets);
     // Panel tunggal: ringkasan rail dan kartu area boleh sama-sama tampil.
     expect(find.text('Google Drive'), findsWidgets);
+    expect(
+      tester
+          .getSemantics(cloudStorageInk)
+          .getSemanticsData()
+          .flagsCollection
+          .isSelected,
+      Tristate.isTrue,
+      reason: 'tab Cloud Storage harus menjadi tab aktif setelah tap',
+    );
   });
 
   testWidgets('API providers card opens the AI provider workspace', (

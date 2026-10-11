@@ -115,23 +115,30 @@ final class AccountCenterFrameLayout {
 
   /// Jumlah kolom per baris pada frame ini.
   ///
-  /// Diturunkan dari [AccountCenterWideDesktopFrame.columnsForRow]: jumlah
-  /// kartu pada baris, dibatasi aturan fit `card.minWidth` dari kontrak 115.6
-  /// terhadap band main frame. Baris mockup 3/5/5 hanya bertahan bila band
-  /// main cukup lebar — lihat [preservesMockupColumns].
-  List<int> get rowColumns => <int>[
-    for (var index = 0; index < rowHeights.length; index++)
-      AccountCenterWideDesktopFrame.columnsForRow(
-        mainWidth: mainWidth,
-        cardCount: AccountCenterWideDesktopFrame.rowCardCounts[index],
-      ),
-  ];
+  /// Frame produk lama memakai aturan fit [columnsForRow]. Baseline artwork
+  /// yang disetujui pengguna adalah mode eksplisit: ia mempertahankan rhythm
+  /// 3/5/5 dan memakai lantai kartu mockup presentation (200px), bukan lantai
+  /// domain 220px yang berlaku pada frame lama.
+  List<int> get rowColumns {
+    if (referenceVisual) {
+      return List<int>.unmodifiable(
+        AccountCenterWideDesktopFrame.mockupRowColumns,
+      );
+    }
+    return <int>[
+      for (var index = 0; index < rowHeights.length; index++)
+        AccountCenterWideDesktopFrame.columnsForRow(
+          mainWidth: mainWidth,
+          cardCount: AccountCenterWideDesktopFrame.rowCardCounts[index],
+        ),
+    ];
+  }
 
   /// True bila kolom frame masih identik mockup (3/5/5).
   ///
-  /// Penting untuk laporan: pada viewport referensi 1536, band main setelah
-  /// left navigation hanya 961px, sehingga lima kolom selebar 213px tidak muat
-  /// dan aturan fit 115.6 menurunkan baris 2/3 menjadi empat kolom.
+  /// Pada frame lama, viewport 1536 menyisakan band main 961px setelah left
+  /// navigation sehingga aturan fit menurunkan baris 2/3 menjadi empat.
+  /// Baseline reference visual sengaja tidak memakai frame lama tersebut.
   bool get preservesMockupColumns =>
       _listEquals(rowColumns, AccountCenterWideDesktopFrame.mockupRowColumns);
 
@@ -252,6 +259,13 @@ abstract final class AccountCenterWideDesktopFrame {
 
   /// Baris mockup 1536x1024 memakai 3 / 5 / 5 kolom.
   static const List<int> mockupRowColumns = <int>[3, 5, 5];
+
+  /// Lantai presentation untuk mode reference visual 1536x1024.
+  ///
+  /// Mode ini mengikuti artwork yang disetujui pengguna, yang mempertahankan
+  /// lima kartu pada baris 2/3 walau lebar aktualnya sedikit di bawah lantai
+  /// domain 220px. Tier legacy tetap memakai [AccountCenterDesignTokens.card].
+  static const double referenceVisualMinCardWidth = 200;
 
   /// Jumlah kartu per baris grid mockup, urutan baris 115.36.
   static const List<int> rowCardCounts = <int>[3, 5, 5];

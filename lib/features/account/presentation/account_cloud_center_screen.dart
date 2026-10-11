@@ -809,6 +809,7 @@ class _AccountCloudCenterScreenState
       snapshot: data,
       gridPlan: gridPlan,
       frame: frame,
+      referenceVisual: referenceVisual,
       onOpenProviderDetails: onOpenProviderDetails,
       providerManifest:
           widget.providerManifest ?? ProviderConnectorManifest.standard,
@@ -1187,6 +1188,7 @@ class _AuthenticationProfileCard extends StatelessWidget {
         for (final service in _signInServices)
           _SignInMethodRow(
             key: ValueKey('account-sign-in-method-${service.id}'),
+            providerId: service.id,
             icon: _signInIconFor(service),
             label: _signInLabelFor(service),
             state: service.state,
@@ -1357,6 +1359,7 @@ class _PlanBadge extends StatelessWidget {
 class _SignInMethodRow extends StatelessWidget {
   const _SignInMethodRow({
     super.key,
+    required this.providerId,
     required this.icon,
     required this.label,
     required this.state,
@@ -1364,6 +1367,7 @@ class _SignInMethodRow extends StatelessWidget {
     this.account,
   });
 
+  final String providerId;
   final IconData icon;
   final String label;
   final AccountCloudConnectionState state;
@@ -1398,11 +1402,15 @@ class _SignInMethodRow extends StatelessWidget {
           // dipakai di sini, bukan ditempel ke panel lain merely supaya token
           // terukur. Row email saja yang punya identitas; provider lain
           // memakai ikonnya seperti sebelumnya.
-          accountIdentity.isEmpty
-              ? Icon(icon, size: AccountCenterDesignTokens.iconSizes.action)
-              : AccountCenterCompactAvatar(
+          providerId == 'email-sign-in' && accountIdentity.isNotEmpty
+              ? AccountCenterCompactAvatar(
                   initials: accountIdentity.substring(0, 1),
                   semanticLabel: '$label account $accountIdentity',
+                )
+              : _SignInProviderMark(
+                  providerId: providerId,
+                  label: label,
+                  fallbackIcon: icon,
                 ),
           SizedBox(width: AccountCenterDesignTokens.spacing.sm),
           Expanded(
@@ -1459,6 +1467,51 @@ class _SignInMethodRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Brand marks in the authentication list use the same bundled assets as the
+/// rest of the product. Providers without a certified mark retain the
+/// Material fallback instead of pretending an external logo is available.
+class _SignInProviderMark extends StatelessWidget {
+  const _SignInProviderMark({
+    required this.providerId,
+    required this.label,
+    required this.fallbackIcon,
+  });
+
+  final String providerId;
+  final String label;
+  final IconData fallbackIcon;
+
+  String? get _assetPath => switch (providerId) {
+    'google-sign-in' => 'assets/brands/ai_tech/google_logo_0.webp',
+    'github-sign-in' => 'assets/brands/ai_tech/github_0.webp',
+    'microsoft-sign-in' => 'assets/brands/platforms/microsoft_0.webp',
+    'apple-sign-in' => 'assets/brands/apps/apple.svg',
+    _ => null,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final assetPath = _assetPath;
+    final size = AccountCenterDesignTokens.iconSizes.action;
+    if (assetPath == null) {
+      return Icon(fallbackIcon, size: size);
+    }
+    return Semantics(
+      image: true,
+      label: '$label icon',
+      child: ExcludeSemantics(
+        child: BrandLogo(
+          assetPath: assetPath,
+          width: size,
+          height: size,
+          fallbackIcon: fallbackIcon,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
@@ -2643,6 +2696,7 @@ class _FocusedAccountArea extends StatelessWidget {
     required this.snapshot,
     required this.gridPlan,
     required this.providerManifest,
+    this.referenceVisual = false,
     required this.onConnectProvider,
     this.onConfigureProvider,
     required this.onSyncNow,
@@ -2658,6 +2712,10 @@ class _FocusedAccountArea extends StatelessWidget {
 
   /// Rencana grid yang sudah diresolusi dari lebar viewport oleh pemanggil.
   final AccountCenterGridPlan gridPlan;
+
+  /// The supplied artwork is an explicit visual mode; the normal live chrome
+  /// keeps the equal-card contract used by the wide-desktop frame tests.
+  final bool referenceVisual;
 
   /// 115.45: geometri frame wide desktop. Null pada jalur responsif di bawah
   /// 1440, yang memakai perhitungan tinggi baris lamanya.
@@ -2698,6 +2756,10 @@ class _FocusedAccountArea extends StatelessWidget {
     final rows = <_AccountSection>[
       _AccountSection(
         tab: AccountCenterInformationArchitecture.tabs[0],
+        // The reference gives authentication a wider column so the profile
+        // and sign-in methods remain legible at desktop widths. Quick
+        // connect and storage stay equal, matching the supplied artwork.
+        columnWeights: referenceVisual ? const [1.4, 1, 1] : null,
         cards: [
           _AccountSectionCard.dashboard(
             key: const ValueKey('account-overview-card-authentication'),
@@ -2904,6 +2966,7 @@ class _FocusedAccountArea extends StatelessWidget {
                       contentWidth: contentWidth,
                       gap: gap,
                       maxColumns: gridPlan.maxColumns,
+                      columnWeights: section.columnWeights,
                       boundedHeight: false,
                     ),
                   ),
@@ -2932,14 +2995,14 @@ class _FocusedAccountArea extends StatelessWidget {
                     cards: rows[index].cards,
                     contentWidth: contentWidth,
                     gap: rowGap,
+                    columnWeights: rows[index].columnWeights,
                     // Anggaran kartu = seluruh tinggi baris; celah antar
                     // baris kini berada di luar anchor sehingga tidak lagi
                     // dipotong dari dalam baris.
                     boundedRowHeight: rowHeights[index],
                     // Mockup 1536x1024 memakai lima kolom pada baris 2 dan
-                    // 3; batas itu hanya sah di tier wide_desktop, dan
-                    // pada frame 115.45 angka kolom berasal dari kontrak
-                    // (1536 hanya muat 4 kolom setelah nav 192px).
+                    // 3. Reference visual mempertahankan 3/5/5; frame lama
+                    // tetap memakai rowColumns hasil aturan fit domain.
                     maxColumns:
                         frame?.rowColumns[index] ??
                         (gridPlan.tier == AccountCenterLayoutTier.wideDesktop
@@ -2968,6 +3031,7 @@ class _RowCards extends StatelessWidget {
     required this.contentWidth,
     required this.gap,
     required this.maxColumns,
+    this.columnWeights,
     this.boundedHeight = true,
     this.boundedRowHeight,
   });
@@ -2984,6 +3048,12 @@ class _RowCards extends StatelessWidget {
   /// menghilangkan kartu.
   final int maxColumns;
 
+  /// Optional proportional widths for a single physical row. The supplied
+  /// reference gives the authentication card extra room while keeping the
+  /// quick-connect and storage cards equal. Null preserves the canonical
+  /// equal-width grid for every other row.
+  final List<double>? columnWeights;
+
   /// Apakah baris punya tinggi terkunci (baris mockup) atau shrink-wrap
   /// (jalur scroll pada viewport pendek).
   final bool boundedHeight;
@@ -2997,10 +3067,11 @@ class _RowCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 115.36: mockup 1536x1024 memakai lima kolom selebar 213px, jadi
-    // ambang baris mockup adalah konstanta lokal 200px. Token desain
-    // (`card.minWidth` 220) tidak disentuh dan tetap dipakai di tier lain.
-    const mockupMinCardWidth = 200.0;
-    final minCard = maxColumns >= 5 ? mockupMinCardWidth : 220.0;
+    // mode reference visual memakai lantai presentation 200px. Token desain
+    // (`card.minWidth` 220) tetap dipakai di tier lain.
+    final minCard = maxColumns >= 5
+        ? AccountCenterWideDesktopFrame.referenceVisualMinCardWidth
+        : AccountCenterDesignTokens.card.minWidth;
     final perRow = cards.length < maxColumns ? cards.length : maxColumns;
     final fits =
         perRow > 0 && (contentWidth - gap * (perRow - 1)) / perRow >= minCard;
@@ -3025,9 +3096,23 @@ class _RowCards extends StatelessWidget {
       );
     }
 
-    final cardWidth = (contentWidth - gap * (perRow - 1)) / perRow;
+    final usableWidth = contentWidth - gap * (perRow - 1);
+    final weights = columnWeights;
+    final validWeights =
+        weights != null &&
+        weights.length == perRow &&
+        weights.every((weight) => weight.isFinite && weight > 0);
+    final resolvedWeights = validWeights ? weights : null;
+    final totalWeight =
+        resolvedWeights?.fold<double>(0, (sum, weight) => sum + weight) ?? 0.0;
+    final cardWidths = resolvedWeights != null && totalWeight > 0
+        ? [
+            for (final weight in resolvedWeights)
+              usableWidth * weight / totalWeight,
+          ]
+        : List<double>.filled(perRow, usableWidth / perRow);
     Widget card(int index) => SizedBox(
-      width: cardWidth,
+      width: cardWidths[index % perRow],
       child: KeyedSubtree(
         key: cards[index].key,
         child: cards[index].build(context, fillHeight: boundedHeight),
@@ -3112,10 +3197,15 @@ class _RowCards extends StatelessWidget {
 
 /// Satu baris mockup: anchor section + deretan kartu selebar viewport.
 class _AccountSection {
-  const _AccountSection({required this.tab, required this.cards});
+  const _AccountSection({
+    required this.tab,
+    required this.cards,
+    this.columnWeights,
+  });
 
   final AccountCenterTab tab;
   final List<_AccountSectionCard> cards;
+  final List<double>? columnWeights;
 }
 
 /// Pembungkus satu area kanonik dalam panel tunggal.

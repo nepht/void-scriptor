@@ -74,4 +74,29 @@ void main() {
       }
     },
   );
+
+  test(
+    'linked providers are shown as connected without changing the session owner',
+    () {
+      final snapshot = AccountCloudSnapshot.localOnly(
+        session: const AuthSession(
+          status: AuthStatus.authenticated,
+          userId: 'provider-user',
+          displayName: 'Verified Creator',
+          identityProvider: 'google',
+          linkedIdentityProviders: ['google', 'github'],
+        ),
+      );
+
+      expect(snapshot.connectedSignInServiceId, 'google-sign-in');
+      expect(
+        snapshot.service('google-sign-in').state,
+        AccountCloudConnectionState.connected,
+      );
+      expect(
+        snapshot.service('github-sign-in').state,
+        AccountCloudConnectionState.connected,
+      );
+    },
+  );
 }

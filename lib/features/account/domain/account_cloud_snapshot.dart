@@ -33,6 +33,10 @@ class AccountCloudSnapshot {
 
   factory AccountCloudSnapshot.localOnly({required AuthSession? session}) {
     final authenticated = session?.status == AuthStatus.authenticated;
+    final linkedProviders = {
+      ...?session?.linkedIdentityProviders,
+      ?session?.identityProvider,
+    };
     final connectedSignInId = switch (session?.identityProvider) {
       'google' => 'google-sign-in',
       'github' => 'github-sign-in',
@@ -48,7 +52,12 @@ class AccountCloudSnapshot {
       required String label,
       required String providerDescription,
     }) {
-      final connected = id == connectedSignInId;
+      final providerId = id.endsWith('-sign-in')
+          ? id.substring(0, id.length - '-sign-in'.length)
+          : null;
+      final connected =
+          id == connectedSignInId ||
+          (providerId != null && linkedProviders.contains(providerId));
       return AccountCloudService(
         id: id,
         label: label,

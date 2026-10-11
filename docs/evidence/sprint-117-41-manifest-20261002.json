@@ -25,7 +25,9 @@
     "EXPOSED": 1,
     "WITHHELD": 31
   },
-  "exposed_provider_ids": ["github"],
+  "exposed_provider_ids": [
+    "github"
+  ],
   "withheld_provider_ids": [
     "adobe",
     "anthropic",
@@ -78,5 +80,5 @@
     "117.41-02: an unmappable visibility produced an empty lock status that failed the != BLOCKED test and read as exposed",
     "117.41-03: a locked status that contradicts its recorded visibility could decide beta exposure without a violation"
   ],
-  "claim_boundary": "The canonical registry now records one explicitly authorized live GitHub App certification example as CERTIFIED/EXPOSED; no other provider is promoted. No public publication or secret access is claimed. Live provider health beyond the observed read-only GitHub App resources, quota, cost, hosted CI, and publication remain DEFERRED-EXTERNAL."
+  "claim_boundary": "The operator-authorized live GitHub App certification example is recorded as CERTIFIED/EXPOSED for the canonical overlay. No other provider is promoted; no public publication or secret access is claimed."
 }

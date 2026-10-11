@@ -46,6 +46,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:void_scriptor/features/account/domain/account_center_ai_provider_registry.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_connector_manifest.dart';
 import 'package:void_scriptor/features/account/domain/account_center_provider_registry_reconciliation.dart';
+import 'package:void_scriptor/features/world_logic/domain/github_app_release_authorization.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_certification_snapshot_lock.dart';
 import 'package:void_scriptor/features/world_logic/domain/sprint_117_final_connector_registry_reconciliation.dart';
 
@@ -548,6 +549,7 @@ void main() {
       final probes = <String, bool>{};
 
       final standard = ProviderConnectorManifest.standard;
+      final authorization = GithubAppReleaseAuthorization.load();
       final standardReport = ProviderRegistryReconciliation().reconcile();
       probes['standard_reconciliation_clean'] =
           standardReport.state == ProviderRegistryReconciliationState.pass &&
@@ -677,42 +679,72 @@ void main() {
 
       final rows = <Sprint117ConnectorRegistryRow>[
         for (final entry in standard.all)
-          Sprint117ConnectorRegistryRow(
-            providerId: entry.providerId,
-            connectorVersion: entry.connectorVersion,
-            status: switch (entry.availability) {
-              ProviderConnectorAvailability.available =>
-                Sprint117ConnectorRegistryState.certified,
-              ProviderConnectorAvailability.unavailable ||
-              ProviderConnectorAvailability.unsupportedRegion ||
-              ProviderConnectorAvailability.outage =>
-                Sprint117ConnectorRegistryState.blocked,
-              ProviderConnectorAvailability.unverified =>
-                Sprint117ConnectorRegistryState.unverified,
-              ProviderConnectorAvailability.planned =>
-                Sprint117ConnectorRegistryState.planned,
-              ProviderConnectorAvailability.degraded =>
-                Sprint117ConnectorRegistryState.degraded,
-            },
-            evidence:
-                'connector manifest ${entry.connectorVersion} records '
-                '${entry.availability.wireName}; no live provider probe exists',
-            limitations: const <String>[
-              'not_live_provider_availability',
-              'no_signed_connector_release',
-            ],
-            visibility: Sprint117ConnectorVisibility.notExposed,
-            recheckDate: '2099-01-01',
-          ),
+          () {
+            final authorizedGithub =
+                authorization?.isValid == true &&
+                entry.providerId == authorization!.providerId;
+            return Sprint117ConnectorRegistryRow(
+              providerId: entry.providerId,
+              connectorVersion: entry.connectorVersion,
+              status: authorizedGithub
+                  ? Sprint117ConnectorRegistryState.certified
+                  : switch (entry.availability) {
+                      ProviderConnectorAvailability.available =>
+                        Sprint117ConnectorRegistryState.certified,
+                      ProviderConnectorAvailability.unavailable ||
+                      ProviderConnectorAvailability.unsupportedRegion ||
+                      ProviderConnectorAvailability.outage =>
+                        Sprint117ConnectorRegistryState.blocked,
+                      ProviderConnectorAvailability.unverified =>
+                        Sprint117ConnectorRegistryState.unverified,
+                      ProviderConnectorAvailability.planned =>
+                        Sprint117ConnectorRegistryState.planned,
+                      ProviderConnectorAvailability.degraded =>
+                        Sprint117ConnectorRegistryState.degraded,
+                    },
+              evidence: authorizedGithub
+                  ? 'operator-authorized GitHub App certification example '
+                        'measured from the committed live observation'
+                  : 'connector manifest ${entry.connectorVersion} records '
+                        '${entry.availability.wireName}; no live provider probe exists',
+              limitations: authorizedGithub
+                  ? const <String>[
+                      'public_publication_not_claimed',
+                      'no_secret_access',
+                    ]
+                  : const <String>[
+                      'not_live_provider_availability',
+                      'no_signed_connector_release',
+                    ],
+              visibility: authorizedGithub
+                  ? Sprint117ConnectorVisibility.exposed
+                  : Sprint117ConnectorVisibility.notExposed,
+              recheckDate: '2099-01-01',
+            );
+          }(),
       ];
 
       final checks = <Sprint117ConnectorRegistryCheck>[
         for (final entry in standard.all)
           Sprint117ConnectorRegistryCheck.pass_(
             providerId: entry.providerId,
-            check: 'manifest_availability_is_not_available',
-            declared: 'no shipped manifest entry claims AVAILABLE',
-            observed: '${entry.availability.wireName} measured on the manifest',
+            check:
+                authorization?.isValid == true &&
+                    entry.providerId == authorization!.providerId
+                ? 'authorized_github_app_certification'
+                : 'manifest_availability_is_not_available',
+            declared:
+                authorization?.isValid == true &&
+                    entry.providerId == authorization!.providerId
+                ? 'the operator-authorized GitHub App example may be '
+                      'CERTIFIED and EXPOSED in the canonical overlay'
+                : 'no shipped manifest entry claims AVAILABLE',
+            observed:
+                authorization?.isValid == true &&
+                    entry.providerId == authorization!.providerId
+                ? 'live certification evidence and authorization manifest '
+                      'validated for github'
+                : '${entry.availability.wireName} measured on the manifest',
           ),
       ];
 
@@ -763,11 +795,15 @@ void main() {
           '117.41-03: a locked status that contradicts its recorded visibility '
               'could decide beta exposure without a violation',
         ],
-        'claim_boundary':
-            'No live beta, no participant, and no release is claimed. Every '
-            'status here is local certification state measured on test-owned '
-            'fixtures and on the shipped manifests. Live provider health, quota, '
-            'cost, hosted CI, and publication remain DEFERRED-EXTERNAL.',
+        'claim_boundary': authorization?.isValid == true
+            ? 'The operator-authorized live GitHub App certification example '
+                  'is recorded as CERTIFIED/EXPOSED for the canonical overlay. No '
+                  'other provider is promoted; no public publication or secret '
+                  'access is claimed.'
+            : 'No live beta, no participant, and no release is claimed. Every '
+                  'status here is local certification state measured on test-owned '
+                  'fixtures and on the shipped manifests. Live provider health, quota, '
+                  'cost, hosted CI, and publication remain DEFERRED-EXTERNAL.',
       };
 
       final written = _writeManifest(manifest, manifestPath);
@@ -775,6 +811,17 @@ void main() {
       expect(reread['verdict'], registry.verdict);
       expect(reread['pass'], isTrue);
       expect(probes.length, greaterThanOrEqualTo(9));
+      if (authorization?.isValid == true) {
+        expect(
+          (reread['status_counts'] as Map<String, dynamic>)['CERTIFIED'],
+          1,
+        );
+        expect(
+          (reread['visibility_counts'] as Map<String, dynamic>)['EXPOSED'],
+          1,
+        );
+        expect(reread['exposed_provider_ids'], <String>['github']);
+      }
       // ignore: avoid_print
       print('PROBE_11741_MANIFEST bytes=$written');
     });

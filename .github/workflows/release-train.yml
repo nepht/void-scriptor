@@ -12,7 +12,7 @@ on:
         default: 'master'
         type: string
       publish_r2:
-        description: 'Upload the signed Windows bundle to Cloudflare R2'
+        description: 'Upload the signed Windows installer EXE to Cloudflare R2'
         required: true
         default: false
         type: boolean
@@ -172,57 +172,73 @@ jobs:
             & $env:SIGNTOOL verify /pa /all $file.FullName
             if ($LASTEXITCODE -ne 0) { throw "Signature verification failed for $($file.FullName)" }
           }
-          $exe = Get-Item 'build/windows/x64/runner/Release/void_scriptor.exe'
-          $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          Write-Output "Signed and verified $($files.Count) Windows binaries"
+
+      - name: Build and sign Windows installer
+        shell: pwsh
+        env:
+          PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
+          SIGNING_SUBJECT: ${{ secrets.WINDOWS_CODESIGN_SUBJECT }}
+        run: |
+          $releaseLabel = if ('${{ github.event_name }}' -eq 'push') { '${{ github.ref_name }}' } else { '${{ inputs.candidate_ref }}' }
+          $releaseLabel = $releaseLabel -replace '[^A-Za-z0-9._-]', '-'
+          if ($releaseLabel -notmatch '^v\d+\.\d+\.\d+-rc\.\d+$') { throw "Installer publication requires a release-candidate label; received '$releaseLabel'." }
+          $installerVersion = ($releaseLabel -replace '^v', '') -replace '-rc\.\d+$', ''
+          $metadata = Join-Path (Get-Location) 'build/release-metadata'
+          New-Item -ItemType Directory -Force $metadata | Out-Null
+          $iscc = Get-ChildItem -Path @(${env:ProgramFiles(x86)}, ${env:ProgramFiles}) -Filter ISCC.exe -Recurse -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          if ($null -eq $iscc) { throw 'Inno Setup ISCC.exe was not found on windows-2022 runner' }
+          $sourceDir = (Resolve-Path 'build/windows/x64/runner/Release').Path
+          $outputDir = (Resolve-Path $metadata).Path
+          & $iscc.FullName "/DAppVersion=$installerVersion" "/DReleaseLabel=$releaseLabel" "/DSourceDir=$sourceDir" "/DOutputDir=$outputDir" 'packaging/windows/VoidScriptor.iss'
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE" }
+          $installerName = "VoidScriptor-$releaseLabel-windows-x64-signed.exe"
+          $installerPath = Join-Path $metadata $installerName
+          if (-not (Test-Path -LiteralPath $installerPath)) { throw "Installer was not produced: $installerName" }
+          $pfx = Join-Path $env:RUNNER_TEMP 'void-scriptor-signing.pfx'
+          & $env:SIGNTOOL sign /fd SHA256 /f $pfx /p $env:PFX_PASSWORD /tr http://timestamp.digicert.com /td SHA256 $installerPath
+          if ($LASTEXITCODE -ne 0) { throw "Installer signing failed for $installerName" }
+          & $env:SIGNTOOL verify /pa /all $installerPath
+          if ($LASTEXITCODE -ne 0) { throw "Installer signature verification failed for $installerName" }
+          $installerHash = (Get-FileHash -LiteralPath $installerPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          $installerSize = (Get-Item -LiteralPath $installerPath).Length
           $sourceRevision = (git rev-parse HEAD).Trim()
+          $r2Key = "releases/windows/$releaseLabel/$installerName"
           $manifest = [ordered]@{
-            format = 'void-scriptor-windows-signed-rc-v1'
+            format = 'void-scriptor-windows-signed-installer-rc-v1'
             source_revision = $sourceRevision
-            artifact = $exe.FullName.Replace((Get-Location).Path + '\\', '').Replace('\\', '/')
-            sha256 = $hash
+            artifact = $installerName
+            object_key = $r2Key
+            sha256 = $installerHash
+            size_bytes = $installerSize
             signing = [ordered]@{
               status = 'SIGNED_AND_VERIFIED'
               algorithm = 'Authenticode-SHA256'
               subject = $env:SIGNING_SUBJECT
             }
           }
-          New-Item -ItemType Directory -Force build/release-metadata | Out-Null
-          $manifest | ConvertTo-Json -Depth 5 | Out-File build/release-metadata/windows-signed-rc-manifest.json -Encoding utf8
-          Remove-Item $pfx -Force
-
-      - name: Package signed Windows bundle
-        shell: pwsh
-        run: |
-          $releaseLabel = if ('${{ github.event_name }}' -eq 'push') { '${{ github.ref_name }}' } else { '${{ inputs.candidate_ref }}' }
-          $releaseLabel = $releaseLabel -replace '[^A-Za-z0-9._-]', '-'
-          if ([string]::IsNullOrWhiteSpace($releaseLabel)) { throw 'Release label is empty' }
-          $metadata = Join-Path (Get-Location) 'build/release-metadata'
-          $zipName = "VoidScriptor-$releaseLabel-windows-x64-signed.zip"
-          $zipPath = Join-Path $metadata $zipName
-          if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
-          Compress-Archive -Path 'build/windows/x64/runner/Release/*' -DestinationPath $zipPath -CompressionLevel Optimal
-          $zipHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
-          $zipSize = (Get-Item -LiteralPath $zipPath).Length
-          $signedManifest = Get-Content -LiteralPath (Join-Path $metadata 'windows-signed-rc-manifest.json') -Raw | ConvertFrom-Json
-          $r2Key = "releases/windows/$releaseLabel/$zipName"
+          $manifestPath = Join-Path $metadata 'windows-signed-rc-manifest.json'
+          $manifest | ConvertTo-Json -Depth 8 | Out-File -LiteralPath $manifestPath -Encoding utf8
           $handoff = [ordered]@{
             format = 'void-scriptor-r2-handoff-v1'
             source_repository = 'nepht/void-scriptor'
             source_workflow = '.github/workflows/release-train.yml'
-            source_revision = (git rev-parse HEAD).Trim()
+            source_revision = $sourceRevision
             release_label = $releaseLabel
-            artifact = $zipName
+            artifact = $installerName
             object_key = $r2Key
-            sha256 = $zipHash
-            size_bytes = $zipSize
-            signing = $signedManifest.signing
+            sha256 = $installerHash
+            size_bytes = $installerSize
+            signing = $manifest.signing
           }
           $handoffPath = Join-Path $metadata 'windows-signed-r2-handoff.json'
           $handoff | ConvertTo-Json -Depth 8 | Out-File -LiteralPath $handoffPath -Encoding utf8
           "R2_OBJECT_KEY=$r2Key" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          "R2_ZIP_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "R2_EXE_PATH=$installerPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "R2_HANDOFF_PATH=$handoffPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          Write-Output "Prepared signed bundle: $zipName ($zipSize bytes, SHA-256 $zipHash)"
+          Remove-Item $pfx -Force
+          Write-Output "Prepared signed installer: $installerName ($installerSize bytes, SHA-256 $installerHash)"
 
       - name: Require R2 handoff secrets
         if: github.event_name == 'push' || inputs.publish_r2 == true
@@ -249,16 +265,16 @@ jobs:
             exit 1
           }
 
-      - name: Upload signed bundle and handoff to Cloudflare R2
+      - name: Upload signed installer and handoff to Cloudflare R2
         if: github.event_name == 'push' || inputs.publish_r2 == true
         shell: pwsh
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_UPLOAD_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY" --remote --file "$env:R2_ZIP_PATH"
+          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY" --remote --file "$env:R2_EXE_PATH"
           npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY.json" --remote --file "$env:R2_HANDOFF_PATH"
-          Write-Output "Published signed bundle and handoff: $env:R2_OBJECT_KEY"
+          Write-Output "Published signed installer and handoff: $env:R2_OBJECT_KEY"
 
       - name: Upload signed Windows candidate
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -268,6 +284,6 @@ jobs:
             build/windows/x64/runner/Release
             build/release-metadata/windows-signed-rc-manifest.json
             build/release-metadata/windows-signed-r2-handoff.json
-            build/release-metadata/*.zip
+            build/release-metadata/*.exe
           if-no-files-found: error
           retention-days: 30

@@ -5630,6 +5630,60 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/ws_import_negctl_backup.dart`
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 107. Fase 107 - Kontrak focus order `PluginInstallDialog` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU** - kolam kandidat in-glob `lib/features/*/presentation/*_screen.dart` tetap **0** (28 layar yang dilaporkan skrip pra-run tanpa kontrak semuanya **sudah** punya kontrak focus-order; verifikasi class-name terhadap korpus `*_focus_order_test.dart` mengonfirmasi 0 genuine gap). Run ini melanjutkan opsi (2) fase 106: **audit permukaan non-`*_screen.dart`** - dan menemukan satu **genuine gap mandiri** di `lib/core/plugin/`: `PluginInstallDialog` belum punya kontrak, sedangkan permukaan plugin lain (`PluginManagerScreen`) sudah berkontrak (`test/core/plugin/plugin_ui_test.dart`). Satu-satunya perubahan yang di-commit = section ini + satu file test kontrak.
+
+### (a) Kandidat: mengapa dialog ini, bukan layar lain
+
+1. Audit in-glob fase 80-107 mencatat kolam kandidat = 0. Keputusan Choirudin (opsi 2, fase 88/95/106) mengizinkan perluasan ke widget non-`*_screen.dart`; riwayat fase 61/65/66/106 sudah mengontrak permukaan dialog, jadi preseden ada.
+2. Verifikasi independen: skrip pra-run mengklaim 28 layar eligible tanpa kontrak, tetapi scan class-name terhadap korpus test membuktikan **semua 28 sudah berkontrak**. Karena itu run ini beralih ke permukaan dialog/panel di luar glob layar.
+3. `PluginInstallDialog` = `StatefulWidget` mandiri, **tanpa database/network/plugin channel** - hanya `jsonDecode` + `PluginManifest.fromJson` (domain murni). Punya **3 elemen interaktif** (satu `TextField` + `TextButton` Batal + `FilledButton` Instal), memenuhi syarat >= 2.
+4. Sibling plugin: `PluginManagerScreen` sudah diuji (`plugin_ui_test.dart`), jadi `PluginInstallDialog` adalah pasangan yang belum simetris.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/core/plugin/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105/106: `showDialog` dari harness tombol tunggal, `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 14 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon` (fallback: `hintText` dari `InputDecoration` terdekat); rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Ring maju (ground truth):
+- Tab 1: field JSON `Tempel JSON manifest plugin...` @ L=537.0 T=428.0 W=462.0 H=144.0
+- Tab 2: `Batal` @ L=779.9 T=616.0 W=94.5 H=40.0
+- Tab 3: `Instal` @ L=882.4 T=616.0 W=132.6 H=40.0
+- Tab 4: kembali ke field (ring tertutup, **3 stop**).
+
+Shift+Tab menelusuri ring yang sama mundur (`Instal` -> `Batal` -> field). Manifest tidak valid (`{ not json`) menahan dialog tetap terbuka, merender satu pesan error merah (`FormatException: Unexpected character ...`), dan **tidak menggeser rantai fokus**. `takeException()` = null di semua kasus.
+
+### (c) Kontrak final
+
+`test/core/plugin/presentation/plugin_install_dialog_focus_order_test.dart` - **3 test**, mengunci: urutan Tab = `[field JSON, Batal, Instal]` (3 stop); field konten berada **di atas** baris aksi; aksi dibaca kiri-ke-kanan (`Batal.left < Instal.left`, `Batal.top ≈ Instal.top`); setiap stop ber-rect non-zero (W>0, H>0); Shift+Tab membalik rantai (`Instal` -> `Batal` -> field); manifest tidak valid menahan dialog + menampilkan pesan error tanpa menggeser rantai.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata).
+- `flutter analyze test/core/plugin/presentation/plugin_install_dialog_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (3 test)`**, exit 0.
+- `flutter test test/core/plugin/` (gate feature) -> **`All tests passed! (26 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/plugin_install_focus_bak.dart`, lalu satu ekspektasi dipalsukan: `_expectedLabels` ditukar menjadi `['Instal','Batal','Tempel JSON manifest plugin...']`.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1**, `+1 -2`; dua test gagal pada assert urutan label.
+- Restore dari backup, backup dihapus, test dijalankan ulang -> **`All tests passed! (3 test)`** exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- Tidak ada defect kode produksi pada `PluginInstallDialog`: traversal keyboard-nya sudah benar (field di atas, aksi kiri-ke-kanan, urutan Tab = urutan visual). Kontrak ini **mengunci perilaku yang sudah benar**, bukan memperbaiki bug. **Tidak ada perubahan kode produksi run ini.**
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap` di 9 layar) tetap terbuka dan tidak disentuh run ini.
+- Klaim skrip pra-run (28 layar tanpa kontrak) **stale** - dikoreksi oleh scan class-name independen run ini.
+
+### Kesimpulan
+
+- **Status audit: 63/92 layar in-glob `presentation/*_screen.dart` berkontrak focus-order (class-name), + permukaan non-layar; total 77 file kontrak focus-order** (`find test -name "*_focus_order_test.dart"`). Run ini menambah 1 kontrak baru (`PluginInstallDialog`).
+- Line ending laporan: **LF murni** -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

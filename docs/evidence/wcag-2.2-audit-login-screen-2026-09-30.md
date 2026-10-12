@@ -5798,6 +5798,66 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/ws_tab_bar_negctl_backup.dart
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 110. Fase 110 — Focus Order di `SceneBeatEditor` (2.4.3)
+
+### (a) Konteks & pemilihan permukaan
+
+Skrip pra-run (`scripts/wcag_focus_gate.py`) melaporkan "27 layar eligible tanpa kontrak focus-order". Klaim itu **stale/false positive**: gate mencocokkan **nama file test eksak** `<base>_focus_order_test.dart` (dengan suffix `_screen`), sedangkan 27 layar itu sudah punya kontrak dengan nama pendek (mis. `story_workspace_focus_order_test.dart`, `asset_browser_focus_order_test.dart`). Verifikasi run ini: ke-27 file kontrak itu dijalankan serentak -> **`All tests passed! (80 test)`**, exit 0. Jadi kolam kandidat in-glob `lib/**/*_screen.dart` dengan >=2 handler interaktif dan **tanpa** kontrak (baik by-nama-file maupun by-kelas+Tab) = **0**.
+
+Karena itu run ini mengikuti preseden fase 106-109: mengaudit **permukaan fokus non-layar** yang benar-benar belum dikunci. Kandidat terpilih: `SceneBeatEditor` (`lib/features/story/presentation/scene_beat_editor.dart`) — editor beat scene yang dapat di-reorder, dipakai `scene_workspace_screen.dart`, **tanpa** database/network/async (deterministik), dan belum punya kontrak focus-order (tidak ada test yang menyebut kelasnya).
+
+Alasan audit 2.4.3: satu-satunya editor beat yang dapat dicapai keyboard adalah daftar ini. Urutan traversal Tab antar baris beat — dan apakah drag-handle menambah stop hantu — belum pernah dikunci.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/story/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak di-commit). Mekanik: `MaterialApp > Scaffold > SceneBeatEditor` (3 beat fixture), `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon` di bawah `ListTile` terdekat; rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Ring maju (ground truth, 3 beat `b1..b3`):
+- Stop 0 `00.0` @1464.0,20.0  40.0x40.0 (tombol delete beat 1; `Icon` di dalam 24x24 @1472,28)
+- Stop 1 `05.0` @1464.0,100.0 40.0x40.0 (tombol delete beat 2)
+- Stop 2 `10.0` @1464.0,180.0 40.0x40.0 (tombol delete beat 3)
+- Stop 3 -> rect `00.0` berulang -> **ring tertutup pada 3 stop**.
+
+Fakta pendukung terukur: `ICONBUTTONS=3`, `DELETE=3`, `DELAYED=3` (`ReorderableDelayedDragStartListener`), `DRAG_LISTENERS=0` (`ReorderableDragStartListener`), pitch vertikal 80px, left edge identik (1464), `EXC=null`.
+
+Varian: **1 beat** -> 1 stop (`00.0`); **0 beat** -> `EMPTY_ICONBUTTONS=0`, hanya root focus scope (`_FocusScopeWithExternalFocusNode` rect penuh viewport) yang terjangkau -> **0 stop affordance**.
+
+**Temuan WCAG 2.4.3:** traversal mengikuti urutan deklarasi baris (`b1 -> b2 -> b3`), bukan urutan visual acak. Drag-handle reorder adalah `ReorderableDelayedDragStartListener` (**long-press/pointer**), bukan stop keyboard — jadi reorder tidak bisa dilakukan via keyboard (ini batasan **2.1.1/2.5.1**, dilaporkan terpisah, **bukan** defect 2.4.3). Tidak ada stop ber-rect nol, fokus tidak pernah drop ke null, dan tidak ada exception.
+
+### (c) Kontrak final
+
+`test/features/story/presentation/scene_beat_editor_focus_order_test.dart` — **7 test**, mengunci: (1) 3 beat -> 3 stop urutan label `['00.0','05.0','10.0']`; (2) tiap stop ber-rect non-zero, menumpuk atas-ke-bawah (top naik monoton), left edge seragam; (3) tiap stop ber-center tepat di `IconButton` delete beat yang cocok (index == urutan visual); (4) Tab setelah beat terakhir kembali ke beat pertama (rect sama); (5) 3 `ReorderableDelayedDragStartListener` tidak menambah stop keyboard (tetap 3); (6) 1 beat -> 1 stop; (7) daftar kosong -> 0 stop affordance, tanpa exception. `_isAffordance` memfilter root focus scope agar tidak dihitung sebagai stop.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata), lalu `--set-exit-if-changed` -> **0 changed**, exit 0.
+- `dart analyze <kontrak>` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (7 test)`**, exit 0.
+- `flutter test test/features/story/` (gate feature) -> **`All tests passed! (229 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/scene_beat_editor_negctl_backup.dart` (10055 byte), lalu satu ekspektasi dipalsukan: urutan label `['00.0','05.0','10.0']` ditukar menjadi `['10.0','05.0','00.0']` pada test 1.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_TRUE_EXIT=1`), `+6 -1`; kegagalan pada test "1. tiga beat menghasilkan tiga stop dengan urutan baca".
+- Restore dari backup (verifikasi `MUTATION_REMAINING=0` -> mutasi hilang), backup dihapus (`test -e` -> BACKUP_GONE), test dijalankan ulang -> **`All tests passed! (7 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `SceneBeatEditor`: traversal keyboard sudah benar. **Tidak ada defect 2.4.3** dan **tidak ada perubahan kode produksi** run ini.
+- Dua observasi lintas-kriteria dicatat terbuka (bukan patch 2.4.3):
+  1. Reorder beat hanya via pointer (`ReorderableDelayedDragStartListener`, long-press) -> **2.1.1/2.5.1**: tidak ada jalur keyboard untuk memindahkan beat.
+  2. Tombol delete beat adalah `IconButton` icon-only **tanpa `Tooltip`/`Semantics` label** (probe: `TOOLTIP_COUNT=0`, label semantik baris hanya berisi teks beat) -> **4.1.2/1.1.1**, dilaporkan terpisah, tidak diperbaiki di run ini.
+- Klaim skrip pra-run ("27 layar tanpa kontrak") **stale** — dikoreksi oleh scan independen run ini (ke-27 kontrak lolos serentak).
+
+### Kesimpulan
+
+- **Status audit: kolam kandidat in-glob `presentation/*_screen.dart` tetap 0** (semua layar tanpa kontrak = 0 handler non-null). Run ini menambah **1 kontrak baru pada permukaan non-layar** (`SceneBeatEditor`), sehingga total file kontrak focus-order = **80** (`find test -name "*_focus_order_test.dart"`).
+- Line ending laporan: **LF murni** (0 CRLF) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

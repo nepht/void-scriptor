@@ -5913,6 +5913,63 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/output_review_panel_focus_neg
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 112. Fase 112 — Focus Order di `RecentProjects` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU.** Skrip pra-run kembali melaporkan 27 layar `presentation/*_screen.dart` "tanpa kontrak focus-order". Verifikasi independen run ini mengulang hasil fase 107-111: klaim itu **stale/false-positive** (gate mencocokkan nama file eksak `<base>_screen_focus_order_test.dart`, sedangkan 27 layar itu sudah punya kontrak Tab-traversal bernama pendek). Scan run ini: untuk setiap kelas pada 27 kandidat dicari file `*_focus_order_test.dart` yang mengimpor kelas itu **dan** memuat `LogicalKeyboardKey.tab` -> **27/27 ketemu, 0 genuine gap**. Seluruh 30 `*_screen.dart` yang belum ter-cover juga di-scan dan **semuanya h=0 (placeholder)** -> kolam layar benar-benar kosong. Run ini karena itu menempuh jalur non-layar (preseden fase 106-111) dan menemukan satu genuine gap mandiri yang **dipakai produksi**: `RecentProjects` (`lib/features/dashboard/presentation/widgets/recent_projects.dart`).
+
+### (a) Kandidat: mengapa `RecentProjects`, bukan yang lain
+
+1. **Genuine gap kelas (bukan kebetulan nama file):** scan korpus seluruh 81 file `*_focus_order_test.dart` -> `RecentProjects` **0 hit**. File perilakunya sudah ada (`test/features/dashboard/recent_projects_test.dart`, 5 test tap/scroll) tetapi **tidak** pernah menekan `LogicalKeyboardKey.tab` -> urutan fokus belum dikunci.
+2. **Dipakai produksi (bukan alpha-scope):** dirender dari `DashboardScreen` -> traversal keyboard-nya benar-benar dialami pengguna, bukan layar mati.
+3. **Mandiri, tanpa database/network:** satu-satunya dependensi adalah `projectControllerProvider` (Riverpod), yang deterministik lewat `overrideWith` di test -> probe stabil tanpa fixture DB/HTTP. Memenuhi syarat >= 2 elemen interaktif (tombol "View all" + tombol "Continue writing" + tiap baris proyek lain).
+4. **Empat stop dengan dua baris yang mudah salah urut:** baris header ("View all" kanan-atas), lalu kartu "Pick up where you left off" ("Continue writing"), lalu daftar "Other recent projects" (Bravo, Charlie). Urutan Tab antar blok ini, dan arah atas-ke-bawah, adalah kontrak 2.4.3 yang belum pernah dikunci.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/dashboard/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105-111: `ProviderScope(overrides:[projectControllerProvider]) > MaterialApp > Scaffold > Align(topLeft) > RecentProjects`, `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon` (fallback: `Tooltip`, lalu `widget:<runtimeType>`); rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Fixture: 3 proyek (`Alpha` lastOpened 2026-09-07 = paling baru, `Bravo` 09-05, `Charlie` 09-03).
+
+Ring maju (ground truth):
+- Tab 1 `View all` @ L=... T=21.0 (tombol header, kanan-atas)
+- Tab 2 `Continue writing` @ T=221.0 (kartu proyek paling baru = `Alpha`)
+- Tab 3 `Bravo` @ T=318.0 (baris daftar "other recent")
+- Tab 4 `Charlie` @ T=410.0 (baris daftar "other recent")
+- Tab 5 -> rect `View all` berulang -> **ring tertutup pada 4 stop**.
+
+**Temuan WCAG 2.4.3:** urutan Tab mengikuti **urutan visual baca** (header -> kartu utama -> daftar di bawahnya, atas-ke-bawah) - bentuk 2.4.3 yang benar. Tidak ada stop ber-rect nol, fokus tidak pernah drop ke null, `EXC=null`. Tidak ada defect dan **tidak ada perubahan kode produksi**.
+
+### (c) Kontrak final
+
+`test/features/dashboard/recent_projects_focus_order_test.dart` - **6 test**, mengunci: (1) ring Tab = 4 stop urutan label `[View all, Continue writing, Bravo, Charlie]`; (2) tiap stop berada **lebih bawah** dari stop sebelumnya (`top[i] > top[i-1]`) - urutan atas-ke-bawah; (3) setiap stop ber-rect non-zero dan di dalam viewport 1536x1024; (4) Tab setelah stop terakhir kembali ke stop pertama (rect sama) - ring tertutup; (5) `Shift+Tab` menelusuri ring yang sama mundur (tiap rect mundur adalah anggota ring maju, dan urutannya = kebalikan ring maju); (6) 10x Tab tidak pernah kehilangan fokus dan `takeException() == null`.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata), lalu `--set-exit-if-changed` -> **0 changed**, exit 0.
+- `dart analyze test/features/dashboard/recent_projects_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (6 test)`**, exit 0.
+- `flutter test test/features/dashboard/` (gate feature) -> **`All tests passed! (29 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/recent_projects_focus_negctl_backup.dart` (8963 byte), lalu satu ekspektasi dipalsukan: urutan label `['View all','Continue writing',...]` ditukar menjadi `['Continue writing','View all',...]`.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_TRUE_EXIT=1`), `+5 -1`; kegagalan pada test "1. Tab ring is 4 stops in top-to-bottom reading order" (`Expected: ['Continue writing', 'View all', 'Bravo', 'Charlie']` vs `Actual: ['View all', 'Continue writing', 'Bravo', 'Charlie']`).
+- Restore dari backup (verifikasi urutan kembali `View all` lalu `Continue writing`), backup dihapus (`test -e` -> `BACKUP_GONE`), test dijalankan ulang -> **`All tests passed! (6 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `RecentProjects`: traversal keyboard sudah benar (4 stop, urutan visual atas-ke-bawah, ring tertutup). **Tidak ada defect 2.4.3** dan **tidak ada perubahan kode produksi** run ini. Kontrak ini **mengunci perilaku yang sudah benar**.
+- Klaim skrip pra-run ("27 layar tanpa kontrak") **stale** - dikoreksi oleh scan independen run ini (27/27 sudah berkontrak dengan nama pendek; 30 layar sisanya placeholder h=0).
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap`) dan fase 111 (tombol `IconButton` icon-only tanpa label Semantics) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: kolam kandidat in-glob `presentation/*_screen.dart` tetap 0** (27/27 kandidat pra-run sudah berkontrak; 30 sisanya placeholder h=0). Run ini menambah **1 kontrak baru pada permukaan non-layar** (`RecentProjects`), sehingga total file kontrak focus-order = **82** (`find test -name "*_focus_order_test.dart"`).
+- Line ending laporan: **LF murni** (0 CR) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini (konsisten fase 111).
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

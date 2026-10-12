@@ -11,6 +11,11 @@ on:
         required: true
         default: 'master'
         type: string
+      publish_r2:
+        description: 'Upload the signed Windows bundle to Cloudflare R2'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -169,9 +174,10 @@ jobs:
           }
           $exe = Get-Item 'build/windows/x64/runner/Release/void_scriptor.exe'
           $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          $sourceRevision = (git rev-parse HEAD).Trim()
           $manifest = [ordered]@{
             format = 'void-scriptor-windows-signed-rc-v1'
-            source_revision = '${{ github.sha }}'
+            source_revision = $sourceRevision
             artifact = $exe.FullName.Replace((Get-Location).Path + '\\', '').Replace('\\', '/')
             sha256 = $hash
             signing = [ordered]@{
@@ -184,6 +190,76 @@ jobs:
           $manifest | ConvertTo-Json -Depth 5 | Out-File build/release-metadata/windows-signed-rc-manifest.json -Encoding utf8
           Remove-Item $pfx -Force
 
+      - name: Package signed Windows bundle
+        shell: pwsh
+        run: |
+          $releaseLabel = if ('${{ github.event_name }}' -eq 'push') { '${{ github.ref_name }}' } else { '${{ inputs.candidate_ref }}' }
+          $releaseLabel = $releaseLabel -replace '[^A-Za-z0-9._-]', '-'
+          if ([string]::IsNullOrWhiteSpace($releaseLabel)) { throw 'Release label is empty' }
+          $metadata = Join-Path (Get-Location) 'build/release-metadata'
+          $zipName = "VoidScriptor-$releaseLabel-windows-x64-signed.zip"
+          $zipPath = Join-Path $metadata $zipName
+          if (Test-Path -LiteralPath $zipPath) { Remove-Item -LiteralPath $zipPath -Force }
+          Compress-Archive -Path 'build/windows/x64/runner/Release/*' -DestinationPath $zipPath -CompressionLevel Optimal
+          $zipHash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
+          $zipSize = (Get-Item -LiteralPath $zipPath).Length
+          $signedManifest = Get-Content -LiteralPath (Join-Path $metadata 'windows-signed-rc-manifest.json') -Raw | ConvertFrom-Json
+          $r2Key = "releases/windows/$releaseLabel/$zipName"
+          $handoff = [ordered]@{
+            format = 'void-scriptor-r2-handoff-v1'
+            source_repository = 'nepht/void-scriptor'
+            source_workflow = '.github/workflows/release-train.yml'
+            source_revision = (git rev-parse HEAD).Trim()
+            release_label = $releaseLabel
+            artifact = $zipName
+            object_key = $r2Key
+            sha256 = $zipHash
+            size_bytes = $zipSize
+            signing = $signedManifest.signing
+          }
+          $handoffPath = Join-Path $metadata 'windows-signed-r2-handoff.json'
+          $handoff | ConvertTo-Json -Depth 8 | Out-File -LiteralPath $handoffPath -Encoding utf8
+          "R2_OBJECT_KEY=$r2Key" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "R2_ZIP_PATH=$zipPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "R2_HANDOFF_PATH=$handoffPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Write-Output "Prepared signed bundle: $zipName ($zipSize bytes, SHA-256 $zipHash)"
+
+      - name: Require R2 handoff secrets
+        if: github.event_name == 'push' || inputs.publish_r2 == true
+        shell: pwsh
+        env:
+          R2_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_UPLOAD_TOKEN }}
+          R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          $missing = @(
+            if ([string]::IsNullOrWhiteSpace($env:R2_API_TOKEN)) { 'CLOUDFLARE_R2_UPLOAD_TOKEN' }
+            if ([string]::IsNullOrWhiteSpace($env:R2_ACCOUNT_ID)) { 'CLOUDFLARE_ACCOUNT_ID' }
+          )
+          if ($missing.Count -gt 0) {
+            Write-Error ('R2 publication is fail-closed. Configure GitHub secret(s): ' + ($missing -join ', '))
+            exit 1
+          }
+          if ('${{ github.event_name }}' -eq 'push') {
+            $releaseLabel = '${{ github.ref_name }}'
+          } else {
+            $releaseLabel = '${{ inputs.candidate_ref }}'
+          }
+          if ($releaseLabel -notmatch '^v\d+\.\d+\.\d+-rc\.\d+$') {
+            Write-Error "R2 publication requires a release-candidate ref like v1.2.0-rc.3; received '$releaseLabel'."
+            exit 1
+          }
+
+      - name: Upload signed bundle and handoff to Cloudflare R2
+        if: github.event_name == 'push' || inputs.publish_r2 == true
+        shell: pwsh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_UPLOAD_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY" --remote --file "$env:R2_ZIP_PATH"
+          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY.json" --remote --file "$env:R2_HANDOFF_PATH"
+          Write-Output "Published signed bundle and handoff: $env:R2_OBJECT_KEY"
+
       - name: Upload signed Windows candidate
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -191,5 +267,7 @@ jobs:
           path: |
             build/windows/x64/runner/Release
             build/release-metadata/windows-signed-rc-manifest.json
+            build/release-metadata/windows-signed-r2-handoff.json
+            build/release-metadata/*.zip
           if-no-files-found: error
           retention-days: 30

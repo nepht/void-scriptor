@@ -98,7 +98,10 @@ void main() {
           await Future<void>.delayed(const Duration(milliseconds: 100));
         }
       });
-      await tester.pumpAndSettle();
+      // CharacterWorkspaceScreen starts an async provider and may show an
+      // indeterminate progress indicator; settling is not required to verify
+      // selection/routing and can hang under parallel load.
+      await tester.pump();
       expect(container.read(selectionProvider)?.assetType, AssetType.character);
       expect(find.byType(CharacterWorkspaceScreen), findsOneWidget);
       await tester.runAsync(() async {

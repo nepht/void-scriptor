@@ -244,11 +244,13 @@ jobs:
         if: github.event_name == 'push' || inputs.publish_r2 == true
         shell: pwsh
         env:
-          R2_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_UPLOAD_TOKEN }}
+          R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           $missing = @(
-            if ([string]::IsNullOrWhiteSpace($env:R2_API_TOKEN)) { 'CLOUDFLARE_R2_UPLOAD_TOKEN' }
+            if ([string]::IsNullOrWhiteSpace($env:R2_ACCESS_KEY_ID)) { 'CLOUDFLARE_R2_ACCESS_KEY_ID' }
+            if ([string]::IsNullOrWhiteSpace($env:R2_SECRET_ACCESS_KEY)) { 'CLOUDFLARE_R2_SECRET_ACCESS_KEY' }
             if ([string]::IsNullOrWhiteSpace($env:R2_ACCOUNT_ID)) { 'CLOUDFLARE_ACCOUNT_ID' }
           )
           if ($missing.Count -gt 0) {
@@ -269,11 +271,14 @@ jobs:
         if: github.event_name == 'push' || inputs.publish_r2 == true
         shell: pwsh
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_R2_UPLOAD_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY" --remote --file "$env:R2_EXE_PATH"
-          npx --yes wrangler@4.149.0 r2 object put "voidscriptor-downloads/$env:R2_OBJECT_KEY.json" --remote --file "$env:R2_HANDOFF_PATH"
+          aws --version
+          $endpoint = "https://$env:CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp "$env:R2_EXE_PATH" "s3://voidscriptor-downloads/$env:R2_OBJECT_KEY" --endpoint-url $endpoint --region auto --no-progress --content-type "application/vnd.microsoft.portable-executable"
+          aws s3 cp "$env:R2_HANDOFF_PATH" "s3://voidscriptor-downloads/$env:R2_OBJECT_KEY.json" --endpoint-url $endpoint --region auto --no-progress --content-type "application/json; charset=utf-8"
           Write-Output "Published signed installer and handoff: $env:R2_OBJECT_KEY"
 
       - name: Upload signed Windows candidate

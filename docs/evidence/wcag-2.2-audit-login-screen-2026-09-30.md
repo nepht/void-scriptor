@@ -5857,6 +5857,61 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/scene_beat_editor_negctl_back
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 111. Fase 111 — Focus Order di `OutputReviewPanel` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU.** Skrip pra-run melaporkan 27 layar `presentation/*_screen.dart` "tanpa kontrak focus-order". Verifikasi independen run ini membuktikan klaim itu **stale/false-positive** (mengulang fase 107-110): gate mencocokkan **nama file eksak** `<base>_screen_focus_order_test.dart`, sedangkan ke-27 layar itu sudah punya kontrak Tab-traversal nyata dengan nama pendek. Scan run ini: untuk setiap kelas `*Screen` pada 27 kandidat, dicari file `*_focus_order_test.dart` yang mengimpor kelas itu **dan** memuat `LogicalKeyboardKey.tab` -> **27/27 ketemu, 0 genuine gap**. Run ini karena itu menempuh jalur non-layar (preseden fase 106-110) dan menemukan satu genuine gap mandiri: `OutputReviewPanel` (`lib/features/ai/presentation/output_review_panel.dart`).
+
+### (a) Kandidat: mengapa `OutputReviewPanel`, bukan yang lain
+
+1. **Genuine gap kelas (bukan kebetulan nama file):** scan korpus seluruh 80 file `*_focus_order_test.dart` -> `OutputReviewPanel` **0 hit**. File perilakunya sudah ada (`test/features/ai/presentation/output_review_panel_test.dart`, 1 test tap/enterText) tetapi **tidak** pernah menekan `LogicalKeyboardKey.tab` -> urutan fokus belum dikunci.
+2. **Dipakai produksi (bukan alpha-scope):** dirujuk `AdvancedAiStudioScreen` (`lib/features/ai/presentation/advanced_ai_studio_screen.dart:257`) -> traversal keyboard-nya benar-benar dialami pengguna, bukan layar mati.
+3. **Mandiri, tanpa database/network/provider/Riverpod:** seluruh data disuntikkan lewat constructor (`onApprove`, `onReject`, `onFeedback`); `_sendFeedback` hanya menyentuh `TextEditingController` lokal -> probe deterministik. Memenuhi syarat >= 2 elemen interaktif (2 `TextButton.icon` + `TextField` + `IconButton`).
+4. **Empat stop dengan dua baris yang mudah salah urut:** baris aksi atas (`Approve`, `Reject` via `Wrap`) dan baris feedback bawah (`TextField` + `IconButton` send). Urutan Tab antar dua baris ini, dan arah kiri-ke-kanan tiap baris, adalah kontrak 2.4.3 yang belum pernah dikunci.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/ai/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105-110: `MaterialApp > Scaffold > Align(topLeft) > OutputReviewPanel`, `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon` (fallback: `Tooltip` `IconButton`, lalu `widget:<runtimeType>`); rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Ring maju (ground truth):
+- Tab 1 `Approve` @ L=620.35 T=4.0 W=152.7 H=40.0
+- Tab 2 `Reject`  @ L=777.05 T=4.0 W=138.6 H=40.0
+- Tab 3 `widget:Focus` @ L=0.0 T=60.0 W=1488.0 H=24.0 (field feedback)
+- Tab 4 `widget:Focus` @ L=1492.0 T=52.0 W=40.0 H=40.0 (tombol send)
+- Tab 5 -> rect `Approve` berulang -> **ring tertutup pada 4 stop**.
+
+**Temuan WCAG 2.4.3:** urutan Tab mengikuti **urutan visual baca** (baris aksi atas kiri-ke-kanan, lalu baris feedback bawah kiri-ke-kanan) - bentuk 2.4.3 yang benar. Tidak ada stop ber-rect nol, fokus tidak pernah drop ke null, `EXC=null`. Tidak ada defect dan **tidak ada perubahan kode produksi**.
+
+### (c) Kontrak final
+
+`test/features/ai/presentation/output_review_panel_focus_order_test.dart` - **7 test**, mengunci: (1) ring Tab = 4 stop urutan label `[Approve, Reject, widget:Focus, widget:Focus]`, tiap stop ber-center di dalam rect affordance-nya (baris atas lebih dulu, kiri-ke-kanan, lalu baris bawah kiri-ke-kanan); (2) baris aksi atas berada **di atas** baris feedback (`approve.top < field.top`, `reject.top < field.top`, `approve.top == reject.top`); (3) tiap baris dibaca kiri-ke-kanan (`approve.left < reject.left`, `field.left < send.left`); (4) setiap stop ber-rect non-zero dan di dalam viewport 1536x1024; (5) Tab setelah stop terakhir kembali ke stop pertama (rect sama); (6) `Shift+Tab` menelusuri ring yang sama mundur (tiap rect mundur adalah anggota ring maju); (7) 10x Tab tidak pernah kehilangan fokus dan `takeException() == null`. Catatan presisi: render box fokus adalah highlight dalam (inset beberapa px dari box tombol), jadi asersi memakai **containment titik tengah** alih-alih kesamaan rect eksak.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata), lalu `--set-exit-if-changed` -> **0 changed**, exit 0.
+- `dart analyze test/features/ai/presentation/output_review_panel_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (7 test)`**, exit 0.
+- `flutter test test/features/ai/` (gate feature) -> **`All tests passed! (184 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/output_review_panel_focus_negctl_backup.dart` (9256 byte), lalu satu ekspektasi dipalsukan: urutan label `['Approve','Reject',...]` ditukar menjadi `['Reject','Approve',...]` (line 136).
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_TRUE_EXIT=1`), `+6 -1`; kegagalan pada test "1. four stops in visual reading order" (`line 136`).
+- Restore dari backup (verifikasi urutan kembali `Approve` lalu `Reject`), backup dihapus (`test -e` -> `BACKUP_GONE`), test dijalankan ulang -> **`All tests passed! (7 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `OutputReviewPanel`: traversal keyboard sudah benar (4 stop, urutan visual, aksi kiri-ke-kanan). **Tidak ada defect 2.4.3** dan **tidak ada perubahan kode produksi** run ini. Kontrak ini **mengunci perilaku yang sudah benar**.
+- Observasi lintas-kriteria dicatat terbuka (bukan patch 2.4.3): tombol send adalah `IconButton` icon-only **tanpa `Tooltip`/`Semantics` label** -> bagi screen reader hanya "button" tanpa nama (isu **4.1.2/1.1.1**), dilaporkan terpisah.
+- Klaim skrip pra-run ("27 layar tanpa kontrak") **stale** - dikoreksi oleh scan independen run ini (27/27 sudah berkontrak dengan nama pendek).
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap` di 9 layar) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: kolam kandidat in-glob `presentation/*_screen.dart` tetap 0** (27/27 kandidat pra-run sudah berkontrak). Run ini menambah **1 kontrak baru pada permukaan non-layar** (`OutputReviewPanel`), sehingga total file kontrak focus-order = **81** (`find test -name "*_focus_order_test.dart"`).
+- Line ending laporan: **LF murni** (0 CR) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 

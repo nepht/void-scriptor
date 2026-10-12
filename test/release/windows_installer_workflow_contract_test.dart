@@ -21,6 +21,8 @@ void main() {
     expect(workflow, contains('--endpoint-url'));
     expect(workflow, isNot(contains('CLOUDFLARE_R2_UPLOAD_TOKEN')));
     expect(workflow, isNot(contains('CLOUDFLARE_API_TOKEN')));
+    expect(workflow, contains('App Certification Kit'));
+    expect(workflow, contains('\${env:ProgramFiles}\\Windows Kits'));
     expect(installer, contains('Source: "{#SourceDir}\\*"'));
     expect(installer, contains('OutputBaseFilename=VoidScriptor-{#ReleaseLabel}-windows-x64-signed'));
     expect(installer, contains('void_scriptor.exe'));

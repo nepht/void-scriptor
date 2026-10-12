@@ -5737,6 +5737,67 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/automation_center_focus_bak.d
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 109. Fase 109 - Kontrak focus order `WorkspaceTabBar` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU.** Skrip pra-run melaporkan 27 layar `presentation/*_screen.dart` "tanpa kontrak focus-order". Verifikasi independen run ini (tiga metode) membuktikan klaim itu **stale/false-positive** persis seperti fase 108: gate pra-run mencocokkan **nama file eksak** (`<basename>_focus_order_test.dart`), sedangkan ke-27 layar itu sudah punya kontrak Tab-traversal nyata dengan nama pendek (mis. `StoryWorkspaceScreen` -> `test/features/story/story_workspace_focus_order_test.dart`). Scan **handler non-`null`** (`on[A-Z]\w*:\s*(?!null)`, setelah strip komentar) pada seluruh `lib/**/*_screen.dart`: **0 layar tanpa kontrak yang punya >= 2 handler nyata** - kolam in-glob **kosong** (mengulang kesimpulan fase 105-108). Run ini karena itu menempuh jalur yang sudah dibuka fase 106-108: **perluas audit ke permukaan non-`*_screen.dart`** dan menemukan satu genuine sibling gap - `WorkspaceTabBar` (`lib/features/workspace_layout/presentation/workspace_tab_bar.dart`). Satu-satunya perubahan yang di-commit = section ini + satu file test kontrak.
+
+### (a) Kandidat: mengapa `WorkspaceTabBar`, bukan yang lain
+
+1. **Genuine gap kelas (bukan kebetulan nama file):** scan korpus seluruh 78 file `*_focus_order_test.dart` -> `WorkspaceTabBar` **0 hit**. Sibling satu-folder-nya sudah berkontrak (mis. `LayoutPresetMenu` punya `test/features/workspace_layout/presentation/layout_preset_menu_test.dart` untuk perilaku, dan permukaan `workspace_layout` lain sudah diuji), sehingga bar ini adalah permukaan `workspace_layout` yang belum simetris.
+2. **Dipakai produksi (bukan alpha-scope):** `WorkspaceTabBar` dirujuk oleh `lib/app/shell/desktop/void_desktop_shell.dart` - jadi traversal keyboard-nya benar-benar dialami pengguna desktop, bukan layar mati.
+3. **Mandiri, tanpa database/network/provider/Riverpod:** seluruh data disuntikkan lewat constructor (`tabs`, `activeTabId`, `onSelect`, `onClose`, `onCloseOthers`). Tidak perlu `ProviderScope`, tidak menyentuh Drift/HTTP/file system -> probe deterministik, memenuhi syarat minimal 2 elemen interaktif (**5 handler non-null**: `onTap` x2 per tab + `onSelect`/`onClose`/`onCloseOthers`).
+4. **Dua affordance per tab yang mudah salah urut:** badan tab (`InkWell` -> `onSelect`) dan tombol tutup (`InkWell` berkunci -> `onClose`) adalah dua stop terpisah. Urutannya, dan apakah tab aktif menggeser ring, adalah kontrak 2.4.3 yang tidak pernah dikunci.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/workspace_layout/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105-108: `MaterialApp > Scaffold > Align(topLeft) > WorkspaceTabBar` dengan 3 tab (Qowner/Dagger/The Void), `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon`; rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Ring maju (ground truth, tab **b** aktif):
+- Tab 1 `Qowner`   @0.0,0.0   180.0x36.0 (badan tab)
+- Tab 2 `widget:Focus` @150.0,6.0 22.0x22.0 (tombol tutup 'a', icon-only)
+- Tab 3 `Dagger`   @181.0,0.0  180.0x36.0
+- Tab 4 `widget:Focus` @331.0,6.0 22.0x22.0 (tutup 'b')
+- Tab 5 `The Void` @362.0,0.0  180.0x36.0
+- Tab 6 `widget:Focus` @512.0,6.0 22.0x22.0 (tutup 'c')
+- Tab 7 -> rect `Qowner` berulang -> **ring tertutup pada 6 stop**.
+
+Fakta pendukung terukur: `INKWELL_COUNT=6` (2 per tab), `TABS=1`, `CLOSEKEY[a|b|c]=1`, `CLOSERECT[a]=150,6 22x22`, `[b]=331,6`, `[c]=512,6`, `TITLERECT[a]=8,7 142x20`, `[b]=189,7`, `[c]=370,7`, `EXCEPTION=null`. Daftar kosong (`tabs: []`, `activeTabId: null`): `INKWELL_COUNT=0` dan hanya root focus scope yang terjangkau (**1 stop** = `_FocusScopeWithExternalFocusNode` rect penuh viewport, bukan affordance) -> **0 stop affordance** untuk bar kosong.
+
+**Temuan WCAG:** ring mengikuti **urutan deklarasi** (`a -> b -> c`), bukan tab aktif - aktivasi adalah state visual, bukan reorder traversal. Ini bentuk 2.4.3 yang benar dan kontrak mengunci perilaku itu. Tidak ada defect: semua kontrol dapat dicapai keyboard, tiap stop ber-rect non-zero, dan fokus tidak pernah drop ke null.
+
+### (c) Kontrak final
+
+`test/features/workspace_layout/presentation/workspace_tab_bar_focus_order_test.dart` - **9 test**, mengunci: (1) tiap tab mengekspos badan-select + tombol tutup (`InkWell` = 2x jumlah tab, key tutup ada per tab); (2) urutan Tab = `[Qowner, Focus, Dagger, Focus, The Void, Focus]` (badan & tutup berselang-seling, 6 stop); (3) ring mengikuti urutan deklarasi walau tab **b** aktif (bukan `[Dagger, Qowner, ...]`); (4) setiap stop tutup mendarat **tepat** pada `close-tab-<id>` yang cocok (rect stop == rect key); (5) tab kiri-ke-kanan, tombol tutup di kanan badan dengan overlap vertikal, lebar badan seragam 180; (6) setiap stop ber-rect non-zero dan **di dalam viewport**; (7) `Shift+Tab` membuka ring mundur (`Focus -> The Void -> Focus`); (8) fokus tidak pernah null selama 10x Tab + `takeException() == null`; (9) bar kosong = 0 `InkWell`, 1 stop (root scope saja), tanpa exception.
+
+### (d) Gate
+
+- `dart format` (scoped) -> 1 file berubah (format semata), lalu `--set-exit-if-changed` -> **0 changed**, exit 0.
+- `dart analyze test/features/workspace_layout/presentation/workspace_tab_bar_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (9 test)`**, exit 0.
+- `flutter test test/features/workspace_layout/` (gate feature) -> **`All tests passed! (56 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/ws_tab_bar_negctl_backup.dart` (10942 byte), lalu satu ekspektasi dipalsukan: urutan Tab `['Qowner','widget:Focus','Dagger']` ditukar menjadi `['Dagger','widget:Focus','Qowner']` (line 177).
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1** (`NEGCTRL_TRUE_EXIT=1`), `+8 -1`; kegagalan pada test "Tab order interleaves each tab body with its close button" (`line 177`).
+- Restore dari backup (verifikasi `MUTATION_REMAINING=0` -> mutasi hilang), backup dihapus (`test -e` -> BACKUP_GONE), test dijalankan ulang -> **`All tests passed! (9 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `WorkspaceTabBar`: traversal keyboard sudah benar. **Tidak ada defect** yang dibuktikan dan **tidak ada perubahan kode produksi** run ini. Dua observasi desain dicatat terbuka (bukan patch):
+  1. `onCloseOthers` disediakan konstruktor tetapi **tidak pernah dipanggil** oleh widget mana pun di file ini (0 call-site; hanya field + pass-through). Affordance "close others" tidak punya pemicu keyboard maupun pointer - kandidat dead-API untuk ditinjau pemilik modul.
+  2. Tombol tutup adalah `InkWell` icon-only **tanpa `Tooltip`/`Semantics` label** -> bagi screen reader ia hanya "button" tanpa nama. Ini isu **4.1.2/1.1.1** (bukan 2.4.3); dilaporkan terpisah, tidak diperbaiki di run ini.
+- Klaim skrip pra-run ("27 layar tanpa kontrak") **stale** - gate mencocokkan nama file eksak; 27/27 sudah berkontrak dengan nama pendek. Dikoreksi oleh scan handler non-null independen run ini.
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap` di 9 layar) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: kolam kandidat in-glob `presentation/*_screen.dart` tetap 0** (semua layar tanpa kontrak = 0 handler non-null). Run ini menambah **1 kontrak baru pada permukaan non-layar** (`WorkspaceTabBar`), sehingga total file kontrak focus-order = **79** (`find test -name "*_focus_order_test.dart"`).
+- Line ending laporan: **LF murni** (0 CRLF) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

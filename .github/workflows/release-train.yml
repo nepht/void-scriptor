@@ -12,7 +12,7 @@ on:
         default: 'master'
         type: string
       publish_r2:
-        description: 'Upload the signed Windows installer EXE to Cloudflare R2'
+        description: 'Upload the self-signed Windows preview EXE to Cloudflare R2'
         required: true
         default: false
         type: boolean
@@ -100,9 +100,10 @@ jobs:
       # The artifact and manifest are the verified handoff for that decision.
 
   windows-signed-candidate:
-    name: Build and sign Windows RC candidate
+    name: Build and sign Windows self-signed preview candidate
     runs-on: windows-2022
     timeout-minutes: 45
+    # This job creates a self-signed preview, not a trusted production release.
     # Configure these repository/environment secrets before enabling a signed run:
     # WINDOWS_CODESIGN_PFX_BASE64, WINDOWS_CODESIGN_PFX_PASSWORD,
     # WINDOWS_CODESIGN_SUBJECT. Secrets are never written to logs or the repo.
@@ -161,7 +162,7 @@ jobs:
           if ($null -eq $tool) { throw 'signtool.exe was not found in the Windows SDK or App Certification Kit on windows-2022 runner' }
           "SIGNTOOL=$($tool.FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      - name: Sign Windows binaries
+      - name: Sign Windows binaries (self-signed preview)
         shell: pwsh
         env:
           PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
@@ -173,12 +174,16 @@ jobs:
           foreach ($file in $files) {
             & $env:SIGNTOOL sign /fd SHA256 /f $pfx /p $env:PFX_PASSWORD /tr http://timestamp.digicert.com /td SHA256 $file.FullName
             if ($LASTEXITCODE -ne 0) { throw "Signing failed for $($file.FullName)" }
-            & $env:SIGNTOOL verify /pa /all $file.FullName
-            if ($LASTEXITCODE -ne 0) { throw "Signature verification failed for $($file.FullName)" }
+            $signature = Get-AuthenticodeSignature -LiteralPath $file.FullName
+            if ($null -eq $signature.SignerCertificate) { throw "No Authenticode certificate found for $($file.FullName)" }
+            $certificate = $signature.SignerCertificate
+            if ($certificate.Subject -ne $env:SIGNING_SUBJECT) { throw "Unexpected signing subject for $($file.FullName): $($certificate.Subject)" }
+            if ($certificate.Issuer -ne $certificate.Subject) { throw "Certificate is not self-signed for $($file.FullName)" }
+            if ($signature.Status -ne 'UnknownError') { throw "Expected an untrusted self-signed preview status for $($file.FullName); received $($signature.Status)" }
           }
-          Write-Output "Signed and verified $($files.Count) Windows binaries"
+          Write-Output "Created self-signed preview signatures for $($files.Count) Windows binaries"
 
-      - name: Build and sign Windows installer
+      - name: Build and sign Windows self-signed preview installer
         shell: pwsh
         env:
           PFX_PASSWORD: ${{ secrets.WINDOWS_CODESIGN_PFX_PASSWORD }}
@@ -197,35 +202,42 @@ jobs:
           $outputDir = (Resolve-Path $metadata).Path
           & $iscc.FullName "/DAppVersion=$installerVersion" "/DReleaseLabel=$releaseLabel" "/DSourceDir=$sourceDir" "/DOutputDir=$outputDir" 'packaging/windows/VoidScriptor.iss'
           if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed with exit code $LASTEXITCODE" }
-          $installerName = "VoidScriptor-$releaseLabel-windows-x64-signed.exe"
+          $installerName = "VoidScriptor-$releaseLabel-windows-x64-self-signed-preview.exe"
           $installerPath = Join-Path $metadata $installerName
           if (-not (Test-Path -LiteralPath $installerPath)) { throw "Installer was not produced: $installerName" }
           $pfx = Join-Path $env:RUNNER_TEMP 'void-scriptor-signing.pfx'
           & $env:SIGNTOOL sign /fd SHA256 /f $pfx /p $env:PFX_PASSWORD /tr http://timestamp.digicert.com /td SHA256 $installerPath
           if ($LASTEXITCODE -ne 0) { throw "Installer signing failed for $installerName" }
-          & $env:SIGNTOOL verify /pa /all $installerPath
-          if ($LASTEXITCODE -ne 0) { throw "Installer signature verification failed for $installerName" }
+          $signature = Get-AuthenticodeSignature -LiteralPath $installerPath
+          if ($null -eq $signature.SignerCertificate) { throw "No Authenticode certificate found for $installerName" }
+          $certificate = $signature.SignerCertificate
+          if ($certificate.Subject -ne $env:SIGNING_SUBJECT) { throw "Unexpected signing subject for ${installerName}: $($certificate.Subject)" }
+          if ($certificate.Issuer -ne $certificate.Subject) { throw "Certificate is not self-signed for $installerName" }
+          if ($signature.Status -ne 'UnknownError') { throw "Expected an untrusted self-signed preview status for $installerName; received $($signature.Status)" }
           $installerHash = (Get-FileHash -LiteralPath $installerPath -Algorithm SHA256).Hash.ToLowerInvariant()
           $installerSize = (Get-Item -LiteralPath $installerPath).Length
           $sourceRevision = (git rev-parse HEAD).Trim()
           $r2Key = "releases/windows/$releaseLabel/$installerName"
           $manifest = [ordered]@{
-            format = 'void-scriptor-windows-signed-installer-rc-v1'
+            format = 'void-scriptor-windows-self-signed-preview-installer-rc-v1'
             source_revision = $sourceRevision
             artifact = $installerName
             object_key = $r2Key
             sha256 = $installerHash
             size_bytes = $installerSize
             signing = [ordered]@{
-              status = 'SIGNED_AND_VERIFIED'
+              status = 'SELF_SIGNED_PREVIEW'
               algorithm = 'Authenticode-SHA256'
+              trust = 'NOT_TRUSTED_BY_DEFAULT'
+              distribution = 'TEST_ONLY'
+              verification = 'SIGNATURE_PRESENT_UNTRUSTED_CHAIN'
               subject = $env:SIGNING_SUBJECT
             }
           }
-          $manifestPath = Join-Path $metadata 'windows-signed-rc-manifest.json'
+          $manifestPath = Join-Path $metadata 'windows-self-signed-preview-rc-manifest.json'
           $manifest | ConvertTo-Json -Depth 8 | Out-File -LiteralPath $manifestPath -Encoding utf8
           $handoff = [ordered]@{
-            format = 'void-scriptor-r2-handoff-v1'
+            format = 'void-scriptor-r2-self-signed-preview-handoff-v1'
             source_repository = 'nepht/void-scriptor'
             source_workflow = '.github/workflows/release-train.yml'
             source_revision = $sourceRevision
@@ -236,16 +248,16 @@ jobs:
             size_bytes = $installerSize
             signing = $manifest.signing
           }
-          $handoffPath = Join-Path $metadata 'windows-signed-r2-handoff.json'
+          $handoffPath = Join-Path $metadata 'windows-self-signed-preview-r2-handoff.json'
           $handoff | ConvertTo-Json -Depth 8 | Out-File -LiteralPath $handoffPath -Encoding utf8
           "R2_OBJECT_KEY=$r2Key" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "R2_EXE_PATH=$installerPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           "R2_HANDOFF_PATH=$handoffPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
           Remove-Item $pfx -Force
-          Write-Output "Prepared signed installer: $installerName ($installerSize bytes, SHA-256 $installerHash)"
+          Write-Output "Prepared self-signed preview installer: $installerName ($installerSize bytes, SHA-256 $installerHash)"
 
       - name: Require R2 handoff secrets
-        if: github.event_name == 'push' || inputs.publish_r2 == true
+        if: inputs.publish_r2 == true
         shell: pwsh
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
@@ -271,8 +283,8 @@ jobs:
             exit 1
           }
 
-      - name: Upload signed installer and handoff to Cloudflare R2
-        if: github.event_name == 'push' || inputs.publish_r2 == true
+      - name: Upload self-signed preview installer and handoff to Cloudflare R2
+        if: inputs.publish_r2 == true
         shell: pwsh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
@@ -283,16 +295,16 @@ jobs:
           $endpoint = "https://$env:CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com"
           aws s3 cp "$env:R2_EXE_PATH" "s3://voidscriptor-downloads/$env:R2_OBJECT_KEY" --endpoint-url $endpoint --region auto --no-progress --content-type "application/vnd.microsoft.portable-executable"
           aws s3 cp "$env:R2_HANDOFF_PATH" "s3://voidscriptor-downloads/$env:R2_OBJECT_KEY.json" --endpoint-url $endpoint --region auto --no-progress --content-type "application/json; charset=utf-8"
-          Write-Output "Published signed installer and handoff: $env:R2_OBJECT_KEY"
+          Write-Output "Published self-signed preview installer and handoff: $env:R2_OBJECT_KEY"
 
-      - name: Upload signed Windows candidate
+      - name: Upload self-signed Windows preview candidate
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: windows-signed-release-candidate-${{ github.ref_name }}
+          name: windows-self-signed-preview-${{ github.ref_name }}
           path: |
             build/windows/x64/runner/Release
-            build/release-metadata/windows-signed-rc-manifest.json
-            build/release-metadata/windows-signed-r2-handoff.json
+            build/release-metadata/windows-self-signed-preview-rc-manifest.json
+            build/release-metadata/windows-self-signed-preview-r2-handoff.json
             build/release-metadata/*.exe
           if-no-files-found: error
           retention-days: 30

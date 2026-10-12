@@ -1,0 +1,73 @@
+{
+  "canonical_step": "119.4",
+  "schema_version": 1,
+  "title": "Manifest Schema v1",
+  "unknown_field_policy": "REJECT",
+  "forbidden_fields": [
+    "password",
+    "token",
+    "api_key",
+    "client_secret",
+    "secret",
+    "plaintext_secret",
+    "private_key"
+  ],
+  "external_gates": "DEFERRED-EXTERNAL",
+  "manifest": {
+    "identity": {
+      "connector_id": "voidscriptor.local",
+      "name": "Void Scriptor Local Connector",
+      "version": "1.0.0"
+    },
+    "publisher": {
+      "publisher_id": "voidscriptor",
+      "name": "Void Scriptor Studio",
+      "support_owner": "connector_support_owner"
+    },
+    "capabilities": [
+      {
+        "capability_id": "health",
+        "description": "Read local connector health."
+      }
+    ],
+    "permissions": [
+      {
+        "permission_id": "health.read",
+        "capability_id": "health",
+        "decision": "DENY"
+      }
+    ],
+    "network": {
+      "default_decision": "DENY",
+      "destinations": [
+        {
+          "host": "api.example.test",
+          "protocol": "https"
+        }
+      ]
+    },
+    "auth": {
+      "methods": ["oauth_oidc"],
+      "secret_mode": "opaque_reference"
+    },
+    "icon": {
+      "source": "assets/connectors/voidscriptor.svg",
+      "accessible_name": "Void Scriptor connector"
+    },
+    "locales": [
+      {
+        "locale": "en",
+        "label": "Void Scriptor"
+      }
+    ],
+    "support": {
+      "owner_id": "connector_support_owner",
+      "contact": "local_support"
+    }
+  },
+  "claim_boundary": [
+    "This local manifest defines typed connector declarations; it does not install, execute, certify, expose, publish, or release a connector.",
+    "Provider credentials and plaintext secrets are not represented in this manifest.",
+    "External certification, signing, publication, and release remain DEFERRED-EXTERNAL."
+  ]
+}

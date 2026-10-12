@@ -16,7 +16,7 @@ handling, or claims for other providers.
 | 119.2 | Connector SDK Charter | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_connector_sdk_charter.json`; external execution and publication remain deferred; begin 119.3 |
 | 119.3 | Connector Trust Model | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_connector_trust_model.json`; external certification and publication remain deferred; begin 119.4 |
 | 119.4 | Manifest Schema v1 | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_manifest_schema.json`; 10 focused tests, release suite 4,226 PASS, full analyzer clean, Windows debug build PASS; external gates remain deferred; begin 119.5 |
-| 119.5 | Connector Identity & Stable IDs | PENDING | Define connector, publisher, package, installation, account, and connection IDs |
+| 119.5 | Connector Identity & Stable IDs | VERIFIED-LOCAL | `docs/planning/v1.3/sprint_119_connector_identity.json`; 10 focused tests, release suite 4,236 PASS, full analyzer clean, Windows debug build PASS; external certification and provider evidence remain deferred; begin 119.6 |
 | 119.6 | Capability Interface Foundation | PENDING | Define discovery, execution, cancellation, health, usage, errors, and lifecycle |
 | 119.7 | Authentication Broker | PENDING | Define OAuth/OIDC, credential references, redirects, refresh, reauth, and revoke |
 | 119.8 | Secret Reference API | PENDING | Define opaque secret operations, rotation, deletion, redaction, and reauth |

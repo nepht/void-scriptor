@@ -1,0 +1,70 @@
+{
+  "canonical_step": "119.5",
+  "title": "Connector Identity & Stable IDs",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "identity": {
+    "connector_id": {
+      "scope": "connector lineage",
+      "stable_when": "stable across package versions and installations",
+      "source": "manifest declaration",
+      "lifecycle": "changes only when the connector identity is intentionally forked",
+      "privacy": "non-personal opaque identifier",
+      "example_id": "connector.voidscriptor.local"
+    },
+    "publisher_id": {
+      "scope": "publisher identity",
+      "stable_when": "stable for the publisher across its connector packages",
+      "source": "publisher record",
+      "lifecycle": "revoked only through publisher governance",
+      "privacy": "non-secret opaque identifier",
+      "example_id": "publisher.voidscriptor"
+    },
+    "package_id": {
+      "scope": "package lineage",
+      "stable_when": "stable across package versions in one lineage",
+      "source": "package manifest",
+      "lifecycle": "changes when a package is forked into a new lineage",
+      "privacy": "non-personal opaque identifier",
+      "example_id": "package.voidscriptor.local"
+    },
+    "installation_id": {
+      "scope": "one local installation",
+      "stable_when": "stable until the local installation is removed",
+      "source": "local state generated once",
+      "lifecycle": "must not be derived from device or account secrets",
+      "privacy": "local opaque identifier; never a credential",
+      "example_id": "install.01hxyz"
+    },
+    "account_id": {
+      "scope": "one provider account within a connector",
+      "stable_when": "stable for the provider subject while the account remains linked",
+      "source": "brokered provider subject",
+      "lifecycle": "changes when the provider account is unlinked or the subject changes",
+      "privacy": "provider-scoped non-PII handle; never raw profile data",
+      "example_id": "account.provider.01hxyz"
+    },
+    "connection_id": {
+      "scope": "one configured authentication connection",
+      "stable_when": "stable for the connection until revoke or replacement",
+      "source": "local state generated once per connection",
+      "lifecycle": "revocable and replaced on reconnect",
+      "privacy": "opaque handle; never a token or secret",
+      "example_id": "connection.01hxyz"
+    }
+  },
+  "invariants": [
+    "connector_id_stable_across_versions",
+    "publisher_id_stable_for_publisher",
+    "package_id_stable_across_package_versions",
+    "installation_id_is_local_and_opaque",
+    "account_id_is_provider_scoped_and_non_pii",
+    "connection_id_is_revocable"
+  ],
+  "claim_boundary": [
+    "This is a local identity contract, not a live provider certification.",
+    "IDs are opaque handles and do not contain credentials, tokens, or secrets.",
+    "External publisher verification and provider subject evidence remain deferred."
+  ]
+}

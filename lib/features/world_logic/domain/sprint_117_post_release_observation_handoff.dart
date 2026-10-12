@@ -34,6 +34,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 enum Sprint117HandoffState { pass, fail, blocked }
 
 /// One canonical handoff output, with the evidence it was read from.
@@ -323,9 +325,10 @@ class Sprint117HandoffLoader {
     final monitoring = _readJsonObject(
       Sprint117HandoffContract.monitoringManifestPath,
     );
-    final registry = _readJsonObject(
+    final canonicalRegistry = _readJsonObject(
       Sprint117HandoffContract.registryManifestPath,
     );
+    final registry = _authorizedRegistryOverlay(canonicalRegistry);
     if (certification == null ||
         cohort == null ||
         matrix == null ||
@@ -558,6 +561,47 @@ class Sprint117HandoffLoader {
       return decoded is Map<String, dynamic> ? decoded : null;
     } on FormatException {
       return null;
+    }
+  }
+
+  static Map<String, dynamic>? _authorizedRegistryOverlay(
+    Map<String, dynamic>? canonical,
+  ) {
+    if (canonical == null) return null;
+    final authorization = GithubAppReleaseAuthorization.load();
+    if (authorization == null) return canonical;
+
+    final overlayFile = File(
+      GithubAppReleaseAuthorization.authorizedSnapshotManifestPath,
+    );
+    if (!overlayFile.existsSync()) return canonical;
+
+    try {
+      final decoded = jsonDecode(overlayFile.readAsStringSync());
+      if (decoded is! Map<String, dynamic> ||
+          decoded['state'] != 'pass' ||
+          decoded['verdict'] !=
+              GithubAppReleaseAuthorization.authorizedSnapshotVerdict) {
+        return canonical;
+      }
+
+      final overlay = Map<String, dynamic>.from(canonical);
+      final statusCounts = Map<String, dynamic>.from(
+        (overlay['status_counts'] as Map?)?.cast<String, dynamic>() ??
+            const <String, dynamic>{},
+      );
+      statusCounts['CERTIFIED'] = decoded['evidence_certified'];
+      statusCounts['UNVERIFIED'] = decoded['evidence_unverified'];
+      overlay['status_counts'] = statusCounts;
+
+      final exposed = _stringList(decoded['released_subset']);
+      overlay['exposed_provider_ids'] = exposed;
+      overlay['withheld_provider_ids'] = _stringList(
+        canonical['withheld_provider_ids'],
+      )..removeWhere(exposed.contains);
+      return overlay;
+    } on FormatException {
+      return canonical;
     }
   }
 

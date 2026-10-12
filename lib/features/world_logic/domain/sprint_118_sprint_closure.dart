@@ -515,6 +515,15 @@ class Sprint118ClosureLoader {
         unresolved.add('$id:$status');
       }
     }
+    // Sprint 119 may carry an authorized readiness overlay, but that overlay
+    // must not rewrite the historical Sprint 118 closure handoff. The
+    // committed 118.46 manifest is the frozen source for that handoff.
+    final closureManifest = _readJsonObject(
+      Sprint118ClosureContract.manifestPath,
+    );
+    if (closureManifest == null) {
+      missing.add(Sprint118ClosureContract.manifestPath);
+    }
     final sourceViolations = <String>[];
     for (final entry in documents.entries) {
       final violations = entry.value['violations'];
@@ -535,7 +544,8 @@ class Sprint118ClosureLoader {
       }
     }
     if (unresolved.isNotEmpty) sourceViolations.addAll(unresolved);
-    if (documents.length != Sprint118ClosureContract.sourceManifests.length ||
+    if (closureManifest == null ||
+        documents.length != Sprint118ClosureContract.sourceManifests.length ||
         missing.isNotEmpty) {
       return null;
     }
@@ -568,6 +578,19 @@ class Sprint118ClosureLoader {
       'docs/planning/v1.3/sprint_118_stability_expansion_report.json',
     );
     final readiness = doc('docs/planning/v1.3/sprint_119_readiness_gate.json');
+    final closureEvidenceAnchor = closureManifest['evidence_anchor'];
+    final closureNextDirection = closureEvidenceAnchor is Map
+        ? closureEvidenceAnchor['next_direction']
+        : null;
+    final historicalReadinessState = closureNextDirection is Map
+        ? _text(closureNextDirection['state'])
+        : '';
+    final historicalReadinessVerified = closureNextDirection is Map
+        ? closureNextDirection['verified'] == true
+        : false;
+    final historicalReadinessDecision = closureNextDirection is Map
+        ? _text(closureNextDirection['decision'])
+        : '';
     final declaredSections = report['declared_sections'];
 
     return Sprint118ClosureEvidenceAnchor(
@@ -594,9 +617,15 @@ class Sprint118ClosureLoader {
           ? declaredSections.length
           : 0,
       reportExpectedSectionCount: _int(report['expected_section_count']),
-      readinessState: _text(readiness['state']),
-      readinessVerified: readiness['readiness_verified'] == true,
-      readinessDecision: _text(readiness['readiness_decision']),
+      readinessState: historicalReadinessState.isNotEmpty
+          ? historicalReadinessState
+          : _text(readiness['state']),
+      readinessVerified: historicalReadinessState.isNotEmpty
+          ? historicalReadinessVerified
+          : readiness['readiness_verified'] == true,
+      readinessDecision: historicalReadinessState.isNotEmpty
+          ? historicalReadinessDecision
+          : _text(readiness['readiness_decision']),
       allLedgerStepsResolved: unresolved.isEmpty,
       missingEvidence: missing,
       sourceViolations: sourceViolations,

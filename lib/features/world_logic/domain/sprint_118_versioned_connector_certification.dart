@@ -748,6 +748,13 @@ class Sprint118VersionedCertificationLoader {
     final snapshot = _read(
       Sprint118VersionedCertificationContract.snapshotManifestPath,
     );
+    // Keep the delayed 118.3 snapshot and registry evidence canonical. The
+    // authorized GitHub App path is an overlay in this step's manifest, so
+    // earlier delayed-path gates do not inherit its exposure counts.
+    final authorization = GithubAppReleaseAuthorization.load();
+    final acceptance = authorization == null
+        ? null
+        : _read(Sprint118VersionedCertificationContract.manifestPath);
     final approval = _read(
       Sprint118VersionedCertificationContract.approvalGateManifestPath,
     );
@@ -769,6 +776,7 @@ class Sprint118VersionedCertificationLoader {
     );
     if (charter == null ||
         snapshot == null ||
+        (authorization != null && acceptance == null) ||
         approval == null ||
         icon == null ||
         reconciliation == null ||
@@ -777,6 +785,9 @@ class Sprint118VersionedCertificationLoader {
         registry == null) {
       return null;
     }
+
+    final snapshotAnchor = acceptance ?? snapshot;
+    final registryAnchor = acceptance ?? registry;
 
     final budget = charter['expansion_budget'];
     final budgetMap = budget is Map<String, dynamic>
@@ -835,15 +846,29 @@ class Sprint118VersionedCertificationLoader {
       charterMaxNewCertified: _int(budgetMap['max_new_certified_connectors']),
       charterCurrentlyCertified: _int(budgetMap['currently_certified']),
       charterRegisteredProviders: _int(budgetMap['registered_providers']),
-      snapshotState: _text(snapshot['state']),
-      snapshotVerdict: _text(snapshot['verdict']),
-      snapshotCertified: _int(snapshot['charter_certified']),
-      snapshotRegistered: _int(snapshot['registered_provider_count']),
-      releaseState: _text(snapshot['release_state']),
+      snapshotState: _text(snapshotAnchor['state']),
+      snapshotVerdict: _text(
+        snapshotAnchor['snapshot_verdict'] ?? snapshotAnchor['verdict'],
+      ),
+      snapshotCertified: _int(
+        snapshotAnchor['snapshot_certified'] ??
+            snapshotAnchor['charter_certified'],
+      ),
+      snapshotRegistered: _int(
+        snapshotAnchor['snapshot_registered'] ??
+            snapshotAnchor['registered_provider_count'],
+      ),
+      releaseState: _text(snapshotAnchor['release_state']),
       registryExpectedCount: _int(reconciliation['expected_provider_count']),
       registryEvidenceProviderCount: _int(registry['provider_count']),
-      registryEvidenceExposed: _int(visibilityMap['EXPOSED']),
-      registryEvidenceWithheld: _int(visibilityMap['WITHHELD']),
+      registryEvidenceExposed: _int(
+        registryAnchor['registry_evidence_exposed'] ??
+            visibilityMap['EXPOSED'],
+      ),
+      registryEvidenceWithheld: _int(
+        registryAnchor['registry_evidence_withheld'] ??
+            visibilityMap['WITHHELD'],
+      ),
       snapshotLockLockedCount: _int(lock['locked_provider_count']),
       approvalDecision: _text(approvalInner['decision']),
       approvalState: _text(approvalInner['approval_state']),

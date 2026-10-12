@@ -550,6 +550,15 @@ void main() {
 
       final standard = ProviderConnectorManifest.standard;
       final authorization = GithubAppReleaseAuthorization.load();
+      final canonicalBefore = File(manifestPath).readAsBytesSync();
+      final authorizedOutputDirectory = authorization?.isValid == true
+          ? Directory.systemTemp.createTempSync('void_scriptor_117_41_')
+          : null;
+      if (authorizedOutputDirectory != null) {
+        addTearDown(
+          () => authorizedOutputDirectory.deleteSync(recursive: true),
+        );
+      }
       final standardReport = ProviderRegistryReconciliation().reconcile();
       probes['standard_reconciliation_clean'] =
           standardReport.state == ProviderRegistryReconciliationState.pass &&
@@ -806,12 +815,20 @@ void main() {
                   'cost, hosted CI, and publication remain DEFERRED-EXTERNAL.',
       };
 
-      final written = _writeManifest(manifest, manifestPath);
-      final reread = jsonDecode(File(manifestPath).readAsStringSync());
+      final outputPath = authorizedOutputDirectory == null
+          ? manifestPath
+          : '${authorizedOutputDirectory.path}${Platform.pathSeparator}manifest.json';
+      final written = _writeManifest(manifest, outputPath);
+      final reread = jsonDecode(File(outputPath).readAsStringSync());
       expect(reread['verdict'], registry.verdict);
       expect(reread['pass'], isTrue);
       expect(probes.length, greaterThanOrEqualTo(9));
       if (authorization?.isValid == true) {
+        expect(
+          File(manifestPath).readAsBytesSync(),
+          canonicalBefore,
+          reason: 'authorized evidence must not overwrite the delayed witness',
+        );
         expect(
           (reread['status_counts'] as Map<String, dynamic>)['CERTIFIED'],
           1,

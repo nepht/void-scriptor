@@ -1,0 +1,78 @@
+{
+  "canonical_step": "118.3",
+  "title": "Certified Connector Snapshot",
+  "document_role": "connector-snapshot-evaluation-record",
+  "state": "pass",
+  "verdict": "CERTIFIED_CONNECTOR_SNAPSHOT_AUTHORIZED_LOCAL",
+  "release_state": "GA_AUTHORIZED",
+  "snapshot_frozen": true,
+  "required_fields": [
+    "provider_id",
+    "connector_version",
+    "status",
+    "limitations",
+    "regions",
+    "plans",
+    "icon_version",
+    "recheck_date"
+  ],
+  "missing_fields": [],
+  "violations": [],
+  "blockers": [],
+  "open_items": [],
+  "evidence_sources": {
+    "charter": "docs/planning/v1.3/sprint_118_stability_expansion_charter.json",
+    "registry_evidence": "docs/evidence/sprint-117-41-manifest-20261002.json",
+    "operator_authorization": "docs/planning/v1.3/sprint_118_github_app_release_authorization.json",
+    "live_certification_example": "docs/evidence/account-center-live-observation-20261011.json"
+  },
+  "charter_state": "pass",
+  "charter_verdict": "CHARTER_COMPLETE_LOCAL",
+  "charter_certified": 1,
+  "charter_registered": 32,
+  "evidence_certified": 1,
+  "evidence_limited": 0,
+  "evidence_unverified": 31,
+  "evidence_provider_count": 32,
+  "evidence_exposed": 1,
+  "operator_authorization_valid": true,
+  "registered_provider_count": 32,
+  "frozen_provider_count": 1,
+  "snapshot_certified": 1,
+  "released_subset": [
+    "github"
+  ],
+  "released_entries": [
+    {
+      "provider_id": "github",
+      "connector_version": "manifest-v1",
+      "status": "CERTIFIED",
+      "limitations": [
+        "live_provider_certification"
+      ],
+      "regions": [
+        "GLOBAL"
+      ],
+      "plans": [
+        "free",
+        "standard",
+        "premium",
+        "custom"
+      ],
+      "icon_version": "bundled-v1",
+      "recheck_date": "2027-03-27"
+    }
+  ],
+  "claim_boundary": [
+    "This authorized snapshot freezes the observed GitHub App connector as CERTIFIED for the canonical gate; it does not publish a public release.",
+    "The live evidence source contains only authenticated read-only GitHub App resource, rate-limit, and audit observations; no secret or credential was read or stored.",
+    "Provider availability, quota, cost, credential state, and public publication remain outside this authorization."
+  ],
+  "external_gates": [
+    "connector certification evidence",
+    "provider exposure authorization",
+    "live provider availability",
+    "quota, cost, and credential state",
+    "public release publication"
+  ]
+}

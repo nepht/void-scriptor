@@ -35,6 +35,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 enum Sprint117ClosureState { pass, blocked, fail }
 
 enum Sprint117ClosureDecision { closedLocalDeferredExternal, blocked }
@@ -448,7 +450,10 @@ class Sprint117ClosureLoader {
       Sprint117ClosureContract.certificationPath,
     );
     final matrix = _readJsonObject(Sprint117ClosureContract.matrixPath);
-    final registry = _readJsonObject(Sprint117ClosureContract.registryPath);
+    final canonicalRegistry = _readJsonObject(
+      Sprint117ClosureContract.registryPath,
+    );
+    final registry = _authorizedRegistryOverlay(canonicalRegistry);
     final rollout = _readJsonObject(Sprint117ClosureContract.rolloutPath);
     final ga = _readJsonObject(Sprint117ClosureContract.gaApprovalPath);
     final handoff = _readJsonObject(Sprint117ClosureContract.handoffPath);
@@ -638,6 +643,63 @@ class Sprint117ClosureLoader {
       for (final item in value)
         if (item is String && item.trim().isNotEmpty) item.trim(),
     ];
+  }
+
+  static Map<String, dynamic>? _authorizedRegistryOverlay(
+    Map<String, dynamic>? canonical,
+  ) {
+    if (canonical == null) return null;
+    final authorization = GithubAppReleaseAuthorization.load();
+    if (authorization == null) return canonical;
+
+    final overlayFile = File(
+      GithubAppReleaseAuthorization.authorizedSnapshotManifestPath,
+    );
+    if (!overlayFile.existsSync()) return canonical;
+
+    try {
+      final decoded = jsonDecode(overlayFile.readAsStringSync());
+      if (decoded is! Map<String, dynamic> ||
+          decoded['state'] != 'pass' ||
+          decoded['verdict'] !=
+              GithubAppReleaseAuthorization.authorizedSnapshotVerdict) {
+        return canonical;
+      }
+
+      final overlay = Map<String, dynamic>.from(canonical);
+      final statusCounts = Map<String, dynamic>.from(
+        (overlay['status_counts'] as Map?)?.cast<String, dynamic>() ??
+            const <String, dynamic>{},
+      );
+      statusCounts['CERTIFIED'] = decoded['evidence_certified'];
+      statusCounts['UNVERIFIED'] = decoded['evidence_unverified'];
+      overlay['status_counts'] = statusCounts;
+
+      final visibilityCounts = Map<String, dynamic>.from(
+        (overlay['visibility_counts'] as Map?)?.cast<String, dynamic>() ??
+            const <String, dynamic>{},
+      );
+      visibilityCounts['EXPOSED'] = decoded['evidence_exposed'];
+      visibilityCounts['WITHHELD'] =
+          (decoded['registered_provider_count'] as int? ?? 0) -
+          (decoded['evidence_exposed'] as int? ?? 0);
+      overlay['visibility_counts'] = visibilityCounts;
+
+      final released = decoded['released_subset'];
+      if (released is List) {
+        final exposed = <String>[
+          for (final item in released)
+            if (item is String && item.trim().isNotEmpty) item.trim(),
+        ];
+        overlay['exposed_provider_ids'] = exposed;
+        final withheld = _stringList(canonical['withheld_provider_ids'])
+          ..removeWhere(exposed.contains);
+        overlay['withheld_provider_ids'] = withheld;
+      }
+      return overlay;
+    } on FormatException {
+      return canonical;
+    }
   }
 }
 

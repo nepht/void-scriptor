@@ -14,20 +14,18 @@
   ],
   "provider_count": 32,
   "status_counts": {
-    "CERTIFIED": 1,
+    "CERTIFIED": 0,
     "LIMITED": 0,
-    "UNVERIFIED": 31,
+    "UNVERIFIED": 32,
     "PLANNED": 0,
     "DEGRADED": 0,
     "BLOCKED": 0
   },
   "visibility_counts": {
-    "EXPOSED": 1,
-    "WITHHELD": 31
+    "EXPOSED": 0,
+    "WITHHELD": 32
   },
-  "exposed_provider_ids": [
-    "github"
-  ],
+  "exposed_provider_ids": [],
   "withheld_provider_ids": [
     "adobe",
     "anthropic",
@@ -43,6 +41,7 @@
     "figma",
     "flux",
     "gemini",
+    "github",
     "gitlab",
     "google",
     "google_drive",
@@ -80,5 +79,5 @@
     "117.41-02: an unmappable visibility produced an empty lock status that failed the != BLOCKED test and read as exposed",
     "117.41-03: a locked status that contradicts its recorded visibility could decide beta exposure without a violation"
   ],
-  "claim_boundary": "The operator-authorized live GitHub App certification example is recorded as CERTIFIED/EXPOSED for the canonical overlay. No other provider is promoted; no public publication or secret access is claimed."
+  "claim_boundary": "No live beta, no participant, and no release is claimed. Every status here is local certification state measured on test-owned fixtures and on the shipped manifests. Live provider health, quota, cost, hosted CI, and publication remain DEFERRED-EXTERNAL."
 }

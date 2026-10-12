@@ -22,6 +22,8 @@ class GithubAppReleaseAuthorization {
 
   static const String manifestPath =
       'docs/planning/v1.3/sprint_118_github_app_release_authorization.json';
+  static const String authorizedSnapshotManifestPath =
+      'docs/planning/v1.3/sprint_118_certified_connector_snapshot_authorized.json';
   static const String evidencePath =
       'docs/evidence/account-center-live-observation-20261011.json';
   static const String authorizedProviderId = 'github';

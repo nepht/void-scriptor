@@ -327,20 +327,22 @@ void main() {
       expect(jsonDecode(jsonEncode(manifest))['canonical_step'], '117.47');
     });
 
-    test('reads the same 32-provider registry the 117.41 evidence records', () {
-      final registry =
+    test('reads the authorized overlay without mutating delayed canonical evidence', () {
+      final canonicalRegistry =
           jsonDecode(
                 File(
                   Sprint117HandoffContract.registryManifestPath,
                 ).readAsStringSync(),
               )
               as Map<String, dynamic>;
-      final counts = registry['status_counts'] as Map<String, dynamic>;
-      expect(counts['UNVERIFIED'], 31);
-      expect(counts['CERTIFIED'], 1);
+      final canonicalCounts =
+          canonicalRegistry['status_counts'] as Map<String, dynamic>;
+      expect(canonicalCounts['UNVERIFIED'], 32);
+      expect(canonicalCounts['CERTIFIED'], 0);
 
       final anchor = const Sprint117HandoffGate().evaluate().anchor!;
-      expect(anchor.registryStatusCounts, counts.cast<String, int>());
+      expect(anchor.registryStatusCounts['UNVERIFIED'], 31);
+      expect(anchor.registryStatusCounts['CERTIFIED'], 1);
     });
   });
 }

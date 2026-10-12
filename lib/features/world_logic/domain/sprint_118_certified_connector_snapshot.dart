@@ -200,6 +200,8 @@ abstract final class Sprint118SnapshotContract {
 
   static const String manifestPath =
       'docs/planning/v1.3/sprint_118_certified_connector_snapshot.json';
+  static const String authorizedManifestPath =
+      'docs/planning/v1.3/sprint_118_certified_connector_snapshot_authorized.json';
   static const String ledgerPath =
       'docs/sprints/sprint-118-account-cloud-center-stability.md';
 

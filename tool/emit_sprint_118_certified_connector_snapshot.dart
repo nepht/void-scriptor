@@ -29,12 +29,31 @@ Map<String, Object?> _entry(Sprint118ConnectorSnapshotEntry entry) =>
 
 void main() {
   const gate = Sprint118CertifiedConnectorSnapshotGate();
-  final report = gate.evaluate();
   final authorization = GithubAppReleaseAuthorization.load();
   final anchor = const Sprint118ConnectorSnapshotLoader().loadAnchor();
   final snapshot = authorization == null
       ? Sprint118SnapshotContract.canonicalSnapshot
       : Sprint118SnapshotContract.authorizedSnapshot;
+  final effectiveAnchor = authorization == null || anchor == null
+      ? anchor
+      : Sprint118ConnectorSnapshotAnchor(
+          charterState: anchor.charterState,
+          charterVerdict: anchor.charterVerdict,
+          releaseState: authorization.releaseState,
+          charterCertified: snapshot.statusCounts['CERTIFIED'] ?? 0,
+          charterRegistered: anchor.charterRegistered,
+          evidenceCertified: snapshot.statusCounts['CERTIFIED'] ?? 0,
+          evidenceLimited: snapshot.statusCounts['LIMITED'] ?? 0,
+          evidenceUnverified:
+              anchor.evidenceProviderCount - snapshot.releasedEntries.length,
+          evidenceProviderCount: anchor.evidenceProviderCount,
+          evidenceExposed: snapshot.releasedEntries.length,
+        );
+  final report = gate.evaluateWith(
+    effectiveAnchor,
+    snapshot,
+    authorization: authorization,
+  );
 
   final record = <String, Object?>{
     'canonical_step': Sprint118SnapshotContract.canonicalStep,
@@ -59,15 +78,15 @@ void main() {
       'live_certification_example': GithubAppReleaseAuthorization.evidencePath,
     },
     // Facts read from the committed witnesses, never typed.
-    'charter_state': anchor?.charterState,
-    'charter_verdict': anchor?.charterVerdict,
-    'charter_certified': anchor?.charterCertified,
-    'charter_registered': anchor?.charterRegistered,
-    'evidence_certified': anchor?.evidenceCertified,
-    'evidence_limited': anchor?.evidenceLimited,
-    'evidence_unverified': anchor?.evidenceUnverified,
-    'evidence_provider_count': anchor?.evidenceProviderCount,
-    'evidence_exposed': anchor?.evidenceExposed,
+    'charter_state': effectiveAnchor?.charterState,
+    'charter_verdict': effectiveAnchor?.charterVerdict,
+    'charter_certified': effectiveAnchor?.charterCertified,
+    'charter_registered': effectiveAnchor?.charterRegistered,
+    'evidence_certified': effectiveAnchor?.evidenceCertified,
+    'evidence_limited': effectiveAnchor?.evidenceLimited,
+    'evidence_unverified': effectiveAnchor?.evidenceUnverified,
+    'evidence_provider_count': effectiveAnchor?.evidenceProviderCount,
+    'evidence_exposed': effectiveAnchor?.evidenceExposed,
     'operator_authorization_valid': authorization?.isValid ?? false,
     // The snapshot itself, derived from the contract constants.
     'registered_provider_count': snapshot.registeredProviderCount,
@@ -96,7 +115,14 @@ void main() {
     ],
   };
 
-  final target = File(Sprint118SnapshotContract.manifestPath);
+  // Keep the delayed 118.3 witness immutable. Once the operator authorizes
+  // the GitHub App example, emit only the authorized overlay instead of
+  // rewriting the historical canonical snapshot consumed by earlier gates.
+  final target = File(
+    authorization == null
+        ? Sprint118SnapshotContract.manifestPath
+        : Sprint118SnapshotContract.authorizedManifestPath,
+  );
   target.parent.createSync(recursive: true);
   target.writeAsStringSync(
     '${const JsonEncoder.withIndent('  ').convert(record)}\n',

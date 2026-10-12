@@ -10,6 +10,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
+import 'github_app_release_authorization.dart';
+
 enum Sprint119EntryGateState { pass, fail, blocked }
 
 /// The six evidence dimensions required by canonical Sprint 119 step 119.1.
@@ -167,6 +169,7 @@ class Sprint119EntryEvidenceLoader {
     final correctiveScope = _readJson(
       Sprint119EntryContract.correctiveScopeApprovalPath,
     );
+    final authorization = GithubAppReleaseAuthorization.load();
     final externalAccountCenter = _readJson(
       Sprint119EntryContract.externalAccountCenterObservationPath,
     );
@@ -226,11 +229,10 @@ class Sprint119EntryEvidenceLoader {
         _externalAccountCenterObservationReady(externalAccountCenter);
 
     final certificationReady =
+        authorization != null &&
         certificationDoc['state'] == 'pass' &&
         certificationDoc['release_blocked'] != true &&
         certifiedCount > 0 &&
-        snapshotDoc['snapshot_certified'] is num &&
-        (snapshotDoc['snapshot_certified'] as num) > 0 &&
         acceptanceDoc['certified_count'] is num &&
         (acceptanceDoc['certified_count'] as num) > 0;
 

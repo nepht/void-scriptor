@@ -91,6 +91,10 @@ void main() {
         Sprint118SnapshotContract.manifestPath,
         'docs/planning/v1.3/sprint_118_certified_connector_snapshot.json',
       );
+      expect(
+        Sprint118SnapshotContract.authorizedManifestPath,
+        'docs/planning/v1.3/sprint_118_certified_connector_snapshot_authorized.json',
+      );
       expect(Sprint118SnapshotContract.requiredFields, <String>[
         'provider_id',
         'connector_version',

@@ -5970,6 +5970,64 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/recent_projects_focus_negctl_
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 113. Fase 113 — Focus Order di `IdentityPreservationCard` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU.** Skrip pra-run kembali melaporkan 27 layar `presentation/*_screen.dart` "tanpa kontrak focus-order". Verifikasi independen run ini mengulang hasil fase 107-112: klaim itu **stale/false-positive** (gate mencocokkan nama file eksak `<base>_screen_focus_order_test.dart`, sedangkan 27 layar itu sudah punya kontrak Tab-traversal bernama pendek). Scan run ini: untuk setiap kelas pada 27 kandidat dicari file `*_focus_order_test.dart` yang mengimpor file layar itu **dan** memuat `LogicalKeyboardKey.tab` -> **27/27 ketemu, 0 genuine gap**; seluruh layar `*_screen.dart` yang belum ter-cover juga di-scan dan **semuanya h=0 (placeholder)** -> kolam layar benar-benar kosong. Run ini karena itu menempuh jalur non-layar (preseden fase 106-112) dan menemukan satu genuine gap mandiri yang **dipakai produksi**: `IdentityPreservationCard` (`lib/features/character/presentation/widgets/identity_preservation_card.dart`).
+
+### (a) Kandidat: mengapa `IdentityPreservationCard`, bukan yang lain
+
+1. **Genuine gap kelas (bukan kebetulan nama file):** scan korpus seluruh 82 file `*_focus_order_test.dart` -> `IdentityPreservationCard` **0 hit**. Test perilakunya ada (`test/features/character/character_voice_notes_ui_test.dart` menyentuh `Switch` di dalamnya) tetapi **tidak** pernah menekan `LogicalKeyboardKey.tab` -> urutan fokus belum dikunci.
+2. **Dipakai produksi (bukan alpha-scope):** dirender dari `CharacterWorkspaceScreen` pada section `Wardrobe`/`Appearance` -> traversal keyboard-nya benar-benar dialami pengguna.
+3. **Mandiri, tanpa database/network:** satu-satunya dependensi adalah `VoidCard` + `context.palette` (tema), keduanya deterministik di test -> probe stabil tanpa fixture DB/HTTP. Memenuhi syarat >= 2 elemen interaktif (lima `Switch`).
+4. **Lima stop dengan urutan vertikal yang mudah salah:** lima baris kunci identitas (`Face Lock`, `Hair Geometry Lock`, `Body Topology Lock`, `Color Lock`, `Outfit Geometry Lock`) masing-masing menyumbang satu `Switch`. Urutan Tab antar baris, dan arah atas-ke-bawah, adalah kontrak 2.4.3 yang belum pernah dikunci.
+
+### (b) Probe live (Flutter 3.47.6 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/character/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik sama fase 105-112: `MaterialApp > Scaffold > SizedBox(1536x1024) > IdentityPreservationCard`, `FocusManager.instance.primaryFocus?.unfocus()` sebelum tabbing, `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label dibaca dari ancestor `Row` terdekat (karena `Switch` difokuskan sebagai anak `Row` dan teks label adalah sibling-nya); rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Fixture: lima switch dengan nilai `[ON, OFF, ON, OFF, ON]`.
+
+Ring maju (ground truth):
+- Tab 1 `Face Lock` @ L=1459 T=82.0 (baris pertama)
+- Tab 2 `Hair Geometry Lock` @ L=1459 T=130.0
+- Tab 3 `Body Topology Lock` @ L=1459 T=178.0
+- Tab 4 `Color Lock` @ L=1459 T=226.0
+- Tab 5 `Outfit Geometry Lock` @ L=1459 T=274.0
+- Tab 6 -> rect `Face Lock` berulang -> **ring tertutup pada 5 stop**.
+
+**Temuan WCAG 2.4.3:** urutan Tab mengikuti **urutan visual baca** (atas-ke-bawah) - bentuk 2.4.3 yang benar. Tidak ada stop ber-rect nol, fokus tidak pernah drop ke null, `EXC=null`. Tidak ada defect dan **tidak ada perubahan kode produksi**.
+
+### (c) Kontrak final
+
+`test/features/character/identity_preservation_card_focus_order_test.dart` - **1 test**, mengunci: (1) ring Tab = 5 stop urutan label `[Face Lock, Hair Geometry Lock, Body Topology Lock, Color Lock, Outfit Geometry Lock]` lalu wrap ke stop pertama; (2) setiap stop ber-rect non-zero dan di dalam viewport 1536x1024; (3) urutan atas-ke-bawah (`top[i] > top[i-1]`) dan tetap di kolom kanan (`left > 1000`); (4) tiap stop berada di dalam `Switch` barisnya (indeks sama, `find.byType(Switch).at(i)`); (5) Tab setelah stop terakhir kembali ke rect stop pertama; (6) `takeException() == null`.
+
+### (d) Gate
+
+- `dart format` (scoped) -> **0 changed**, exit 0.
+- `dart analyze test/features/character/identity_preservation_card_focus_order_test.dart` -> **`No issues found!`**, exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (1 test)`**, exit 0.
+- `flutter test test/features/character/` (gate feature) -> **`All tests passed! (114 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/identity_preservation_card_focus_order_test.dart.bak` (5630 byte), lalu satu ekspektasi dipalsukan: urutan label `['Face Lock','Hair Geometry Lock',...]` ditukar menjadi `['Hair Geometry Lock','Face Lock',...]`.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1**, `+0 -1`; kegagalan pada assertion urutan label (`Expected: ['Hair Geometry Lock', 'Face Lock', ...]` vs `Actual: ['Face Lock', 'Hair Geometry Lock', ...]`, baris 103).
+- Restore dari backup (verifikasi urutan kembali `Face Lock` lalu `Hair Geometry Lock`), backup dihapus (`ls` -> `BACKUP REMOVED`), test dijalankan ulang -> **`All tests passed! (1 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `IdentityPreservationCard`: traversal keyboard sudah benar (5 stop, urutan visual atas-ke-bawah, ring tertutup). **Tidak ada defect 2.4.3** dan **tidak ada perubahan kode produksi** run ini. Kontrak ini **mengunci perilaku yang sudah benar**.
+- Klaim skrip pra-run ("27 layar tanpa kontrak") **stale** - dikoreksi oleh scan independen run ini (27/27 sudah berkontrak dengan nama pendek; layar sisanya placeholder h=0).
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap`) dan fase 111 (tombol `IconButton` icon-only tanpa label Semantics) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: kolam kandidat in-glob `presentation/*_screen.dart` tetap 0** (27/27 kandidat pra-run sudah berkontrak; layar sisanya placeholder h=0). Run ini menambah **1 kontrak baru pada permukaan non-layar** (`IdentityPreservationCard`), sehingga total file kontrak focus-order = **83** (`find test -name "*_focus_order_test.dart"`).
+- Line ending laporan: **LF murni** (0 CR) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini (konsisten fase 111-112).
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

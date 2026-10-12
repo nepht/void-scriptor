@@ -5684,6 +5684,59 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/plugin_install_focus_bak.dart
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 108. Fase 108 - Kontrak focus order `AutomationCenterScreen` (2.4.3)
+
+**Tanggal:** 2026-10-13. **Status: KONTRAK BARU + TEMUAN.** Skrip pra-run melaporkan 28 layar `presentation/*_screen.dart` "tanpa kontrak focus-order". Verifikasi independen run ini membuktikan klaim itu **stale/false-positive**: gate pra-run mencocokkan nama file **eksak** (`<basename>_focus_order_test.dart`), sedangkan 27 dari 28 layar sudah punya kontrak Tab-traversal nyata dengan nama pendek (mis. `ReferenceLibraryScreen` -> `test/features/references/reference_library_focus_order_test.dart`, `MergePreviewScreen` -> `test/features/multiverse/presentation/merge_preview_focus_order_test.dart`). Hanya **satu** gap genuine: `AutomationCenterScreen` (kelas `AutomationCenterScreen` di `lib/features/workflow/presentation/automation_center_screen.dart`) - nol rujukan di seluruh korpus `*_focus_order_test.dart`. Satu-satunya perubahan yang di-commit = section ini + satu file test kontrak.
+
+### (a) Kandidat: mengapa layar ini, bukan yang lain
+
+1. Scan class-name (bukan nama file) terhadap seluruh korpus `*_focus_order_test.dart`: 27/28 layar sudah ter-instantiate di test kontrak (`grep '<ClassName>('`), `AutomationCenterScreen` = 0 hit. Sibling satu-file-nya (`RuleEditorScreen`, `AutomationTemplatesScreen`) sudah berkontrak (`test/features/workflow/presentation/rule_editor_focus_order_test.dart`, `.../automation_templates_focus_order_test.dart`), jadi `AutomationCenterScreen` adalah pasangan yang belum simetris.
+2. `AutomationCenterScreen` = `StatelessWidget` mandiri, **tanpa database/network/provider/Riverpod** - data disuntikkan lewat constructor (`rules`, `metricsSnapshot`). Memenuhi syarat >= 2 elemen interaktif (7 hit regex: 3 `Switch` + `onTap`/`onChanged`/`ListTile`).
+3. Belum dirutekan di produksi (0 pemakaian di `lib/` selain definisinya) -> permukaan alpha-scope; kontrak mengunci perilaku saat ini secara eksplisit.
+
+### (b) Probe live (Flutter 3.47.7 / viewport 1536x1024 / dpr 1.0)
+
+Probe sekali pakai `test/features/workflow/presentation/_probe_focus_test.dart` (**DIHAPUS** setelah hasil dibaca, tidak pernah di-commit). Mekanik: `MaterialApp > Scaffold > AutomationCenterScreen` dengan 3 rule (satu `enabled: false`), `LogicalKeyboardKey.tab` (await) maksimal 20 kali, berhenti saat rect berulang; label = `Text` pertama non-`Icon`; rect = `RenderBox.localToGlobal(Offset.zero) & size`.
+
+Ring maju (ground truth):
+- `SWITCH_COUNT=3`, **semua `Switch.onChanged == NULL`** (display-only, alpha scope).
+- `LISTTILE_COUNT=3`, **semua `ListTile.onTap == NULL`**; `INKWELL_COUNT=3` (hanya ink splash, bukan affordance fokus).
+- Tab 1 -> rect `(0,0,1536x1024)` widget `_FocusScopeWithExternalFocusNode` (root focus scope, bukan affordance). Tab 2 -> rect **identik** (traversal tidak maju ke affordance apa pun).
+- Geometri baca (kunci urutan visual): `rule-r-1 (0,52,1536x72)` -> `rule-r-2 (0,124,1536x72)` -> `rule-r-3 (0,196,1536x72)` -> `metrics-panel (0,280,1536x90)`. Semua kolom rata (left=0, width=1536).
+
+**Temuan WCAG:** permukaan ini punya **0 kontrol yang dapat dicapai keyboard** pada keadaan sekarang. Ini bukan cacat kode - semua kontrol sengaja deferred (`onChanged: null` / `onTap: null`, sesuai kontrak alpha scope Sprint 104) - tetapi artinya 2.4.3 belum dapat diverifikasi sebagai "terpenuhi" untuk layar ini: tidak ada urutan fokus untuk diuji sampai kontrol diaktifkan. Kontrak mengunci keadaan deferred + urutan baca visual, sehingga aktivasi kontrol di masa depan **wajib** memperbarui kontrak ini, bukan diam-diam mengubah traversal.
+
+### (c) Kontrak final
+
+`test/features/workflow/presentation/automation_center_screen_focus_order_test.dart` - **3 test**, mengunci: (1) traversal keyboard tidak menjangkau affordance apa pun (`_affordanceStops` = empty) **plus** bukti bahwa 0-stop itu by-design (`Switch.onChanged == null` x3, `ListTile.onTap == null` x3); (2) urutan baca baris aturan atas-ke-bawah `r-1 < r-2 < r-3 < metrics-panel`, semua area non-zero dan di dalam viewport, ketiga baris rata kolom (left & width identik); (3) daftar kosong: chrome (`Automation Center`, `No automation rules yet.`, `metrics-panel`) tetap render, 0 `Switch`, tetap 0 stop, tanpa exception.
+
+### (d) Gate
+
+- `dart format` (scoped, 1 file) -> 1 file berubah (format semata).
+- `flutter analyze test/features/workflow/presentation/automation_center_screen_focus_order_test.dart` -> **`No issues found!`** (3.1s), exit 0.
+- `flutter test <kontrak>` -> **`All tests passed! (3 test)`**, exit 0.
+- `flutter test test/features/workflow/` (gate feature) -> **`All tests passed! (30 test)`**, exit 0.
+
+### (e) Negative control (LANGKAH 6)
+
+Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/automation_center_focus_bak.dart`, lalu satu ekspektasi dipalsukan: `r1.top < r2.top` dibalik menjadi `r1.top > r2.top`.
+
+- `flutter test <kontrak>` -> **`Some tests failed.`**, **exit 1**, `+2 -1`; test #2 gagal pada assert urutan baca (`line 174`).
+- Restore dari backup, backup dihapus (`test -e` -> BACKUP_GONE), test dijalankan ulang -> **`All tests passed! (3 test)`**, exit 0.
+
+### (f) Temuan (dilaporkan, TIDAK diperbaiki)
+
+- `AutomationCenterScreen`: 0 kontrol terjangkau keyboard karena seluruh affordance deferred (`Switch.onChanged: null`, `ListTile.onTap: null`). **Tidak ada defect** yang dibuktikan; tidak ada perubahan kode produksi run ini. Rekomendasi (bukan patch): saat kontrol diaktifkan, tambahkan urutan fokus eksplisit + perbarui kontrak ini.
+- Klaim skrip pra-run ("28 layar tanpa kontrak") **stale** - gate mencocokkan nama file eksak; 27/28 sudah berkontrak dengan nama pendek. Dikoreksi oleh scan class-name independen run ini.
+- Temuan fase 105 (dead affordance `ListTile` tanpa `onTap` di 9 layar) tetap terbuka dan tidak disentuh run ini.
+
+### Kesimpulan
+
+- **Status audit: 64/92 layar in-glob `presentation/*_screen.dart` berkontrak focus-order (class-name), + permukaan non-layar; total 78 file kontrak focus-order** (`find test -name "*_focus_order_test.dart"`). Run ini menambah 1 kontrak baru (`AutomationCenterScreen`).
+- Line ending laporan: **LF murni** (0 CRLF) -> disisipkan dengan `newline=''`; frasa "pertahankan CRLF" tidak berlaku untuk file ini.
+- Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

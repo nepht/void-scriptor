@@ -413,6 +413,33 @@ void main() {
         reason: 'evidence lama tidak boleh mempertahankan PASS setelah HEAD berubah');
   });
 
+  test('mengabaikan proses gateway sendiri dan ancestor-nya', () {
+    // `dart run` melahirkan dart.exe -> dartvm.exe; keduanya bukan konflik.
+    final conflicts = RoadmapGuard.conflictsFromProcessTable(
+      [
+        '100|1|explorer.exe',
+        '200|100|dart.exe',      // ancestor gateway sendiri
+        '300|200|dartvm.exe',    // gateway sendiri
+        '400|300|powershell.exe',
+        '500|1|flutter_tester.exe', // proses lain -> konflik
+        '600|1|msbuild.exe',        // proses lain -> konflik
+      ],
+      selfPid: 300,
+    );
+    expect(conflicts, contains('flutter_tester.exe(500)'));
+    expect(conflicts, contains('msbuild.exe(600)'));
+    expect(conflicts, isNot(contains('dart.exe(200)')));
+    expect(conflicts, isNot(contains('dartvm.exe(300)')));
+    expect(conflicts, hasLength(2));
+  });
+
+  test('tidak loop saat ppid melingkar (fail-closed)', () {
+    final conflicts = RoadmapGuard.conflictsFromProcessTable(
+      ['10|11|dart.exe', '11|10|dart.exe'],
+      selfPid: 10,
+    );
+    expect(conflicts, isEmpty);
+  });
 }
 
 Future<void> _gitInitCommit(Directory dir) async {

@@ -763,28 +763,67 @@ abstract final class RoadmapGuard {
 
   static Future<List<String>> _liveConflictingProcesses() async {
     try {
-      final result = await Process.run('tasklist', ['/FO', 'CSV', '/NH']);
+      final result = await Process.run('powershell', [
+        '-NoProfile',
+        '-NonInteractive',
+        '-Command',
+        "Get-CimInstance Win32_Process | ForEach-Object { '{0}|{1}|{2}' -f \$_.ProcessId, \$_.ParentProcessId, \$_.Name }",
+      ]);
       if (result.exitCode != 0) {
-        return ['tasklist gagal (exit ${result.exitCode})'];
+        return ['pembacaan daftar proses gagal (powershell exit ${result.exitCode})'];
       }
-      final conflicts = <String>[];
-      final self = pid;
-      for (final line in (result.stdout as String).split(RegExp(r'\r?\n'))) {
-        final match = RegExp(r'^"([^"]+)","(\d+)"').firstMatch(line.trim());
-        if (match == null) continue;
-        final name = match.group(1)!.toLowerCase();
-        final pid = int.tryParse(match.group(2)!);
-        if (pid == null || pid == self) continue;
-        final blocking = name.startsWith('flutter') ||
-            name == 'dart.exe' ||
-            name.startsWith('msbuild') ||
-            name == 'dotnet.exe';
-        if (blocking) conflicts.add('${match.group(1)}($pid)');
-      }
-      return conflicts;
+      return conflictsFromProcessTable(
+        (result.stdout as String).split(RegExp(r'\r?\n')),
+        selfPid: pid,
+      );
     } catch (error) {
-      return ['tasklist tidak tersedia: $error'];
+      return ['pembacaan daftar proses gagal: $error'];
     }
+  }
+
+  /// Deteksi proses Flutter/build/state-writer "lain" dari tabel proses
+  /// berformat `pid|ppid|name`. Proses ini sendiri dan seluruh ancestor-nya
+  /// dikecualikan (aturan: "proses ... lain" - gateway bukan konflik bagi
+  /// dirinya sendiri; `dart run` melahirkan `dart.exe` -> `dartvm.exe`).
+  static List<String> conflictsFromProcessTable(
+    List<String> lines, {
+    required int selfPid,
+  }) {
+    final ppidOf = <int, int>{};
+    final nameOf = <int, String>{};
+    for (final line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) continue;
+      final parts = trimmed.split('|');
+      if (parts.length < 3) continue;
+      final processId = int.tryParse(parts[0].trim());
+      final parentId = int.tryParse(parts[1].trim());
+      if (processId == null || parentId == null) continue;
+      ppidOf[processId] = parentId;
+      nameOf[processId] = parts[2].trim();
+    }
+
+    final ancestors = <int>{selfPid};
+    var cursor = selfPid;
+    var hops = 0;
+    while (hops++ < 64) {
+      final parent = ppidOf[cursor];
+      if (parent == null || parent == 0 || ancestors.contains(parent)) break;
+      ancestors.add(parent);
+      cursor = parent;
+    }
+
+    final conflicts = <String>[];
+    for (final entry in nameOf.entries) {
+      if (ancestors.contains(entry.key)) continue;
+      final name = entry.value.toLowerCase();
+      final blocking = name.startsWith('flutter') ||
+          name == 'dart.exe' ||
+          name.startsWith('msbuild') ||
+          name == 'dotnet.exe';
+      if (blocking) conflicts.add('${entry.value}(${entry.key})');
+    }
+    return conflicts;
   }
 
   static File _defaultSchedulerFile() {

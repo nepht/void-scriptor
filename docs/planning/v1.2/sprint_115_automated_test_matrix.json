@@ -23,7 +23,7 @@
   "suites": [
     {
       "name": "unit",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain",
       "evidence": [
         "test/features/account/domain"
       ],
@@ -33,7 +33,7 @@
     },
     {
       "name": "state_machine",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_connection_health_state_machine_test.dart test/features/account/domain/account_center_loading_empty_error_states_test.dart test/features/account/domain/account_center_offline_mode_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_connection_health_state_machine_test.dart test/features/account/domain/account_center_loading_empty_error_states_test.dart test/features/account/domain/account_center_offline_mode_test.dart",
       "evidence": [
         "test/features/account/domain/account_center_connection_health_state_machine_test.dart",
         "test/features/account/domain/account_center_loading_empty_error_states_test.dart",
@@ -45,7 +45,7 @@
     },
     {
       "name": "contract",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart test/features/account/domain/account_center_workspace_boundary_contract_test.dart test/features/account/domain/account_center_automated_test_matrix_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart test/features/account/domain/account_center_workspace_boundary_contract_test.dart test/features/account/domain/account_center_automated_test_matrix_test.dart",
       "evidence": [
         "test/release/sprint_115_entry_gate_test.dart",
         "test/release/sprint_115_readiness_gate_test.dart",
@@ -58,7 +58,7 @@
     },
     {
       "name": "connector",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_provider_connector_manifest_test.dart test/features/account/domain/account_center_connected_accounts_management_test.dart test/features/account/domain/account_center_oauth_linked_identity_flow_test.dart test/features/account/domain/account_center_cloud_transfer_controls_test.dart test/features/account/domain/account_center_provider_quota_adapter_test.dart test/features/account/domain/account_center_sync_conflict_center_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_provider_connector_manifest_test.dart test/features/account/domain/account_center_connected_accounts_management_test.dart test/features/account/domain/account_center_oauth_linked_identity_flow_test.dart test/features/account/domain/account_center_cloud_transfer_controls_test.dart test/features/account/domain/account_center_provider_quota_adapter_test.dart test/features/account/domain/account_center_sync_conflict_center_test.dart",
       "evidence": [
         "test/features/account/domain/account_center_provider_connector_manifest_test.dart",
         "test/features/account/domain/account_center_connected_accounts_management_test.dart",
@@ -73,7 +73,7 @@
     },
     {
       "name": "security",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_secure_token_vault_test.dart test/features/account/domain/account_center_security_summary_test.dart test/features/account/domain/account_center_privacy_data_flow_review_test.dart test/features/account/domain/account_center_api_keys_manager_test.dart test/app/bootstrap/privacy_regression_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_secure_token_vault_test.dart test/features/account/domain/account_center_security_summary_test.dart test/features/account/domain/account_center_privacy_data_flow_review_test.dart test/features/account/domain/account_center_api_keys_manager_test.dart test/app/bootstrap/privacy_regression_test.dart",
       "evidence": [
         "test/features/account/domain/account_center_secure_token_vault_test.dart",
         "test/features/account/domain/account_center_security_summary_test.dart",
@@ -87,7 +87,7 @@
     },
     {
       "name": "billing",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_billing_summary_test.dart test/features/account/domain/account_center_invoice_history_test.dart test/features/account/domain/account_center_payment_methods_test.dart test/features/account/domain/account_center_subscription_entitlement_model_test.dart test/features/account/domain/account_center_ai_usage_credits_cost_view_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_billing_summary_test.dart test/features/account/domain/account_center_invoice_history_test.dart test/features/account/domain/account_center_payment_methods_test.dart test/features/account/domain/account_center_subscription_entitlement_model_test.dart test/features/account/domain/account_center_ai_usage_credits_cost_view_test.dart",
       "evidence": [
         "test/features/account/domain/account_center_billing_summary_test.dart",
         "test/features/account/domain/account_center_invoice_history_test.dart",
@@ -101,7 +101,7 @@
     },
     {
       "name": "ui",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/presentation",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/presentation",
       "evidence": [
         "test/features/account/presentation"
       ],
@@ -111,7 +111,7 @@
     },
     {
       "name": "accessibility",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_accessibility_test.dart test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart test/features/account/presentation/account_cloud_center_accessibility_test.dart test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/domain/account_center_accessibility_test.dart test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart test/features/account/presentation/account_cloud_center_accessibility_test.dart test/features/account/presentation/account_cloud_center_keyboard_screen_reader_test.dart",
       "evidence": [
         "test/features/account/domain/account_center_accessibility_test.dart",
         "test/features/account/domain/account_center_keyboard_screen_reader_verification_test.dart",
@@ -124,7 +124,7 @@
     },
     {
       "name": "end_to_end",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account/presentation/account_cloud_center_screen_test.dart test/features/account/presentation/account_cloud_center_single_panel_test.dart test/app/routing/account_cloud_route_test.dart test/app/routing/account_cloud_center_ia_route_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account/presentation/account_cloud_center_screen_test.dart test/features/account/presentation/account_cloud_center_single_panel_test.dart test/app/routing/account_cloud_route_test.dart test/app/routing/account_cloud_center_ia_route_test.dart",
       "evidence": [
         "test/features/account/presentation/account_cloud_center_screen_test.dart",
         "test/features/account/presentation/account_cloud_center_single_panel_test.dart",
@@ -137,7 +137,7 @@
     },
     {
       "name": "regression",
-      "command": "C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test --no-pub test/features/account test/app test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart",
+      "command": "C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test --no-pub test/features/account test/app test/release/sprint_115_entry_gate_test.dart test/release/sprint_115_readiness_gate_test.dart",
       "evidence": [
         "test/features/account",
         "test/app",

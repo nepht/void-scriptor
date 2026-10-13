@@ -1,0 +1,86 @@
+{
+  "canonical_step": "119.6",
+  "title": "Capability Interface Foundation",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "CAPABILITY_INTERFACE_CONTRACT_COMPLETE_LOCAL",
+  "contracts": {
+    "capability_discovery": {
+      "name": "capability_discovery",
+      "purpose": "Describe a capability, category, operations, and support boundaries before execution.",
+      "request": "typed discovery query scoped to an installed local connector",
+      "response": "opaque capability descriptor with operation and lifecycle metadata",
+      "failure": "unknown, unavailable, or untrusted capability is withheld",
+      "cancellation": "discovery can be abandoned without starting provider work",
+      "lifecycle": "discover, review, expose locally, withdraw, and revoke",
+      "claim_boundary": "local contract only; live provider discovery and certification remain DEFERRED-EXTERNAL"
+    },
+    "execution": {
+      "name": "execution",
+      "purpose": "Define typed request, response, progress, and outcome boundaries for one capability operation.",
+      "request": "validated operation request with opaque identity and declared scope",
+      "response": "typed result or redacted failure envelope with no secret payload",
+      "failure": "invalid, denied, unavailable, or timed-out work returns a typed error",
+      "cancellation": "in-flight work must observe the cooperative cancellation boundary",
+      "lifecycle": "accepted, running, completed, failed, cancelled, or revoked",
+      "claim_boundary": "local contract only; provider execution and release claims remain DEFERRED-EXTERNAL"
+    },
+    "cancellation": {
+      "name": "cancellation",
+      "purpose": "Make cancellation explicit, cooperative, idempotent, and observable as a terminal outcome.",
+      "request": "opaque request or job identity with a cancellation reason",
+      "response": "cancel requested, already terminal, or cancellation unavailable",
+      "failure": "a refused cancellation never masquerades as successful cancellation",
+      "cancellation": "repeated cancellation is safe and does not restart the operation",
+      "lifecycle": "requested, acknowledged, cancelled, completed, or failed",
+      "claim_boundary": "local contract only; live cancellation exercise remains DEFERRED-EXTERNAL"
+    },
+    "health": {
+      "name": "health",
+      "purpose": "Report capability readiness and limitations without turning absence of evidence into health.",
+      "request": "local health query with a bounded observation window",
+      "response": "status, measured time, source, limitations, and unavailable state",
+      "failure": "unreadable or stale health evidence is reported as unavailable",
+      "cancellation": "health probes can stop without changing capability state",
+      "lifecycle": "unknown, available, degraded, unavailable, or revoked",
+      "claim_boundary": "local contract only; live provider health remains DEFERRED-EXTERNAL"
+    },
+    "usage": {
+      "name": "usage",
+      "purpose": "Represent measured or estimated usage with units, period, freshness, source, and availability.",
+      "request": "usage query for an opaque capability or account scope",
+      "response": "raw value, unit, period, measured time, source, estimate flag, and availability",
+      "failure": "missing or stale usage remains unavailable rather than fabricated",
+      "cancellation": "usage reads may be cancelled without mutating recorded usage",
+      "lifecycle": "unavailable, measured, estimated, stale, or revoked",
+      "claim_boundary": "local contract only; live provider usage remains DEFERRED-EXTERNAL"
+    },
+    "errors": {
+      "name": "errors",
+      "purpose": "Provide stable, redacted error codes with retryability, user safety, and correlation metadata.",
+      "request": "error classification from a bounded capability operation",
+      "response": "safe code, retryable flag, user-safe message key, and opaque correlation id",
+      "failure": "unknown errors are redacted and classified as unavailable",
+      "cancellation": "cancellation errors remain distinct from provider or transport errors",
+      "lifecycle": "created, observed, retried, resolved, or escalated",
+      "claim_boundary": "local contract only; provider-specific error certification remains DEFERRED-EXTERNAL"
+    },
+    "lifecycle": {
+      "name": "lifecycle",
+      "purpose": "Keep discovery, enablement, execution, disablement, and revocation transitions explicit.",
+      "request": "validated lifecycle transition with an owner and reason",
+      "response": "accepted transition or fail-closed rejection with current state",
+      "failure": "invalid or unauthorized transitions do not mutate state",
+      "cancellation": "pending transitions can be cancelled before side effects begin",
+      "lifecycle": "declared, reviewed, enabled, disabled, revoked, and removed",
+      "claim_boundary": "local contract only; installation, provider enablement, and publication remain DEFERRED-EXTERNAL"
+    }
+  },
+  "claim_boundary": [
+    "This is a local capability interface contract, not a live connector implementation.",
+    "The contracts describe typed boundaries and fail-closed outcomes without accessing credentials or provider services.",
+    "Provider execution, health, usage, certification, signing, release, and publication remain DEFERRED-EXTERNAL."
+  ]
+}

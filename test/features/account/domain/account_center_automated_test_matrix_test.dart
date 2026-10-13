@@ -55,7 +55,7 @@ void main() {
     String suite = 'unit',
     AccountTestSuiteStatus status = AccountTestSuiteStatus.pass,
     String command =
-        'C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test '
+        'C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test '
         'test/features/account/domain',
     List<String> evidence = const <String>['test/features/account/domain'],
     int tests = 0,

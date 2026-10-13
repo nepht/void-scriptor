@@ -33,7 +33,7 @@ library;
 /// matrix that recorded a relative command could not prove which SDK produced
 /// its numbers.
 const String accountTestToolchain =
-    'C:/Flutter-SDK-3.47.6/flutter/bin/flutter.bat test';
+    'C:/Flutter-SDK-3.47.7/flutter/bin/flutter.bat test';
 
 /// Outcome of one canonical suite run.
 enum AccountTestSuiteStatus {

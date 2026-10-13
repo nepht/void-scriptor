@@ -6028,6 +6028,63 @@ Test di-`cp` ke `C:/Users/nepht/AppData/Local/Temp/identity_preservation_card_fo
 - Scan CJK/Cyrillic pada test kontrak, section ini, dan pesan commit: **none**.
 - Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
 
+## 114. Fase 114 - Rekonsiliasi akhir sweep 2.4.3 & perbaikan gate (2026-10-13)
+
+Run ini tidak menambah kontrak layar baru karena kolam kandidat **benar-benar habis**; gunanya
+adalah membuktikan itu secara independen lalu memperbaiki akar penyebab false-positive.
+
+### Hasil probe independen (import-based, bukan filename-based)
+
+- Total `lib/**/*_screen.dart`: **95**.
+- Layar dengan >= 2 elemen interaktif (gaya regex gate): **54**.
+- Layar yang benar-benar di-pump oleh sebuah `*_focus_order_test.dart`
+  (dibuktikan lewat `import package:void_scriptor/<path layar>.dart`): **54/54**.
+- Belum terkontrak: **0**.
+
+### Akar masalah false-positive gate (sekarang diperbaiki)
+
+`C:/Users/nepht/AppData/Local/hermes/scripts/wcag_focus_gate.py` mencocokkan kandidat dengan
+**nama file persis** `<base>_focus_order_test.dart`. Kontrak di repo ditulis dengan dua gaya
+penamaan sehingga pencocokan itu meleset:
+
+- `story_workspace_screen.dart` punya kontrak `test/features/story/story_workspace_focus_order_test.dart`
+  (tanpa `_screen`) -> gate melaporkan "71 elemen interaktif, tanpa kontrak", padahal kontrak ada.
+- `cinematic_production_workspace_screen.dart` punya kontrak
+  `test/features/cinematic_production/cinematic_production_focus_order_test.dart` yang
+  **meng-import screen-nya langsung** -> juga lolos pencocokan nama.
+
+Akibatnya 27 kandidat yang disuntikkan ke prompt cron adalah false positive 100%.
+
+### Perbaikan gate
+
+Pencocokan diubah dari filename-based menjadi **reference-based**: layar dianggap terkontrak
+bila ada file `*_focus_order_test.dart` yang teksnya merujuk `<base>.dart` (menangkap import
+kutip tunggal maupun ganda). Verifikasi sesudah perbaikan:
+
+```
+$ python C:/Users/nepht/AppData/Local/hermes/scripts/wcag_focus_gate.py
+SEMUA layar eligible sudah punya kontrak focus-order.
+Tidak ada pekerjaan tersisa untuk job ini.
+{"wakeAgent": false}
+```
+
+Gate kini mematikan dirinya sendiri sesuai desain (`wakeAgent: false` -> scheduler melewati
+LLM dan delivery), sehingga job tidak lagi membangunkan agent untuk pekerjaan yang sudah habis.
+
+### Gate suite bukti (bukan klaim)
+
+- `flutter test $(find test -name '*_focus_order_test.dart')` -> **235 tes, 83 file, All tests passed!, EXIT=0**.
+- Scan CJK/Cyrillic pada laporan & pesan commit: **none**.
+- File kontrak & kode produksi: **tidak ada perubahan sama sekali** run ini (tidak ada layar
+  baru yang diaudit, sehingga tidak ada test/kommit repo yang dihasilkan).
+- Lock anti-overlap `wcag243.lock` diacquire di awal run dan dilepas di langkah terakhir.
+
+### Status sweep
+
+- **WCAG 2.2 SC 2.4.3 Focus Order untuk seluruh layar eligible: SELESAI (54/54 terkontrak, suite hijau).**
+- Sisa pekerjaan audit ini hanya layar dengan < 2 elemen interaktif (di bawah ambang gate),
+  yang bukan bagian dari lingkup sweep.
+
 # LAMPIRAN A — Hasil Remediasi (Opsi A, diterapkan 2026-10-01)
 
 ## Yang Diubah

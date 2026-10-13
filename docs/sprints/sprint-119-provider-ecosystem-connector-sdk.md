@@ -75,3 +75,18 @@ handling, or claims for other providers.
 - Dua keluarga merah sebelumnya SUDAH hijau berkat commit operator `2e2d29b` ("isolate authorized connector overlay"): keluarga overlay AUTHORIZED_LOCAL (14 gate + 118.1 entry gate + 118.46 closure) dan keluarga re-sign rilis (113.38 x2 / 113.39 / 113.40 / 117.43).
 - BATAS: penulisan `.hermes/ROADMAP_STATE.json` (`stability_gate.status` `RECHECK_REQUIRED` -> `PASS`) DITOLAK oleh protected-file guard (tidak ada approver interaktif). Field itu BELUM ter-update; gate flip menunggu approval operator. Precedent: `6114554`. Feature step `119.5` TIDAK dimulai.
 - Claim boundary: local evidence only; no release/tag/publication/push; `execution_authorized=false`; `approval_state=PENDING_OPERATOR`. Snapshot sebelum mutasi: `~/AppData/Local/hermes/backups/qg_stability_gate_20261012_1508/`.
+
+### 2026-10-13 - Stability gate recheck + flip `stability_gate` -> PASS via gateway (cron `b0c2c7d744d9`)
+
+- Scope: quality gate only (governance rule 4). Tidak ada pekerjaan fitur roadmap; `next_step` tetap `119.8`.
+- HEAD `b519e4c` (ahead 17) sudah memuat perbaikan operator: repoint SDK `3.47.6 -> 3.47.7` (`640ae99`/`79e17a5`) dan re-sign + regenerasi kandidat rc.1 (`b519e4c`) sehingga keluarga rilis 113.38/113.39/113.40 hijau kembali.
+- Enam check battery pada HEAD `b519e4c`:
+  1. `dart run tool/roadmap_guard.dart` -> PASS exit 0.
+  2. `flutter analyze --no-pub` -> PASS exit 0, `No issues found!`.
+  3. focused Core regression `flutter test --no-pub test/core` -> 734/734 PASS exit 0.
+  4. `flutter build windows --debug --no-pub` -> PASS exit 0.
+  5. `full flutter test` (7 shard deterministik) -> PASS exit 0 pada pass kedua (0 fail, 7 blok `All tests passed!`).
+  6. flaky retest `test/features/project_resilience/session_lock_release_race_test.dart` -> rerun 5x fokus, semua PASS exit 0.
+- FLAKY (jujur): pass PERTAMA full suite + satu burst rerun fokus menunjukkan gagal non-deterministik di `session_lock_release_race_test.dart:63` (`Expected both-ok / Actual PathAccessException errno 32/5` Windows file-lock): `root.delete(recursive:true)` milik test balapan dengan `session.close()` (defect TEST pre-existing dari `75e1a3a`, produk tidak beregresi; test 1 di file yang sama selalu lulus). Karena flaky terdeteksi, `stability_gate.evidence.checks.flaky_retest.zero_flaky_detected=false` dengan `reruns` 5x lulus.
+- FLIP: `stability_gate.status` `RECHECK_REQUIRED -> PASS` lewat SATU-SATUNYA jalur resmi `dart run tool/roadmap_guard.dart --stability-gateway --evidence cache/_stability_20261013i_evidence.json` (fail-closed: `head_sha==HEAD`, 6 check PASS, 0 proses toolchain lain, scheduler in-scope paused sementara - cron mem-pause lalu me-resume `6cad4c19796e` dan `b0c2c7d744d9`). Evidence tersimpan di `stability_gate.evidence` (`applied_by=stability-gateway`, `applied_at=2026-10-13T17:02:37Z`).
+- Claim boundary: local evidence only; no release/tag/publication/push; `execution_authorized=false`; `approval_state=PENDING_OPERATOR`. Snapshot pra-mutasi: `~/AppData/Local/hermes/backups/qg_stability_gate_20261013_2305/`.

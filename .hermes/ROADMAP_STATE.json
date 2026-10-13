@@ -28,11 +28,11 @@
   "active_sprint": 119,
   "active_sprint_source": "C:\\Users\\nepht\\AppData\\Local\\hermes\\references\\void_scriptor\\sprint_119.json",
   "active_ledger": "docs/sprints/sprint-119-provider-ecosystem-connector-sdk.md",
-  "last_verified_step": "119.5",
-  "next_step": "119.6",
+  "last_verified_step": "119.7",
+  "next_step": "119.8",
   "stability_gate": {
-    "status": "PASS",
-    "resume_step": "119.6",
+    "status": "RECHECK_REQUIRED",
+    "resume_step": "119.8",
     "previous_result": null,
     "required_checks": [
       "dart run tool/roadmap_guard.dart",
@@ -40,84 +40,7 @@
       "focused Core MVP regression",
       "full flutter test",
       "Windows debug build"
-    ],
-    "evidence": {
-      "schema": "stability_evidence.v1",
-      "run_id": "stability_20261013_1130",
-      "head_sha": "a85346a3ea36490476c1a90d44d3df9c134b9d7f",
-      "head_at_check": "a85346a3ea36490476c1a90d44d3df9c134b9d7f",
-      "head_unchanged": true,
-      "head_before": "a85346a3ea36490476c1a90d44d3df9c134b9d7f",
-      "head_after": "a85346a3ea36490476c1a90d44d3df9c134b9d7f",
-      "started_at": "2026-10-13T04:19:30Z",
-      "completed_at": "2026-10-13T05:38:06Z",
-      "all_required_pass": true,
-      "checks": {
-        "roadmap_guard": {
-          "command": "dart run tool/roadmap_guard.dart",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T04:19:30Z",
-          "finished_at": "2026-10-13T04:19:33Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/roadmap_guard.log"
-        },
-        "analyzer": {
-          "command": "flutter analyze",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T04:19:33Z",
-          "finished_at": "2026-10-13T04:20:05Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/analyzer.log"
-        },
-        "focused_core_regression": {
-          "command": "flutter test test/core",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T04:20:05Z",
-          "finished_at": "2026-10-13T04:23:34Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/focused_core_regression.log"
-        },
-        "full_test": {
-          "command": "flutter test",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T04:24:20Z",
-          "finished_at": "2026-10-13T05:03:50Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/full_test.log"
-        },
-        "windows_build": {
-          "command": "flutter build windows --debug",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T04:23:34Z",
-          "finished_at": "2026-10-13T04:24:20Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/windows_build.log"
-        },
-        "flaky_retest": {
-          "command": "flutter test  # replay run ke-2 (konfirmasi zero flaky)",
-          "exit_code": 0,
-          "result": "PASS",
-          "started_at": "2026-10-13T05:03:51Z",
-          "finished_at": "2026-10-13T05:38:06Z",
-          "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/flaky_retest_full_suite_replay.log",
-          "zero_flaky_detected": true,
-          "reruns": [
-            {
-              "test": "full suite replay (run identik ke-2)",
-              "runs": 2,
-              "exit_code": 0,
-              "log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/flaky_retest_full_suite_replay.log",
-              "first_run_log_path": "C:\\Users\\nepht\\AppData\\Local/hermes/cache/stability_20261013_1130/full_test.log"
-            }
-          ]
-        }
-      },
-      "artifact_dir": "C:\\Users\\nepht\\AppData\\Local\\hermes\\cache\\stability_20261013_1130",
-      "notes": "Battery fail-fast: full suite + replay hanya jalan bila guard/analyze/focused/build lulus.",
-      "applied_at": "2026-10-13T05:41:16.656675Z",
-      "applied_by": "stability-gateway",
-      "verified_head": "a85346a3ea36490476c1a90d44d3df9c134b9d7f"
-    }
+    ]
   },
   "selection_rules": [
     "Repository evidence and the active sprint ledger override stale narrative status text.",
@@ -126,7 +49,7 @@
     "Advance to the next sprint only after every defined step in the active sprint is verified or explicitly blocked with evidence.",
     "When advancing, copy the exact next sprint JSON from canonical_archive_root to hermes_reference_root and verify matching SHA-256 before use."
   ],
-  "updated_at": "2026-10-13T05:41:38.698325Z",
+  "updated_at": "2026-10-13T11:12:22.451244Z",
   "updated_by": "roadmap_guard repair",
   "active_stream": "sequential_expansion",
   "novel_io_hunt_2026_09_12": {
@@ -721,7 +644,7 @@
     "limitations": "Feature-specific emitters remain incremental wiring; native cross-platform, third-party plugins, hosted CI, signing, hardware, and public release remain UNVERIFIABLE.",
     "next_step": "112.41"
   },
-  "current_step": "119.6",
+  "current_step": "119.8",
   "current_step_status": "SPRINT_COMPLETE_PENDING_OPERATOR_DECISION",
   "last_run_summary": "2026-10-10 roadmap pointer repair: canonical Sprint 118 ledger resolved 118.1-118.46; current_step and last_resolved_step aligned to 118.46. Sprint 119.1 remains PLANNED_BLOCKED by upstream external stability and certification evidence; no Sprint 119 activation or release claim.",
   "last_commit": "a5d07e5",
@@ -835,7 +758,7 @@
     "limitations": "Partisipan belum didaftarkan; validation window belum dimulai. Hosted CI, native GUI, hardware, public release DEFERRED.",
     "next_step": "113.4"
   },
-  "last_resolved_step": "119.5",
+  "last_resolved_step": "119.7",
   "sprint_113_step_11312": {
     "status": "VERIFIED-LOCAL",
     "manifest": "docs/planning/v1.2/sprint_113_migration_restore_validation.json",

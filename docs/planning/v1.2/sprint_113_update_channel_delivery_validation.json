@@ -12,17 +12,17 @@
                                                       "previous_version":  "1.2.0-alpha.1",
                                                       "artifact_path":  "build/windows/x64/runner/Release/void_scriptor.exe",
                                                       "hash_algorithm":  "sha256",
-                                                      "artifact_sha256":  "70de912c3581e7638a43c8b9e66ac0c02f9a7761f911f203bc0721a5d4274eca",
-                                                      "artifact_size_bytes":  156584,
-                                                      "source":  "re-signed rc.1 candidate rebuilt from pinned revision 9affcd10 (operator-approved re-sign 2026-10-12)"
+                                                      "artifact_sha256":  "2f19b2caa80cdff571d6f49f9fdc0c87e2d4bba651679757ed52adc3d0830ca2",
+                                                      "artifact_size_bytes":  233440,
+                                                      "source":  "re-signed rc.1 candidate rebuilt from pinned revision 9affcd10 (operator-approved re-sign 2026-10-13)"
                                                   },
                               "signature_check":  {
                                                       "status":  "Valid",
                                                       "verification_exit_code":  0,
-                                                      "method":  "PowerShell Get-AuthenticodeSignature (live, 2026-10-04)",
+                                                      "method":  "PowerShell Get-AuthenticodeSignature (live, 2026-10-13)",
                                                       "certificate_scope":  "self-signed local development",
                                                       "trust_limit":  "no public trust: status Valid only verifies the local signature integrity; Windows end-users without the dev cert will see an unknown-publisher warning",
-                                                      "checked_at":  "2026-10-12T00.50.15Z",
+                                                      "checked_at":  "2026-10-13T15.06.06Z",
                                                       "thumbprint":  "E336967CB949B489B7FE320E80683780C00C4A8A"
                                                   },
                               "download":  {

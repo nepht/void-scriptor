@@ -1,0 +1,64 @@
+{
+  "canonical_step": "119.7",
+  "title": "Authentication Broker",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "AUTHENTICATION_BROKER_CONTRACT_COMPLETE_LOCAL",
+  "acceptance": {
+    "oauth_pkce": {
+      "description": "OAuth 2.0 authorization-code registrations must declare PKCE with the S256 challenge method; plain or absent PKCE is rejected.",
+      "claim_boundary": "The contract only records PKCE intent; no live authorization-code exchange is performed. DEFERRED-EXTERNAL."
+    },
+    "oidc": {
+      "description": "OpenID Connect providers are registered with HTTPS authorization and token endpoints and a declared scope set.",
+      "claim_boundary": "No discovery document is fetched and no ID token is verified locally. DEFERRED-EXTERNAL."
+    },
+    "secret_reference": {
+      "description": "Registrations reference credentials only through an opaque credref handle; raw client secrets and tokens are never stored in the contract.",
+      "claim_boundary": "The contract never materializes the referenced secret; credential-store integration is deferred. DEFERRED-EXTERNAL."
+    },
+    "redirect_validation": {
+      "description": "Every redirect URI must be absolute HTTPS and is validated before an operation is accepted.",
+      "claim_boundary": "Validation is structural; no live redirect round-trip is performed. DEFERRED-EXTERNAL."
+    },
+    "refresh": {
+      "description": "A registration may declare refresh support; refresh operations carry only the opaque credential reference.",
+      "claim_boundary": "No refresh token is issued, stored, or exchanged locally. DEFERRED-EXTERNAL."
+    },
+    "reauth": {
+      "description": "A registration may declare reauthentication support; reauthentication operations revalidate the credential reference and redirect URI.",
+      "claim_boundary": "No interactive provider session is started locally. DEFERRED-EXTERNAL."
+    },
+    "revoke": {
+      "description": "A registration may declare revocation support; revoke operations reference the same opaque credential handle and are non-destructive to local user data.",
+      "claim_boundary": "No remote revocation endpoint is called locally. DEFERRED-EXTERNAL."
+    }
+  },
+  "registration_fields": [
+    "provider_id",
+    "protocol",
+    "authorization_endpoint",
+    "token_endpoint",
+    "redirect_uris",
+    "credential_reference",
+    "scopes",
+    "supports_refresh",
+    "supports_reauthentication",
+    "supports_revocation",
+    "pkce_required",
+    "pkce_method"
+  ],
+  "operations": [
+    "authorize",
+    "refresh",
+    "reauthenticate",
+    "revoke"
+  ],
+  "claim_boundary": [
+    "This is a local authentication-broker contract, not a live provider certification.",
+    "Credentials are referenced only as opaque handles; no tokens or secrets are stored or transported.",
+    "Live authorization, credential-store integration, and external provider evidence remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

@@ -23,6 +23,18 @@ class RoadmapGuardResult {
   bool get ok => issues.isEmpty;
 }
 
+/// Hasil gateway stability gate (fail-closed).
+///
+/// [applied] hanya true ketika SEMUA prasyarat terverifikasi dan tulis atomik
+/// RECHECK_REQUIRED -> PASS berhasil. Selain itu [rejections] memuat alasan
+/// verifikasi dan state TIDAK disentuh sama sekali.
+class StabilityGatewayResult {
+  StabilityGatewayResult({required this.applied, required this.rejections});
+
+  final bool applied;
+  final List<String> rejections;
+}
+
 abstract final class RoadmapGuard {
   static Future<RoadmapGuardResult> inspect({
     required Directory repository,
@@ -331,23 +343,503 @@ abstract final class RoadmapGuard {
         'current_step_status': 'SPRINT_COMPLETE_PENDING_OPERATOR_DECISION',
       'next_step': nextStep,
       'suspended_streams': suspended,
-      'stability_gate': {
-        'status': 'RECHECK_REQUIRED',
-        'resume_step': nextStep,
-        'previous_result': previousGate?['full_test_result'],
-        'required_checks': [
-          'dart run tool/roadmap_guard.dart',
-          'flutter analyze',
-          'focused Core MVP regression',
-          'full flutter test',
-          'Windows debug build',
-        ],
-      },
+      'stability_gate': await _stabilityGateForRepair(
+        previousGate: previousGate,
+        repository: repository,
+        resumeStep: nextStep,
+      ),
       'updated_at': DateTime.now().toUtc().toIso8601String(),
       'updated_by': 'roadmap_guard repair',
     };
     await _writeObjectAtomically(runtimeFile, repaired);
     return inspect(repository: repository, policyFile: policyPath);
+  }
+
+  /// Id evidence wajib untuk stability gate (fail-closed: semua wajib ada).
+  static const List<String> stabilityEvidenceCheckIds = [
+    'roadmap_guard',
+    'analyzer',
+    'focused_core_regression',
+    'full_test',
+    'windows_build',
+    'flaky_retest',
+  ];
+
+  /// Pemetaan nama required_check (di state) ke id evidence.
+  static const Map<String, String> stabilityEvidenceIds = {
+    'dart run tool/roadmap_guard.dart': 'roadmap_guard',
+    'flutter analyze': 'analyzer',
+    'focused Core MVP regression': 'focused_core_regression',
+    'full flutter test': 'full_test',
+    'Windows debug build': 'windows_build',
+  };
+
+  /// Token wajib di command lengkap setiap check evidence.
+  static const Map<String, String> stabilityEvidenceCommandTokens = {
+    'roadmap_guard': 'roadmap_guard',
+    'analyzer': 'flutter analyze',
+    'focused_core_regression': 'flutter test',
+    'full_test': 'flutter test',
+    'windows_build': 'flutter build windows',
+    'flaky_retest': 'flutter test',
+  };
+
+  /// Gateway terbatas: satu-satunya jalur flip RECHECK_REQUIRED -> PASS.
+  ///
+  /// Fail-closed: evidence tidak valid, HEAD berubah/berbeda, masih ada
+  /// proses Flutter/build/state-writer lain, scheduler tidak paused, atau
+  /// required_checks tak dikenal -> REJECTED tanpa menyentuh state.
+  static Future<StabilityGatewayResult> applyStabilityGate({
+    required Directory repository,
+    required File evidenceFile,
+    File? policyFile,
+    File? schedulerFile,
+    Future<String?> Function()? headReader,
+    Future<List<String>> Function()? conflictReader,
+  }) async {
+    final rejections = <String>[];
+
+    Map<String, dynamic>? evidence;
+    if (!evidenceFile.existsSync()) {
+      rejections.add('evidence tidak ditemukan: ${evidenceFile.path}');
+    } else {
+      try {
+        final decoded = jsonDecode(await evidenceFile.readAsString());
+        if (decoded is Map<String, dynamic>) {
+          evidence = decoded;
+        }
+      } catch (_) {
+        evidence = null;
+      }
+      if (evidence == null) {
+        rejections.add('evidence bukan JSON object valid: ${evidenceFile.path}');
+      }
+    }
+
+    File stateFile;
+    Map<String, dynamic> state;
+    try {
+      final policy = policyFile ??
+          File(_join(repository.path, 'docs/roadmap/ROADMAP_POLICY.json'));
+      if (!policy.existsSync()) {
+        throw StateError('ROADMAP_POLICY.json tidak ada');
+      }
+      final decodedPolicy = jsonDecode(await policy.readAsString());
+      final runtimeState = decodedPolicy is Map<String, dynamic>
+          ? (decodedPolicy['runtime_state'] ?? '.hermes/ROADMAP_STATE.json')
+          : '.hermes/ROADMAP_STATE.json';
+      final isAbsolute = runtimeState is String &&
+          (runtimeState.startsWith('/') ||
+              RegExp(r'^[A-Za-z]:').hasMatch(runtimeState));
+      final runtimePath = isAbsolute
+          ? runtimeState
+          : _join(repository.path,
+              runtimeState is String ? runtimeState : '.hermes/ROADMAP_STATE.json');
+      stateFile = File(runtimePath);
+      if (!stateFile.existsSync()) {
+        throw StateError('runtime state tidak ada: $runtimePath');
+      }
+      final decodedState = jsonDecode(await stateFile.readAsString());
+      if (decodedState is! Map<String, dynamic>) {
+        throw StateError('runtime state bukan JSON object');
+      }
+      state = decodedState;
+    } catch (error) {
+      rejections.add('runtime state tidak terbaca: $error');
+      return StabilityGatewayResult(applied: false, rejections: rejections);
+    }
+
+    final head = await (headReader ?? () => _gitHead(repository))();
+    if (head == null) {
+      rejections.add('HEAD repo tidak terbaca (git rev-parse HEAD gagal)');
+    }
+    if (evidence != null) {
+      rejections.addAll(validateStabilityEvidence(
+        evidence: evidence,
+        currentHead: head,
+        requireLogArtifacts: true,
+      ));
+    }
+
+    final gate = state['stability_gate'];
+    final gateMap = gate is Map<String, dynamic> ? gate : null;
+    if (gateMap == null) {
+      rejections.add('stability_gate tidak ada di runtime state');
+    } else if (gateMap['status'] != 'RECHECK_REQUIRED') {
+      rejections.add(
+        'stability_gate.status="${gateMap['status']}" - hanya RECHECK_REQUIRED -> PASS yang diizinkan',
+      );
+    } else if (evidence != null) {
+      final required = gateMap['required_checks'];
+      if (required is List) {
+        for (final raw in required) {
+          if (raw is! String) {
+            rejections.add('required_check tidak valid: $raw');
+            continue;
+          }
+          final id = stabilityEvidenceIds[raw];
+          if (id == null) {
+            rejections.add('required_check tak dikenal (fail-closed): $raw');
+            continue;
+          }
+          final checks = evidence['checks'];
+          if (checks is! Map<String, dynamic> || !checks.containsKey(id)) {
+            rejections.add('evidence tidak memuat required check: $id');
+          }
+        }
+      }
+    }
+
+    final conflicts = await (conflictReader ?? _liveConflictingProcesses)();
+    for (final conflict in conflicts) {
+      rejections.add(
+        'proses Flutter/build/state-writer lain terdeteksi: $conflict',
+      );
+    }
+
+    final resolvedScheduler = schedulerFile ?? _defaultSchedulerFile();
+    rejections.addAll(_schedulerViolations(
+      jobsFile: resolvedScheduler,
+      repository: repository,
+    ));
+
+    if (rejections.isNotEmpty) {
+      return StabilityGatewayResult(applied: false, rejections: rejections);
+    }
+
+    final newGate = <String, dynamic>{
+      ...gateMap!,
+      'status': 'PASS',
+      'evidence': <String, dynamic>{
+        ...evidence!,
+        'applied_at': DateTime.now().toUtc().toIso8601String(),
+        'applied_by': 'stability-gateway',
+        'verified_head': head!,
+      },
+    };
+    state['stability_gate'] = newGate;
+    await _writeObjectAtomically(stateFile, state);
+    return StabilityGatewayResult(applied: true, rejections: const []);
+  }
+
+  /// Validasi evidence stability gate (fail-closed: kumpulkan semua masalah).
+  static List<String> validateStabilityEvidence({
+    required Object? evidence,
+    required String? currentHead,
+    required bool requireLogArtifacts,
+  }) {
+    final problems = <String>[];
+    if (evidence is! Map<String, dynamic>) {
+      return ['evidence tidak ada atau bukan JSON object'];
+    }
+
+    final headSha = evidence['head_sha'];
+    if (headSha is! String || !RegExp(r'^[0-9a-f]{40}$').hasMatch(headSha)) {
+      problems.add('evidence.head_sha bukan SHA-40 hex: $headSha');
+    } else if (currentHead == null) {
+      problems.add('HEAD repo tidak terbaca - evidence tidak bisa diverifikasi');
+    } else if (headSha != currentHead) {
+      problems.add(
+        'evidence.head_sha ($headSha) tidak sama dengan HEAD repo ($currentHead)',
+      );
+    }
+    if (evidence['head_at_check'] != headSha) {
+      problems.add(
+        'evidence.head_at_check tidak sama dengan head_sha (HEAD berubah saat pemeriksaan)',
+      );
+    }
+
+    final started = _parseTimestamp(evidence['started_at']);
+    final completed = _parseTimestamp(evidence['completed_at']);
+    if (started == null) problems.add('evidence.started_at tidak valid');
+    if (completed == null) problems.add('evidence.completed_at tidak valid');
+    if (started != null && completed != null && completed.isBefore(started)) {
+      problems.add('evidence.completed_at sebelum started_at');
+    }
+    if (completed != null &&
+        completed.isAfter(DateTime.now().toUtc().add(const Duration(minutes: 2)))) {
+      problems.add('evidence.completed_at di masa depan');
+    }
+
+    final checks = evidence['checks'];
+    if (checks is! Map<String, dynamic>) {
+      problems.add('evidence.checks tidak ada');
+      return problems;
+    }
+
+    for (final id in stabilityEvidenceCheckIds) {
+      final raw = checks[id];
+      if (raw is! Map<String, dynamic>) {
+        problems.add('check wajib hilang atau tidak valid: $id');
+        continue;
+      }
+      final command = raw['command'];
+      if (command is! String || command.trim().isEmpty) {
+        problems.add('command kosong: $id');
+      } else {
+        final token = stabilityEvidenceCommandTokens[id]!;
+        if (!command.toLowerCase().contains(token)) {
+          problems.add(
+            'command "$command" tidak sesuai check $id (harus mengandung "$token")',
+          );
+        }
+      }
+      if (raw['exit_code'] != 0) {
+        problems.add('exit_code ${raw['exit_code']} != 0: $id');
+      }
+      if (raw['result'] != 'PASS') {
+        problems.add('result "${raw['result']}" != PASS: $id');
+      }
+      final checkStarted = _parseTimestamp(raw['started_at']);
+      final checkFinished = _parseTimestamp(raw['finished_at']);
+      if (checkStarted == null || checkFinished == null) {
+        problems.add('timestamp check tidak valid: $id');
+      } else if (checkFinished.isBefore(checkStarted)) {
+        problems.add('finished_at sebelum started_at: $id');
+      }
+      final logPath = raw['log_path'];
+      if (logPath is! String || logPath.trim().isEmpty) {
+        problems.add('log_path tidak ada: $id');
+      } else if (requireLogArtifacts && !_logArtifactUsable(logPath)) {
+        problems.add('artifact log tidak tersedia/kosong: $id ($logPath)');
+      }
+    }
+
+    final flaky = checks['flaky_retest'];
+    if (flaky is Map<String, dynamic>) {
+      final zero = flaky['zero_flaky_detected'];
+      if (zero is! bool) {
+        problems.add('flaky_retest.zero_flaky_detected wajib boolean');
+      } else if (!zero) {
+        final rerunsOk = _flakyRerunsValid(
+          flaky['reruns'],
+          problems,
+          requireLogArtifacts,
+        );
+        final quarantinedOk = _flakyQuarantineValid(
+          flaky['quarantined'],
+          problems,
+          requireLogArtifacts,
+        );
+        if (!rerunsOk && !quarantinedOk) {
+          problems.add(
+            'flaky_retest: tanpa zero_flaky_detected wajib ada rerun lulus ATAU quarantine dengan rule tertulis',
+          );
+        }
+      }
+    }
+
+    return problems;
+  }
+
+  /// Reparasi stability gate: pertahankan PASS hanya jika evidence masih
+  /// cocok dengan HEAD; selain itu kembalikan RECHECK_REQUIRED (fail-closed).
+  static Future<Map<String, dynamic>> _stabilityGateForRepair({
+    required Map<String, dynamic>? previousGate,
+    required Directory repository,
+    required Object? resumeStep,
+  }) async {
+    if (previousGate != null && previousGate['status'] == 'PASS') {
+      final head = await _gitHead(repository);
+      final problems = validateStabilityEvidence(
+        evidence: previousGate['evidence'],
+        currentHead: head,
+        requireLogArtifacts: true,
+      );
+      if (problems.isEmpty) {
+        return Map<String, dynamic>.from(previousGate);
+      }
+    }
+    return {
+      'status': 'RECHECK_REQUIRED',
+      'resume_step': resumeStep,
+      'previous_result': previousGate?['full_test_result'],
+      'required_checks': [
+        'dart run tool/roadmap_guard.dart',
+        'flutter analyze',
+        'focused Core MVP regression',
+        'full flutter test',
+        'Windows debug build',
+      ],
+    };
+  }
+
+  static bool _flakyRerunsValid(
+    Object? reruns,
+    List<String> problems,
+    bool requireLogArtifacts,
+  ) {
+    if (reruns is! List || reruns.isEmpty) return false;
+    var ok = true;
+    for (final raw in reruns) {
+      if (raw is! Map<String, dynamic>) {
+        problems.add('flaky rerun entry tidak valid');
+        ok = false;
+        continue;
+      }
+      final testName = raw['test'];
+      final runs = raw['runs'];
+      if (testName is! String || testName.isEmpty) {
+        problems.add('flaky rerun tanpa nama test');
+        ok = false;
+      }
+      if (runs is! int || runs < 1) {
+        problems.add('flaky rerun runs < 1: $testName');
+        ok = false;
+      }
+      if (raw['exit_code'] != 0) {
+        problems.add('flaky rerun exit_code != 0: $testName');
+        ok = false;
+      }
+      final logPath = raw['log_path'];
+      if (logPath is! String ||
+          (requireLogArtifacts && !_logArtifactUsable(logPath))) {
+        problems.add('flaky rerun log tidak tersedia: $testName');
+        ok = false;
+      }
+    }
+    return ok;
+  }
+
+  static bool _flakyQuarantineValid(
+    Object? entries,
+    List<String> problems,
+    bool requireLogArtifacts,
+  ) {
+    if (entries is! List || entries.isEmpty) return false;
+    var ok = true;
+    for (final raw in entries) {
+      if (raw is! Map<String, dynamic>) {
+        problems.add('quarantine entry tidak valid');
+        ok = false;
+        continue;
+      }
+      final testName = raw['test'];
+      if (testName is! String || testName.isEmpty) {
+        problems.add('quarantine tanpa nama test');
+        ok = false;
+      }
+      final rulePath = raw['rule_path'];
+      if (rulePath is! String ||
+          (requireLogArtifacts && !_logArtifactUsable(rulePath))) {
+        problems.add('quarantine rule tidak tersedia (aturan tertulis wajib): $rulePath');
+        ok = false;
+      }
+      final logPath = raw['log_path'];
+      if (logPath is! String ||
+          (requireLogArtifacts && !_logArtifactUsable(logPath))) {
+        problems.add('quarantine log tidak tersedia: $testName');
+        ok = false;
+      }
+    }
+    return ok;
+  }
+
+  static bool _logArtifactUsable(String path) {
+    final file = File(path);
+    return file.existsSync() && file.lengthSync() > 0;
+  }
+
+  static DateTime? _parseTimestamp(Object? value) {
+    if (value is! String || value.isEmpty) return null;
+    final parsed = DateTime.tryParse(value);
+    if (parsed == null) return null;
+    return parsed.toUtc();
+  }
+
+  static Future<String?> _gitHead(Directory repository) async {
+    try {
+      final result = await Process.run(
+        'git',
+        ['-C', repository.path, 'rev-parse', 'HEAD'],
+      );
+      if (result.exitCode != 0) return null;
+      final sha = (result.stdout as String).trim();
+      return RegExp(r'^[0-9a-f]{40}$').hasMatch(sha) ? sha : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<List<String>> _liveConflictingProcesses() async {
+    try {
+      final result = await Process.run('tasklist', ['/FO', 'CSV', '/NH']);
+      if (result.exitCode != 0) {
+        return ['tasklist gagal (exit ${result.exitCode})'];
+      }
+      final conflicts = <String>[];
+      final self = pid;
+      for (final line in (result.stdout as String).split(RegExp(r'\r?\n'))) {
+        final match = RegExp(r'^"([^"]+)","(\d+)"').firstMatch(line.trim());
+        if (match == null) continue;
+        final name = match.group(1)!.toLowerCase();
+        final pid = int.tryParse(match.group(2)!);
+        if (pid == null || pid == self) continue;
+        final blocking = name.startsWith('flutter') ||
+            name == 'dart.exe' ||
+            name.startsWith('msbuild') ||
+            name == 'dotnet.exe';
+        if (blocking) conflicts.add('${match.group(1)}($pid)');
+      }
+      return conflicts;
+    } catch (error) {
+      return ['tasklist tidak tersedia: $error'];
+    }
+  }
+
+  static File _defaultSchedulerFile() {
+    final localAppData = Platform.environment['LOCALAPPDATA'];
+    if (localAppData == null || localAppData.isEmpty) return File('');
+    return File('$localAppData/hermes/cron/jobs.json');
+  }
+
+  /// Job scheduler yang menyentuh repo ini (workdir/path/ROADMAP_STATE)
+  /// wajib berstatus paused sebelum gateway menulis state.
+  static List<String> _schedulerViolations({
+    required File jobsFile,
+    required Directory repository,
+  }) {
+    if (!jobsFile.existsSync()) {
+      return ['scheduler jobs.json tidak tersedia: ${jobsFile.path}'];
+    }
+    try {
+      final decoded = jsonDecode(jobsFile.readAsStringSync());
+      final jobs = decoded is Map<String, dynamic> ? decoded['jobs'] : null;
+      if (jobs is! List) {
+        return ['scheduler jobs.json tidak memuat daftar jobs'];
+      }
+      final repoNeedle =
+          repository.absolute.path.replaceAll('\\', '/').toLowerCase();
+      final violations = <String>[];
+      for (final rawJob in jobs) {
+        if (rawJob is! Map<String, dynamic>) continue;
+        final flattened = _flattenSchedulerText(rawJob).toLowerCase();
+        final workdir = rawJob['workdir'];
+        final workdirNorm = workdir is String
+            ? workdir.replaceAll('\\', '/').toLowerCase()
+            : '';
+        final inScope = workdirNorm == repoNeedle ||
+            flattened.contains(repoNeedle) ||
+            flattened.contains('.hermes/roadmap_state');
+        if (!inScope) continue;
+        if (rawJob['state'] != 'paused') {
+          violations.add(
+            'scheduler belum paused: ${rawJob['id'] ?? rawJob['name']} '
+            '(${rawJob['name']}, state=${rawJob['state']})',
+          );
+        }
+      }
+      return violations;
+    } catch (error) {
+      return ['scheduler jobs.json tidak terbaca: $error'];
+    }
+  }
+
+  static String _flattenSchedulerText(dynamic value) {
+    if (value is String) return value.replaceAll('\\', ' ');
+    if (value is Map) return value.values.map(_flattenSchedulerText).join(' ');
+    if (value is List) return value.map(_flattenSchedulerText).join(' ');
+    return '';
   }
 
   static Future<RoadmapGuardResult> syncRuntimePointer({

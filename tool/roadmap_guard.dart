@@ -4,6 +4,30 @@ import 'package:void_scriptor/core/roadmap/roadmap_guard.dart';
 
 Future<void> main(List<String> arguments) async {
   final repository = Directory.current;
+  if (arguments.contains('--stability-gateway')) {
+    final evidenceIndex = arguments.indexOf('--evidence');
+    final evidencePath = evidenceIndex >= 0 && evidenceIndex + 1 < arguments.length
+        ? arguments[evidenceIndex + 1]
+        : null;
+    if (evidencePath == null || evidencePath.trim().isEmpty) {
+      stderr.writeln('STABILITY_GATEWAY: REJECTED');
+      stderr.writeln('- argumen --evidence <path> wajib');
+      exitCode = 1;
+      return;
+    }
+    final gateway = await RoadmapGuard.applyStabilityGate(
+      repository: repository,
+      evidenceFile: File(evidencePath),
+    );
+    stdout.writeln(
+      'STABILITY_GATEWAY: ${gateway.applied ? 'APPLIED' : 'REJECTED'}',
+    );
+    for (final rejection in gateway.rejections) {
+      stderr.writeln('REJECT: $rejection');
+    }
+    if (!gateway.applied) exitCode = 1;
+    return;
+  }
   final repair = arguments.contains('--repair');
   final syncPointer = arguments.contains('--sync-pointer');
   final result = repair

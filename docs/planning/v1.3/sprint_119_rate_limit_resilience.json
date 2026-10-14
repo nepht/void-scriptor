@@ -1,0 +1,52 @@
+{
+  "canonical_step": "119.10",
+  "title": "Rate Limit & Resilience Contract",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "RATE_LIMIT_RESILIENCE_CONTRACT_COMPLETE_LOCAL",
+  "acceptance": {
+    "retry_after": {
+      "description": "A Retry-After value is parsed as seconds or an HTTP-date and an untrusted value yields no delay.",
+      "claim_boundary": "Only header parsing is exercised locally; live provider throttling responses are deferred. DEFERRED-EXTERNAL."
+    },
+    "backoff": {
+      "description": "Retry delays grow exponentially from a base delay and are capped at a maximum.",
+      "claim_boundary": "Backoff is computed but no real retry loop is scheduled against a provider. DEFERRED-EXTERNAL."
+    },
+    "jitter": {
+      "description": "A bounded jitter fraction decorrelates retries without exceeding the configured ratio.",
+      "claim_boundary": "Jitter is a deterministic function of the supplied random input; entropy sources are supplied by the caller. DEFERRED-EXTERNAL."
+    },
+    "circuit_breaker": {
+      "description": "The breaker opens after a failure threshold and only closes through an explicit reset.",
+      "claim_boundary": "Breaker state is in-memory for this local contract; cross-process and persistent state are deferred. DEFERRED-EXTERNAL."
+    },
+    "idempotency": {
+      "description": "Idempotency keys are validated as stable tokens and secret-shaped values are rejected.",
+      "claim_boundary": "Key validation only; server-side idempotency enforcement is deferred. DEFERRED-EXTERNAL."
+    },
+    "concurrency": {
+      "description": "In-flight work is bounded by permits that are released in arrival order.",
+      "claim_boundary": "The limiter bounds local concurrency only; provider-side quota is deferred. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Provider health reports an explicit status and never treats unknown as available.",
+      "claim_boundary": "No live provider health probe is performed; observations are supplied locally. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "parse_retry_after",
+    "backoff_delay",
+    "circuit_transition",
+    "validate_idempotency_key",
+    "acquire_concurrency_permit",
+    "report_health"
+  ],
+  "claim_boundary": [
+    "This is a local rate-limit and resilience contract, not a live provider integration.",
+    "No provider endpoint, quota, or throttle response is exercised by this contract.",
+    "Live retry scheduling, provider quota, and external resilience evidence remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

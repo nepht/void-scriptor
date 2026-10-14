@@ -1,0 +1,45 @@
+{
+  "canonical_step": "119.9",
+  "title": "Brokered HTTP Client",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "BROKERED_HTTP_CLIENT_CONTRACT_COMPLETE_LOCAL",
+  "acceptance": {
+    "allowlist": {
+      "description": "Requests are denied unless the destination host is in the declared allowlist.",
+      "claim_boundary": "The local contract enforces an in-memory allowlist; live provider hosts are declared by later manifests. DEFERRED-EXTERNAL."
+    },
+    "tls": {
+      "description": "Non-HTTPS destinations are rejected except an explicit insecure-localhost override for tests.",
+      "claim_boundary": "Certificate pinning, trust stores, and real provider TLS are deferred. DEFERRED-EXTERNAL."
+    },
+    "redirect_policy": {
+      "description": "Redirect responses are refused rather than followed to an undeclared destination.",
+      "claim_boundary": "No redirect re-evaluation against the allowlist is performed; redirects fail closed. DEFERRED-EXTERNAL."
+    },
+    "header_redaction": {
+      "description": "Sensitive request headers are redacted before being written to the audit trail.",
+      "claim_boundary": "Audit is in-memory for this local contract; production log sinks remain deferred. DEFERRED-EXTERNAL."
+    },
+    "timeout": {
+      "description": "Every request is bounded by a timeout and fails closed with a typed error.",
+      "claim_boundary": "No adaptive or provider-specific timeout tuning is applied locally. DEFERRED-EXTERNAL."
+    },
+    "cancel": {
+      "description": "An in-flight request can be aborted by its request id.",
+      "claim_boundary": "Cancellation is best-effort for the local client; upstream provider cancellation semantics are deferred. DEFERRED-EXTERNAL."
+    },
+    "response_limit": {
+      "description": "Response bodies larger than the configured byte limit are rejected.",
+      "claim_boundary": "Streaming and chunked provider payloads above the limit are not buffered locally. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": ["get", "cancel"],
+  "claim_boundary": [
+    "This is a local brokered HTTP contract, not a live provider integration.",
+    "No provider endpoint, certificate, proxy, or credential is exercised by this contract.",
+    "Live network, provider connectivity, and external security evidence remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

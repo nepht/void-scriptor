@@ -1,0 +1,48 @@
+{
+  "canonical_step": "119.22",
+  "sprint": 119,
+  "title": "Permission Declaration & Consent",
+  "source": "outputs/sprint_119.json",
+  "scope": "local-contract-only",
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "verdict": "PERMISSION_DECLARATION_CONSENT_COMPLETE_LOCAL",
+  "required_fields": {
+    "permission": {
+      "description": "An opaque handle of the form permref:<provider>:<name> plus a scope set drawn from a closed vocabulary (read, write, append, delete, execute). Admin is refused outright, an unknown scope is refused, and an empty or duplicated scope set is refused. There is no wildcard.",
+      "claim_boundary": "A declared scope is a request, not an enforcement point. Enforcement remains DEFERRED-EXTERNAL."
+    },
+    "purpose": {
+      "description": "Why the permission is needed, in plain words. A missing purpose, a vague purpose such as 'anything' or 'unspecified', markup, and an over-long purpose are all refused.",
+      "claim_boundary": "The purpose is recorded and shown to the user. The host does not judge whether a stated purpose is true."
+    },
+    "data_categories": {
+      "description": "The data categories the grant may reach, from a closed vocabulary (account_identity, workspace_metadata, novel_content, character_content, usage_metrics, billing_metadata, secret_metadata). An empty set, an unknown category, and a duplicated category are refused.",
+      "claim_boundary": "Categories are declared, not resolved. The brokered read path is step 119.23."
+    },
+    "destination": {
+      "description": "The host the grant sends data to, plus a destination kind (local, first_party, third_party). A plaintext http destination is refused, a malformed host is refused, and a third-party destination without explicit cross-organisation consent is refused.",
+      "claim_boundary": "The destination is declared by the requester. This contract performs no network resolution and no connectivity check."
+    },
+    "duration": {
+      "description": "The bounded lifetime of the grant (session, 1h, 1d, 7d, 30d, 90d). An unknown duration is refused, and a mutating scope may not be granted until revoked: a write, append, or delete grant must carry a wall-clock end.",
+      "claim_boundary": "Expiry is evaluated against the caller-supplied clock. The contract does not schedule a timer or run a background sweep."
+    },
+    "revocation": {
+      "description": "How the grant is taken back: an opaque revokeref handle, an immediate flag that must be true, and a grace window of at most five minutes. Revocation is always possible, from any state, and is idempotent.",
+      "claim_boundary": "Revocation is recorded in this process. Cross-process revocation propagation remains DEFERRED-EXTERNAL."
+    },
+    "least_privilege": {
+      "description": "An attestation that the requested scope is the smallest that works: a plain justification, an explicit minimal-scope flag that must be true, and the review date. A grant that is not attested is refused.",
+      "claim_boundary": "Least privilege is attested by the requester and checked structurally. The host cannot verify that the requested scope is truly minimal."
+    }
+  },
+  "required_methods": [],
+  "acceptance": {
+    "unknown_field_policy": "REJECT",
+    "default_posture": "deny-by-default: state none is not usable",
+    "consent_lifecycle": "request, grant, deny, revoke; a grant requires a prior request; a re-grant after revoke or deny requires a new request",
+    "fail_safe": "revocation is always possible from any state and is idempotent",
+    "determinism": "diagnostics are deterministic and ordered"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "canonical_step": "119.15",
+  "title": "Developer Connector Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "DEVELOPER_CONNECTOR_INTERFACE_COMPLETE_LOCAL",
+  "required_methods": [
+    "list_organizations",
+    "list_resources",
+    "read",
+    "write_when_granted",
+    "limits",
+    "health"
+  ],
+  "acceptance": {
+    "list_organizations": {
+      "description": "Organizations are addressed by opaque orgref handles, deduplicated and sorted deterministically.",
+      "claim_boundary": "No provider organization directory is fetched locally. DEFERRED-EXTERNAL."
+    },
+    "list_resources": {
+      "description": "Resources are listed only within a named organization and only when they declare the required scope.",
+      "claim_boundary": "No provider resource enumeration is performed locally. DEFERRED-EXTERNAL."
+    },
+    "read": {
+      "description": "Read is denied unless the caller holds read and the resource declares read within the requested organization.",
+      "claim_boundary": "No remote resource content is fetched locally. DEFERRED-EXTERNAL."
+    },
+    "write_when_granted": {
+      "description": "Write is denied unless the caller holds write and the resource declares write; read never implies write.",
+      "claim_boundary": "No remote mutation is issued to a provider. DEFERRED-EXTERNAL."
+    },
+    "limits": {
+      "description": "Rate limits are validated (non-negative counts, positive period) and limit checks fail closed on negative or exhausted usage.",
+      "claim_boundary": "No provider rate-limit header is trusted or parsed locally. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Health reports unavailable, degraded, or ok deterministically from caller-supplied local signals.",
+      "claim_boundary": "Health is computed from local signals, not a live provider probe. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "list_organizations",
+    "list_resources",
+    "read",
+    "write_when_granted",
+    "validate_limits",
+    "is_within_limits",
+    "audit_append",
+    "health"
+  ],
+  "claim_boundary": [
+    "This is a local developer connector interface contract, not a live provider client.",
+    "No access token, personal access token, private key, or provider account identifier is stored or returned.",
+    "Live organization/resource enumeration, remote reads and writes, and provider rate-limit enforcement remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

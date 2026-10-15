@@ -1,0 +1,59 @@
+{
+  "canonical_step": "119.14",
+  "title": "AI Connector Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "AI_CONNECTOR_INTERFACE_COMPLETE_LOCAL",
+  "required_methods": [
+    "list_models",
+    "execute",
+    "stream",
+    "cancel",
+    "usage",
+    "cost_metadata",
+    "destination",
+    "health"
+  ],
+  "acceptance": {
+    "list_models": {
+      "description": "Models are addressed by opaque modelref handles and filtered by required modalities only.",
+      "claim_boundary": "No provider model catalog is fetched locally. DEFERRED-EXTERNAL."
+    },
+    "execute": {
+      "description": "Execution is denied without its declared permission, an opaque model reference, and an explicit data destination.",
+      "claim_boundary": "No inference request is issued to a provider. DEFERRED-EXTERNAL."
+    },
+    "stream": {
+      "description": "Streaming is denied for models that do not declare streaming support, and chunks must be strictly ordered with exactly one final chunk.",
+      "claim_boundary": "No live token stream is consumed locally. DEFERRED-EXTERNAL."
+    },
+    "cancel": {
+      "description": "Cancellation fails closed without explicit reauthentication and is unsupported for models that do not declare it.",
+      "claim_boundary": "No remote inference cancellation is performed locally. DEFERRED-EXTERNAL."
+    },
+    "usage": {
+      "description": "Usage reporting follows the 119.13 quota and usage value shape with explicit units, periods, and freshness.",
+      "claim_boundary": "No provider usage meter is read locally. DEFERRED-EXTERNAL."
+    },
+    "cost_metadata": {
+      "description": "Cost metadata is validated (ISO-4217 currency, non-negative finite unit cost, named unit label) and is never treated as a bill.",
+      "claim_boundary": "No provider pricing feed is trusted or reconciled. DEFERRED-EXTERNAL."
+    },
+    "destination": {
+      "description": "Every execution declares where prompt and completion data may travel; an unknown destination is denied outright.",
+      "claim_boundary": "No provider data-processing agreement is verified locally. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Health reports unavailable, degraded, or ok deterministically from caller-supplied local signals.",
+      "claim_boundary": "Health is computed from local signals, not a live provider probe. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": ["list_models", "execute", "stream", "cancel", "validate_cost", "health"],
+  "claim_boundary": [
+    "This is a local AI connector interface contract, not a live inference client.",
+    "No prompt text, completion text, credential, or provider account identifier is stored or returned.",
+    "Live inference, streaming, cancellation, usage metering, and pricing remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

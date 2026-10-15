@@ -1,0 +1,64 @@
+{
+  "canonical_step": "119.17",
+  "title": "Payment Connector Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "PAYMENT_CONNECTOR_INTERFACE_COMPLETE_LOCAL",
+  "required_methods": [
+    "checkout",
+    "customer_portal",
+    "payment_methods",
+    "invoices",
+    "refund_path",
+    "availability",
+    "health"
+  ],
+  "acceptance": {
+    "checkout": {
+      "description": "Checkout is denied for an unsupported region, an unsupported currency, an unreachable provider, or a session that is not newly created.",
+      "claim_boundary": "No checkout session is created with a payment provider. DEFERRED-EXTERNAL."
+    },
+    "customer_portal": {
+      "description": "The customer portal fails closed without explicit reauthentication and when the provider is unavailable.",
+      "claim_boundary": "No billing portal session is opened. DEFERRED-EXTERNAL."
+    },
+    "payment_methods": {
+      "description": "Payment methods are opaque references only; pan-like values, cvc values, and last-four fields are never accepted, stored, or serialized.",
+      "claim_boundary": "No payment instrument is vaulted or tokenized locally. DEFERRED-EXTERNAL."
+    },
+    "invoices": {
+      "description": "Invoices are addressed by opaque references, filtered by status, and listed in deterministic reference order.",
+      "claim_boundary": "No invoice is fetched or reconciled with a provider. DEFERRED-EXTERNAL."
+    },
+    "refund_path": {
+      "description": "A refund is only reachable for a paid invoice inside the refund window, and a large refund requires a recorded reason.",
+      "claim_boundary": "No refund is executed and no money moves. DEFERRED-EXTERNAL."
+    },
+    "availability": {
+      "description": "Region and currency availability is derived deterministically and never guessed when unknown.",
+      "claim_boundary": "No provider capability matrix is fetched. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Health reports unavailable, degraded, or ok deterministically from caller-supplied local signals.",
+      "claim_boundary": "Health is computed from local signals, not a live provider probe. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "checkout",
+    "customer_portal",
+    "list_payment_methods",
+    "validate_payment_method",
+    "invoices",
+    "refund_path",
+    "availability",
+    "describe_error",
+    "health"
+  ],
+  "claim_boundary": [
+    "This is a local payment connector interface contract, not a payment client.",
+    "No card number, cvc, expiry, payment token secret, or provider credential is stored, returned, or logged; references are opaque and card-like values are refused.",
+    "Live checkout, portal, invoicing, refunds, and provider capability discovery remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

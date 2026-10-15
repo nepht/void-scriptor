@@ -1,0 +1,55 @@
+{
+  "canonical_step": "119.20",
+  "title": "Icon & Brand Asset Contract",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "ICON_BRAND_ASSET_CONTRACT_COMPLETE_LOCAL",
+  "required_methods": [],
+  "required_fields": {
+    "icon_ref": {
+      "description": "Opaque `iconref:` handle that identifies the asset inside the host registry.",
+      "claim_boundary": "The reference is opaque and is redacted in diagnostics and serialized audit output."
+    },
+    "source": {
+      "description": "Where the bytes come from: `bundled` or `remoteUrl`. Inline data URIs and unknown sources are refused outright.",
+      "claim_boundary": "A remote source must be TLS and must carry an integrity digest; inline payloads are never accepted."
+    },
+    "permission": {
+      "description": "The connector's declared right to ship this asset. Only `allowed` is usable; `restricted`, `denied`, and `unknown` are refused.",
+      "claim_boundary": "Permission is deny-by-default; the host does not infer a right from the presence of a file."
+    },
+    "version": {
+      "description": "A semantic version core (`MAJOR.MINOR.PATCH`) that lets the host pin and migrate an asset deterministically.",
+      "claim_boundary": "Floating labels such as `latest`, prefixed versions, and partial versions are refused."
+    },
+    "light": {
+      "description": "The light-theme variant: a safe relative bundled path, an https URL, or a registry handle, plus an optional integrity digest.",
+      "claim_boundary": "Path traversal, absolute paths, backslashes, and unsupported extensions are refused rather than normalized."
+    },
+    "dark": {
+      "description": "The dark-theme variant, validated exactly like the light variant.",
+      "claim_boundary": "Both themes are mandatory: an asset without a dark variant is refused rather than silently reused."
+    },
+    "fallback": {
+      "description": "What the host renders when the asset cannot be loaded: the host default or a declared fallback reference.",
+      "claim_boundary": "`none` is refused, so a failed load can never leave an empty slot."
+    },
+    "accessible_name": {
+      "description": "The human-readable name announced by assistive technology. Plain text, non-empty, and bounded.",
+      "claim_boundary": "Markup, an over-long name, or a raw reference masquerading as a name is refused."
+    }
+  },
+  "operations": [
+    "is_usable",
+    "validate_asset",
+    "registry_register",
+    "registry_resolve"
+  ],
+  "claim_boundary": [
+    "This is a local icon and brand asset contract, not an image pipeline.",
+    "No asset byte, inline payload, or provider credential is stored, returned, or logged.",
+    "Icon rasterization, remote fetching, caching, and live brand clearance remain DEFERRED-EXTERNAL."
+  ]
+}

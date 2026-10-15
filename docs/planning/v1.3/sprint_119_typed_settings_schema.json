@@ -1,0 +1,47 @@
+{
+  "canonical_step": "119.21",
+  "sprint": 119,
+  "title": "Typed Settings Schema",
+  "source": "outputs/sprint_119.json",
+  "scope": "local-contract-only",
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "verdict": "TYPED_SETTINGS_SCHEMA_COMPLETE_LOCAL",
+  "required_features": {
+    "typed_values": {
+      "description": "Every setting declares one type from a closed vocabulary: text, integer, number, boolean, selection, secret, duration, url. A value that does not parse as its declared type is refused rather than coerced.",
+      "claim_boundary": "Typing is structural validation of caller-supplied text. No value is interpreted, executed, or applied to a live connector."
+    },
+    "validation": {
+      "description": "A configuration is validated as a whole. An undeclared key is refused outright, a missing required setting is reported, and every failure is a diagnostic string that names the offending key.",
+      "claim_boundary": "Validation is local and deterministic. It does not prove that a connector accepts the configuration."
+    },
+    "defaults": {
+      "description": "A declared default is itself validated against the declaring type when the schema is built, so a schema with an invalid default refuses every configuration instead of applying a bad default.",
+      "claim_boundary": "A default is a value the host supplies, not a value the provider chose."
+    },
+    "secret_refs": {
+      "description": "A secret setting carries an opaque handle of the form secretref:<vault>:<name>. A value that looks like a literal secret, by key prefix or by long unbroken token shape, is refused outright and never stored, returned, or logged. A secret setting may not declare a default.",
+      "claim_boundary": "This contract never reads, resolves, or transmits the secret itself. Vault resolution and rotation remain DEFERRED-EXTERNAL."
+    },
+    "dependencies": {
+      "description": "A setting may depend on another setting's value. A value supplied while its dependency is unmet is refused, and a dependency cycle or an undeclared dependency key makes the whole schema invalid.",
+      "claim_boundary": "Dependencies are declarative gating, not an execution order."
+    },
+    "conditional_visibility": {
+      "description": "A setting may declare the values of another setting under which it is visible. A value supplied while the setting is hidden is refused rather than silently accepted.",
+      "claim_boundary": "Visibility is a data predicate. This contract renders no UI."
+    },
+    "migration": {
+      "description": "A configuration migrates from a declared previous version by rename, deterministically and with the applied renames reported. An unknown source version is refused, and a key the schema does not declare is carried through untouched and reported, never silently dropped.",
+      "claim_boundary": "Migration renames and carries values. It does not transform a value's semantics or contact a provider."
+    }
+  },
+  "required_methods": [],
+  "acceptance": {
+    "unknown_field_policy": "REJECT",
+    "secret_handling": "opaque handles only; literal secrets refused outright; never stored, returned, or logged",
+    "fail_closed": "a structurally invalid schema refuses every configuration",
+    "determinism": "diagnostics and migrations are deterministic and ordered"
+  }
+}

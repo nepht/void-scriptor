@@ -1,0 +1,52 @@
+{
+  "canonical_step": "119.19",
+  "title": "Account Center UI Extension Slots",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "ACCOUNT_CENTER_UI_EXTENSION_SLOTS_COMPLETE_LOCAL",
+  "required_methods": [],
+  "allowed_slots": {
+    "provider_tile": {
+      "description": "A single tile in the provider list: plain title, plain body, and an optional declared action reference.",
+      "claim_boundary": "The tile is data, not a widget: no layout, style, size, position, or handler is accepted."
+    },
+    "connection_detail": {
+      "description": "Read-only detail for one connection: plain labels and plain values.",
+      "claim_boundary": "No raw provider payload, credential, or token is accepted in this slot."
+    },
+    "settings_form": {
+      "description": "Presentation of a connector's declared settings in the host-rendered form.",
+      "claim_boundary": "The slot carries labels and declared setting references only; the host owns the form. Arbitrary layout injection is refused."
+    },
+    "usage_card": {
+      "description": "Usage and quota summary for one connection, in host-rendered form.",
+      "claim_boundary": "Values are plain text; live measurement remains DEFERRED-EXTERNAL."
+    },
+    "health_status": {
+      "description": "Health and availability summary for one connection.",
+      "claim_boundary": "Values are plain text; live probing remains DEFERRED-EXTERNAL."
+    },
+    "action_menu": {
+      "description": "Declared actions a connector may offer, each referenced by an opaque action reference.",
+      "claim_boundary": "An action that was not declared up front is refused; no handler, route, or callback is accepted."
+    }
+  },
+  "operations": [
+    "slot_name",
+    "is_allowed_slot",
+    "is_plain_text",
+    "has_layout_injection",
+    "is_valid_provider_ref",
+    "is_valid_action_ref",
+    "validate_contribution",
+    "render"
+  ],
+  "claim_boundary": [
+    "This is a local slot contract, not a rendering engine.",
+    "Only plain text is accepted: markup delimiters, entity ampersands, interpolation, links, and control characters are refused rather than sanitized.",
+    "Arbitrary layout injection is refused by construction: unknown and layout-bearing attribute keys are rejected, and a batch is dropped per provider rather than partially applied.",
+    "No credential, token, secret reference value, or raw provider payload is accepted in any slot. DEFERRED-EXTERNAL."
+  ]
+}

@@ -74,15 +74,33 @@ final class SecretReferenceApi {
     }
   }
 
+  static final RegExp _credentialAssignment = RegExp(
+    r"""([A-Za-z0-9_.-]*(?:token|secret|password|passwd|key))"""
+    r"""(\s*["']?\s*[=:]\s*["']?)"""
+    r"""([^\s,;"']+)""",
+    caseSensitive: false,
+  );
+
+  static final RegExp _authorizationScheme = RegExp(
+    r'\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+',
+    caseSensitive: false,
+  );
+
+  static final RegExp _opaqueReference = RegExp(
+    r'credref:[a-z][a-z0-9._-]{2,63}:[a-z0-9._-]{1,63}',
+  );
+
   String redact(String message) {
-    final replaced = message.replaceAllMapped(
-      RegExp(r'(token|secret|password)=([^\s,;]+)', caseSensitive: false),
-      (match) => '${match.group(1)}=[REDACTED]',
-    );
-    return replaced.replaceAll(
-      RegExp(r'credref:[a-z][a-z0-9._-]{2,63}:[a-z0-9._-]{1,63}'),
-      '[REDACTED]',
-    );
+    final replaced = message
+        .replaceAllMapped(
+          _credentialAssignment,
+          (match) => '${match.group(1)}${match.group(2)}[REDACTED]',
+        )
+        .replaceAllMapped(
+          _authorizationScheme,
+          (match) => '${match.group(1)} [REDACTED]',
+        );
+    return replaced.replaceAll(_opaqueReference, '[REDACTED]');
   }
 
   Future<SecretReferenceResult> rotate(

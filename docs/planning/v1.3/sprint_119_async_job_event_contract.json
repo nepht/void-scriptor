@@ -1,0 +1,45 @@
+{
+  "canonical_step": "119.11",
+  "title": "Async Job & Event Contract",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "ASYNC_JOB_EVENT_CONTRACT_COMPLETE_LOCAL",
+  "acceptance": {
+    "job_id": {
+      "description": "Long-running work is addressed by an opaque job handle that rejects raw and non-job-shaped values.",
+      "claim_boundary": "No job payload or provider-side job identifier is stored or returned by this local contract. DEFERRED-EXTERNAL."
+    },
+    "progress": {
+      "description": "Reported progress is normalized into the closed 0..1 interval and never trusted outside it.",
+      "claim_boundary": "Progress is a local observation only; no live job scheduler reports real completion. DEFERRED-EXTERNAL."
+    },
+    "cancel": {
+      "description": "Cancellation is denied unless an explicit reauthentication result is present.",
+      "claim_boundary": "No remote job cancellation is performed locally. DEFERRED-EXTERNAL."
+    },
+    "resume": {
+      "description": "Resume is denied unless an explicit reauthentication result is present.",
+      "claim_boundary": "No remote job resumption or replay is performed locally. DEFERRED-EXTERNAL."
+    },
+    "durable_state": {
+      "description": "Only settled job states are durable; in-flight state is not persisted and must be re-derived after a restart.",
+      "claim_boundary": "Durability is modelled as a local snapshot shape, not a durable queue or storage engine. DEFERRED-EXTERNAL."
+    },
+    "event_order": {
+      "description": "Events are accepted only in strictly increasing sequence order; replayed or stale events fail closed.",
+      "claim_boundary": "Ordering is enforced per local job instance only; no distributed ordering guarantee is claimed. DEFERRED-EXTERNAL."
+    },
+    "deduplication": {
+      "description": "Duplicate events are rejected by idempotency key so retries cannot double-apply progress.",
+      "claim_boundary": "Deduplication is in-memory for this local contract; no shared dedup store is claimed. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": ["record", "cancel", "resume", "snapshot"],
+  "claim_boundary": [
+    "This is a local async job and event contract, not a durable queue or worker runtime.",
+    "No plaintext job payload, provider job identifier, or credential is stored or returned.",
+    "Live scheduling, distributed ordering, and external durability evidence remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "canonical_step": "119.16",
+  "title": "Creative Connector Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "CREATIVE_CONNECTOR_INTERFACE_COMPLETE_LOCAL",
+  "required_methods": [
+    "list_assets",
+    "metadata",
+    "rights",
+    "import",
+    "export_when_granted",
+    "transform_when_granted",
+    "health"
+  ],
+  "acceptance": {
+    "list_assets": {
+      "description": "Assets are addressed by opaque assetref handles and listed by kind in deterministic reference order.",
+      "claim_boundary": "No provider asset library is enumerated locally. DEFERRED-EXTERNAL."
+    },
+    "metadata": {
+      "description": "Metadata is derived locally and redacts the asset reference; rights diagnostics travel with the metadata.",
+      "claim_boundary": "No provider metadata record is fetched or trusted. DEFERRED-EXTERNAL."
+    },
+    "rights": {
+      "description": "Rights are validated for a known licence, a named holder, and non-expiry; an unknown licence denies by default.",
+      "claim_boundary": "No legal clearance is asserted; licence interpretation is the operator's responsibility. DEFERRED-EXTERNAL."
+    },
+    "import": {
+      "description": "Import is denied without a known asset, an explicitly declared source, and valid rights.",
+      "claim_boundary": "No asset bytes are transferred from a provider. DEFERRED-EXTERNAL."
+    },
+    "export_when_granted": {
+      "description": "Export requires export scope, satisfied attribution obligations, and commercial rights for a commercial destination.",
+      "claim_boundary": "No file is written to an external destination. DEFERRED-EXTERNAL."
+    },
+    "transform_when_granted": {
+      "description": "Transformation requires transform scope and derivative rights; recorded lineage is append-only and duplicate steps are rejected.",
+      "claim_boundary": "No image, audio, or video processing is executed locally. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Health reports unavailable, degraded, or ok deterministically from caller-supplied local signals.",
+      "claim_boundary": "Health is computed from local signals, not a live provider probe. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "list_assets",
+    "metadata",
+    "rights",
+    "import",
+    "export_when_granted",
+    "transform_when_granted",
+    "record_lineage",
+    "health"
+  ],
+  "claim_boundary": [
+    "This is a local creative connector interface contract, not a live asset client.",
+    "No asset bytes, provider asset identifier, or licence key is stored or returned.",
+    "Live asset enumeration, byte transfer, rendering, and rights clearance remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

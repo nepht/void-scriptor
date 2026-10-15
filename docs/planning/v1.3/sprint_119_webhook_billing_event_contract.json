@@ -1,0 +1,57 @@
+{
+  "canonical_step": "119.18",
+  "title": "Webhook & Billing Event Contract",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "WEBHOOK_BILLING_EVENT_CONTRACT_COMPLETE_LOCAL",
+  "required_methods": [],
+  "acceptance": {
+    "signature": {
+      "description": "Delivery signatures are HMAC-SHA256 over the timestamp-bound material, verified with a closed algorithm allow-list, a key-id requirement, a hex digest shape check, a freshness window, and a best-effort constant-time comparison.",
+      "claim_boundary": "Timing-attack resistance is not claimed: Dart offers no constant-time primitive. The signing secret is supplied by the caller and is never stored, logged, or serialized."
+    },
+    "replay_protection": {
+      "description": "A repeated event reference is refused, and entries older than the freshness window are purged so the guard cannot grow without bound.",
+      "claim_boundary": "The guard is process-local and in-memory; cross-process or cross-device replay defence is DEFERRED-EXTERNAL."
+    },
+    "idempotency": {
+      "description": "Idempotency keys must be opaque handles; a repeated key is refused and its recorded outcome is replayable instead of being re-applied.",
+      "claim_boundary": "Outcomes are held in memory only; durable idempotency storage is DEFERRED-EXTERNAL."
+    },
+    "ordering": {
+      "description": "Event sequences must increase strictly, and an incoming sequence is accepted only when it is greater than the last applied sequence.",
+      "claim_boundary": "No cross-partition global ordering is claimed; per-stream ordering only."
+    },
+    "retry": {
+      "description": "Retry delay is deterministic exponential backoff with a hard cap, and a permanent error is never retried.",
+      "claim_boundary": "No scheduler executes the retries; this contract only computes the schedule. DEFERRED-EXTERNAL."
+    },
+    "reconciliation": {
+      "description": "Local and provider event sets are diffed deterministically; missing and unknown references are reported and never auto-merged.",
+      "claim_boundary": "No provider event feed is fetched. DEFERRED-EXTERNAL."
+    },
+    "audit": {
+      "description": "Every decision is recorded in an append-only, ordered trail whose serialized form redacts the event reference.",
+      "claim_boundary": "The trail is in-memory only; durable and tamper-evident audit storage is DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "hmac_sha256_hex",
+    "signed_material",
+    "compute_signature",
+    "verify_signature",
+    "replay_register",
+    "idempotency_begin",
+    "ordering_check",
+    "retry_schedule",
+    "reconcile",
+    "audit_record"
+  ],
+  "claim_boundary": [
+    "This is a local webhook and billing event contract, not a webhook receiver.",
+    "No signing secret, digest, event payload, or provider credential is stored, returned, or logged; references are opaque and digests are redacted.",
+    "Live delivery, provider event feeds, durable replay and idempotency storage, and tamper-evident audit storage remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

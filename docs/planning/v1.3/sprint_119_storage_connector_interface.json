@@ -1,0 +1,70 @@
+{
+  "canonical_step": "119.12",
+  "title": "Storage Connector Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "STORAGE_CONNECTOR_INTERFACE_COMPLETE_LOCAL",
+  "required_methods": [
+    "list_roots",
+    "list_entries",
+    "metadata",
+    "upload",
+    "download",
+    "delta",
+    "delete",
+    "health"
+  ],
+  "acceptance": {
+    "permissions": {
+      "description": "Every storage operation is denied unless its declared permission is explicitly granted.",
+      "claim_boundary": "Permissions are enforced against a local granted-set only; no live provider consent flow is exercised. DEFERRED-EXTERNAL."
+    },
+    "list_roots": {
+      "description": "Roots are addressed by opaque storageref handles; malformed handles are dropped rather than trusted.",
+      "claim_boundary": "No provider root discovery is performed locally. DEFERRED-EXTERNAL."
+    },
+    "list_entries": {
+      "description": "Entry paths are canonicalized and traversal, absolute, drive-letter, and backslash escapes fail closed.",
+      "claim_boundary": "No live directory enumeration or pagination is performed locally. DEFERRED-EXTERNAL."
+    },
+    "metadata": {
+      "description": "Entry metadata is provider-neutral and UTC-normalized with an opaque revision token.",
+      "claim_boundary": "No provider-specific metadata field is claimed or stored. DEFERRED-EXTERNAL."
+    },
+    "upload": {
+      "description": "Uploads are planned only for paths absent remotely and gated by the write-upload permission.",
+      "claim_boundary": "No bytes are transferred; only the local plan shape is defined. DEFERRED-EXTERNAL."
+    },
+    "download": {
+      "description": "Downloads are planned only for paths absent locally and gated by the read-download permission.",
+      "claim_boundary": "No bytes are transferred; only the local plan shape is defined. DEFERRED-EXTERNAL."
+    },
+    "delta": {
+      "description": "Delta planning is deterministic and surfaces revision conflicts instead of silently overwriting.",
+      "claim_boundary": "No causal ordering or clock-based reconciliation is claimed; conflicts must be resolved by the caller. DEFERRED-EXTERNAL."
+    },
+    "delete": {
+      "description": "Deletion is destructive and denied unless explicitly confirmed; invalid paths are denied first.",
+      "claim_boundary": "No remote deletion is performed locally. DEFERRED-EXTERNAL."
+    },
+    "health": {
+      "description": "Health reports unavailable, degraded, or ok deterministically from reachability, authorization, and quota.",
+      "claim_boundary": "Health is computed from caller-supplied local signals, not a live provider probe. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": [
+    "list_roots",
+    "canonical_path",
+    "authorize",
+    "plan_delta",
+    "delete",
+    "health"
+  ],
+  "claim_boundary": [
+    "This is a local storage connector interface contract, not a live storage client.",
+    "No plaintext root handle, credential, or provider root identifier is stored or returned.",
+    "Live enumeration, transfer, deletion, quota enforcement, and provider health probes remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

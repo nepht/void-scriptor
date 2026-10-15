@@ -1,0 +1,59 @@
+{
+  "canonical_step": "119.13",
+  "title": "Quota & Usage Interface",
+  "schema_version": 1,
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "state": "pass",
+  "verdict": "QUOTA_USAGE_INTERFACE_COMPLETE_LOCAL",
+  "required_fields": [
+    "raw_value",
+    "unit",
+    "period",
+    "measured_at",
+    "freshness",
+    "source",
+    "is_estimate",
+    "availability"
+  ],
+  "acceptance": {
+    "raw_value": {
+      "description": "Usage is reported as an unformatted raw value, never a pre-formatted display string.",
+      "claim_boundary": "No live provider usage reading is fetched locally. DEFERRED-EXTERNAL."
+    },
+    "unit": {
+      "description": "Every value carries an explicit unit from a closed enum; unknown units are named rather than guessed.",
+      "claim_boundary": "No provider-specific unit table is claimed. DEFERRED-EXTERNAL."
+    },
+    "period": {
+      "description": "Every value declares its reporting period so values from different windows are never compared blindly.",
+      "claim_boundary": "No provider billing-cycle alignment is verified locally. DEFERRED-EXTERNAL."
+    },
+    "measured_at": {
+      "description": "Values carry a UTC measurement instant, or null when the provider did not report one.",
+      "claim_boundary": "No clock synchronization with the provider is claimed. DEFERRED-EXTERNAL."
+    },
+    "freshness": {
+      "description": "Freshness is derived deterministically from measurement age; future timestamps are not trusted.",
+      "claim_boundary": "Freshness windows are local policy constants, not provider guarantees. DEFERRED-EXTERNAL."
+    },
+    "source": {
+      "description": "Every value names its source so cached and estimated data is never mistaken for a live reading.",
+      "claim_boundary": "No provider endpoint is contacted to confirm the source. DEFERRED-EXTERNAL."
+    },
+    "is_estimate": {
+      "description": "Estimated values are flagged and are never treated as exact.",
+      "claim_boundary": "No provider-side estimate accuracy is claimed. DEFERRED-EXTERNAL."
+    },
+    "availability": {
+      "description": "Unavailable, not-reported, and unsupported states are explicit and carry no raw value.",
+      "claim_boundary": "Availability reflects caller-supplied local signals only. DEFERRED-EXTERNAL."
+    }
+  },
+  "operations": ["classify_freshness", "utilization", "is_exhausted", "validate_value"],
+  "claim_boundary": [
+    "This is a local quota and usage interface contract, not a live usage meter.",
+    "No plaintext credential or provider account identifier is stored or returned.",
+    "Live quota polling, provider billing reconciliation, and estimate accuracy remain deferred. DEFERRED-EXTERNAL."
+  ]
+}

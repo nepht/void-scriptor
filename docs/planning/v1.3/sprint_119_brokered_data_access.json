@@ -1,0 +1,41 @@
+{
+  "canonical_step": "119.23",
+  "sprint": 119,
+  "title": "Brokered Data Access",
+  "source": "outputs/sprint_119.json",
+  "scope": "local-contract-only",
+  "unknown_field_policy": "REJECT",
+  "external_gates": "DEFERRED-EXTERNAL",
+  "verdict": "BROKERED_DATA_ACCESS_COMPLETE_LOCAL",
+  "acceptance": {
+    "scoped_handle": {
+      "description": "Every read goes through an opaque scope handle of the form scoperef:<provider>:<name>. A handle that looks like a path, a connection string, or a storage driver URI is refused, and a scope names exactly one resource kind and the exact fields it may read.",
+      "claim_boundary": "The broker owns the mapping from handle to boundary. No caller is handed a path, a connection, or a storage handle."
+    },
+    "query_contract": {
+      "description": "A query is declarative: a resource kind, a projection from the scope's allow-list, filters drawn from a closed operator set (eq, ne, lt, lte, gt, gte, in, contains, prefix), a bounded row limit, and an optional opaque cursor. A field outside the allow-list, an unknown operator, a missing operand, an expression-like operand, an out-of-range limit, and a malformed cursor are all refused.",
+      "claim_boundary": "Comparison is local and lexical. This contract runs no statement against any datastore."
+    },
+    "export_contract": {
+      "description": "An export declares a format (json, csv), a non-empty field selection inside the scope's allow-list, a bounded row limit, and a local destination. An unknown format, an empty or disallowed selection, an out-of-range limit, a non-local destination, and any credential-bearing field name are refused.",
+      "claim_boundary": "The export is serialized in memory. Writing a file, uploading, and sharing remain DEFERRED-EXTERNAL."
+    },
+    "audit": {
+      "description": "Every brokered action appends an entry with a monotonic sequence, the action, the resource, the decision, a short detail, and the time. A refused attempt is recorded too. The trail is append-only and exposes no method that removes or rewrites an entry, and the projection redacts the handle and any opaque reference.",
+      "claim_boundary": "The trail is in-memory and process-local. Tamper-evident and durable audit storage remain DEFERRED-EXTERNAL."
+    },
+    "revocation": {
+      "description": "Revoking a scope handle takes effect immediately: every later query and export on that handle is refused. Revocation is idempotent and is always possible, including for a handle this broker has never seen.",
+      "claim_boundary": "Revocation is process-local. Cross-process and cross-device revocation propagation remain DEFERRED-EXTERNAL."
+    },
+    "no_direct_database": {
+      "description": "The broker exposes no member whose name mentions a path, a file, a directory, a statement, a connection, a database, a driver, a socket, or a credential, and it never returns a storage location. The dataset is private and reachable only through a scope handle.",
+      "claim_boundary": "This is a structural guarantee about this contract's surface. It does not prove anything about other code paths in the application."
+    }
+  },
+  "required_methods": [],
+  "acceptance_notes": {
+    "canonical_fields": "account: id, email_handle, plan; project: id, name, updated_at; novel: id, title, status; character: id, name, novel_ref; workspace: id, name, created_at",
+    "fail_closed": "an unknown scope, a revoked scope, a resource mismatch, and a credential-bearing field are refused rather than coerced"
+  }
+}
